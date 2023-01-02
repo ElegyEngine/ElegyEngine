@@ -7,7 +7,7 @@ namespace Elegy
 	{
 		public static bool Init( Node3D rootNode )
 		{
-			mEngine = new( rootNode, OS.GetCmdlineArgs() );
+			mEngine = new( rootNode, OS.GetCmdlineUserArgs() );
 			return mEngine.Init();
 		}
 
