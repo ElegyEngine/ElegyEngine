@@ -7,3 +7,4 @@ global using Elegy.Extensions;
 global using Elegy.Internal;
 global using Godot;
 global using System;
+global using System.Reflection;
