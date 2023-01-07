@@ -69,16 +69,15 @@ namespace Elegy.Utilities
 
 	public static class DictionaryExtensions
 	{
-		public static TValue GetOrAdd<TKey, TValue>( this Dictionary<TKey, TValue> dictionary, TKey key ) where TValue : new()
+		public static TValue GetOrAdd<TKey, TValue>( this Dictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue ) where TValue : new()
 		{
-			if ( dictionary.TryGetValue( key, out TValue value ) )
+			if ( dictionary.TryGetValue( key, out TValue? value ) )
 			{
 				return value;
 			}
 
-			TValue result = new();
-			dictionary.Add( key, result );
-			return result;
+			dictionary.Add( key, defaultValue );
+			return dictionary[key];
 		}
 
 		public static int GetInt( this Dictionary<string, string> list, string key, int defaultValue = 0 )
