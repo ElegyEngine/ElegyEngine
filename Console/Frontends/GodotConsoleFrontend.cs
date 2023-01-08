@@ -18,36 +18,35 @@ namespace Elegy.ConsoleFrontends
 			Initialised = false;
 		}
 
-		public void OnLog( ref ConsoleMessage message )
+		public void OnLog( string message, ConsoleMessageType type )
 		{
-			switch ( message.Type )
+			message = message.Replace( "\r", string.Empty );
+			if ( message.EndsWith( '\n' ) )
 			{
-				case ConsoleMessageType.Info:
+				message = message.TrimEnd( '\n' );
+			}
 
-					message.Text = message.Text.Replace( "\r", string.Empty );
-					if ( message.Text.EndsWith( '\n' ) )
-					{
-						message.Text = message.Text.TrimEnd( '\n' );
-					}
-
-					GD.Print( message.Text );
+			switch ( type )
+			{
+				default:
+					GD.Print( message );
 					break;
 
 				case ConsoleMessageType.Warning:
 					System.Console.ForegroundColor = ConsoleColor.Yellow;
-					GD.Print( $"[WARNING] {message.Text}" );
+					GD.Print( $"[WARNING] {message}" );
 					System.Console.ResetColor();
 					break;
 
 				case ConsoleMessageType.Error:
 					System.Console.ForegroundColor = ConsoleColor.Red;
-					GD.PrintErr( $"[ERROR] {message.Text}" );
+					GD.PrintErr( $"[ERROR] {message}" );
 					System.Console.ResetColor();
 					break;
 
 				case ConsoleMessageType.Fatal:
 					System.Console.ForegroundColor = ConsoleColor.Red;
-					GD.PrintErr( $"[FATAL] {message.Text}" );
+					GD.PrintErr( $"[FATAL] {message}" );
 					System.Console.ResetColor();
 					break;
 			}

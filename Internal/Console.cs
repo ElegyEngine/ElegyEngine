@@ -10,14 +10,17 @@ namespace Elegy.Internal
 
 		public bool Init()
 		{
-			mFrontends.Add( new ConsoleFrontends.GodotConsoleFrontend() );
-			Log( "[Console] Init" );
+			Elegy.Console.SetConsole( this );
+			Elegy.Console.Log( "[Console] Init" );
+
+			AddFrontend( new ConsoleFrontends.GodotConsoleFrontend() );
+
 			return true;
 		}
 
 		public void Shutdown()
 		{
-			Log( "[Console] Shutdown" );
+			Elegy.Console.Log( "[Console] Shutdown\n" );
 
 			mFrontends.ForEach( frontend => frontend.Shutdown() );
 			mFrontends.Clear();
@@ -25,38 +28,55 @@ namespace Elegy.Internal
 			mArguments.Clear();
 		}
 
-		public void Log( string message )
+		public void Log( string message, ConsoleMessageType type = ConsoleMessageType.Info )
 		{
-			Submit( message, ConsoleMessageType.Info );
-		}
-
-		public void Warning( string message )
-		{
-			Submit( message, ConsoleMessageType.Warning );
-		}
-
-		public void Error( string message, bool fatal = false )
-		{
-			Submit( message, fatal ? ConsoleMessageType.Fatal : ConsoleMessageType.Error );
-		}
-
-		private void Submit( string message, ConsoleMessageType type )
-		{
-			ConsoleMessage messageObject = new()
+			if ( type == ConsoleMessageType.Developer && !Elegy.Console.Developer )
 			{
-				Text = message,
-				Type = type
-			};
+				return;
+			}
+			if ( type == ConsoleMessageType.Verbose && !Elegy.Console.Verbose )
+			{
+				return;
+			}
 
 			for ( int i = 0; i < mFrontends.Count; i++ )
 			{
-				mFrontends[i].OnLog( ref messageObject );
+				mFrontends[i].OnLog( message, type );
 			}
+		}
+
+		public bool AddFrontend( IConsoleFrontend frontend )
+		{
+			// Since console frontends are plugins, they can be often times initialised by the plugin system
+			// Sometimes, however, somebody may simply call Console.AddFrontend( new MyFrontend() );, in
+			// which case we initialise it here.
+			if ( !frontend.Initialised )
+			{
+				frontend.Init();
+			}
+
+			if ( frontend.Error == string.Empty )
+			{
+				mFrontends.Add( frontend );
+				Elegy.Console.Log( $"[Console] Added frontend '{frontend.Name}'", ConsoleMessageType.Developer );
+				return true;
+			}
+
+			Elegy.Console.Warning( $"[Console] '{frontend.Name}' failed to initialise with message: '{frontend.Error}'" );
+			return false;
 		}
 
 		private void InitialiseArguments( string[] args )
 		{
+			if ( args.Length == 0 )
+			{
+				Elegy.Console.Log( "[Console] Launch arguments: empty", ConsoleMessageType.Verbose );
+				return;
+			}
+
 			var isKey = ( string text ) => text.StartsWith( "-" ) || text.StartsWith( "+" );
+
+			Elegy.Console.Log( "[Console] Launch arguments:", ConsoleMessageType.Verbose );
 
 			for ( int i = 0; i < args.Length; i++ )
 			{
@@ -70,6 +90,7 @@ namespace Elegy.Internal
 					}
 
 					mArguments[args[i]] = value;
+					Elegy.Console.Log( $"    * '{args[i]}' = '{value}'", ConsoleMessageType.Verbose );
 				}
 			}
 		}
