@@ -29,7 +29,7 @@ namespace Elegy.Internal
 
 				if ( !plugin.Init() )
 				{
-					failedPlugins.Add( $"'{library.Metadata.Name}' at '{library.MetadataPath}' - failed to initialise ({plugin.Error})" );
+					failedPlugins.Add( $"'{library.Metadata.Name}' at '{library.MetadataPath}' - failed to initialise (error message: '{plugin.Error}')" );
 					return;
 				}
 
@@ -79,14 +79,30 @@ namespace Elegy.Internal
 
 		public void Shutdown()
 		{
+			Elegy.Console.Log( "[PluginSystem] Shutdown" );
+
 			// First shut down any app/game app
+			foreach ( var app in mApplicationPlugins )
+			{
+				app.Value.Shutdown();
+			}
+			mApplicationPlugins.Clear();
+
 			foreach ( var plugin in mGenericPlugins )
 			{
 				plugin.Value.Shutdown();
 			}
-			foreach ( var app in mApplicationPlugins )
+			mGenericPlugins.Clear();
+
+			mPluginLibraries.Clear();
+			try
 			{
-				app.Value.Shutdown();
+				mLoadContext.Unload();
+			}
+			catch ( Exception ex )
+			{
+				Elegy.Console.Error( "[PluginSystem] Woops, looks like unloading ain't allowed" );
+				Elegy.Console.Log( $"[OS] Message: {ex.Message}" );
 			}
 		}
 
@@ -136,6 +152,8 @@ namespace Elegy.Internal
 
 		private PluginLibrary? LoadLibrary( string path )
 		{
+			Elegy.Console.Log( $"[PluginSystem] Loading '{path}/Game.dll'..." );
+
 			for ( int i = 0; i < mPluginLibraries.Count; i++ )
 			{
 				if ( mPluginLibraries[i].MetadataPath == path )
@@ -152,8 +170,7 @@ namespace Elegy.Internal
 			catch ( Exception ex )
 			{
 				Elegy.Console.Error( $"[PluginSystem] Failed to load '{path}/Game.dll'" );
-				Elegy.Console.Error( $"[PluginSystem] Exception: {ex.Message.TrimEnd( '\r' )}" );
-
+				Elegy.Console.Error( $"[OS] Exception: {ex.Message}" );
 				return null;
 			}
 
@@ -168,6 +185,7 @@ namespace Elegy.Internal
 				return null;
 			}
 
+			Elegy.Console.Log( $"[PluginSystem] '{path}/Game.dll' loaded successfully" );
 			mPluginLibraries.Add( library );
 			return library;
 		}
