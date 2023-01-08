@@ -11,13 +11,13 @@ namespace Elegy.Internal
 		public bool Init()
 		{
 			mFrontends.Add( new ConsoleFrontends.GodotConsoleFrontend() );
-			Log( "Console.Init" );
+			Log( "[Console] Init" );
 			return true;
 		}
 
 		public void Shutdown()
 		{
-			Log( "Console.Shutdown" );
+			Log( "[Console] Shutdown" );
 
 			mFrontends.ForEach( frontend => frontend.Shutdown() );
 			mFrontends.Clear();
