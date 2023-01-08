@@ -24,8 +24,9 @@ namespace Elegy
 			Console.SetConsole( mConsole );
 			mConsole.Init();
 
-			Console.Log( "Working directory:" );
-			Console.Log( Directory.GetCurrentDirectory() );
+			Console.Log( "[Engine] Init" );
+			Console.Warning( "[Engine] This is an early in-development build of the engine\nDO NOT use in production!" );
+			Console.Log( $"[Engine] Working directory: '{Directory.GetCurrentDirectory()}'" );
 
 			mPluginSystem = new( "engineConfig.json" );
 			Plugins.SetPluginSystem( mPluginSystem );
@@ -34,7 +35,7 @@ namespace Elegy
 				return Shutdown( "Plugin system failure", true );
 			}
 
-			Console.Log( "Successfully initialised Elegy Engine" );
+			Console.Log( "[Engine] Successfully initialised all systems" );
 			mInitialisedSuccessfully = true;
 			return true;
 		}
@@ -48,11 +49,11 @@ namespace Elegy
 
 			if ( why == "" )
 			{
-				Console.Log( "Shutting down normally..." );
+				Console.Log( "[Engine] Shutting down normally..." );
 			}
 			else
 			{
-				Console.Error( $"Shutting down, reason: {why}" );
+				Console.Error( $"[Engine] Shutting down, reason: {why}" );
 			}
 
 			if ( hardExit )
