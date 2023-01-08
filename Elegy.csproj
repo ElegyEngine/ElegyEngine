@@ -10,7 +10,7 @@
     <FileVersion>1.0.0.0</FileVersion>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>0.1.0-dev001</Version>
+    <Version>0.1.0-dev002</Version>
   </PropertyGroup>
 
   <ItemGroup>
