@@ -18,7 +18,7 @@ namespace Elegy
 		/// </summary>
 		public static IApplication? GetApplication( string path ) => mPluginSystem.GetApplication( path );
 
-		/// <returns>All generic plugins, except IApplication-based ones.</returns>
+		/// <returns>All plugins except IApplication-based ones.</returns>
 		public static IReadOnlyCollection<IPlugin> GenericPlugins => mPluginSystem.GenericPlugins;
 
 		/// <returns>All IApplication plugins and below.</returns>
