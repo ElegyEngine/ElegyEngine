@@ -7,6 +7,21 @@ namespace Elegy
 {
 	internal class Engine
 	{
+		/// <summary>
+		/// Elegy Engine major version, used for version checking against plugins.
+		/// </summary>
+		public const int MajorVersion = 0;
+		/// <summary>
+		/// Elegy Engine minor version, used for version checking against plugins.
+		/// </summary>
+		public const int MinorVersion = 1;
+		/// <summary>
+		/// Plugins built before this minor version will not work.
+		/// </summary>
+		public const int OldestSupportedMinor = 0;
+
+		public static readonly string VersionString = $"{MajorVersion}.{MinorVersion}";
+
 		public static Engine Instance { get; private set; }
 		public static Node3D RootNode => Instance.mRootNode;
 
@@ -22,16 +37,14 @@ namespace Elegy
 		{
 			mHasShutdown = false;
 
-			mConsole = new( mCommandlineArgs );
-			mConsole.Init();
-
-			Console.Log( "[Engine] Init" );
-			Console.Warning( "[Engine] This is an early in-development build of the engine. DO NOT use in production!" );
-			Console.Log( $"[Engine] Working directory: '{Directory.GetCurrentDirectory()}'", ConsoleMessageType.Verbose );
-
+			if ( !InitialiseConsole() )
+			{
+				return Shutdown( "Console system failure", true );
+			}
+			
 			if ( !LoadOrCreateEngineConfig( "engineConfig.json" ) )
 			{
-				return false;
+				return Shutdown( "Configuration failure", true );
 			}
 
 			if ( mEngineConfig.ConfigName != null )
@@ -53,6 +66,25 @@ namespace Elegy
 
 			Console.Log( "[Engine] Successfully initialised all systems" );
 			mInitialisedSuccessfully = true;
+			return true;
+		}
+
+		private bool InitialiseConsole()
+		{
+			mConsole = new( mCommandlineArgs );
+			if ( !mConsole.Init() )
+			{
+				return false;
+			}
+
+			Console.Log( $"Initialising Elegy Engine ({VersionString}) by Admer456" );
+
+			if ( MajorVersion < 1 )
+			{
+				Console.Warning( "[Engine] This is an early in-development build of the engine. DO NOT use in production!" );
+			}
+			
+			Console.Log( $"[Engine] Working directory: '{Directory.GetCurrentDirectory()}'", ConsoleMessageType.Verbose );
 			return true;
 		}
 
