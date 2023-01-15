@@ -35,6 +35,23 @@ namespace Elegy
 		public int EngineVersionMinor { get; } = -1;
 		public string ImplementedInterface { get; } = string.Empty;
 
+		public string EngineVersionString => $"{EngineVersionMajor}.{EngineVersionMinor}";
+
+		internal bool IsCompatible( int major, int minor )
+		{
+			if ( EngineVersionMajor < major )
+			{
+				return false;
+			}
+
+			if ( EngineVersionMinor < minor )
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 		internal bool Validate( out List<string> errorMessages )
 		{
 			List<string> errorMessageList = new();
@@ -52,7 +69,7 @@ namespace Elegy
 			validateCondition( !AssemblyName[0].IsNumeric(),
 				"AssemblyName cannot start with a number (examples: 'MyGame')" );
 			validateCondition( EngineVersionMajor >= 0 || EngineVersionMinor >= 0,
-				$"EngineVersion is incorrect (parsed '{EngineVersionMajor}.{EngineVersionMinor}'; examples: '1.2', '0.5', '4.5')" );
+				$"EngineVersion is incorrect (parsed '{EngineVersionString}'; examples: '1.2', '0.5', '4.5')" );
 			validateCondition( ImplementedInterface != string.Empty,
 				"ImplementedInterface is empty (examples: 'IPlugin', 'IApplication', 'IGame')" );
 
