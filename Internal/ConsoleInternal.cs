@@ -1,26 +1,40 @@
-﻿
+﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
+// SPDX-License-Identifier: MIT
+
+using Elegy.Utilities;
+
 namespace Elegy.Internal
 {
-	internal class Console
+	internal sealed class ConsoleInternal
 	{
-		public Console( string[] args )
+		public ConsoleInternal( string[] args )
 		{
+			Console.SetConsole( this );
+
 			InitialiseArguments( args );
 		}
 
 		public bool Init()
 		{
-			Elegy.Console.SetConsole( this );
-			Elegy.Console.Log( "[Console] Init" );
+			Console.SetConsole( this );
+			Console.Log( "[Console] Init" );
 
 			AddFrontend( new ConsoleFrontends.GodotConsoleFrontend() );
+
+			Console.Developer = mArguments.GetBool( "-developer" );
+			Console.Verbose = mArguments.GetBool( "-verbose" );
+
+			if ( Console.Verbose )
+			{
+				Console.Developer = true;
+			}
 
 			return true;
 		}
 
 		public void Shutdown()
 		{
-			Elegy.Console.Log( "[Console] Shutdown\n" );
+			Console.Log( "[Console] Shutdown" );
 
 			mFrontends.ForEach( frontend => frontend.Shutdown() );
 			mFrontends.Clear();
@@ -30,11 +44,11 @@ namespace Elegy.Internal
 
 		public void Log( string message, ConsoleMessageType type = ConsoleMessageType.Info )
 		{
-			if ( type == ConsoleMessageType.Developer && !Elegy.Console.Developer )
+			if ( type == ConsoleMessageType.Developer && !Console.Developer )
 			{
 				return;
 			}
-			if ( type == ConsoleMessageType.Verbose && !Elegy.Console.Verbose )
+			if ( type == ConsoleMessageType.Verbose && !Console.Verbose )
 			{
 				return;
 			}
@@ -58,25 +72,43 @@ namespace Elegy.Internal
 			if ( frontend.Error == string.Empty )
 			{
 				mFrontends.Add( frontend );
-				Elegy.Console.Log( $"[Console] Added frontend '{frontend.Name}'", ConsoleMessageType.Developer );
+				Console.Log( $"[Console] Added frontend '{frontend.Name}'", ConsoleMessageType.Developer );
 				return true;
 			}
 
-			Elegy.Console.Warning( $"[Console] '{frontend.Name}' failed to initialise with message: '{frontend.Error}'" );
+			Console.Warning( $"[Console] '{frontend.Name}' failed to initialise with message: '{frontend.Error}'" );
 			return false;
+		}
+
+		public bool RemoveFrontend( IConsoleFrontend frontend )
+		{
+			if ( !mFrontends.Exists( internalFrontend => internalFrontend == frontend ) )
+			{
+				Console.Warning( $"[Console] Frontend '{frontend.Name}' is already removed" );
+				return false;
+			}
+			
+			if ( frontend.Initialised )
+			{
+				frontend.Shutdown();
+			}
+
+			mFrontends.Remove( frontend );
+			Console.Log( $"[Console] Removed frontend '{frontend.Name}'" );
+			return true;
 		}
 
 		private void InitialiseArguments( string[] args )
 		{
 			if ( args.Length == 0 )
 			{
-				Elegy.Console.Log( "[Console] Launch arguments: empty", ConsoleMessageType.Verbose );
+				Console.Log( "[Console] Launch arguments: empty", ConsoleMessageType.Verbose );
 				return;
 			}
 
 			var isKey = ( string text ) => text.StartsWith( "-" ) || text.StartsWith( "+" );
 
-			Elegy.Console.Log( "[Console] Launch arguments:", ConsoleMessageType.Verbose );
+			Console.Log( "[Console] Launch arguments:", ConsoleMessageType.Verbose );
 
 			for ( int i = 0; i < args.Length; i++ )
 			{
@@ -90,7 +122,7 @@ namespace Elegy.Internal
 					}
 
 					mArguments[args[i]] = value;
-					Elegy.Console.Log( $"    * '{args[i]}' = '{value}'", ConsoleMessageType.Verbose );
+					Console.Log( $"    * '{args[i]}' = '{value}'", ConsoleMessageType.Verbose );
 				}
 			}
 		}

@@ -1,20 +1,52 @@
-﻿
+﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
+// SPDX-License-Identifier: MIT
+
+using Elegy.Assets;
+
 namespace Elegy.Internal
 {
-	internal sealed class PluginSystem
+	internal sealed class PluginSystemInternal
 	{
-		public PluginSystem( string configPath )
+		public PluginSystemInternal()
 		{
+			Plugins.SetPluginSystem( this );
 
+			mEnginePath = FileSystem.EngineConfig.EngineFolder;
+			mEnginePlugins = FileSystem.EngineConfig.EnginePlugins;
 		}
 
 		public bool Init()
 		{
-			Elegy.Console.Log( "[PluginSystem] Init" );
+			Console.Log( "[PluginSystem] Init" );
 
-			if ( LoadLibrary( "game" ) == null )
+			// The game etc. will be loaded additionally, when
+			// mounted by FileSystem.
 			{
-				return false;
+				bool someEnginePluginsFailed = false;
+				foreach ( string enginePluginPath in mEnginePlugins )
+				{
+					if ( LoadLibrary( $"{mEnginePath}/{enginePluginPath}" ) == null )
+					{
+						someEnginePluginsFailed = true;
+					}
+				}
+				if ( someEnginePluginsFailed )
+				{
+					Console.Warning( "[PluginSystem] One or more engine plugins couldn't load, some things may not work!" );
+				}
+
+				bool someGamePluginsFailed = false;
+				foreach ( string gamePlugin in FileSystem.CurrentConfig.Plugins )
+				{
+					if ( LoadLibrary( $"{FileSystem.CurrentGamePath}/{gamePlugin}" ) == null )
+					{
+						someGamePluginsFailed = true;
+					}
+				}
+				if ( someGamePluginsFailed )
+				{
+					Console.Warning( "[PluginSystem] One or more base game plugins couldn't load, some things may not work!" );
+				}
 			}
 
 			List<string> failedPlugins = new();
@@ -23,13 +55,13 @@ namespace Elegy.Internal
 				IPlugin? plugin = library.InstantiatePlugin();
 				if ( plugin == null )
 				{
-					failedPlugins.Add( $"'{library.Metadata.Name}' at '{library.MetadataPath}' - couldn't instantiate" );
+					failedPlugins.Add( $"'{library.Metadata.AssemblyName}' at '{library.MetadataPath}' - couldn't instantiate" );
 					return;
 				}
 
 				if ( !plugin.Init() )
 				{
-					failedPlugins.Add( $"'{library.Metadata.Name}' at '{library.MetadataPath}' - failed to initialise (error message: '{plugin.Error}')" );
+					failedPlugins.Add( $"'{library.Metadata.AssemblyName}' at '{library.MetadataPath}' - failed to initialise (error message: '{plugin.Error}')" );
 					return;
 				}
 
@@ -45,12 +77,12 @@ namespace Elegy.Internal
 
 			if ( failedPlugins.Count > 0 )
 			{
-				Elegy.Console.Error( "Plugins failed to load:" );
+				Console.Error( "Plugins failed to load:" );
 				for ( int i = 0; i < failedPlugins.Count; i++ )
 				{
-					Elegy.Console.Log( $" * {failedPlugins[i]}" );
+					Console.Log( $" * {failedPlugins[i]}" );
 				}
-				Elegy.Console.Log( "Resolve these plugins' errors and try again." );
+				Console.Log( "Resolve these plugins' errors and try again." );
 				return false;
 			}
 
@@ -65,12 +97,12 @@ namespace Elegy.Internal
 
 			if ( failedPlugins.Count > 0 )
 			{
-				Elegy.Console.Error( "Applications failed to load:" );
+				Console.Error( "Applications failed to load:" );
 				for ( int i = 0; i < failedPlugins.Count; i++ )
 				{
-					Elegy.Console.Log( $" * {failedPlugins[i]}" );
+					Console.Log( $" * {failedPlugins[i]}" );
 				}
-				Elegy.Console.Log( "Resolve these application errors and try again." );
+				Console.Log( "Resolve these application errors and try again." );
 				return false;
 			}
 
@@ -79,7 +111,7 @@ namespace Elegy.Internal
 
 		public void Shutdown()
 		{
-			Elegy.Console.Log( "[PluginSystem] Shutdown" );
+			Console.Log( "[PluginSystem] Shutdown" );
 
 			// First shut down any app/game app
 			foreach ( var app in mApplicationPlugins )
@@ -101,8 +133,8 @@ namespace Elegy.Internal
 			}
 			catch ( Exception ex )
 			{
-				Elegy.Console.Error( "[PluginSystem] Woops, looks like unloading ain't allowed" );
-				Elegy.Console.Log( $"[OS] Message: {ex.Message}" );
+				Console.Error( "[PluginSystem] Woops, looks like unloading ain't allowed" );
+				Console.Log( $"[OS] Message: {ex.Message}" );
 			}
 		}
 
@@ -152,40 +184,57 @@ namespace Elegy.Internal
 
 		private PluginLibrary? LoadLibrary( string path )
 		{
-			Elegy.Console.Log( $"[PluginSystem] Loading '{path}/Game.dll'..." );
-
 			for ( int i = 0; i < mPluginLibraries.Count; i++ )
 			{
 				if ( mPluginLibraries[i].MetadataPath == path )
 				{
 					return mPluginLibraries[i];
-				}	
+				}
 			}
+
+			Console.Log( $"[PluginSystem] Loading '{path}'..." );
+
+			PluginConfig pluginConfig = new();
+			if ( !Text.JsonHelpers.LoadFrom( ref pluginConfig, path ) )
+			{
+				Console.Error( $"[PluginSystem] Cannot load '{path}'" );
+				return null;
+			}
+
+			string pluginDirectory = path[..path.LastIndexOf( '/' )];
+			string assemblyPath = $"{pluginDirectory}/{pluginConfig.AssemblyName}.dll";
 
 			Assembly assembly;
 			try
 			{
-				assembly = mLoadContext.LoadFromAssemblyPath( $"{Directory.GetCurrentDirectory()}/{path}/Game.dll" );
+				assembly = mLoadContext.LoadFromAssemblyPath( $"{Directory.GetCurrentDirectory()}/{assemblyPath}" );
 			}
 			catch ( Exception ex )
 			{
-				Elegy.Console.Error( $"[PluginSystem] Failed to load '{path}/Game.dll'" );
-				Elegy.Console.Error( $"[OS] Exception: {ex.Message}" );
+				Console.Error( $"[PluginSystem] Failed to load '{assemblyPath}'" );
+				Console.Error( $"[OS] Exception: {ex.Message}" );
 				return null;
 			}
 
-			Elegy.Console.Log( $"[PluginSystem] Found '{path}/Game.dll'" );
+			PluginLibraryMetadata metadata = new( pluginConfig );
+			if ( !metadata.Validate( out var errorMessages ) )
+			{
+				Console.Error( $"[PluginSystem] '{path}' has invalid data:" );
+				foreach ( var error in errorMessages )
+				{
+					Console.Log( $"[PluginSystem]  * {error}" );
+				}
+				return null;
+			}
 
-			PluginLibraryMetadata metadata = new( "temp", "temp", "temp", DateTime.Now, "IGame" );
 			PluginLibrary library = new( assembly, metadata, path );
-
 			if ( !library.LoadedSuccessfully )
 			{
-				Elegy.Console.Error( $"[PluginSystem] Didn't load '{path}/Game.dll' successfully" );
+				Console.Error( $"[PluginSystem] '{assemblyPath}' implements a non-existing interface '{pluginConfig.ImplementedInterface}'" );
 				return null;
 			}
 
-			Elegy.Console.Log( $"[PluginSystem] '{path}/Game.dll' loaded successfully" );
+			Console.Log( $"[PluginSystem] '{assemblyPath}' loaded successfully" );
 			mPluginLibraries.Add( library );
 			return library;
 		}
@@ -198,5 +247,8 @@ namespace Elegy.Internal
 		private List<PluginLibrary> mPluginLibraries = new();
 
 		private PluginLoadContext mLoadContext = new();
+
+		private string mEnginePath;
+		private string[] mEnginePlugins;
 	}
 }

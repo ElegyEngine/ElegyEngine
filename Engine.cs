@@ -1,6 +1,8 @@
 ﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
 // SPDX-License-Identifier: MIT
 
+using Elegy.Assets;
+
 namespace Elegy
 {
 	internal class Engine
@@ -21,15 +23,29 @@ namespace Elegy
 			mHasShutdown = false;
 
 			mConsole = new( mCommandlineArgs );
-			Console.SetConsole( mConsole );
 			mConsole.Init();
 
 			Console.Log( "[Engine] Init" );
-			Console.Warning( "[Engine] This is an early in-development build of the engine\nDO NOT use in production!" );
-			Console.Log( $"[Engine] Working directory: '{Directory.GetCurrentDirectory()}'" );
+			Console.Warning( "[Engine] This is an early in-development build of the engine. DO NOT use in production!" );
+			Console.Log( $"[Engine] Working directory: '{Directory.GetCurrentDirectory()}'", ConsoleMessageType.Verbose );
 
-			mPluginSystem = new( "engineConfig.json" );
-			Plugins.SetPluginSystem( mPluginSystem );
+			if ( !LoadOrCreateEngineConfig( "engineConfig.json" ) )
+			{
+				return false;
+			}
+
+			if ( mEngineConfig.ConfigName != null )
+			{
+				Console.Log( $"[Engine] Engine config: '{mEngineConfig.ConfigName}'", ConsoleMessageType.Developer );
+			}
+
+			mFileSystem = new( mEngineConfig );
+			if ( !mFileSystem.Init() )
+			{
+				return Shutdown( "File system failure", true );
+			}
+
+			mPluginSystem = new();
 			if ( !mPluginSystem.Init() )
 			{
 				return Shutdown( "Plugin system failure", true );
@@ -37,6 +53,26 @@ namespace Elegy
 
 			Console.Log( "[Engine] Successfully initialised all systems" );
 			mInitialisedSuccessfully = true;
+			return true;
+		}
+
+		private bool LoadOrCreateEngineConfig( string path )
+		{
+			if ( !File.Exists( path ) )
+			{
+				Console.Log( $"[Engine] '{path}' does not exist, creating a default one..." );
+
+				mEngineConfig = new();
+				Text.JsonHelpers.Write( mEngineConfig, path );
+				return true;
+			}
+
+			if ( !Text.JsonHelpers.LoadFrom( ref mEngineConfig, path ) )
+			{
+				Console.Error( $"[Engine] '{path}' somehow failed to load" );
+				return false;
+			}
+
 			return true;
 		}
 
@@ -55,6 +91,18 @@ namespace Elegy
 			{
 				Console.Error( $"[Engine] Shutting down, reason: {why}" );
 			}
+
+			mPluginSystem.Shutdown();
+			mPluginSystem = null;
+			Plugins.SetPluginSystem( null );
+
+			mFileSystem.Shutdown();
+			mFileSystem = null;
+			FileSystem.SetFileSystem( null );
+			
+			mConsole.Shutdown();
+			mConsole = null;
+			Console.SetConsole( null );
 
 			if ( hardExit )
 			{
@@ -101,14 +149,17 @@ namespace Elegy
 
 		}
 
-		private Internal.Console mConsole;
-		private PluginSystem mPluginSystem;
+		private ConsoleInternal mConsole;
+		private FileSystemInternal mFileSystem;
+		private PluginSystemInternal mPluginSystem;
 
 		private string[] mCommandlineArgs;
 		private Node3D mRootNode;
 		private Node3D mEngineHostNode;
 		private bool mInitialisedSuccessfully = false;
 		private bool mHasShutdown = false;
+
+		EngineConfig mEngineConfig;
 
 		private IReadOnlyCollection<IApplication> Applications => mPluginSystem.ApplicationPlugins;
 	}

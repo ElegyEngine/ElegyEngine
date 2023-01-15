@@ -5,11 +5,11 @@ namespace Elegy
 {
 	public static partial class Console
 	{
-		internal static void SetConsole( Internal.Console console )
+		internal static void SetConsole( ConsoleInternal console )
 		{
 			mConsole = console;
 		}
 
-		private static Internal.Console mConsole;
+		private static ConsoleInternal mConsole;
 	}
 }

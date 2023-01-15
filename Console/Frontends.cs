@@ -7,5 +7,8 @@ namespace Elegy
 	{
 		public static bool AddFrontend( IConsoleFrontend frontend )
 			=> mConsole.AddFrontend( frontend );
+
+		public static bool RemoveFrontend( IConsoleFrontend frontend )
+			=> mConsole.RemoveFrontend( frontend );
 	}
 }

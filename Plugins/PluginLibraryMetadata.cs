@@ -1,27 +1,63 @@
-﻿
 ﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
 // SPDX-License-Identifier: MIT
+
+using Elegy.Assets;
 
 namespace Elegy
 {
 	public class PluginLibraryMetadata
 	{
-		public PluginLibraryMetadata( string name, string description, string author, DateTime versionDate, string implementedInterface )
+		internal PluginLibraryMetadata( PluginConfig config )
 		{
-			Name = name;
-			Description = description;
-			Author = author;
-			VersionDate = versionDate;
-			ImplementedInterface = implementedInterface;
+			AssemblyName = config.AssemblyName;
+			Description = config.Description;
+			Author = config.Author;
+			VersionDate = DateTime.ParseExact( config.VersionDateString, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture );
+			ImplementedInterface = config.ImplementedInterface;
 
-			ParsedCorrectly = true;
+			string[] engineVersionSubstrings = config.EngineVersion.Split( '.' );
+
+			if ( int.TryParse( engineVersionSubstrings[0], out int major ) )
+			{
+				EngineVersionMajor = major;
+			}
+			if ( int.TryParse( engineVersionSubstrings[1], out int minor ) )
+			{
+				EngineVersionMinor = minor;
+			}
 		}
 
-		public string Name { get; } = string.Empty;
+		public string AssemblyName { get; } = string.Empty;
 		public string Description { get; } = string.Empty;
 		public string Author { get; } = string.Empty;
-		public DateTime VersionDate { get; }
+		public DateTime VersionDate { get; } = DateTime.UnixEpoch;
+		public int EngineVersionMajor { get; } = -1;
+		public int EngineVersionMinor { get; } = -1;
 		public string ImplementedInterface { get; } = string.Empty;
-		public bool ParsedCorrectly { get; } = false;
+
+		internal bool Validate( out List<string> errorMessages )
+		{
+			List<string> errorMessageList = new();
+
+			var validateCondition = ( bool condition, string messageIfIncorrect ) =>
+			{
+				if ( !condition )
+				{
+					errorMessageList.Add( messageIfIncorrect );
+				}
+			};
+
+			validateCondition( AssemblyName != string.Empty,
+				"AssemblyName is empty (examples: 'MyGame')" );
+			validateCondition( !AssemblyName[0].IsNumeric(),
+				"AssemblyName cannot start with a number (examples: 'MyGame')" );
+			validateCondition( EngineVersionMajor >= 0 || EngineVersionMinor >= 0,
+				$"EngineVersion is incorrect (parsed '{EngineVersionMajor}.{EngineVersionMinor}'; examples: '1.2', '0.5', '4.5')" );
+			validateCondition( ImplementedInterface != string.Empty,
+				"ImplementedInterface is empty (examples: 'IPlugin', 'IApplication', 'IGame')" );
+
+			errorMessages = errorMessageList;
+			return errorMessages.Count <= 0;
+		}
 	}
 }
