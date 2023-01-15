@@ -7,6 +7,12 @@ namespace Elegy
 {
 	internal class PluginLoadContext : AssemblyLoadContext
 	{
+		public PluginLoadContext()
+			: base( isCollectible: true )
+		{
+
+		}
+
 		protected override Assembly? Load( AssemblyName assemblyName )
 		{
 			// Plugins are likely to be using these primarily
@@ -30,8 +36,7 @@ namespace Elegy
 					continue;
 				}
 
-				AssemblyName otherAssemblyName = new( assembly.FullName );
-				if ( assemblyName.Name == otherAssemblyName.Name )
+				if ( assembly.GetName().Name == assemblyName.Name )
 				{
 					return assembly;
 				}	
