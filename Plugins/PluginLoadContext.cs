@@ -1,4 +1,6 @@
-﻿
+﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
+// SPDX-License-Identifier: MIT
+
 using System.Runtime.Loader;
 
 namespace Elegy
