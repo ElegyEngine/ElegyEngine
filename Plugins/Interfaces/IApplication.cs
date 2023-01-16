@@ -7,7 +7,14 @@ namespace Elegy
 	{
 		// Start up game/app systems after all plugins have loaded
 		bool Start();
+
 		// Execute a single game frame
 		bool RunFrame( float delta );
+
+		// Execute a single physics frame
+		void RunPhysicsFrame( float delta );
+
+		// Handle user input
+		void HandleInput( InputEvent @event );
 	}
 }

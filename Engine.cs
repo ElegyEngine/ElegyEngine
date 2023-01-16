@@ -173,12 +173,18 @@ namespace Elegy
 
 		public void PhysicsUpdate( float delta )
 		{
-
+			foreach ( var app in Applications )
+			{
+				app.RunPhysicsFrame( delta );
+			}
 		}
 
 		public void HandleInput( InputEvent @event )
 		{
-
+			foreach ( var app in Applications )
+			{
+				app.HandleInput( @event );
+			}
 		}
 
 		private ConsoleInternal mConsole;
