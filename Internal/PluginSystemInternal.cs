@@ -226,6 +226,7 @@ namespace Elegy.Internal
 				}
 				return null;
 			}
+
 			if ( !metadata.IsCompatible( Engine.MajorVersion, Engine.OldestSupportedMinor ) )
 			{
 				Console.Error( $"[PluginSystem] '{path}' (built for '{metadata.EngineVersionString}') is incompatible (current engine ver. '{Engine.VersionString}')" );

@@ -41,7 +41,7 @@ namespace Elegy
 			{
 				return Shutdown( "Console system failure", true );
 			}
-			
+
 			if ( !LoadOrCreateEngineConfig( "engineConfig.json" ) )
 			{
 				return Shutdown( "Configuration failure", true );

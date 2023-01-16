@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Assets;
+using Elegy.Utilities;
 
 namespace Elegy
 {
@@ -12,18 +13,14 @@ namespace Elegy
 			AssemblyName = config.AssemblyName;
 			Description = config.Description;
 			Author = config.Author;
-			VersionDate = DateTime.ParseExact( config.VersionDateString, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture );
+			VersionDate = Parse.Date( config.VersionDateString );
 			ImplementedInterface = config.ImplementedInterface;
 
-			string[] engineVersionSubstrings = config.EngineVersion.Split( '.' );
-
-			if ( int.TryParse( engineVersionSubstrings[0], out int major ) )
+			int[] engineVersions = config.EngineVersion.Split( '.' ).Select( int.Parse ).ToArray();
+			if ( engineVersions.Length >= 2 )
 			{
-				EngineVersionMajor = major;
-			}
-			if ( int.TryParse( engineVersionSubstrings[1], out int minor ) )
-			{
-				EngineVersionMinor = minor;
+				EngineVersionMajor = engineVersions[0];
+				EngineVersionMinor = engineVersions[1];
 			}
 		}
 
