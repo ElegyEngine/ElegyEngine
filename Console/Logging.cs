@@ -12,27 +12,29 @@ namespace Elegy
 			=> mConsole.Log( message, type );
 
 		public static void Warning( string message )
-			=> Log( message, ConsoleMessageType.Warning );
+			=> Log( $"{message}\n", ConsoleMessageType.Warning );
 
 		public static void Error( string message )
-			=> Log( message, ConsoleMessageType.Error );
+			=> Log( $"{message}\n", ConsoleMessageType.Error );
 
 		public static void Fatal( string message )
-			=> Log( message, ConsoleMessageType.Fatal );
+			=> Log( $"{message}\n", ConsoleMessageType.Fatal );
 
 		public static void LogArray<T>( params T[] values )
 		{
+			string arrayString = string.Empty;
+
 			for ( int i = 0; i < values.Length; i++ )
 			{
 				if ( i != 0 )
 				{
-					LogInline( ", " );
+					arrayString += ", ";
 				}
 
-				LogInline( $"{values[i]}" );
+				arrayString += values[i];
 			}
 
-			Log();
+			Log( arrayString );
 		}
 
 		/// <summary>
