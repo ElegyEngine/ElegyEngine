@@ -156,7 +156,7 @@ namespace Elegy.Geometry
 				// Usually the dot product will be 1 or -1 here
 				// If it's 1, it means this polygon's plane is really coplanar to
 				// the splitting plane, and as such, is the coplanar front plane
-				if ( dot > 0.0f )
+				if ( dot >= 0.0f )
 				{
 					result.CoplanarFront = this;
 				}
@@ -213,8 +213,12 @@ namespace Elegy.Geometry
 			}
 
 			result.DidIntersect = true;
-			result.Back = new Polygon3D( backVerts );
-			result.Front = new Polygon3D( frontVerts );
+			// Before you say "OH NO! O(n^2)!", rest assured that even in
+			// the craziest of cases, we won't have >64 verts per polygon
+			result.Back = new Polygon3D( backVerts.WithUniqueValuesInRadius( Vector3.One * 0.125f ) );
+			// Now if we were dealing with lots of vertices, which we likely
+			// will later on in a custom compiler, I'd use a dictionary
+			result.Front = new Polygon3D( frontVerts.WithUniqueValuesInRadius( Vector3.One * 0.125f ) );
 
 			return result;
 		}
