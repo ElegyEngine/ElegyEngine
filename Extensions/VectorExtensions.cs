@@ -10,20 +10,63 @@ namespace Elegy.Extensions
 			return new Vector3( -vector.y, vector.z, -vector.x ) * scale;
 		}
 
-		public static Vector3 Average( this Vector3[] vectors )
+		public static Vector3 Average( this IReadOnlyList<Vector3> vectors )
 		{
-			if ( vectors.Length == 0 )
+			if ( vectors.Count == 0 )
 			{
 				return Vector3.Zero;
 			}
 
 			Vector3 sum = Vector3.Zero;
-			for ( int i = 0; i < vectors.Length; i++ )
+			for ( int i = 0; i < vectors.Count; i++ )
 			{
 				sum += vectors[i];
 			}
 
-			return sum / (float)vectors.Length;
+			return sum / vectors.Count;
+		}
+
+		public static bool ContainsInRadius( this IReadOnlyList<Vector3> vectors, Vector3 point, Vector3 radius )
+		{
+			for ( int i = 0; i < vectors.Count; i++ )
+			{
+				if ( (vectors[i] - point).LengthSquared() < radius.LengthSquared() )
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public static IReadOnlyList<Vector3> WithUniqueValues( this IReadOnlyList<Vector3> vectors )
+		{
+			List<Vector3> uniqueValues = new();
+			
+			for ( int i = 0; i < vectors.Count; i++ )
+			{
+				if ( !uniqueValues.Contains( vectors[i] ) )
+				{
+					uniqueValues.Add( vectors[i] );
+				}
+			}
+			
+			return uniqueValues;
+		}
+
+		public static IReadOnlyList<Vector3> WithUniqueValuesInRadius( this IReadOnlyList<Vector3> vectors, Vector3 radius )
+		{
+			List<Vector3> uniqueValues = new();
+
+			for ( int i = 0; i < vectors.Count; i++ )
+			{
+				if ( !uniqueValues.ContainsInRadius( vectors[i], radius ) )
+				{
+					uniqueValues.Add( vectors[i] );
+				}
+			}
+
+			return uniqueValues;
 		}
 
 		public static Vector3 Forward( this Transform3D transform )
