@@ -64,6 +64,14 @@ namespace Elegy
 				return Shutdown( "Plugin system failure", true );
 			}
 
+			foreach ( IPlugin plugin in mPluginSystem.GenericPlugins )
+			{
+				if ( plugin is IConsoleFrontend )
+				{
+					Console.AddFrontend( plugin as IConsoleFrontend );
+				}
+			}
+
 			Console.Log( "[Engine] Successfully initialised all systems" );
 			mInitialisedSuccessfully = true;
 			return true;

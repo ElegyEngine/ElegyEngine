@@ -7,6 +7,8 @@ namespace Elegy
 	{
 		/// <summary>
 		/// A message is being logged. Write it down.
+		/// Console frontends should never use methods from Elegy.Console,
+		/// else you get an infinite loop.
 		/// </summary>
 		void OnLog( string message, ConsoleMessageType type );
 

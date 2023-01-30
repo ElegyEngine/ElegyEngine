@@ -61,6 +61,12 @@ namespace Elegy.Internal
 
 		public bool AddFrontend( IConsoleFrontend frontend )
 		{
+			if ( mFrontends.Contains( frontend ) )
+			{
+				Console.Log( $"[Console] Frontend '{frontend.Name}' already added", ConsoleMessageType.Verbose );
+				return true;
+			}
+
 			// Since console frontends are plugins, they can be often times initialised by the plugin system
 			// Sometimes, however, somebody may simply call Console.AddFrontend( new MyFrontend() );, in
 			// which case we initialise it here.
