@@ -10,12 +10,12 @@ namespace Elegy
 		/// Console frontends should never use methods from Elegy.Console,
 		/// else you get an infinite loop.
 		/// </summary>
-		void OnLog( string message, ConsoleMessageType type );
+		void OnLog( string message, ConsoleMessageType type, float timeSubmitted );
 
 		/// <summary>
 		/// Called every frame to update the console frontend,
 		/// in case it may be interactive or have some animations.
 		/// </summary>
-		void OnUpdate();
+		void OnUpdate( float delta );
 	}
 }
