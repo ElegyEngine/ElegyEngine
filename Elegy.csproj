@@ -12,7 +12,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Version>0.1.0-dev.1</Version>
     <ProjectName>Elegy</ProjectName>
-    <Description>Elegy Engine core</Description>
+    <Description>Elegy Engine core (currently for Godot 4 beta 10)</Description>
     <RepositoryUrl>https://github.com/ElegyEngine/ElegyEngine</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>godot;game engine;</PackageTags>
