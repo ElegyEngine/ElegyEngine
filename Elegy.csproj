@@ -17,6 +17,10 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>godot;game engine;</PackageTags>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <Authors>Admer456</Authors>
+    <Company>Elegy Engine Organisation</Company>
+    <Copyright>Copyright © 2022-2023 Admer Šuko</Copyright>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
