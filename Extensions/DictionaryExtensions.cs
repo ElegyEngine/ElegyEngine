@@ -7,6 +7,7 @@ namespace Elegy.Extensions
 {
 	public static class DictionaryExtensions
 	{
+#pragma warning disable CS8714 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'notnull' constraint.
 		public static TValue GetOrAdd<TKey, TValue>( this Dictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue ) where TValue : new()
 		{
 			if ( dictionary.TryGetValue( key, out TValue? value ) )
@@ -17,6 +18,7 @@ namespace Elegy.Extensions
 			dictionary.Add( key, defaultValue );
 			return dictionary[key];
 		}
+#pragma warning restore CS8714
 
 		public static int GetInt( this Dictionary<string, string> list, string key, int defaultValue = 0 )
 		{

@@ -197,9 +197,9 @@ namespace Elegy
 			}
 		}
 
-		private ConsoleInternal mConsole;
-		private FileSystemInternal mFileSystem;
-		private PluginSystemInternal mPluginSystem;
+		private ConsoleInternal? mConsole;
+		private FileSystemInternal? mFileSystem;
+		private PluginSystemInternal? mPluginSystem;
 
 		private string[] mCommandlineArgs;
 		private Node3D mRootNode;

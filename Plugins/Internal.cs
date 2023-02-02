@@ -5,11 +5,9 @@ namespace Elegy
 {
 	public static partial class Plugins
 	{
-		internal static void SetPluginSystem( PluginSystemInternal pluginSystem )
-		{
-			mPluginSystem = pluginSystem;
-		}
+		internal static void SetPluginSystem( PluginSystemInternal? pluginSystem )
+			=> mPluginSystem = pluginSystem;
 
-		private static PluginSystemInternal mPluginSystem;
+		private static PluginSystemInternal? mPluginSystem;
 	}
 }

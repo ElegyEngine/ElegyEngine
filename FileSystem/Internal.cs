@@ -5,11 +5,10 @@ namespace Elegy
 {
 	public static partial class FileSystem
 	{
-		internal static void SetFileSystem( Internal.FileSystemInternal fileSystem )
-		{
-			mFileSystem = fileSystem;
-		}
+		internal static void SetFileSystem( Internal.FileSystemInternal? fileSystem )
+			=> mFileSystem = fileSystem;
+		
 
-		private static Internal.FileSystemInternal mFileSystem;
+		private static Internal.FileSystemInternal? mFileSystem;
 	}
 }
