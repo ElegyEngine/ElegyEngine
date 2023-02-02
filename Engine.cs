@@ -165,6 +165,8 @@ namespace Elegy
 
 		public void Update( float delta )
 		{
+			Console.Update( delta );
+
 			foreach ( var app in Applications )
 			{
 				if ( !app.RunFrame( delta ) )

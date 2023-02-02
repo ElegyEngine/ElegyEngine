@@ -20,7 +20,7 @@ namespace Elegy.ConsoleFrontends
 			Initialised = false;
 		}
 
-		public void OnLog( string message, ConsoleMessageType type )
+		public void OnLog( string message, ConsoleMessageType type, float timeSubmitted )
 		{
 			message = message.Replace( "\r", string.Empty );
 			if ( message.EndsWith( '\n' ) )
@@ -54,7 +54,7 @@ namespace Elegy.ConsoleFrontends
 			}
 		}
 
-		public void OnUpdate()
+		public void OnUpdate( float delta )
 		{
 
 		}

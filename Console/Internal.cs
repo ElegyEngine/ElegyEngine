@@ -10,6 +10,9 @@ namespace Elegy
 			mConsole = console;
 		}
 
+		internal static void Update( float delta )
+			=> mConsole.Update( delta );
+
 		private static ConsoleInternal mConsole;
 	}
 }

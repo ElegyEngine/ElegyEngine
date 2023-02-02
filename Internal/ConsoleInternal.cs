@@ -53,9 +53,18 @@ namespace Elegy.Internal
 				return;
 			}
 
+			float timeSubmitted = Time.GetTicksMsec() * 0.001f;
 			for ( int i = 0; i < mFrontends.Count; i++ )
 			{
-				mFrontends[i].OnLog( message, type );
+				mFrontends[i].OnLog( message, type, timeSubmitted );
+			}
+		}
+
+		public void Update( float delta )
+		{
+			for ( int i = 0; i < mFrontends.Count; i++ )
+			{
+				mFrontends[i].OnUpdate( delta );
 			}
 		}
 
