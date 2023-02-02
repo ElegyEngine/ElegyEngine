@@ -10,12 +10,25 @@
     <FileVersion>1.0.0.0</FileVersion>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>0.1.0-dev008</Version>
+    <Version>0.1.0-dev.1</Version>
+    <ProjectName>Elegy</ProjectName>
+    <Description>Elegy Engine core</Description>
+    <RepositoryUrl>https://github.com/ElegyEngine/ElegyEngine</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>godot;game engine;</PackageTags>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="GodotSharp" Version="4.0.0-beta.10" />
     <PackageReference Include="System.Text.Json" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
