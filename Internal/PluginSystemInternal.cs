@@ -116,13 +116,19 @@ namespace Elegy.Internal
 			// First shut down any app/game app
 			foreach ( var app in mApplicationPlugins )
 			{
-				app.Value.Shutdown();
+				if ( app.Value.Initialised )
+				{
+					app.Value.Shutdown();
+				}
 			}
 			mApplicationPlugins.Clear();
 
 			foreach ( var plugin in mGenericPlugins )
 			{
-				plugin.Value.Shutdown();
+				if ( plugin.Value.Initialised )
+				{
+					plugin.Value.Shutdown();
+				}
 			}
 			mGenericPlugins.Clear();
 
