@@ -36,7 +36,13 @@ namespace Elegy.Internal
 		{
 			Console.Log( "[Console] Shutdown" );
 
-			mFrontends.ForEach( frontend => frontend.Shutdown() );
+			foreach ( IConsoleFrontend frontend in mFrontends )
+			{
+				if ( frontend.Initialised )
+				{
+					frontend.Shutdown();
+				}
+			}
 			mFrontends.Clear();
 
 			mArguments.Clear();
