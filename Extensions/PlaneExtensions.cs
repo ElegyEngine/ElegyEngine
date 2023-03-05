@@ -9,12 +9,12 @@ namespace Elegy.Extensions
 		{
 			Vector3 normal = plane.Normal.Abs();
 
-			if ( normal.z >= normal.x && normal.z >= normal.y )
+			if ( normal.Z >= normal.X && normal.Z >= normal.Y )
 			{
 				return Vector3.Forward;
 			}
 
-			if ( normal.x >= normal.y )
+			if ( normal.X >= normal.Y )
 			{
 				return Vector3.Right;
 			}

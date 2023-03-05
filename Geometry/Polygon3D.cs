@@ -57,7 +57,7 @@ namespace Elegy.Geometry
 			Vector3 up = bidirection.Cross( plane.Normal ).Normalized();
 			Vector3 right = plane.Normal.Cross( up ).Normalized();
 
-			Vector3 pointOnPlane = plane.Center;
+			Vector3 pointOnPlane = plane.GetCenter();
 
 			Vector3[] planePoints = new Vector3[4]
 			{
