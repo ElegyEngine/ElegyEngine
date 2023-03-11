@@ -42,6 +42,8 @@ namespace Elegy
 				}	
 			}
 
+			// TODO: check for assemblies in plugin system
+
 			// Fallback to the host context
 			return null;
 		}
