@@ -25,11 +25,14 @@ namespace Elegy
 		public static Engine Instance { get; private set; }
 		public static Node3D RootNode => Instance.mRootNode;
 
+		public static DateTime StartupTime { get; private set; }
+
 		public Engine( Node3D rootNode, string[] args )
 		{
 			mCommandlineArgs = args;
 			mRootNode = rootNode;
 			mEngineHostNode = (Node3D)mRootNode.FindChild( "EngineHost" );
+			StartupTime = DateTime.Now;
 			Instance = this;
 		}
 
