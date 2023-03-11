@@ -1,6 +1,14 @@
 ﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
 // SPDX-License-Identifier: MIT
 
+// TODO: We have mounted paths, however we will also need addon paths
+// Currently, the order of searching goes like this:
+// 1. Absolute paths
+// 2. Current game directory
+// 3. Mounted game directory
+// 4. Engine directory
+// Addons would insert themselves between 1 and 2, essentially overriding the game directory.
+
 using Elegy.Assets;
 
 namespace Elegy
@@ -72,5 +80,28 @@ namespace Elegy
 		/// <returns>Working-directory-relative path to the destination in one of the mounted dirs.</returns>
 		public static string? PathTo( string destination, PathFlags flags = PathFlags.All, bool excludeOtherMountedDirectories = false )
 			=> mFileSystem.PathTo( destination, flags, excludeOtherMountedDirectories );
+
+		/// <param name="directory">A directory such as <c>"maps"</c> or <c>"models/vegetation"</c>.</param>
+		/// <param name="searchPattern">The search pattern to filter out filenames.</param>
+		/// <param name="recursive">Whether or not to scan subfolders too.</param>
+		/// <returns>A list of files relative to <paramref name="directory"/>,
+		///  <c>null</c> if <paramref name="directory"/> doesn't exist in any mounted path.</returns>
+		public static string[]? GetFiles( string directory, string searchPattern = "*", bool recursive = false )
+			=> GetEntries( directory, searchPattern, PathFlags.File, recursive );
+
+		/// <param name="directory">A directory such as <c>"maps"</c> or <c>"models/vegetation"</c>.</param>
+		/// <param name="searchPattern">The search pattern to filter out directory names.</param>
+		/// <param name="recursive">Whether or not to scan subfolders too.</param>
+		/// <returns>A list of directories relative to <paramref name="directory"/>,
+		///  <c>null</c> if <paramref name="directory"/> doesn't exist in any mounted path.</returns>
+		public static string[]? GetDirectories( string directory, string searchPattern = "*", bool recursive = false )
+			=> GetEntries( directory, searchPattern, PathFlags.Directory, recursive );
+
+		/// <summary>
+		/// Similar to <see cref="GetFiles"/> and <see cref="GetDirectories"/>, except it can include either filesystem entries.
+		/// Useful for implementing your own <c>"ls"</c> or <c>"dir"</c> console command.
+		/// </summary>
+		public static string[]? GetEntries( string directory, string searchPattern = "*", PathFlags flags = PathFlags.All, bool recursive = false )
+			=> mFileSystem.GetFileSystemEntries( directory, searchPattern, flags, recursive );
 	}
 }
