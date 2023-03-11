@@ -3,7 +3,7 @@
 
 using Elegy.Assets;
 
-namespace Elegy.Internal
+namespace Elegy
 {
 	internal sealed class PluginSystemInternal
 	{

@@ -1,9 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
 // SPDX-License-Identifier: MIT
 
-using Elegy.Utilities;
-
-namespace Elegy.Internal
+namespace Elegy
 {
 	internal sealed class ConsoleInternal
 	{

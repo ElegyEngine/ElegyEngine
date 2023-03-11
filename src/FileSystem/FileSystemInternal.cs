@@ -3,7 +3,7 @@
 
 using Elegy.Assets;
 
-namespace Elegy.Internal
+namespace Elegy
 {
 	internal sealed class FileSystemInternal
 	{
@@ -185,6 +185,45 @@ namespace Elegy.Internal
 			}
 
 			return false;
+		}
+
+		internal string[]? GetFileSystemEntries( string directory, string searchPattern, PathFlags flags, bool recursive )
+		{
+			if ( !Exists( directory, PathFlags.Directory ) )
+			{
+				return null;
+			}
+
+			SearchOption searchOption = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+			List<string> entries = new();
+
+			var checkThenAdd = ( string path ) =>
+			{
+				if ( ExistsDirect( path, flags ) )
+				{
+					var systemEntries = Directory.GetFileSystemEntries( path, searchPattern, searchOption );
+					entries.AddRange( systemEntries );
+				}
+			};
+
+			// 1. Absolute path
+			checkThenAdd( directory );
+
+			// TODO: Addon paths between 1 and 2
+
+			// 2. Current game path
+			checkThenAdd( $"{BaseGamePath}/{directory}" );
+			
+			// 3. Mounted paths
+			for ( int i = 0; i < mOtherGamePaths.Count; i++ )
+			{
+				checkThenAdd( $"{mOtherGamePaths[i]}/{directory}" );
+			}
+
+			// 4. Engine
+			checkThenAdd( $"{EnginePath}/{directory}" );
+
+			return entries.ToArray();
 		}
 
 		private string BaseGamePath => mEngineConfig.BaseFolder;
