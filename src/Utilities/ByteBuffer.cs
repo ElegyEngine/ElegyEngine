@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using System.Buffers.Binary;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -317,9 +318,9 @@ namespace Elegy.Utilities
 			{
 				throw new IndexOutOfRangeException( "Length < 0" );
 			}
-			else if ( (Position + length) >= Data.Count )
+			else if ( (Position + length) > Data.Count )
 			{
-				throw new IndexOutOfRangeException( "Position + length >= Data.Length" );
+				throw new IndexOutOfRangeException( "Position + length > Data.Length" );
 			}
 
 			string value = stringEncoding.GetString( mData.AsSpan( Position, length ) );
