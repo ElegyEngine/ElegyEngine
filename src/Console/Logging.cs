@@ -5,20 +5,52 @@ namespace Elegy
 {
 	public static partial class Console
 	{
+		#region Standard logging
+
 		public static void Log( string message = "", ConsoleMessageType type = ConsoleMessageType.Info )
 			=> mConsole.Log( $"{message}\n", type );
 
-		public static void LogInline( string message = "", ConsoleMessageType type = ConsoleMessageType.Info )
-			=> mConsole.Log( message, type );
+		public static void LogInline( string message = ""  )
+			=> mConsole.Log( message, ConsoleMessageType.Info );
+
+		public static void Newline( ConsoleMessageType type = ConsoleMessageType.Info )
+			=> mConsole.Log( "\n", type );
+
+		public static void Success( string message )
+			=> Log( $"{Green}{message}", ConsoleMessageType.Success );
 
 		public static void Warning( string message )
-			=> Log( $"{message}\n", ConsoleMessageType.Warning );
+			=> Log( $"{message}", ConsoleMessageType.Warning );
 
 		public static void Error( string message )
-			=> Log( $"{message}\n", ConsoleMessageType.Error );
+			=> Log( $"{message}", ConsoleMessageType.Error );
 
 		public static void Fatal( string message )
-			=> Log( $"{message}\n", ConsoleMessageType.Fatal );
+			=> Log( $"{message}", ConsoleMessageType.Fatal );
+
+		#endregion
+
+		#region Tagged logging
+
+		// Logging methods with the addition of a system tag
+		// E.g. Log( "Engine", "Starting up..." ) becomes "[Engine] Starting up"
+
+		public static void Log( string tag, string message, ConsoleMessageType type = ConsoleMessageType.Info )
+			=> Log( $"{Yellow}[{tag}]{White} {message}", type );
+
+		public static void Success( string tag, string message )
+			=> Log( $"{Yellow}[{tag}]{Green} {message}", ConsoleMessageType.Success );
+
+		public static void Warning( string tag, string message )
+			=> Warning( $"{Yellow}[{tag}]{Yellow} {message}" );
+
+		public static void Error( string tag, string message )
+			=> Error( $"{Yellow}[{tag}]{Red} {message}" );
+
+		public static void Fatal( string tag, string message )
+			=> Fatal( $"{Yellow}[{tag}]{Red} {message}" );
+
+		#endregion
 
 		public static void LogArray<T>( params T[] values )
 		{
