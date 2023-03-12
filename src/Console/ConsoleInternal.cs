@@ -5,6 +5,8 @@ namespace Elegy
 {
 	internal sealed class ConsoleInternal
 	{
+		public const string Tag = "Console";
+
 		public ConsoleInternal( string[] args )
 		{
 			Console.SetConsole( this );
@@ -15,7 +17,7 @@ namespace Elegy
 		public bool Init()
 		{
 			Console.SetConsole( this );
-			Console.Log( "[Console] Init" );
+			Console.Log( Tag, "Init" );
 
 			AddFrontend( new ConsoleFrontends.GodotConsoleFrontend() );
 
@@ -32,7 +34,7 @@ namespace Elegy
 
 		public void Shutdown()
 		{
-			Console.Log( "[Console] Shutdown" );
+			Console.Log( Tag, "Shutdown" );
 
 			foreach ( IConsoleFrontend frontend in mFrontends )
 			{
@@ -76,7 +78,7 @@ namespace Elegy
 		{
 			if ( mFrontends.Contains( frontend ) )
 			{
-				Console.Log( $"[Console] Frontend '{frontend.Name}' already added", ConsoleMessageType.Verbose );
+				Console.Log( Tag, $"Frontend '{frontend.Name}' already added", ConsoleMessageType.Verbose );
 				return true;
 			}
 
@@ -91,11 +93,11 @@ namespace Elegy
 			if ( frontend.Error == string.Empty )
 			{
 				mFrontends.Add( frontend );
-				Console.Log( $"[Console] Added frontend '{frontend.Name}'", ConsoleMessageType.Developer );
+				Console.Log( Tag, $"Added frontend '{frontend.Name}'", ConsoleMessageType.Developer );
 				return true;
 			}
 
-			Console.Warning( $"[Console] '{frontend.Name}' failed to initialise with message: '{frontend.Error}'" );
+			Console.Warning( Tag, $"'{frontend.Name}' failed to initialise with message: '{frontend.Error}'" );
 			return false;
 		}
 
@@ -103,7 +105,7 @@ namespace Elegy
 		{
 			if ( !mFrontends.Exists( internalFrontend => internalFrontend == frontend ) )
 			{
-				Console.Warning( $"[Console] Frontend '{frontend.Name}' is already removed" );
+				Console.Warning( Tag, $"Frontend '{frontend.Name}' is already removed" );
 				return false;
 			}
 			
@@ -113,7 +115,7 @@ namespace Elegy
 			}
 
 			mFrontends.Remove( frontend );
-			Console.Log( $"[Console] Removed frontend '{frontend.Name}'" );
+			Console.Log( Tag, $"Removed frontend '{frontend.Name}'" );
 			return true;
 		}
 
@@ -121,13 +123,13 @@ namespace Elegy
 		{
 			if ( args.Length == 0 )
 			{
-				Console.Log( "[Console] Launch arguments: empty", ConsoleMessageType.Verbose );
+				Console.Log( Tag, "Launch arguments: empty", ConsoleMessageType.Verbose );
 				return;
 			}
 
 			var isKey = ( string text ) => text.StartsWith( "-" ) || text.StartsWith( "+" );
 
-			Console.Log( "[Console] Launch arguments:", ConsoleMessageType.Verbose );
+			Console.Log( Tag, "Launch arguments:", ConsoleMessageType.Verbose );
 
 			for ( int i = 0; i < args.Length; i++ )
 			{
