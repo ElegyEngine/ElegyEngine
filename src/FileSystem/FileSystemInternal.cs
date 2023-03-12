@@ -199,9 +199,21 @@ namespace Elegy
 
 			var checkThenAdd = ( string path ) =>
 			{
-				if ( ExistsDirect( path, flags ) )
+				if ( ExistsDirect( path, PathFlags.Directory ) )
 				{
-					var systemEntries = Directory.GetFileSystemEntries( path, searchPattern, searchOption );
+					string[] systemEntries = flags switch
+					{
+						PathFlags.All => Directory.GetFileSystemEntries( $"{mRootPath}/{path}", searchPattern, searchOption ),
+						PathFlags.Directory => Directory.GetDirectories( $"{mRootPath}/{path}", searchPattern, searchOption ),
+						PathFlags.File => Directory.GetFiles( $"{mRootPath}/{path}", searchPattern, searchOption ),
+						_ => Array.Empty<string>()
+					}; 
+
+					for ( int i = 0; i < systemEntries.Length; i++ )
+					{
+						systemEntries[i] = systemEntries[i].Replace( '\\', '/' );
+					}
+
 					entries.AddRange( systemEntries );
 				}
 			};
