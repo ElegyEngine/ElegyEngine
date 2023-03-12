@@ -59,7 +59,52 @@ namespace Elegy
 				return;
 			}
 
+			message = message.Replace( "\r", string.Empty );
+
+			// Message logic is a tad complicated, see below
+			mCurrentMessage += message;
+
+			// If there are no newlines, means we're still inline,
+			// hoping for a newline in the next message. So, store
+			// the text until then.
+			if ( !mCurrentMessage.Contains( '\n' ) )
+			{
+				return;
+			}
+
+			// At this stage, we have at least one newline
+			// The message could take any shape or form:
+			// "abc\ndef" -> "abc" and "def", store "def" for later
+			// "abc\n\ndef" -> "abc", "" and "def", store "def" for later
+			// "abc\ndef\n" -> "abc" and "def", send both
+			// "abcdef\n" -> "abcdef"
+			// "\nabcdef\n" -> "" and "abcdef"
+			// "abcdef" -> store "abcdef" for later
+			var messageLines = mCurrentMessage.Split( '\n' );
+
+			// -1 because "abc\n" will be an array of 2 strings: "abc" and ""
+			int stringsToSend = messageLines.Length - 1;
+			
+			// Save the line that doesn't end with \n so we can inline it later
+			if ( !mCurrentMessage.EndsWith( "\n" ) )
+			{
+				mCurrentMessage = messageLines[messageLines.Length - 1];
+			}
+			// If the message does end with a newline, then we got nothing to save
+			else
+			{
+				mCurrentMessage = string.Empty;
+			}
+
 			float timeSubmitted = Time.GetTicksMsec() * 0.001f;
+			for ( int i = 0; i < stringsToSend; i++ )
+			{
+				LogToFrontends( messageLines[i], type, timeSubmitted );
+			}
+		}
+
+		private void LogToFrontends( string message, ConsoleMessageType type, float timeSubmitted )
+		{
 			for ( int i = 0; i < mFrontends.Count; i++ )
 			{
 				mFrontends[i].OnLog( message, type, timeSubmitted );
@@ -150,5 +195,6 @@ namespace Elegy
 
 		private List<IConsoleFrontend> mFrontends = new();
 		private StringDictionary mArguments = new();
+		private string mCurrentMessage = string.Empty;
 	}
 }
