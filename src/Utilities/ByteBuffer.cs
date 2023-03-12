@@ -98,35 +98,35 @@ namespace Elegy.Utilities
 		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public void WriteU16( ushort value ) 
+		public void WriteU16( ushort value )
 		{
 			BinaryPrimitives.WriteUInt16LittleEndian( GetCurrentSpan(), value );
 			Advance( 2 );
 		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public void WriteI32( int value ) 
+		public void WriteI32( int value )
 		{
 			BinaryPrimitives.WriteInt32LittleEndian( GetCurrentSpan(), value );
 			Advance( 4 );
 		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public void WriteU32( uint value ) 
+		public void WriteU32( uint value )
 		{
 			BinaryPrimitives.WriteUInt32LittleEndian( GetCurrentSpan(), value );
 			Advance( 4 );
 		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public void WriteI64( long value ) 
+		public void WriteI64( long value )
 		{
 			BinaryPrimitives.WriteInt64LittleEndian( GetCurrentSpan(), value );
 			Advance( 8 );
 		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public void WriteU64( ulong value ) 
+		public void WriteU64( ulong value )
 		{
 			BinaryPrimitives.WriteUInt64LittleEndian( GetCurrentSpan(), value );
 			Advance( 8 );
@@ -140,14 +140,14 @@ namespace Elegy.Utilities
 		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public void WriteF32( float value ) 
+		public void WriteF32( float value )
 		{
 			BinaryPrimitives.WriteSingleLittleEndian( GetCurrentSpan(), value );
 			Advance( 4 );
 		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public void WriteF64( double value ) 
+		public void WriteF64( double value )
 		{
 			BinaryPrimitives.WriteDoubleLittleEndian( GetCurrentSpan(), value );
 			Advance( 8 );
@@ -178,7 +178,7 @@ namespace Elegy.Utilities
 		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public ushort ReadU16() 
+		public ushort ReadU16()
 		{
 			var value = BinaryPrimitives.ReadUInt16LittleEndian( GetCurrentSpan() );
 			Advance( 2 );
@@ -186,7 +186,7 @@ namespace Elegy.Utilities
 		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public int ReadI32() 
+		public int ReadI32()
 		{
 			var value = BinaryPrimitives.ReadInt32LittleEndian( GetCurrentSpan() );
 			Advance( 4 );
@@ -194,7 +194,7 @@ namespace Elegy.Utilities
 		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public uint ReadU32() 
+		public uint ReadU32()
 		{
 			var value = BinaryPrimitives.ReadUInt32LittleEndian( GetCurrentSpan() );
 			Advance( 4 );
@@ -202,7 +202,7 @@ namespace Elegy.Utilities
 		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public long ReadI64() 
+		public long ReadI64()
 		{
 			var value = BinaryPrimitives.ReadInt64LittleEndian( GetCurrentSpan() );
 			Advance( 8 );
@@ -210,7 +210,7 @@ namespace Elegy.Utilities
 		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public ulong ReadU64() 
+		public ulong ReadU64()
 		{
 			var value = BinaryPrimitives.ReadUInt64LittleEndian( GetCurrentSpan() );
 			Advance( 8 );
@@ -234,7 +234,7 @@ namespace Elegy.Utilities
 		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public double ReadF64() 
+		public double ReadF64()
 		{
 			var value = BinaryPrimitives.ReadDoubleLittleEndian( GetCurrentSpan() );
 			Advance( 8 );
