@@ -263,8 +263,14 @@ namespace Elegy.Utilities
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public void WriteString( string value, Encoding stringEncoding, StringLength stringLength )
 		{
-			var characterBuffer = stringEncoding.GetBytes( value );
-			int bufferLength = characterBuffer.Length;
+			byte[] characterBuffer = Array.Empty<byte>();
+			int bufferLength = 0;
+
+			if ( !string.IsNullOrEmpty( value ) )
+			{
+				characterBuffer = stringEncoding.GetBytes( value );
+				bufferLength = characterBuffer.Length;
+			}
 
 			switch ( stringLength )
 			{
@@ -283,7 +289,11 @@ namespace Elegy.Utilities
 					break;
 			}
 
-			Unsafe.CopyBlockUnaligned( ref mData[Position], ref characterBuffer[0], (uint)bufferLength );
+			if ( bufferLength > 0 )
+			{
+				Unsafe.CopyBlockUnaligned( ref mData[Position], ref characterBuffer[0], (uint)bufferLength );
+			}
+			
 			Advance( bufferLength );
 		}
 
@@ -323,7 +333,13 @@ namespace Elegy.Utilities
 				throw new IndexOutOfRangeException( "Position + length > Data.Length" );
 			}
 
-			string value = stringEncoding.GetString( mData.AsSpan( Position, length ) );
+			// Sometimes we can have zero-length strings in there
+			string value = string.Empty;
+			if ( length > 0 )
+			{
+				stringEncoding.GetString( mData.AsSpan( Position, length ) );
+			}
+
 			Advance( length );
 			return value;
 		}
