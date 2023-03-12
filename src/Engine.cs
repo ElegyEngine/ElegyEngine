@@ -27,6 +27,8 @@ namespace Elegy
 
 		public static DateTime StartupTime { get; private set; }
 
+		public const string Tag = "Engine";
+
 		public Engine( Node3D rootNode, string[] args )
 		{
 			mCommandlineArgs = args;
@@ -52,7 +54,7 @@ namespace Elegy
 
 			if ( mEngineConfig.ConfigName != null )
 			{
-				Console.Log( $"[Engine] Engine config: '{mEngineConfig.ConfigName}'", ConsoleMessageType.Developer );
+				Console.Log( Tag, "Engine config: '{mEngineConfig.ConfigName}'", ConsoleMessageType.Developer );
 			}
 
 			mFileSystem = new( mEngineConfig );
@@ -75,7 +77,7 @@ namespace Elegy
 				}
 			}
 
-			Console.Log( "[Engine] Successfully initialised all systems" );
+			Console.Log( Tag, "Successfully initialised all systems" );
 			mInitialisedSuccessfully = true;
 			return true;
 		}
@@ -92,10 +94,10 @@ namespace Elegy
 
 			if ( MajorVersion < 1 )
 			{
-				Console.Warning( "[Engine] This is an early in-development build of the engine. DO NOT use in production!" );
+				Console.Warning( Tag, "This is an early in-development build of the engine. DO NOT use in production!" );
 			}
 			
-			Console.Log( $"[Engine] Working directory: '{Directory.GetCurrentDirectory()}'", ConsoleMessageType.Verbose );
+			Console.Log( Tag, "Working directory: '{Directory.GetCurrentDirectory()}'", ConsoleMessageType.Verbose );
 			return true;
 		}
 
@@ -103,7 +105,7 @@ namespace Elegy
 		{
 			if ( !File.Exists( path ) )
 			{
-				Console.Log( $"[Engine] '{path}' does not exist, creating a default one..." );
+				Console.Log( Tag, "'{path}' does not exist, creating a default one..." );
 
 				mEngineConfig = new();
 				Text.JsonHelpers.Write( mEngineConfig, path );
@@ -112,7 +114,7 @@ namespace Elegy
 
 			if ( !Text.JsonHelpers.LoadFrom( ref mEngineConfig, path ) )
 			{
-				Console.Error( $"[Engine] '{path}' somehow failed to load" );
+				Console.Error( Tag, "'{path}' somehow failed to load" );
 				return false;
 			}
 
@@ -128,11 +130,11 @@ namespace Elegy
 
 			if ( why == "" )
 			{
-				Console.Log( "[Engine] Shutting down normally..." );
+				Console.Log( Tag, "Shutting down normally..." );
 			}
 			else
 			{
-				Console.Error( $"[Engine] Shutting down, reason: {why}" );
+				Console.Error( Tag, "Shutting down, reason: {why}" );
 			}
 
 			mPluginSystem.Shutdown();
