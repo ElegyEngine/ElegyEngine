@@ -11,6 +11,13 @@ namespace Elegy
 		Info,
 
 		/// <summary>
+		/// Outstanding success messages.
+		/// In external consoles, these messages would
+		/// be displayed in green.
+		/// </summary>
+		Success,
+
+		/// <summary>
 		/// Developer messages.
 		/// </summary>
 		Developer,
