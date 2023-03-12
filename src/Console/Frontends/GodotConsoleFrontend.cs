@@ -31,24 +31,31 @@ namespace Elegy.ConsoleFrontends
 			switch ( type )
 			{
 				default:
-					GD.Print( message );
+					GD.Print( messageNoColour );
+					break;
+
+				case ConsoleMessageType.Success:
+					System.Console.ForegroundColor = ConsoleColor.Green;
+					GD.Print( $"{messageNoColour}" );
+					System.Console.ResetColor();
 					break;
 
 				case ConsoleMessageType.Warning:
 					System.Console.ForegroundColor = ConsoleColor.Yellow;
-					GD.Print( $"[WARNING] {message}" );
+					GD.Print( $"{messageNoColour}" );
 					System.Console.ResetColor();
 					break;
 
 				case ConsoleMessageType.Error:
 					System.Console.ForegroundColor = ConsoleColor.Red;
-					GD.PrintErr( $"[ERROR] {message}" );
+					GD.PrintErr( $"{messageNoColour}" );
 					System.Console.ResetColor();
 					break;
 
 				case ConsoleMessageType.Fatal:
-					System.Console.ForegroundColor = ConsoleColor.Red;
-					GD.PrintErr( $"[FATAL] {message}" );
+					System.Console.BackgroundColor = ConsoleColor.Red;
+					System.Console.ForegroundColor = ConsoleColor.White;
+					GD.PrintErr( $"[FATAL] {messageNoColour}" );
 					System.Console.ResetColor();
 					break;
 			}
