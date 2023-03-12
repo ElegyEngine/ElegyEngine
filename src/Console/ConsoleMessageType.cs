@@ -3,7 +3,7 @@
 
 namespace Elegy
 {
-	public enum ConsoleMessageType
+	public enum ConsoleMessageType : byte
 	{
 		/// <summary>
 		/// General messages.
