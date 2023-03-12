@@ -7,6 +7,8 @@ namespace Elegy
 {
 	internal sealed class PluginSystemInternal
 	{
+		public const string Tag = "PluginSystem";
+
 		public PluginSystemInternal()
 		{
 			Plugins.SetPluginSystem( this );
@@ -17,7 +19,7 @@ namespace Elegy
 
 		public bool Init()
 		{
-			Console.Log( "[PluginSystem] Init" );
+			Console.Log( Tag, "Init" );
 
 			// The game etc. will be loaded additionally, when
 			// mounted by FileSystem.
@@ -32,7 +34,7 @@ namespace Elegy
 				}
 				if ( someEnginePluginsFailed )
 				{
-					Console.Warning( "[PluginSystem] One or more engine plugins couldn't load, some things may not work!" );
+					Console.Warning( Tag, "One or more engine plugins couldn't load, some things may not work!" );
 				}
 
 				bool someGamePluginsFailed = false;
@@ -45,7 +47,7 @@ namespace Elegy
 				}
 				if ( someGamePluginsFailed )
 				{
-					Console.Warning( "[PluginSystem] One or more base game plugins couldn't load, some things may not work!" );
+					Console.Warning( Tag, "One or more base game plugins couldn't load, some things may not work!" );
 				}
 			}
 
@@ -111,7 +113,7 @@ namespace Elegy
 
 		public void Shutdown()
 		{
-			Console.Log( "[PluginSystem] Shutdown" );
+			Console.Log( Tag, "Shutdown" );
 
 			// First shut down any app/game app
 			foreach ( var app in mApplicationPlugins )
@@ -139,8 +141,8 @@ namespace Elegy
 			}
 			catch ( Exception ex )
 			{
-				Console.Error( "[PluginSystem] Woops, looks like unloading ain't allowed" );
-				Console.Log( $"[OS] Message: {ex.Message}" );
+				Console.Error( Tag, "Woops, looks like unloading ain't allowed" );
+				Console.Log( "OS", $"Message: {ex.Message}" );
 			}
 		}
 
@@ -198,12 +200,12 @@ namespace Elegy
 				}
 			}
 
-			Console.Log( $"[PluginSystem] Loading '{path}'..." );
+			Console.Log( Tag, "Loading '{path}'..." );
 
 			PluginConfig pluginConfig = new();
 			if ( !Text.JsonHelpers.LoadFrom( ref pluginConfig, path ) )
 			{
-				Console.Error( $"[PluginSystem] Cannot load '{path}'" );
+				Console.Error( Tag, "Cannot load '{path}'" );
 				return null;
 			}
 
@@ -217,36 +219,36 @@ namespace Elegy
 			}
 			catch ( Exception ex )
 			{
-				Console.Error( $"[PluginSystem] Failed to load '{assemblyPath}'" );
-				Console.Error( $"[OS] Exception: {ex.Message}" );
+				Console.Error( Tag, "Failed to load '{assemblyPath}'" );
+				Console.Error( "OS", $"Exception: {ex.Message}" );
 				return null;
 			}
 
 			PluginLibraryMetadata metadata = new( pluginConfig );
 			if ( !metadata.Validate( out var errorMessages ) )
 			{
-				Console.Error( $"[PluginSystem] '{path}' has invalid data:" );
+				Console.Error( Tag, "'{path}' has invalid data:" );
 				foreach ( var error in errorMessages )
 				{
-					Console.Log( $"[PluginSystem]  * {error}" );
+					Console.Log( Tag, " * {error}" );
 				}
 				return null;
 			}
 
 			if ( !metadata.IsCompatible( Engine.MajorVersion, Engine.OldestSupportedMinor ) )
 			{
-				Console.Error( $"[PluginSystem] '{path}' (built for '{metadata.EngineVersionString}') is incompatible (current engine ver. '{Engine.VersionString}')" );
+				Console.Error( Tag, "'{path}' (built for '{metadata.EngineVersionString}') is incompatible (current engine ver. '{Engine.VersionString}')" );
 				return null;
 			}
 
 			PluginLibrary library = new( assembly, metadata, path );
 			if ( !library.LoadedSuccessfully )
 			{
-				Console.Error( $"[PluginSystem] '{assemblyPath}' implements a non-existing interface '{pluginConfig.ImplementedInterface}'" );
+				Console.Error( Tag, "'{assemblyPath}' implements a non-existing interface '{pluginConfig.ImplementedInterface}'" );
 				return null;
 			}
 
-			Console.Log( $"[PluginSystem] '{assemblyPath}' loaded successfully" );
+			Console.Log( Tag, "'{assemblyPath}' loaded successfully" );
 			mPluginLibraries.Add( library );
 			return library;
 		}
