@@ -5,6 +5,24 @@ using System.Text;
 
 namespace Elegy.Utilities.Interfaces
 {
+	public enum StringLength
+	{
+		/// <summary>
+		/// Up to 255 characters.
+		/// </summary>
+		Short,
+
+		/// <summary>
+		/// Up to 65'535 characters.
+		/// </summary>
+		Medium,
+
+		/// <summary>
+		/// Up to approximately 2.147 billion characters.
+		/// </summary>
+		Long
+	}
+
 	/// <summary>
 	/// Byte buffer, a container that you can use to conveniently
 	/// read from and write to binary blobs of data.
@@ -31,8 +49,8 @@ namespace Elegy.Utilities.Interfaces
 		/// <typeparam name="T">The type of data that gets read.</typeparam>
 		public T Read<T>() where T : unmanaged;
 
-		public void WriteU8( byte value ) => Write( value );
-		public void WriteBool( bool value ) => WriteU8( (byte)(value ? 1 : 0) );
+		public void WriteU8( byte value );
+		public void WriteBool( bool value );
 		public void WriteI16( short value );
 		public void WriteU16( ushort value );
 		public void WriteI32( int value );
@@ -44,8 +62,8 @@ namespace Elegy.Utilities.Interfaces
 		public void WriteF64( double value );
 
 
-		public byte ReadU8() => Read<byte>();
-		public bool ReadBool() => ReadU8() > 0;
+		public byte ReadU8();
+		public bool ReadBool();
 		public short ReadI16();
 		public ushort ReadU16();
 		public int ReadI32();
@@ -63,33 +81,33 @@ namespace Elegy.Utilities.Interfaces
 		/// Writes a string in the format: number of characters, raw string contents.
 		/// </summary>
 		/// <param name="stringEncoding">What type of string encoding to use (ASCII, UTF-8).</param>
-		public void WriteString( string value, Encoding stringEncoding );
+		public void WriteString( string value, Encoding stringEncoding, StringLength stringLength );
 
 		/// <summary>
 		/// Writes an ASCII-encoded string.
 		/// </summary>
-		public void WriteStringAscii( string value );
+		public void WriteStringAscii( string value, StringLength stringLength );
 
 		/// <summary>
 		/// Writes a UTF-8-encoded string.
 		/// </summary>
-		public void WriteStringUtf8( string value );
+		public void WriteStringUtf8( string value, StringLength stringLength );
 
 		/// <summary>
 		/// Reads a string from the buffer.
 		/// </summary>
 		/// <param name="stringEncoding">What type of encoding to use.</param>
 		/// <exception cref="IndexOutOfRangeException"/>
-		public string ReadString( Encoding stringEncoding );
+		public string ReadString( Encoding stringEncoding, StringLength stringLength );
 
 		/// <summary>
 		/// Reads an ASCII-encoded string from the buffer.
 		/// </summary>
-		public string ReadStringAscii();
+		public string ReadStringAscii( StringLength stringLength );
 
 		/// <summary>
 		/// Reads a UTF-8-encoded string from the buffer.
 		/// </summary>
-		public string ReadStringUtf8();
+		public string ReadStringUtf8( StringLength stringLength );
 	}
 }
