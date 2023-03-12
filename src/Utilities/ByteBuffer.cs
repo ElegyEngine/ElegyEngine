@@ -283,7 +283,7 @@ namespace Elegy.Utilities
 					break;
 			}
 
-			Unsafe.WriteUnaligned( ref GetCurrentSpan().GetRef(), characterBuffer );
+			Unsafe.CopyBlockUnaligned( ref mData[Position], ref characterBuffer[0], (uint)bufferLength );
 			Advance( bufferLength );
 		}
 
