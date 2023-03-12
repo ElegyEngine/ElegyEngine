@@ -87,7 +87,11 @@ namespace Elegy.Utilities
 			=> Write( (byte)value );
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public void WriteI16( short value ) 
+		public void WriteEnum<T>( T value ) where T : struct, Enum, IConvertible
+					=> Write( value.ToByte( CultureInfo.InvariantCulture ) );
+
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public void WriteI16( short value )
 		{
 			BinaryPrimitives.WriteInt16LittleEndian( GetCurrentSpan(), value );
 			Advance( 2 );
@@ -155,10 +159,18 @@ namespace Elegy.Utilities
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public bool ReadBool()
-			=> Read<byte>() > 0;
+			=> ReadU8() > 0;
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public short ReadI16() 
+		public char ReadChar()
+			=> (char)ReadU8();
+
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public T ReadEnum<T>() where T : struct, Enum
+			=> (T)Enum.ToObject( typeof( T ), ReadU8() );
+
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public short ReadI16()
 		{
 			var value = BinaryPrimitives.ReadInt16LittleEndian( GetCurrentSpan() );
 			Advance( 2 );

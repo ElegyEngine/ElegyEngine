@@ -51,6 +51,8 @@ namespace Elegy.Utilities.Interfaces
 
 		public void WriteU8( byte value );
 		public void WriteBool( bool value );
+		public void WriteChar( char value );
+		public void WriteEnum<T>( T value ) where T : struct, Enum, IConvertible;
 		public void WriteI16( short value );
 		public void WriteU16( ushort value );
 		public void WriteI32( int value );
@@ -61,9 +63,10 @@ namespace Elegy.Utilities.Interfaces
 		public void WriteF32( float value );
 		public void WriteF64( double value );
 
-
 		public byte ReadU8();
 		public bool ReadBool();
+		public char ReadChar();
+		public T ReadEnum<T>() where T : struct, Enum;
 		public short ReadI16();
 		public ushort ReadU16();
 		public int ReadI32();
