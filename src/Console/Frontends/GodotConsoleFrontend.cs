@@ -22,10 +22,15 @@ namespace Elegy.ConsoleFrontends
 
 		public void OnLog( string message, ConsoleMessageType type, float timeSubmitted )
 		{
-			message = message.Replace( "\r", string.Empty );
-			if ( message.EndsWith( '\n' ) )
+			string messageNoColour = string.Empty;
+			for ( int i = 0; i < message.Length; i++ )
 			{
-				message = message.TrimEnd( '\n' );
+				if ( message[i] == '$' && i < message.Length - 1 )
+				{
+					i += 2;
+				}
+
+				messageNoColour += message[i];
 			}
 
 			switch ( type )
