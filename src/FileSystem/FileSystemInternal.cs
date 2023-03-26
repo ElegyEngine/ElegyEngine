@@ -21,13 +21,13 @@ namespace Elegy
 			
 			if ( !Mount( mEngineConfig.EngineFolder, mountOthers: false, isBase: false, isEngine: true ) )
 			{
-				Console.Error( Tag, "Failed to mount '{mEngineConfig.EngineFolder}'" );
+				Console.Error( Tag, $"Failed to mount '{mEngineConfig.EngineFolder}'" );
 				return false;
 			}
 
 			if ( !Mount( mEngineConfig.BaseFolder, mountOthers: true, isBase: true ) )
 			{
-				Console.Error( Tag, "Failed to mount '{mEngineConfig.BaseFolder}'" );
+				Console.Error( Tag, $"Failed to mount '{mEngineConfig.BaseFolder}'" );
 				return false;
 			}
 
@@ -44,11 +44,11 @@ namespace Elegy
 		{
 			if ( !ExistsDirect( directory, PathFlags.Directory ) )
 			{
-				Console.Warning( Tag, "Tried mounting '{directory}' but it does not exist" );
+				Console.Warning( Tag, $"Tried mounting '{directory}' but it does not exist" );
 				return false;
 			}
 
-			Console.Log( Tag, "Mounting '{directory}'..." );
+			Console.Log( Tag, $"Mounting '{directory}'..." );
 			if ( mOtherGamePaths.Exists( path => path == directory ) )
 			{
 				Console.Log( Tag, "...already exists!" );
@@ -62,14 +62,14 @@ namespace Elegy
 				string configPath = $"{directory}/applicationConfig.json";
 				if ( !Exists( configPath ) )
 				{
-					Console.Error( Tag, "Couldn't find '{directory}/applicationConfig.json'" );
+					Console.Error( Tag, $"Couldn't find '{directory}/applicationConfig.json'" );
 					return false;
 				}
 
 				ApplicationConfig gameConfig = new();
 				if ( !Text.JsonHelpers.LoadFrom( ref gameConfig, $"{directory}/applicationConfig.json" ) )
 				{
-					Console.Error( Tag, "Failed to parse '{directory}/applicationConfig.json'" );
+					Console.Error( Tag, $"Failed to parse '{directory}/applicationConfig.json'" );
 					return false;
 				}
 
@@ -82,7 +82,7 @@ namespace Elegy
 				{
 					mOtherGameConfigs.Add( gameConfig );
 					mOtherGamePaths.Add( directory );
-					Console.Log( Tag, "Mounted directory '{directory}'" );
+					Console.Log( Tag, $"Mounted directory '{directory}'" );
 				}
 
 				// Mount other directories that this app depends on
@@ -92,7 +92,7 @@ namespace Elegy
 					{
 						if ( !Mount( otherPath, false ) )
 						{
-							Console.Warning( Tag, "Can't mount dependency '{otherPath}', you may have missing content!" );
+							Console.Warning( Tag, $"Can't mount dependency '{otherPath}', you may have missing content!" );
 						}
 					}
 				}
@@ -112,13 +112,13 @@ namespace Elegy
 			int index = mOtherGamePaths.IndexOf( directory );
 			if ( index < 0 )
 			{
-				Console.Warning( Tag, "Can't unmount '{directory}', it isn't mounted" );
+				Console.Warning( Tag, $"Can't unmount '{directory}', it isn't mounted" );
 				return false;
 			}
 
 			mOtherGamePaths.RemoveAt( index );
 			mOtherGameConfigs.RemoveAt( index );
-			Console.Warning( Tag, "Unmounted '{directory}'" );
+			Console.Warning( Tag, $"Unmounted '{directory}'" );
 
 			return true;
 		}
