@@ -5,16 +5,29 @@ namespace Elegy
 {
 	public interface IApplication : IPlugin
 	{
-		// Start up game/app systems after all plugins have loaded
+		/// <summary>
+		/// Start up game/app systems after all plugins have loaded.
+		/// </summary>
+		/// <returns></returns>
 		bool Start();
 
-		// Execute a single game frame
+		/// <summary>
+		/// Execute a single game frame.
+		/// </summary>
+		/// <param name="delta"></param>
+		/// <returns></returns>
 		bool RunFrame( float delta );
 
-		// Execute a single physics frame
+		/// <summary>
+		/// Execute a single physics frame.
+		/// </summary>
+		/// <param name="delta"></param>
 		void RunPhysicsFrame( float delta );
 
-		// Handle user input
+		/// <summary>
+		/// Handle user input.
+		/// </summary>
+		/// <param name="event"></param>
 		void HandleInput( InputEvent @event );
 	}
 }
