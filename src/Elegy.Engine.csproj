@@ -4,23 +4,24 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>$(MSBuildProjectName).Engine</AssemblyName>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <FileVersion>1.0.0.0</FileVersion>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion></FileVersion>
+    <AssemblyVersion></AssemblyVersion>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>0.1.0-dev.7</Version>
+    <Version>0.1.0-dev.8</Version>
     <ProjectName>Elegy</ProjectName>
     <Description>Elegy Engine core (currently for Godot 4.0)</Description>
     <RepositoryUrl>https://github.com/ElegyEngine/ElegyEngine</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>godot;game engine;</PackageTags>
-    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Authors>Admer456</Authors>
     <Company>Elegy Engine Organisation</Company>
     <Copyright>Copyright © 2022-2023 Admer Šuko</Copyright>
     <RepositoryType>git</RepositoryType>
+    <RootNamespace>Elegy</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,8 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GodotSharp" Version="4.0.0" />
-    <PackageReference Include="System.Text.Json" Version="7.0.2" />
+    <PackageReference Include="Elegy.Common" Version="0.1.0-dev.1" />
   </ItemGroup>
 
   <ItemGroup>
