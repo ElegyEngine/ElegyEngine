@@ -200,12 +200,12 @@ namespace Elegy
 				}
 			}
 
-			Console.Log( Tag, "Loading '{path}'..." );
+			Console.Log( Tag, $"Loading '{path}'..." );
 
 			PluginConfig pluginConfig = new();
 			if ( !Text.JsonHelpers.LoadFrom( ref pluginConfig, path ) )
 			{
-				Console.Error( Tag, "Cannot load '{path}'" );
+				Console.Error( Tag, $"Cannot load '{path}'" );
 				return null;
 			}
 
@@ -219,7 +219,7 @@ namespace Elegy
 			}
 			catch ( Exception ex )
 			{
-				Console.Error( Tag, "Failed to load '{assemblyPath}'" );
+				Console.Error( Tag, $"Failed to load '{assemblyPath}'" );
 				Console.Error( "OS", $"Exception: {ex.Message}" );
 				return null;
 			}
@@ -227,7 +227,7 @@ namespace Elegy
 			PluginLibraryMetadata metadata = new( pluginConfig );
 			if ( !metadata.Validate( out var errorMessages ) )
 			{
-				Console.Error( Tag, "'{path}' has invalid data:" );
+				Console.Error( Tag, $"'{path}' has invalid data:" );
 				foreach ( var error in errorMessages )
 				{
 					Console.Log( Tag, " * {error}" );
@@ -237,18 +237,18 @@ namespace Elegy
 
 			if ( !metadata.IsCompatible( Engine.MajorVersion, Engine.OldestSupportedMinor ) )
 			{
-				Console.Error( Tag, "'{path}' (built for '{metadata.EngineVersionString}') is incompatible (current engine ver. '{Engine.VersionString}')" );
+				Console.Error( Tag, $"'{path}' (built for '{metadata.EngineVersionString}') is incompatible (current engine ver. '{Engine.VersionString}')" );
 				return null;
 			}
 
 			PluginLibrary library = new( assembly, metadata, path );
 			if ( !library.LoadedSuccessfully )
 			{
-				Console.Error( Tag, "'{assemblyPath}' implements a non-existing interface '{pluginConfig.ImplementedInterface}'" );
+				Console.Error( Tag, $"'{assemblyPath}' implements a non-existing interface '{pluginConfig.ImplementedInterface}'" );
 				return null;
 			}
 
-			Console.Log( Tag, "'{assemblyPath}' loaded successfully" );
+			Console.Log( Tag, $"'{assemblyPath}' loaded successfully" );
 			mPluginLibraries.Add( library );
 			return library;
 		}
