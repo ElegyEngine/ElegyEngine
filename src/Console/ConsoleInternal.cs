@@ -59,7 +59,7 @@ namespace Elegy
 				return;
 			}
 
-			message = message.Replace( "\r", string.Empty );
+			message = message.Replace( '\r', ' ' );
 
 			// Message logic is a tad complicated, see below
 			mCurrentMessage += message;
