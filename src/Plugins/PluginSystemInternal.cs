@@ -51,19 +51,39 @@ namespace Elegy
 				}
 			}
 
+			Console.Log( Tag, $"{mPluginLibraries.Count} plugins loaded correctly, initialising them..." );
+
 			List<string> failedPlugins = new();
 			mPluginLibraries.ForEach( library =>
 			{
-				IPlugin? plugin = library.InstantiatePlugin();
+				string pluginIdentifier = $"'{library.Metadata.AssemblyName}' at '{library.MetadataPath}'";
+				IPlugin? plugin = null;
+
+				try
+				{
+					plugin = library.InstantiatePlugin();
+				}
+				catch ( TargetInvocationException ex )
+				{
+					failedPlugins.Add( $"{pluginIdentifier} - exception in the plugin's constructor:" );
+					failedPlugins.Add( $"    +---> '{ex.InnerException?.Message ?? "null"}'" );
+					return;
+				}
+				catch ( Exception ex )
+				{
+					failedPlugins.Add( $"{pluginIdentifier} - exception: '{ex.Message}'" );
+					return;
+				}
+
 				if ( plugin == null )
 				{
-					failedPlugins.Add( $"'{library.Metadata.AssemblyName}' at '{library.MetadataPath}' - couldn't instantiate" );
+					failedPlugins.Add( $"{pluginIdentifier} - couldn't allocate" );
 					return;
 				}
 
 				if ( !plugin.Init() )
 				{
-					failedPlugins.Add( $"'{library.Metadata.AssemblyName}' at '{library.MetadataPath}' - failed to initialise (error message: '{plugin.Error}')" );
+					failedPlugins.Add( $"{pluginIdentifier} - failed to initialise (error message: '{plugin.Error}')" );
 					return;
 				}
 
