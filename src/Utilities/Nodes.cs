@@ -3,9 +3,14 @@
 
 namespace Elegy.Utilities
 {
+	/// <summary>
+	/// Utilities for interacting with Godot nodes.
+	/// </summary>
 	public static class Nodes
 	{
-		// Creates a node and attaches it to the root world node
+		/// <summary>
+		/// Creates a node and attaches it to the root world node.
+		/// </summary>
 		public static T CreateNode<T>() where T : Node, new()
 		{
 			T node = Engine.RootNode.CreateChild<T>();
@@ -17,13 +22,15 @@ namespace Elegy.Utilities
 			return node;
 		}
 
-		// Creates a CollisionShape3D and creates either a ConcavePolygonShape3D
-		// or ConvexPolygonShape3D depending on the concave parameter
+		/// <summary>
+		/// Creates a CollisionShape3D and creates either a ConcavePolygonShape3D
+		/// or ConvexPolygonShape3D depending on the <paramref name="concave"/> parameter.
+		/// </summary>
 		public static Shape3D CreateCollisionShape( ArrayMesh mesh, bool concave = true )
 		{
 			if ( !concave )
 			{
-				GD.PushWarning( "Nodes.CreateCollisionShape: 'concave = false' is not implemented yet, switching to true" );
+				Console.Warning( "Nodes.CreateCollisionShape", "'concave = false' is not implemented yet, switching to true" );
 			}
 
 			// The collision mesh is a bunch of triangles, organised in triplets of Vector3
