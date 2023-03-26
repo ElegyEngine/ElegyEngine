@@ -15,6 +15,8 @@ namespace Elegy
 
 		protected override Assembly? Load( AssemblyName assemblyName )
 		{
+			Console.Log( "DllLoader", $"'{assemblyName.Name}.dll'", ConsoleMessageType.Verbose );
+
 			// Plugins are likely to be using these primarily
 			switch ( assemblyName.Name )
 			{
