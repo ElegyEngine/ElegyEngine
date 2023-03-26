@@ -26,24 +26,24 @@ namespace Elegy
 			}
 
 			// Check for any shared dependencies
-			AssemblyLoadContext? currentContext = GetLoadContext( typeof( Engine ).Assembly );
-			if ( currentContext == null )
-			{
-				return null;
-			}
+			//AssemblyLoadContext? currentContext = GetLoadContext( typeof( Engine ).Assembly );
+			//if ( currentContext == null )
+			//{
+			//	return null;
+			//}
 
-			foreach ( var assembly in currentContext.Assemblies )
-			{
-				if ( assembly.IsDynamic )
-				{
-					continue;
-				}
-
-				if ( assembly.GetName().Name == assemblyName.Name )
-				{
-					return assembly;
-				}	
-			}
+			//foreach ( var assembly in currentContext.Assemblies )
+			//{
+			//	if ( assembly.IsDynamic )
+			//	{
+			//		continue;
+			//	}
+			//
+			//	if ( assembly.GetName().Name == assemblyName.Name )
+			//	{
+			//		return assembly;
+			//	}
+			//}
 
 			// TODO: check for assemblies in plugin system
 
