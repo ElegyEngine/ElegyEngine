@@ -10,7 +10,7 @@
     <FileVersion></FileVersion>
     <AssemblyVersion></AssemblyVersion>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>0.1.0-dev.14</Version>
+    <Version>0.1.0-dev.2</Version>
     <ProjectName>Elegy</ProjectName>
     <Description>Elegy Engine core (currently for Godot 4.0)</Description>
     <RepositoryUrl>https://github.com/ElegyEngine/ElegyEngine</RepositoryUrl>
