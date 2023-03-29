@@ -6,4 +6,4 @@ It is launched by [Elegy.Launcher](https://github.com/ElegyEngine/ElegyLauncher)
 
 Check out [Elegy.TestGame](https://github.com/ElegyEngine/Elegy.TestGame) for an example game module.
 
-*Note: early WiP, check back in Q3 2023!*
+*Note: early WiP, check back in Q4 2023!*
