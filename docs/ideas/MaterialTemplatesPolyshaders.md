@@ -276,7 +276,7 @@ Material templates just need to correspond to a shader template. The rest is mor
 Let's focus on one shader template, with one material template, and one material.
 
 Starting off with `materials/stemplates/standard.json`:
-```json
+```jsonc
 {
 	"name": "StandardST",
 	"shaderFile": "materials/stemplates/standard_template.glsl",
@@ -348,7 +348,7 @@ Starting off with `materials/stemplates/standard.json`:
 ```
 
 Then moving to `materials/mtemplates/standard_twosided_alphatested.json`:
-```json
+```jsonc
 {
 	"name": "StandardTwoSidedAlphatested",
 	"shaderTemplate": "StandardST",
