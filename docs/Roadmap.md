@@ -65,7 +65,7 @@ It will be a lot more iterative, as at this point, you'll be able to reload your
 Once everything settles, we may begin doing some more serious stuff:
 - Documentation website with guides and an API reference.
 - [BepuPhysics](https://github.com/bepu/bepuphysics2) integration for performance & stability.
-- Custom audio backend for cool & fancy effects.
+- [MiniAudio](https://github.com/mackron/miniaudio) backend with custom geometric accoustics tech, or alternatively Steam Audio/Phonon.
 - GUI project wizard to easily create Elegy projects and download relevant code templates for game modules, plugin modules etc.
 - Vehicle system in the game SDK?
 - Elegy's API will provide more abstractions over Godot, explained why in "A little problem" below.
@@ -79,10 +79,10 @@ At some point, Godot won't be an integral part of Elegy.
 
 There are some issues with using Godot the way Elegy is doing it. Namely, some friction here and there:
 - The launcher executable is 100+ MB. This makes it pretty uncomfy to download, at least on my slow Internet connection.
-- `ShaderMaterial` is rather limited, lacking texture filtering options and there's no mechanism to load precompiled shader binaries, or save them for that matter. Elegy materials with custom shaders would have to get compiled every time upon startup, and this could affect loading times really badly. This is why 0.1 and 0.2 won't even have custom shaders.
+- `ShaderMaterial` is rather limited, as there's no mechanism to load precompiled shader binaries, or save them for that matter. Elegy materials with custom shaders would have to get compiled every time upon startup, and this could affect loading times really badly. This is why 0.1 and 0.2 won't even have custom shaders.
 - Godot nodes override certain properties after `_Ready` is executed, so in Elegy we need to use `SetDeferred` and such. It's a little bit uncomfy, but thankfully there isn't a lot of it. It's mostly noticeable on some container UI nodes and omni lights when changing their blurriness through `LightSize`.
 
-As time goes on, I imagine Godot's filesize will keep growing slightly. Right now, the launcher is 138 MB, and it may go up to 200 MB in a few years.
+As time goes on, I imagine Godot's filesize will keep growing slightly. Right now, the launcher is 138 MB, and it may go up to 200 MB in a few years. One possible route is to have a fork of Godot with certain subsystems removed simply for the purpose of being more lightweight.
 
 Initially, Elegy was intended to have lightmapping without modern dynamic lights. It's meant to be a specialised "1999 FPS engine" after all. I'm uncertain how to prebake lightmaps externally in Godot, so we're just relying on dynamic lights and SDFGI for now.
 
@@ -103,7 +103,7 @@ re.UpdateTransform( transformationMatrix );
 Having something like this would mean half of the work's been done upfront.
 
 This is certainly subject to change, but here's how it might play out, partially in order:
-- Avoid Godot audio with custom solution (e.g. OpenAL-based thing or a high-level audio library based on MiniAudio)
+- Avoid Godot audio with MiniAudio
 - Avoid Godot physics with BepuPhysics
 - `Input` abstraction
 - Avoid Godot UI with a combination of RmlUI and ImGui
