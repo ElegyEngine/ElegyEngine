@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>150</x>
+      <y>290</y>
+      <w>250</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>Mesh
+--
+A basic container for mesh data.
+--
++ Name: string
++ Buffers: Dictionary&lt;string, List&lt;byte&gt;&gt;
++ Indices: List&lt;uint&gt;
+--
+bg=cyan</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>130</x>
+      <y>230</y>
+      <w>990</w>
+      <h>650</h>
+    </coordinates>
+    <panel_attributes>Elegy.Engine
+--
+bg=orange
+layer=-1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>140</x>
+      <y>260</y>
+      <w>970</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>Render.Data
+--
+bg=gray
+layer=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>410</x>
+      <y>290</y>
+      <w>250</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>MeshBuilder
+--
+Utility to build meshes.
+--
+# Build(): Mesh
+# AddVertex&lt;TVertex&gt;()
+# AddIndex(index: int)
+# AddIndices(indices: params int[])
+--
+bg=cyan
+layer=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>670</x>
+      <y>290</y>
+      <w>430</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>Example usage of MeshBuilder
+--
+struct MyVertex { Vector3 Position { get; set; } ... }
+
+MeshBuilder mb = MeshBuilder.ForVertexLayout&lt;MyVertex&gt;();
+mb.AddVertex( new() { Position = ... } );
+...
+mb.AddIndices( 0, 1, 2 );
+Mesh mesh = mb.Build();
+--
+bg=0xf0f0f0
+layer=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>130</x>
+      <y>100</y>
+      <w>260</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>NOTE: this is a draft!
+Todo:
+- material assets
+- shader assets
+- render backend
+- render frontend module
+bg=0xf0f0f0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>140</x>
+      <y>460</y>
+      <w>970</w>
+      <h>410</h>
+    </coordinates>
+    <panel_attributes>Render.Interfaces
+--
+bg=gray
+layer=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>150</x>
+      <y>490</y>
+      <w>230</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>/IEntity/
+--
+Render entity interface.
+--
++ Transform: Matrix4x4
++ MeshId: int
++ BoneBuffer: Matrix4x4[]
++ RenderMask: int
++ MaterialOverride: IMaterial
++ Data: IRenderData
+--
+layer=1
+bg=cyan</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>390</x>
+      <y>490</y>
+      <w>230</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>/ILight/
+--
+Render light interface.
+--
++ Transform: Matrix4x4
++ LightMaterial: IMaterial
++ Type: enum
++ Colour: Vector3
++ Range: float
++ RenderMask: int
++ Data: IRenderData
+--
+layer=1
+bg=cyan</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>630</x>
+      <y>490</y>
+      <w>230</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>/IBatch/
+--
+Render batch interface.
+--
++ Transforms: Matrix4x4[]
++ Template: IEntity
++ RenderMask: int
+--
+layer=1
+bg=cyan</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>870</x>
+      <y>490</y>
+      <w>230</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>/IVolume/
+--
+Render volume interface.
+--
+TODO: properties
+--
+layer=1
+bg=cyan</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>150</x>
+      <y>680</y>
+      <w>230</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>/IView/
+--
+Render view interface.
+--
+TODO: properties
+--
+layer=1
+bg=cyan</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>390</x>
+      <y>680</y>
+      <w>230</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>/IRenderData/
+--
+Custom rendering data, specific to
+a given render frontend.
+--
+TODO: properties
+--
+layer=1
+bg=cyan</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>630</x>
+      <y>680</y>
+      <w>230</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>/IOccluder/
+--
+Render occluder interface.
+--
+TODO: properties
+--
+layer=1
+bg=cyan</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
