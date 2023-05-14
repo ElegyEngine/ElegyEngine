@@ -3,6 +3,10 @@
 
 namespace Elegy
 {
+	/// <summary>
+	/// Application plugin interface.
+	/// This is implemented by games and tools.
+	/// </summary>
 	public interface IApplication : IPlugin
 	{
 		/// <summary>
