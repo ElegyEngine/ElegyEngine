@@ -3,6 +3,10 @@
 
 namespace Elegy
 {
+	/// <summary>
+	/// Console frontend interface. Console frontends are essentially
+	/// apps or widgets that display the engine's logged console messages.
+	/// </summary>
 	public interface IConsoleFrontend : IPlugin
 	{
 		/// <summary>
