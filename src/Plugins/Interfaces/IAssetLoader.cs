@@ -13,6 +13,5 @@ namespace Elegy
 		/// For example, an OBJ loader may support .obj.
 		/// </summary>
 		bool CanLoad( string path );
-
 	}
 }

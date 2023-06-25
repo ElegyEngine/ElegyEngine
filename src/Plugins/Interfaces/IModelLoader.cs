@@ -10,6 +10,11 @@ namespace Elegy
 	/// </summary>
 	public interface IModelLoader : IAssetLoader
 	{
-		
+		/// <summary>
+		/// Loads a model from the given path.
+		/// </summary>
+		/// <returns>The model with its data,
+		/// <c>null</c> if it cannot be loaded.</returns>
+		Model? LoadModel( string path );
 	}
 }
