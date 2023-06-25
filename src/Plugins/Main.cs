@@ -3,6 +3,9 @@
 
 namespace Elegy
 {
+	/// <summary>
+	/// Elegy plugin system interface.
+	/// </summary>
 	public static partial class Plugins
 	{
 		/// <summary>
