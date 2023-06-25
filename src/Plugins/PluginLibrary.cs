@@ -3,9 +3,9 @@
 
 namespace Elegy
 {
-	public class PluginLibrary
+	internal class PluginLibrary
 	{
-		internal PluginLibrary( Assembly assembly, PluginLibraryMetadata metadata, string metadataPath )
+		public PluginLibrary( Assembly assembly, PluginLibraryMetadata metadata, string metadataPath )
 		{
 			Assembly = assembly;
 			Metadata = metadata;
