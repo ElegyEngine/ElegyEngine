@@ -6,9 +6,9 @@ using Elegy.Utilities;
 
 namespace Elegy
 {
-	public class PluginLibraryMetadata
+	internal class PluginLibraryMetadata
 	{
-		internal PluginLibraryMetadata( PluginConfig config )
+		public PluginLibraryMetadata( PluginConfig config )
 		{
 			AssemblyName = config.AssemblyName;
 			Description = config.Description;
