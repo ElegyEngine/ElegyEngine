@@ -13,15 +13,31 @@ using Elegy.Assets;
 
 namespace Elegy
 {
+	/// <summary>
+	/// Elegy filesystem path flags.
+	/// </summary>
 	[Flags]
 	public enum PathFlags
 	{
+		/// <summary>
+		/// This path is a file.
+		/// </summary>
 		File = 1,
+
+		/// <summary>
+		/// This path is a directory.
+		/// </summary>
 		Directory = 2,
 
+		/// <summary>
+		/// Flag for all and any kinds of paths, whether files or directories.
+		/// </summary>
 		All = File | Directory
 	}
 
+	/// <summary>
+	/// Elegy filesystem interface.
+	/// </summary>
 	public static partial class FileSystem
 	{
 		/// <summary>
