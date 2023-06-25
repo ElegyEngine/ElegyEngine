@@ -78,7 +78,6 @@ namespace Elegy
 			}
 
 			Console.Log( Tag, "Successfully initialised all systems" );
-			mInitialisedSuccessfully = true;
 			return true;
 		}
 
@@ -155,7 +154,6 @@ namespace Elegy
 			}
 
 			mHasShutdown = true;
-			mInitialisedSuccessfully = false;
 			return false;
 		}
 
@@ -209,7 +207,6 @@ namespace Elegy
 		private string[] mCommandlineArgs;
 		private Node3D mRootNode;
 		private Node3D mEngineHostNode;
-		private bool mInitialisedSuccessfully = false;
 		private bool mHasShutdown = false;
 
 		EngineConfig mEngineConfig;
