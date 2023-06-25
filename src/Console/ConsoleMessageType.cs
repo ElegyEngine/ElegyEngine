@@ -3,6 +3,10 @@
 
 namespace Elegy
 {
+	/// <summary>
+	/// Type of console message. Used by <seealso cref="IConsoleFrontend"/> plugins to
+	/// differentiate between different message types.
+	/// </summary>
 	public enum ConsoleMessageType : byte
 	{
 		/// <summary>
