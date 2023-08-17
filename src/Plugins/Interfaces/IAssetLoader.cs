@@ -4,7 +4,9 @@
 namespace Elegy
 {
 	/// <summary>
-	/// Asset loader interface.
+	/// Asset loader interface. <see cref="IAssetLoader.CanLoad(string)"/> is called first, to
+	/// check for the file extension, then the appropriate loading method is called,
+	/// such as <seealso cref="IModelLoader.LoadModel(string)"/>.
 	/// </summary>
 	public interface IAssetLoader
 	{
