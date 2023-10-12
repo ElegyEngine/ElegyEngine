@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Assets;
+using System.IO;
 
 namespace Elegy
 {
@@ -10,8 +11,8 @@ namespace Elegy
 	/// </summary>
 	internal sealed class MaterialSystemInternal
 	{
-		private List<Material> mMaterials = new();
-		private Dictionary<string, MaterialDefinition> mMaterialDefs = new();
+		private Dictionary<string, Tuple<MaterialDefinition, Material?>> mMaterialDefs = new();
+		private Dictionary<string, Texture2D> mTextures = new();
 
 		public bool Init()
 		{
@@ -45,7 +46,7 @@ namespace Elegy
 					foreach ( var materialDef in document.Materials )
 					{
 						// This way materials will be overridden
-						mMaterialDefs[materialDef.Name] = materialDef;
+						mMaterialDefs[materialDef.Name] = new( materialDef, null );
 					}
 
 					Console.Success( "MaterialSystem", $"Parsed {document.Materials.Count} materials in '{materialDocumentPath}'" );
@@ -72,15 +73,58 @@ namespace Elegy
 
 		public void Shutdown()
 		{
-			mMaterials.Clear();
+			mTextures.Clear();
 			mMaterialDefs.Clear();
 		}
 
 		public Material? LoadMaterial( string materialName )
 		{
-			
+			if ( mMaterialDefs.ContainsKey( materialName ) )
+			{
+				var pair = mMaterialDefs[materialName];
+				Material? material = pair.Item2;
+				if ( material is null )
+				{
+					material = LoadMaterial( pair.Item1 );
+				}
 
+				return material;
+			}
+
+			Console.Warning( "MaterialSystem", $"Material '{materialName}' doesn't exist" );
 			return null;
+		}
+
+		private Material LoadMaterial( MaterialDefinition materialDef )
+		{
+			return new StandardMaterial3D()
+			{
+				ResourceName = materialDef.Name,
+
+				Roughness = 1.0f,
+				Metallic = 0.0f,
+				MetallicSpecular = 0.0f,
+				SpecularMode = BaseMaterial3D.SpecularModeEnum.Disabled,
+				TextureFilter = BaseMaterial3D.TextureFilterEnum.NearestWithMipmapsAnisotropic,
+
+				AlbedoTexture = LoadTexture( materialDef.DiffuseMap )
+			};
+		}
+
+		private Texture2D? LoadTexture( string? texturePath )
+		{
+			if ( texturePath is null )
+			{
+				return null;
+			}
+
+			string? fullTexturePath = FileSystem.PathTo( texturePath );
+			if ( fullTexturePath is null )
+			{
+				return null;
+			}
+
+			return ImageTexture.CreateFromImage( Image.LoadFromFile( fullTexturePath ) );
 		}
 
 		public bool UnloadMaterial( ref Material material )
@@ -99,6 +143,17 @@ namespace Elegy
 			return true;
 		}
 
-		public IReadOnlyList<Material> GetMaterialList() => mMaterials;
+		public IEnumerable<Material> GetMaterialList()
+		{
+			foreach ( var pair in mMaterialDefs )
+			{
+				if ( pair.Value.Item2 is null )
+				{
+					continue;
+				}
+
+				yield return pair.Value.Item2;
+			}
+		}
 	}
 }

@@ -32,6 +32,6 @@ namespace Elegy
 		/// <summary>
 		/// All the materials in the system.
 		/// </summary>
-		public static IReadOnlyList<Material> AllMaterials => mMaterialSystem.GetMaterialList();
+		public static IEnumerable<Material> AllMaterials => mMaterialSystem.GetMaterialList();
 	}
 }
