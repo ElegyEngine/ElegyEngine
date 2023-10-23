@@ -11,7 +11,19 @@ namespace Elegy
 	/// </summary>
 	internal sealed class MaterialSystemInternal
 	{
-		private Dictionary<string, Tuple<MaterialDefinition, Material?>> mMaterialDefs = new();
+		class MaterialDefinitionPair
+		{
+			public MaterialDefinitionPair( MaterialDefinition def, Material? material )
+			{
+				Def = def;
+				Material = material;
+			}
+
+			public MaterialDefinition Def { get; set; }
+			public Material? Material { get; set; } = null;
+		}
+
+		private Dictionary<string, MaterialDefinitionPair> mMaterialDefs = new();
 		private Dictionary<string, Texture2D> mTextures = new();
 
 		public bool Init()
@@ -82,13 +94,12 @@ namespace Elegy
 			if ( mMaterialDefs.ContainsKey( materialName ) )
 			{
 				var pair = mMaterialDefs[materialName];
-				Material? material = pair.Item2;
-				if ( material is null )
+				if ( pair.Material is null )
 				{
-					material = LoadMaterial( pair.Item1 );
+					pair.Material = LoadMaterial( pair.Def );
 				}
 
-				return material;
+				return pair.Material;
 			}
 
 			Console.Warning( "MaterialSystem", $"Material '{materialName}' doesn't exist" );
@@ -127,32 +138,35 @@ namespace Elegy
 			return ImageTexture.CreateFromImage( Image.LoadFromFile( fullTexturePath ) );
 		}
 
-		public bool UnloadMaterial( ref Material material )
+		public bool UnloadMaterial( ref Material? material )
 		{
 			if ( material == null )
 			{
 				return false;
 			}
 
-			if ( mMaterials.Contains( material ) )
+			if ( !mMaterialDefs.ContainsKey( material.ResourceName ) )
 			{
 				return false;
 			}
 
-			mMaterials.Remove( material );
+			mMaterialDefs[material.ResourceName].Material = null;
+			material = null;
+
 			return true;
+			
 		}
 
 		public IEnumerable<Material> GetMaterialList()
 		{
 			foreach ( var pair in mMaterialDefs )
 			{
-				if ( pair.Value.Item2 is null )
+				if ( pair.Value.Material is null )
 				{
 					continue;
 				}
 
-				yield return pair.Value.Item2;
+				yield return pair.Value.Material;
 			}
 		}
 	}

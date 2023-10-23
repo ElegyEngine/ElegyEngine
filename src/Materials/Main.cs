@@ -26,7 +26,7 @@ namespace Elegy
 		/// <see langword="true"/> on success, <see langword="false"/>
 		/// if the material is invalid or otherwise.
 		/// </returns>
-		public static bool UnloadMaterial( ref Material material )
+		public static bool UnloadMaterial( ref Material? material )
 			=> mMaterialSystem.UnloadMaterial( ref material );
 
 		/// <summary>
