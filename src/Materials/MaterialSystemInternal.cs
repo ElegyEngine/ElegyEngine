@@ -154,7 +154,6 @@ namespace Elegy
 			material = null;
 
 			return true;
-			
 		}
 
 		public IEnumerable<Material> GetMaterialList()

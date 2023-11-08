@@ -77,6 +77,12 @@ namespace Elegy
 				}
 			}
 
+			mMaterialSystem = new();
+			if ( !mMaterialSystem.Init() )
+			{
+				return Shutdown( "Material system failure", true );
+			}
+
 			Console.Log( Tag, "Successfully initialised all systems" );
 			return true;
 		}
@@ -203,6 +209,7 @@ namespace Elegy
 		private ConsoleInternal? mConsole;
 		private FileSystemInternal? mFileSystem;
 		private PluginSystemInternal? mPluginSystem;
+		private MaterialSystemInternal? mMaterialSystem;
 
 		private string[] mCommandlineArgs;
 		private Node3D mRootNode;
