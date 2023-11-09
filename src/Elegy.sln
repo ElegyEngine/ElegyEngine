@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.Engine", "Elegy.Engine\Elegy.Engine.csproj", "{21B4217B-C923-47D4-8974-94592E74FC51}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.Common", "Elegy.Common\Elegy.Common.csproj", "{3E9CF437-CEE4-4172-9A57-93010EC6D8B3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.Common.Tests", "Elegy.Common.Tests\Elegy.Common.Tests.csproj", "{FABB361E-F868-4A5E-B614-CA3D6E696F5C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.DevConsole", "Elegy.DevConsole\Elegy.DevConsole.csproj", "{D6B987E4-2AEB-4B77-8779-E57417D237EF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.MapCompiler", "Elegy.MapCompiler\Elegy.MapCompiler.csproj", "{14BFF80B-74C8-4AC9-BE59-6DAE68FA517B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.MaterialGenerator", "Elegy.MaterialGenerator\Elegy.MaterialGenerator.csproj", "{137CA965-44F0-44A4-BBEE-D988E6EF6E5C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{21B4217B-C923-47D4-8974-94592E74FC51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21B4217B-C923-47D4-8974-94592E74FC51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21B4217B-C923-47D4-8974-94592E74FC51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21B4217B-C923-47D4-8974-94592E74FC51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E9CF437-CEE4-4172-9A57-93010EC6D8B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E9CF437-CEE4-4172-9A57-93010EC6D8B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E9CF437-CEE4-4172-9A57-93010EC6D8B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E9CF437-CEE4-4172-9A57-93010EC6D8B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FABB361E-F868-4A5E-B614-CA3D6E696F5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FABB361E-F868-4A5E-B614-CA3D6E696F5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FABB361E-F868-4A5E-B614-CA3D6E696F5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FABB361E-F868-4A5E-B614-CA3D6E696F5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6B987E4-2AEB-4B77-8779-E57417D237EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6B987E4-2AEB-4B77-8779-E57417D237EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6B987E4-2AEB-4B77-8779-E57417D237EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6B987E4-2AEB-4B77-8779-E57417D237EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14BFF80B-74C8-4AC9-BE59-6DAE68FA517B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14BFF80B-74C8-4AC9-BE59-6DAE68FA517B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14BFF80B-74C8-4AC9-BE59-6DAE68FA517B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14BFF80B-74C8-4AC9-BE59-6DAE68FA517B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{137CA965-44F0-44A4-BBEE-D988E6EF6E5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{137CA965-44F0-44A4-BBEE-D988E6EF6E5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{137CA965-44F0-44A4-BBEE-D988E6EF6E5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{137CA965-44F0-44A4-BBEE-D988E6EF6E5C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {78AE737A-E080-41E8-84B7-5EFB2C7E7E5B}
+	EndGlobalSection
+EndGlobal

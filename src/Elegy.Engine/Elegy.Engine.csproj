@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Elegy.Common" Version="0.1.0-dev.3" />
+    <ProjectReference Include="..\Elegy.Common\Elegy.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

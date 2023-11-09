@@ -7,15 +7,3 @@ It is launched by [Elegy.Launcher](https://github.com/ElegyEngine/ElegyLauncher)
 Check out [Elegy.TestGame](https://github.com/ElegyEngine/Elegy.TestGame) for an example game module.
 
 *Note: early WiP, check back in Q4 2023!*
-
-# Building
-
-If you're brave enough to touch this code:
-* you can build all projects from `src/Elegy.sln`
-* if you decide to make NuGet packages, you may find some of the scripts in `build/` useful, just make sure to adjust the paths
-* there is a script that copies DLLs to a game folder, `build/copy_dlls.ps1`, make sure to change the first two paths there too
-* when running the scripts, make sure to do it from this directory, such as:
-  ```
-  ./build/copy_dlls.ps1
-  ```
-
