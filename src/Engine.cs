@@ -142,6 +142,10 @@ namespace Elegy
 				Console.Error( Tag, $"Shutting down, reason: {why}" );
 			}
 
+			mMaterialSystem.Shutdown();
+			mMaterialSystem = null;
+			Materials.SetMaterialSystem( null );
+
 			mPluginSystem.Shutdown();
 			mPluginSystem = null;
 			Plugins.SetPluginSystem( null );
