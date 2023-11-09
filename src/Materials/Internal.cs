@@ -5,7 +5,7 @@ namespace Elegy
 {
 	public static partial class Materials
 	{
-		internal static void SetMaterialSystem( MaterialSystemInternal system )
+		internal static void SetMaterialSystem( MaterialSystemInternal? system )
 			=> mMaterialSystem = system;
 
 		private static MaterialSystemInternal? mMaterialSystem;
