@@ -23,26 +23,30 @@ namespace Elegy
 			public Material? Material { get; set; } = null;
 		}
 
+		private const string Tag = "MaterialManager";
+
 		private Dictionary<string, MaterialDefinitionPair> mMaterialDefs = new();
 		private Dictionary<string, Texture2D> mTextures = new();
 
 		public bool Init()
 		{
-			Console.Log( "MaterialSystem", "Init" );
+			Console.Log( Tag, "Init" );
+
+			Materials.SetMaterialSystem( this );
 
 			var loadMaterialsForDirectory = ( string name, string directory ) =>
 			{
 				string? path = FileSystem.PathTo( $"{directory}/materials", PathFlags.Directory );
 				if ( path is null )
 				{
-					Console.Error( "MaterialSystem", $"{name} directory doesn't exist or doesn't have any materials!" );
+					Console.Error( Tag, $"{name} directory doesn't exist or doesn't have any materials!" );
 					return false;
 				}
 
 				var materialDocumentPaths = FileSystem.GetEntries( path, "*.shader", PathFlags.File, true );
 				if ( materialDocumentPaths is null || materialDocumentPaths.Length == 0 )
 				{
-					Console.Error( "MaterialSystem", $"{name}'s materials directory is empty!" );
+					Console.Error( Tag, $"{name}'s materials directory is empty!" );
 					return false;
 				}
 
@@ -51,7 +55,7 @@ namespace Elegy
 					MaterialDocument document = new( File.ReadAllText( materialDocumentPath ) );
 					if ( document.Materials.Count == 0 )
 					{
-						Console.Warning( "MaterialSystem", $"Parsed 0 materials in '{materialDocumentPath}'" );
+						Console.Warning( Tag, $"Parsed 0 materials in '{materialDocumentPath}'" );
 						continue;
 					}
 
@@ -61,13 +65,13 @@ namespace Elegy
 						mMaterialDefs[materialDef.Name] = new( materialDef, null );
 					}
 
-					Console.Success( "MaterialSystem", $"Parsed {document.Materials.Count} materials in '{materialDocumentPath}'" );
+					Console.Success( Tag, $"Parsed {document.Materials.Count} materials in '{materialDocumentPath}'" );
 				}
 
 				return true;
 			};
 
-			Console.Log( "MaterialSystem", "Loading engine materials..." );
+			Console.Log( Tag, "Loading engine materials..." );
 			if ( !loadMaterialsForDirectory( "Engine", FileSystem.EnginePath ) )
 			{
 				return false;
@@ -89,7 +93,7 @@ namespace Elegy
 			mMaterialDefs.Clear();
 		}
 
-		public Material? LoadMaterial( string materialName )
+		public Material LoadMaterial( string materialName )
 		{
 			if ( mMaterialDefs.ContainsKey( materialName ) )
 			{
@@ -102,12 +106,29 @@ namespace Elegy
 				return pair.Material;
 			}
 
-			Console.Warning( "MaterialSystem", $"Material '{materialName}' doesn't exist" );
-			return null;
+			Console.Warning( Tag, $"Material '{materialName}' doesn't exist" );
+
+			return new StandardMaterial3D()
+			{
+				AlbedoColor = Color.Color8( 255, 128, 192 ),
+				Roughness = 0.5f,
+				Metallic = 0.5f
+			};
 		}
 
 		private Material LoadMaterial( MaterialDefinition materialDef )
 		{
+			Texture2D? texture = LoadTexture( materialDef.DiffuseMap );
+			if ( texture is null )
+			{
+				return new StandardMaterial3D()
+				{
+					AlbedoColor = Color.Color8( 255, 128, 192 ),
+					Roughness = 0.5f,
+					Metallic = 0.5f
+				};
+			}
+
 			return new StandardMaterial3D()
 			{
 				ResourceName = materialDef.Name,
@@ -118,7 +139,7 @@ namespace Elegy
 				SpecularMode = BaseMaterial3D.SpecularModeEnum.Disabled,
 				TextureFilter = BaseMaterial3D.TextureFilterEnum.NearestWithMipmapsAnisotropic,
 
-				AlbedoTexture = LoadTexture( materialDef.DiffuseMap )
+				AlbedoTexture = texture
 			};
 		}
 
