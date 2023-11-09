@@ -58,7 +58,7 @@ namespace Elegy
 		/// <summary>
 		/// See <see cref="ValidateMethod"/> for more details.
 		/// </summary>
-		public ValidateMethod Valdiate { get; set; } = DefaultValidate;
+		public ValidateMethod Validate { get; set; } = DefaultValidate;
 
 		/// <summary>
 		/// Console command constructor.
