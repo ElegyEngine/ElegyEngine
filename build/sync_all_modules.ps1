@@ -8,13 +8,13 @@
 ## so we can develop on the same local NuGet package version.
 
 ## Build and pack Elegy.Engine and Elegy.Common
-./build_and_pack_modules.ps1
+Invoke-Expression "$PSScriptRoot/build_and_pack_modules.ps1"
 
 ## Clean NuGet cache so we can reload the packages
-./clean_cache.ps1
+Invoke-Expression "$PSScriptRoot/clean_cache.ps1"
 
 ## Copy to local NuGet developer package repo
-./copy_to_local_dev_packs.ps1
+Invoke-Expression "$PSScriptRoot/copy_to_local_dev_packs.ps1"
 
 Write-Host ""
 Write-Host "========= DONE ========="
