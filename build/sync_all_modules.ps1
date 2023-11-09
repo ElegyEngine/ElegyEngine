@@ -15,3 +15,7 @@
 
 ## Copy to local NuGet developer package repo
 ./copy_to_local_dev_packs.ps1
+
+Write-Host ""
+Write-Host "========= DONE ========="
+Write-Host ""

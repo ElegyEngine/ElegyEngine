@@ -1,4 +1,6 @@
 
+Write-Host "========= CLEARING NUGET CACHE ========="
+
 $cache_dir = "$env:USERPROFILE/.nuget/packages/"
 
 $folder_names = Get-ChildItem $cache_dir -Filter "elegy.*"

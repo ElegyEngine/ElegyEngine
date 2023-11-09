@@ -1,6 +1,8 @@
 
+Write-Host "========= COPYING MODULES ========="
+
 ## Put your own paths here
-$input_dir = Get-Location
+$input_dir = Get-Location ## Might wanna replace this with something like "$PSScriptRoot/.." but oh well
 $output_dir = "E:/Workfolders/Elegy/Games/TestBench"
 
 ## Create the bin directory if it doesn't exist

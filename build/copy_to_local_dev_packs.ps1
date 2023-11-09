@@ -1,4 +1,6 @@
 
+Write-Host "========= COPYING TO LOCAL NUGET REPO ========="
+
 ## Your NuGet package repo here
 $LocalDevPacks = "C:/LocalNuGetPackages"
 
