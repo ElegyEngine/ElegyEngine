@@ -13,9 +13,9 @@ namespace Elegy
 		/// </summary>
 		/// <param name="materialName">Name of the material.</param>
 		/// <returns>
-		/// A valid <see cref="Material"/> instance on success, <see langword="null"/> on failure.
+		/// A valid <see cref="Material"/> instance always, missing material if not found.
 		/// </returns>
-		public static Material? LoadMaterial( string materialName )
+		public static Material LoadMaterial( string materialName )
 			=> mMaterialSystem.LoadMaterial( materialName );
 
 		/// <summary>

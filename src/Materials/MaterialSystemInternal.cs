@@ -143,6 +143,14 @@ namespace Elegy
 			};
 		}
 
+		// Texture extensions have some type of priority here
+		// First it checks if there's a KTX (which is the best all-rounder IMO), then TGA, DDS etc.
+		// Later we'll replace these with texture loading plugins (for e.g. sprite support)
+		private static readonly string[] TextureExtensions =
+		{
+			".ktx", ".tga", ".dds", ".png", ".jpg", ".jpeg", ".webp", ".bmp"
+		};
+
 		private Texture2D? LoadTexture( string? texturePath )
 		{
 			if ( texturePath is null )
@@ -150,13 +158,23 @@ namespace Elegy
 				return null;
 			}
 
-			string? fullTexturePath = FileSystem.PathTo( texturePath );
-			if ( fullTexturePath is null )
+			if ( Path.HasExtension( texturePath ) )
 			{
-				return null;
+				return ImageTexture.CreateFromImage( Image.LoadFromFile( texturePath ) );
 			}
 
-			return ImageTexture.CreateFromImage( Image.LoadFromFile( fullTexturePath ) );
+			foreach ( var textureExtension in TextureExtensions )
+			{
+				string? fullTexturePath = FileSystem.PathTo( $"{texturePath}{textureExtension}" );
+				if ( fullTexturePath is null )
+				{
+					continue;
+				}
+
+				return ImageTexture.CreateFromImage( Image.LoadFromFile( fullTexturePath ) );
+			}
+
+			return null;
 		}
 
 		public bool UnloadMaterial( ref Material? material )
