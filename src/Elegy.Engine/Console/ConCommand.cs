@@ -63,8 +63,6 @@ namespace Elegy
 		/// <summary>
 		/// Console command constructor.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="method"></param>
 		public ConCommand( string name, CommandMethod method )
 		{
 			Name = name;
