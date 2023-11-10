@@ -81,11 +81,18 @@ namespace Elegy
 					return;
 				}
 
+				// Register static CVars here so they can be tracked and unregistered when the plugin is unloaded
+				ConVarRegistry cvarRegistry = new( library.Assembly );
+				cvarRegistry.RegisterAll();
+
 				if ( !plugin.Init() )
 				{
 					failedPlugins.Add( $"{pluginIdentifier} - failed to initialise (error message: '{plugin.Error}')" );
+					cvarRegistry.UnregisterAll();
 					return;
 				}
+
+				mConsoleRegistries.Add( plugin, cvarRegistry );
 
 				if ( plugin is IApplication )
 				{
@@ -140,6 +147,7 @@ namespace Elegy
 			{
 				if ( app.Value.Initialised )
 				{
+					mConsoleRegistries[app.Value].UnregisterAll();
 					app.Value.Shutdown();
 				}
 			}
@@ -149,10 +157,12 @@ namespace Elegy
 			{
 				if ( plugin.Value.Initialised )
 				{
+					mConsoleRegistries[plugin.Value].UnregisterAll();
 					plugin.Value.Shutdown();
 				}
 			}
 			mGenericPlugins.Clear();
+			mConsoleRegistries.Clear();
 
 			mPluginLibraries.Clear();
 			try
@@ -276,6 +286,7 @@ namespace Elegy
 		public IReadOnlyCollection<IApplication> ApplicationPlugins => mApplicationPlugins.Values;
 		public IReadOnlyCollection<IPlugin> GenericPlugins => mGenericPlugins.Values;
 
+		private Dictionary<IPlugin, ConVarRegistry> mConsoleRegistries = new();
 		private Dictionary<string, IApplication> mApplicationPlugins = new();
 		private Dictionary<string, IPlugin> mGenericPlugins = new();
 		private List<PluginLibrary> mPluginLibraries = new();

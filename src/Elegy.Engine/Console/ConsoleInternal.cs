@@ -164,6 +164,46 @@ namespace Elegy
 			return true;
 		}
 
+		public bool RegisterCommand( ConCommand command )
+		{
+			if ( mCommands.ContainsKey( command.Name ) )
+			{
+				Console.Warning( Tag, $"Tried registering command '{command.Name}', already exists!" );
+				return false;
+			}
+
+			mCommands.Add( command.Name, command );
+			return true;
+		}
+
+		public bool UnregisterCommand( ConCommand command )
+		{
+			if ( !mCommands.ContainsKey( command.Name ) )
+			{
+				Console.Warning( Tag, $"Tried unregistering command '{command.Name}', but it's not there!" );
+				return false;
+			}
+
+			mCommands.Remove( command.Name );
+			return true;
+		}
+
+		public bool Execute( string command )
+		{
+			ReadOnlySpan<char> commandSpan = command;
+			ReadOnlySpan<char> commandName = commandSpan.Slice( 0, commandSpan.IndexOf( ' ' ) );
+
+			if ( !mCommands.ContainsKey( commandName.ToString() ) )
+			{
+				Console.Warning( Tag, $"Command '{command}' does not exist!" );
+				return false;
+			}
+
+			// TODO: implement
+
+			return true;
+		}
+
 		private void InitialiseArguments( string[] args )
 		{
 			if ( args.Length == 0 )
@@ -195,6 +235,7 @@ namespace Elegy
 
 		private List<IConsoleFrontend> mFrontends = new();
 		private StringDictionary mArguments = new();
+		private Dictionary<string, ConCommand> mCommands = new();
 		private string mCurrentMessage = string.Empty;
 	}
 }
