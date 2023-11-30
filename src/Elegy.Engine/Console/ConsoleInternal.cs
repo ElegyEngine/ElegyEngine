@@ -190,16 +190,24 @@ namespace Elegy
 
 		public bool Execute( string command )
 		{
-			ReadOnlySpan<char> commandSpan = command;
-			ReadOnlySpan<char> commandName = commandSpan.Slice( 0, commandSpan.IndexOf( ' ' ) );
+			string commandName = command;
+			string[] commandArguments = Array.Empty<string>();
 
-			if ( !mCommands.ContainsKey( commandName.ToString() ) )
+			if ( command.Contains( ' ' ) )
+			{
+				// TODO: command arguments
+				Console.Warning( Tag, $"Command arguments are not yet implemented" );
+				return false;
+			}
+
+			if ( !mCommands.ContainsKey( commandName ) )
 			{
 				Console.Warning( Tag, $"Command '{command}' does not exist!" );
 				return false;
 			}
 
-			// TODO: implement
+			ConCommand concommand = mCommands[commandName];
+			concommand.Method( commandArguments );
 
 			return true;
 		}
