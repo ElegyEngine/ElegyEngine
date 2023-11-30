@@ -383,7 +383,7 @@ namespace Elegy.Utilities
 			string value = string.Empty;
 			if ( length > 0 )
 			{
-				stringEncoding.GetString( mData.AsSpan( Position, length ) );
+				value = stringEncoding.GetString( mData.AsSpan( Position, length ) );
 			}
 
 			Advance( length );
