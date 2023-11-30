@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Elegy.Utilities.Interfaces
 {
+	/// <summary>
+	/// String length options for <see cref="IByteBuffer"/>.
+	/// </summary>
 	public enum StringLength
 	{
 		/// <summary>
@@ -129,11 +132,11 @@ namespace Elegy.Utilities.Interfaces
 		/// </summary>
 		public bool ReadBool();
 		/// <summary>
-		/// Reads a boolean value and advances 1 byte.
+		/// Reads an ASCII character value and advances 1 byte.
 		/// </summary>
 		public char ReadChar();
 		/// <summary>
-		/// Reads an ASCII character value and advances 1 byte.
+		/// Reads an enum value and advances 1 byte.
 		/// </summary>
 		public T ReadEnum<T>() where T : struct, Enum;
 		/// <summary>
