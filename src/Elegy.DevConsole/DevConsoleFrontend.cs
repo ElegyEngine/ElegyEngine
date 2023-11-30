@@ -3,6 +3,8 @@
 
 using Elegy.Utilities;
 using Elegy.Utilities.Interfaces;
+using Godot;
+using System.Text;
 using ENetConnection = Godot.ENetConnection;
 
 namespace Elegy.DevConsole
@@ -99,6 +101,35 @@ namespace Elegy.DevConsole
 			mTimeToNextTransmission = 0.1f;
 		}
 
+		private void OnReceiveEvent( byte[] data )
+		{
+			if ( data.Length == 0 )
+			{
+				Console.Error( Tag, "Received empty packet from external console" );
+				return;
+			}
+			else if ( data.Length < 2 )
+			{
+				Console.Error( Tag, $"Invalid packet data from external console: {Encoding.ASCII.GetString(data)}" );
+				return;
+			}
+
+			ByteBuffer buffer = new( data );
+			char receivedType = buffer.ReadChar();
+			if ( receivedType != 'C' )
+			{
+				Console.Log( Tag, $"Received message type '{receivedType}' is not supported!" );
+				Console.Log( Tag, $"Raw data: {Encoding.ASCII.GetString(data)}" );
+				return;
+			}
+
+			string receivedCommand = buffer.ReadStringAscii( StringLength.Short );
+
+			Console.Log( Tag, $"Received data: {receivedCommand} (raw: '{Encoding.ASCII.GetString( data )}')", ConsoleMessageType.Verbose );
+
+			Console.Execute( receivedCommand );
+		}
+
 		private void LogEvent( Godot.Collections.Array? serviceResult )
 		{
 			if ( serviceResult == null )
@@ -123,6 +154,10 @@ namespace Elegy.DevConsole
 			{
 				Console.Log( Tag, $"Connection terminated (with {mPeerMap[peer]})", ConsoleMessageType.Developer );
 				mPeerMap.Remove( peer );
+			}
+			else if ( eventType == ENetConnection.EventType.Receive )
+			{
+				Console.Log( Tag, $"Received data ({serviceResult[2].AsByteArray().Length} bytes)", ConsoleMessageType.Verbose );
 			}
 		}
 
@@ -149,6 +184,11 @@ namespace Elegy.DevConsole
 				if ( result[0].AsInt32() <= (int)ENetConnection.EventType.None )
 				{
 					break;
+				}
+				else if ( result[0].AsInt32() == (int)ENetConnection.EventType.Receive )
+				{
+					ENetPacketPeer sender = result[1].As<ENetPacketPeer>();
+					OnReceiveEvent( sender.GetPacket() );
 				}
 
 				LogEvent( result );
