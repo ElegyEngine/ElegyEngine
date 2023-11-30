@@ -11,7 +11,7 @@ using Elegy.Utilities.Interfaces;
 namespace Elegy.Utilities
 {
 	/// <summary>
-	/// A byte buffer, implemented with a list. Shrinks and grows as needed.
+	/// A byte buffer, implemented with an array that shrinks and grows as needed.
 	/// </summary>
 	public class ByteBufferDynamic : IByteBuffer
 	{
@@ -390,7 +390,7 @@ namespace Elegy.Utilities
 			string value = string.Empty;
 			if ( length > 0 )
 			{
-				stringEncoding.GetString( mBytes.AsSpan( Position, length ) );
+				value = stringEncoding.GetString( mBytes.AsSpan( Position, length ) );
 			}
 
 			Advance( length );
