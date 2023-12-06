@@ -21,13 +21,8 @@ namespace Elegy
 
 			AddFrontend( new ConsoleFrontends.GodotConsoleFrontend() );
 
-			Console.Developer = mArguments.GetBool( "-developer" );
 			Console.Verbose = mArguments.GetBool( "-verbose" );
-
-			if ( Console.Verbose )
-			{
-				Console.Developer = true;
-			}
+			Console.Developer = Console.Verbose || mArguments.GetBool( "-developer" );
 
 			return true;
 		}
