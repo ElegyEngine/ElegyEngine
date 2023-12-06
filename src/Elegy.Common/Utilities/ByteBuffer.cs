@@ -10,7 +10,8 @@ using Elegy.Utilities.Interfaces;
 
 namespace Elegy.Utilities
 {
-    public class ByteBuffer : IByteBuffer
+	/// <inheritdoc/>
+	public class ByteBuffer : IByteBuffer
 	{
 		/// <inheritdoc/>
 		public int Position { get; private set; } = 0;

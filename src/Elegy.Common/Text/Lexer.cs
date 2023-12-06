@@ -7,6 +7,7 @@ namespace Elegy.Text
 	/// Lexicological parser, parses tokens out of a continuous piece of text.
 	/// Ported from adm-utils: https://github.com/Admer456/adm-utils/blob/master/src/Text/Lexer.hpp
 	/// </summary>
+	/// <remarks>Right now it works with <see cref="string"/>, it may be worth investigating a <see cref="ReadOnlySpan{T}"/> version.</remarks>
 	public class Lexer
 	{
 		#region Constructors
