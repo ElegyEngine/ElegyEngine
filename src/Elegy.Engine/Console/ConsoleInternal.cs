@@ -12,6 +12,8 @@ namespace Elegy
 			Console.SetConsole( this );
 
 			InitialiseArguments( args );
+
+			mEngineConvarRegistry = new( typeof(Engine).Assembly );
 		}
 
 		public bool Init()
@@ -24,6 +26,7 @@ namespace Elegy
 			Console.Verbose = mArguments.GetBool( "-verbose" );
 			Console.Developer = Console.Verbose || mArguments.GetBool( "-developer" );
 
+			mEngineConvarRegistry.RegisterAll();
 			return true;
 		}
 
@@ -39,8 +42,9 @@ namespace Elegy
 				}
 			}
 			mFrontends.Clear();
-
 			mArguments.Clear();
+
+			mEngineConvarRegistry.UnregisterAll();
 		}
 
 		public void Log( string message, ConsoleMessageType type = ConsoleMessageType.Info )
@@ -242,6 +246,7 @@ namespace Elegy
 			}
 		}
 
+		private ConVarRegistry mEngineConvarRegistry;
 		private List<IConsoleFrontend> mFrontends = new();
 		private StringDictionary mArguments = new();
 		private Dictionary<string, ConCommand> mCommands = new();

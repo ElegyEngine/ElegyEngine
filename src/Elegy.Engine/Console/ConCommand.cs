@@ -7,6 +7,8 @@ public static ConCommand cmdMap = new( "map", ( args ) => RunMap( args[0] ) )
 };
  */
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Elegy
 {
 	/// <summary>
@@ -38,7 +40,7 @@ namespace Elegy
 		/// <param name="args">The current arguments provided to the console.</param>
 		/// <param name="outMessage">A message to the user about their error, if <c>false</c> is returned.</param>
 		/// <returns>If everything is correct.</returns>
-		public delegate bool ValidateMethod( string[] args, ref string outMessage );
+		public delegate bool ValidateMethod( string[] args, [NotNullWhen(false)] out string? outMessage );
 
 		/// <summary>
 		/// The name of this console command.
@@ -77,7 +79,11 @@ namespace Elegy
 		/// <summary>
 		/// Default validate implementation. Everything goes.
 		/// </summary>
-		public static bool DefaultValidate( string[] args, ref string outMessage ) => true;
+		public static bool DefaultValidate( string[] args, out string? outMessage )
+		{
+			outMessage = null;
+			return true;
+		}
 
 		/// <summary>
 		/// Validates parameters

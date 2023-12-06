@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Assets;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Elegy
 {
@@ -28,6 +29,28 @@ namespace Elegy
 		public static DateTime StartupTime { get; private set; }
 
 		public const string Tag = "Engine";
+
+		private static bool ValidateTestCommand( string[] args, [NotNullWhen(false)] out string? outMessage )
+		{
+			outMessage = null;
+
+			if ( args.Length != 2 )
+			{
+				outMessage = $"The 'test' command requires strictly 2 arguments, you provided {args.Length}.";
+				return false;
+			}
+
+			return true;
+		}
+
+		public static ConCommand Command_Test = new( "test", ( args ) =>
+		{
+			Console.Log( Tag, $"Sweet! You managed to call the command with '{args[0]}' and '{args[1]}'.", ConsoleMessageType.Success );
+			return true;
+		} )
+		{
+			Validate = ValidateTestCommand
+		};
 
 		public Engine( Node3D rootNode, string[] args )
 		{
