@@ -193,23 +193,29 @@ namespace Elegy
 			string commandName = command;
 			string[] commandArguments = Array.Empty<string>();
 
-			if ( command.Contains( ' ' ) )
+			int firstSpace = command.IndexOf( ' ' );
+			if ( firstSpace != -1 )
 			{
-				// TODO: command arguments
-				Console.Warning( Tag, $"Command arguments are not yet implemented" );
-				return false;
+				// I'd really like to do something along the lines of
+				// ReadOnlySpan<char>[] on this, but this'll do for now!
+				commandArguments = command.Substring( firstSpace ).Split( ' ', StringSplitOptions.RemoveEmptyEntries );
+				commandName = command.Substring( 0, firstSpace );
 			}
 
 			if ( !mCommands.ContainsKey( commandName ) )
 			{
-				Console.Warning( Tag, $"Command '{command}' does not exist!" );
+				Console.Warning( Tag, $"Command '{commandName}' does not exist!" );
 				return false;
 			}
 
 			ConCommand concommand = mCommands[commandName];
-			concommand.Method( commandArguments );
-
-			return true;
+			if ( !concommand.Validate( commandArguments, out var outMessage ) )
+			{
+				Console.Warning( outMessage );
+				return false;
+			}
+			
+			return concommand.Method( commandArguments );
 		}
 
 		private void InitialiseArguments( string[] args )
