@@ -1,4 +1,7 @@
 
+using System.Diagnostics;
+using System.Reflection;
+
 namespace Elegy
 {
 	/// <summary>
@@ -14,10 +17,16 @@ namespace Elegy
 			for ( int i = 0; i < types.Length; i++ )
 			{
 				var type = types[i];
-				var staticMembers = type.GetFields( BindingFlags.DeclaredOnly | BindingFlags.Static );
-				foreach ( var staticMember in staticMembers )
+				var members = type.GetFields( 
+					BindingFlags.DeclaredOnly |
+					BindingFlags.DeclaredOnly |
+					BindingFlags.Static |
+					BindingFlags.Public | 
+					BindingFlags.NonPublic );
+
+				foreach ( var staticMember in members )
 				{
-					if ( staticMember.GetType() == typeof( ConCommand ) )
+					if ( staticMember.FieldType == typeof( ConCommand ) )
 					{
 						ConCommand? cmd = staticMember.GetValue( null ) as ConCommand;
 						Commands.Add( cmd );
