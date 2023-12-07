@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Assets;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Elegy
 {
@@ -30,28 +29,44 @@ namespace Elegy
 
 		public const string Tag = "Engine";
 
-		private static bool ValidateTestCommand( string[] args, [NotNullWhen(false)] out string? outMessage )
+		#region Console commands
+		[ConsoleCommand( "test" )]
+		public static bool Command_Test( int a, int b = 20 )
 		{
-			outMessage = null;
-
-			if ( args.Length != 2 )
-			{
-				outMessage = $"The 'test' command requires strictly 2 arguments, you provided {args.Length}.";
-				return false;
-			}
-
+			Console.Log( $"You've successfully called 'test' with {a} and {b}!" );
 			return true;
 		}
 
-		public static ConCommand Command_Test = new( "test", ( args ) =>
+		[ConsoleCommand( "test_badparams" )]
+		public static bool Command_BadParameters( byte a, short b, long c, Half d, DateTime e )
 		{
-			Console.Log( Tag, $"Sweet! You managed to call the command with '{args[0]}' and '{args[1]}'.", ConsoleMessageType.Success );
 			return true;
-		} )
-		{
-			Validate = ValidateTestCommand
-		};
+		}
 
+		[ConsoleCommand( "test_badreturn" )]
+		public static int Command_BadReturnType( int a )
+		{
+			return 0;
+		}
+
+		[ConsoleCommand( "test_args" )]
+		public static void Command_OnlyArgs( string[] args )
+		{
+
+		}
+
+		[ConsoleCommand( "test_noparams" )]
+		public static void Command_NoParameters()
+		{
+
+		}
+
+		[ConsoleCommand( "test_nonstatic" )]
+		public void Command_NonStatic()
+		{
+
+		}
+		#endregion
 		public Engine( Node3D rootNode, string[] args )
 		{
 			mCommandlineArgs = args;
@@ -124,7 +139,7 @@ namespace Elegy
 			{
 				Console.Warning( Tag, "This is an early in-development build of the engine. DO NOT use in production!" );
 			}
-			
+
 			Console.Log( Tag, $"Working directory: '{Directory.GetCurrentDirectory()}'", ConsoleMessageType.Verbose );
 			return true;
 		}
@@ -176,7 +191,7 @@ namespace Elegy
 			mFileSystem.Shutdown();
 			mFileSystem = null;
 			FileSystem.SetFileSystem( null );
-			
+
 			mConsole.Shutdown();
 			mConsole = null;
 			Console.SetConsole( null );

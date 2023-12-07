@@ -1,6 +1,9 @@
 ﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
 // SPDX-License-Identifier: MIT
 
+using Elegy.ConsoleCommands;
+using Elegy.ConsoleCommands.Helpers;
+
 namespace Elegy
 {
 	internal sealed class ConsoleInternal
@@ -10,10 +13,7 @@ namespace Elegy
 		public ConsoleInternal( string[] args )
 		{
 			Console.SetConsole( this );
-
 			InitialiseArguments( args );
-
-			mEngineConvarRegistry = new( typeof(Engine).Assembly );
 		}
 
 		public bool Init()
@@ -26,6 +26,12 @@ namespace Elegy
 			Console.Verbose = mArguments.GetBool( "-verbose" );
 			Console.Developer = Console.Verbose || mArguments.GetBool( "-developer" );
 
+			// Register the builtin argument helpers so they can
+			// be used in mEngineConvarRegistry
+			Assembly engineAssembly = Assembly.GetExecutingAssembly();
+			HelperManager.RegisterHelpers( engineAssembly );
+
+			mEngineConvarRegistry = new( engineAssembly );
 			mEngineConvarRegistry.RegisterAll();
 			return true;
 		}

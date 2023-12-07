@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Assets;
+using Elegy.ConsoleCommands;
 
 namespace Elegy
 {
@@ -164,6 +165,8 @@ namespace Elegy
 			mGenericPlugins.Clear();
 			mConsoleRegistries.Clear();
 
+			ConsoleCommands.Helpers.HelperManager.UnregisterAllHelpers();
+
 			mPluginLibraries.Clear();
 			try
 			{
@@ -269,6 +272,11 @@ namespace Elegy
 			{
 				Console.Error( Tag, $"'{path}' (built for '{metadata.EngineVersionString}') is incompatible (current engine ver. '{Engine.VersionString}')" );
 				return null;
+			}
+
+			if ( !ConsoleCommands.Helpers.HelperManager.RegisterHelpers( assembly ) )
+			{
+				Console.Warning( Tag, $"'{assemblyPath}' has one or more console arg. helpers that failed to load, some console commands may not work!" );
 			}
 
 			PluginLibrary library = new( assembly, metadata, path );
