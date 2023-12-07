@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2022-2023 Admer Šuko
 // SPDX-License-Identifier: MIT
 
+using Elegy.ConsoleCommands;
+
 namespace Elegy
 {
 	public static partial class Console
@@ -10,13 +12,13 @@ namespace Elegy
 		/// </summary>
 		/// <returns><c>true</c> upon success, <c>false</c> upon encountering
 		/// a duplicate or other error.</returns>
-		public static bool RegisterCommand( ConCommand command )
+		public static bool RegisterCommand( ConsoleCommand command )
 			=> mConsole.RegisterCommand( command );
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public static void UnregisterCommand( ConCommand command )
+		public static void UnregisterCommand( ConsoleCommand command )
 			=> mConsole.UnregisterCommand( command );
 
 		/// <summary>

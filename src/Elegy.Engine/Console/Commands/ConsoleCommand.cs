@@ -1,6 +1,8 @@
-﻿
+﻿// SPDX-FileCopyrightText: 2023 Admer Šuko
+// SPDX-License-Identifier: MIT
+
 /*
-public static ConCommand cmdMap = new( "map", ( args ) => RunMap( args[0] ) )
+public static ConsoleCommand cmdMap = new( "map", ( args ) => RunMap( args[0] ) )
 {
 	Autocomplete = AutocompleteMapSelection,
 	Validate = ValidateMapSelection
@@ -8,13 +10,14 @@ public static ConCommand cmdMap = new( "map", ( args ) => RunMap( args[0] ) )
  */
 
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
-namespace Elegy
+namespace Elegy.ConsoleCommands
 {
 	/// <summary>
 	/// Console command.
 	/// </summary>
-	public class ConCommand
+	public partial class ConsoleCommand
 	{
 		/// <summary>
 		/// Called when the user has typed this command's <see cref="Name"/> but is
@@ -45,27 +48,27 @@ namespace Elegy
 		/// <summary>
 		/// The name of this console command.
 		/// </summary>
-		public string Name { get; set; }
+		public string Name { get; }
 
 		/// <summary>
 		/// See <see cref="AutocompleteMethod"/> for details.
 		/// </summary>
-		public AutocompleteMethod Autocomplete { get; set; } = DefaultAutocomplete;
+		public AutocompleteMethod Autocomplete { get; init; } = DefaultAutocomplete;
 
 		/// <summary>
 		/// Method to be called when the console command is invoked.
 		/// </summary>
-		public CommandMethod Method { get; set; }
+		public CommandMethod Method { get; }
 
 		/// <summary>
 		/// See <see cref="ValidateMethod"/> for more details.
 		/// </summary>
-		public ValidateMethod Validate { get; set; } = DefaultValidate;
+		public ValidateMethod Validate { get; init; } = DefaultValidate;
 
 		/// <summary>
 		/// Console command constructor.
 		/// </summary>
-		public ConCommand( string name, CommandMethod method )
+		public ConsoleCommand( string name, CommandMethod method )
 		{
 			Name = name;
 			Method = method;
@@ -79,7 +82,7 @@ namespace Elegy
 		/// <summary>
 		/// Default validate implementation. Everything goes.
 		/// </summary>
-		public static bool DefaultValidate( string[] args, out string? outMessage )
+		public static bool DefaultValidate( string[] args, [NotNullWhen(false)] out string? outMessage )
 		{
 			outMessage = null;
 			return true;

@@ -163,7 +163,7 @@ namespace Elegy
 			return true;
 		}
 
-		public bool RegisterCommand( ConCommand command )
+		public bool RegisterCommand( ConsoleCommand command )
 		{
 			if ( mCommands.ContainsKey( command.Name ) )
 			{
@@ -175,7 +175,7 @@ namespace Elegy
 			return true;
 		}
 
-		public bool UnregisterCommand( ConCommand command )
+		public bool UnregisterCommand( ConsoleCommand command )
 		{
 			if ( !mCommands.ContainsKey( command.Name ) )
 			{
@@ -207,7 +207,7 @@ namespace Elegy
 				return false;
 			}
 
-			ConCommand concommand = mCommands[commandName];
+			ConsoleCommand concommand = mCommands[commandName];
 			if ( !concommand.Validate( commandArguments, out var outMessage ) )
 			{
 				Console.Warning( outMessage );
@@ -249,7 +249,7 @@ namespace Elegy
 		private ConVarRegistry mEngineConvarRegistry;
 		private List<IConsoleFrontend> mFrontends = new();
 		private StringDictionary mArguments = new();
-		private Dictionary<string, ConCommand> mCommands = new();
+		private Dictionary<string, ConsoleCommand> mCommands = new();
 		private string mCurrentMessage = string.Empty;
 	}
 }
