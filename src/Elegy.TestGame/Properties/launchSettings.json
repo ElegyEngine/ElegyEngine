@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Via Elegy.Launcher": {
+      "commandName": "Executable",
+      "executablePath": "C:\\GodotProjects\\ElegyLauncher_Exported\\Elegy.Launcher.console.exe",
+      "commandLineArgs": "++ verbose",
+      "workingDirectory": "C:\\GodotProjects\\ElegyLauncher_Exported\\"
+    }
+  }
+}
