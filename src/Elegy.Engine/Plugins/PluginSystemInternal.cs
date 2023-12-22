@@ -28,7 +28,7 @@ namespace Elegy
 				bool someEnginePluginsFailed = false;
 				foreach ( string enginePluginPath in mEnginePlugins )
 				{
-					if ( LoadLibrary( $"{mEnginePath}/{enginePluginPath}" ) == null )
+					if ( LoadLibrary( $"{mEnginePath}/{enginePluginPath}/pluginConfig.json" ) == null )
 					{
 						someEnginePluginsFailed = true;
 					}
@@ -41,7 +41,7 @@ namespace Elegy
 				bool someGamePluginsFailed = false;
 				foreach ( string gamePlugin in FileSystem.CurrentConfig.Plugins )
 				{
-					if ( LoadLibrary( $"{FileSystem.CurrentGamePath}/{gamePlugin}" ) == null )
+					if ( LoadLibrary( $"{FileSystem.CurrentGamePath}/{gamePlugin}/pluginConfig.json" ) == null )
 					{
 						someGamePluginsFailed = true;
 					}
