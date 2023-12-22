@@ -1,0 +1,18 @@
+{
+	// The relative path of this plugin's DLL.
+	"assemblyName": "Elegy.DevConsole",
+	"description": "Bridge for the external interactive TUI console",
+	"author": "Admer456",
+	"versionDateString": "29/11/2023",
+
+	// Engine version this was built against. If you're running this against
+	// an imaginary Elegy 0.2, it won't work due to API differences, and the
+	// engine will refuse to load the plugin.
+	"engineVersion": "0.1",
+
+	// This is very important to specify, because it says which type of plugin it is.
+	// The engine's plugin system uses this info to locate the class which implements
+	// this interface, and then instantiates it. This does mean that you cannot have
+	// two or more classes that implement the same plugin interface.
+	"implementedInterface": "IConsoleFrontend"
+}

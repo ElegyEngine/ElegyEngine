@@ -1,0 +1,8 @@
+{
+	"assemblyName": "Game",
+	"description": "Basic sample game for testing",
+	"author": "Admer456",
+	"versionDateString": "14/01/2023",
+	"engineVersion": "0.1",
+	"implementedInterface": "IApplication"
+}

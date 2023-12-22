@@ -1,0 +1,18 @@
+{
+	"configName": "Default",
+
+	// The folder in which engine assets will be looked for (e.g. "missing texture" texture).
+	"engineFolder": "engine",
+
+	// The folder in which main game assets will be looked for.
+	// In this folder, the engine's plugin system will look for a file called "applicationConfig.json",
+	// so definitely visit game/applicationConfig.json right about now.
+	"baseFolder": "game",
+
+	// The engine has its own plugins, and these will be loaded in every game.
+	// Of course, you can always make another engine config intended for playing,
+	// which won't have these debugging things.
+	"enginePlugins": [
+		"plugins/DevConsole"
+	]
+}

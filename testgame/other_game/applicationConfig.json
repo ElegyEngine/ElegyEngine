@@ -1,0 +1,12 @@
+{
+	"title": "Other test game", // The purpose of this is just to showcase some really basic mounting
+	"developer": "Bosnian Car Battery LLC",
+	"publisher": "Middle Finger Co.",
+	"version": "v1.99",
+
+	"plugins": [
+	],
+
+	"mounts": [
+	]
+}
