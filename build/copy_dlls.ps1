@@ -1,20 +1,25 @@
 
+param(
+	[switch]$release = $false
+)
+
 Write-Host "========= COPYING MODULES ========="
 
 ## Put your own paths here
-$input_dir = Get-Location ## Might wanna replace this with something like "$PSScriptRoot/.." but oh well
-$output_dir = "E:/Workfolders/Elegy/Games/TestBench"
+$input_dir = "$PSScriptRoot/.."
+$output_dir = "$input_dir/testgame"
 
-## Create the bin directory if it doesn't exist
-if ( !(Test-Path -Path "$output_dir/game") )
+$build_config = $release ? "Release" : "Debug"
+Write-Output "Configuration: $build_config"
+if ( !$release )
 {
-	Write-Output "There is no 'game' folder in '$output_dir', creating one right now..."
-	New-Item -Path "$output_dir/game" -ItemType directory
+	Write-Output "If you'd like to use the Release configuration, use the -release flag"
 }
 
 ## Copy the debug DLLs there
-Copy-Item "$input_dir/src/Elegy.DevConsole/bin/Debug/net6.0/Elegy.DevConsole.*"	-Destination "$output_dir/engine/plugins"
-Copy-Item "$input_dir/src/Elegy.Common/bin/Debug/net6.0/Elegy.Common.*"			-Destination "$output_dir"
-Copy-Item "$input_dir/src/Elegy.Engine/bin/Debug/net6.0/Elegy.Engine.*"			-Destination "$output_dir"
+Copy-Item "$input_dir/src/Elegy.DevConsole/bin/$build_config/net6.0/Elegy.DevConsole.*"	-Destination "$output_dir/engine/plugins/DevConsole"
+Copy-Item "$input_dir/src/Elegy.TestGame/bin/$build_config/net6.0/Game.*"				-Destination "$output_dir/game/plugins/Game"
+Copy-Item "$input_dir/src/Elegy.Common/bin/$build_config/net6.0/Elegy.Common.*"			-Destination "$output_dir"
+Copy-Item "$input_dir/src/Elegy.Engine/bin/$build_config/net6.0/Elegy.Engine.*"			-Destination "$output_dir"
 
 Write-Output "Successfully copied Elegy.DevConsole.dll, Elegy.Common.dll and Elegy.Engine.dll into '$output_dir'"
