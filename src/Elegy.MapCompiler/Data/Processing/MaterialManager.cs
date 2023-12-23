@@ -4,8 +4,6 @@
 // TODO: Replace with Elegy's material system when it has one
 
 using Elegy.Assets;
-using Godot;
-using System.Buffers.Binary;
 
 namespace Elegy.MapCompiler.Data.Processing
 {

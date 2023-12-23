@@ -9,8 +9,6 @@ namespace Elegy.Assets
 {
 	public class BrushMapDocument
 	{
-		public const string Tag = "BrushMapDocument";
-
 		public void MergeInto( string parentClass, string mergedClass )
 		{
 			Entity? worldspawn = MapEntities.Find( e => e.ClassName == parentClass );
