@@ -1,4 +1,6 @@
-﻿
+﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
+// SPDX-License-Identifier: MIT
+
 namespace Elegy
 {
 	public partial class Console
