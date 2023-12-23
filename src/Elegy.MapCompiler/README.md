@@ -9,9 +9,9 @@ What it currently does and doesn't:
 * [x] Basic culling (removal of nodraw faces)
 * [ ] Advanced culling (CSG-based) 
 * [ ] Smooth normals
-* [ ] Octree partitioning
+* [ ] Dual grid partitioning
 * [x] Writing in Elegy's `.elf` level format
-* [ ] Visibility computation (octree PVS)
+* [ ] Visibility computation (grid PVS)
 * [ ] Lightmapping
 
 *Note: super early WiP, check back in 2024!*
