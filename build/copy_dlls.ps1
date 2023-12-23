@@ -9,7 +9,12 @@ Write-Host "========= COPYING MODULES ========="
 $input_dir = "$PSScriptRoot/.."
 $output_dir = "$input_dir/testgame"
 
-$build_config = $release ? "Release" : "Debug"
+$build_config = "Debug"
+if ( $release )
+{
+	$build_config = "Release"
+}
+
 Write-Output "Configuration: $build_config"
 if ( !$release )
 {
