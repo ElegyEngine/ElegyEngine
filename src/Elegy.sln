@@ -17,6 +17,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.MaterialGenerator", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.TestGame", "Elegy.TestGame\Elegy.TestGame.csproj", "{AB3F2BC5-BA9B-492A-931C-E4B7FEAE834E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{5EF00ABB-3E75-406C-ABC0-1799A8D2AA5D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{67E68E0F-70F6-4A7B-84A1-0172F9222F44}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{CC1F6BCD-8998-4934-A18E-848DDD5D9B1E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +60,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{21B4217B-C923-47D4-8974-94592E74FC51} = {CC1F6BCD-8998-4934-A18E-848DDD5D9B1E}
+		{3E9CF437-CEE4-4172-9A57-93010EC6D8B3} = {CC1F6BCD-8998-4934-A18E-848DDD5D9B1E}
+		{FABB361E-F868-4A5E-B614-CA3D6E696F5C} = {67E68E0F-70F6-4A7B-84A1-0172F9222F44}
+		{14BFF80B-74C8-4AC9-BE59-6DAE68FA517B} = {5EF00ABB-3E75-406C-ABC0-1799A8D2AA5D}
+		{137CA965-44F0-44A4-BBEE-D988E6EF6E5C} = {5EF00ABB-3E75-406C-ABC0-1799A8D2AA5D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {78AE737A-E080-41E8-84B7-5EFB2C7E7E5B}
