@@ -26,7 +26,6 @@ From an inner workings POV, this is what's going on in the console system and he
 */
 
 using Elegy.ConsoleCommands.Helpers;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 namespace Elegy.ConsoleCommands
