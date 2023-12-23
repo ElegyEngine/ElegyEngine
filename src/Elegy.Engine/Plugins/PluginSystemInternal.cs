@@ -81,8 +81,8 @@ namespace Elegy
 					return;
 				}
 
-				// Register static CVars here so they can be tracked and unregistered when the plugin is unloaded
-				ConsoleCommands.ConVarRegistry cvarRegistry = new( library.Assembly );
+				// Register CVars here so they can be tracked and unregistered when the plugin is unloaded
+				ConsoleCommands.ConVarRegistry cvarRegistry = new( library.Assembly, plugin );
 				cvarRegistry.RegisterAll();
 
 				if ( !plugin.Init() )

@@ -23,6 +23,11 @@ namespace TestGame.Client
 			set => mRoot.Visible = value;
 		}
 
+		public bool InGame
+		{
+			set => mLeaveGameButton.Disabled = !value;
+		}
+
 		public void Init()
 		{
 			mRoot.Size = mRoot.GetViewportRect().Size;

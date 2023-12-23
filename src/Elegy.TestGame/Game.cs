@@ -123,7 +123,8 @@ namespace TestGame
 			}
 		}
 
-		private void StartGame( string mapFile )
+		[ConsoleCommand( "map" )]
+		public void StartGame( string mapFile )
 		{
 			if ( mGameIsLoaded )
 			{
@@ -202,9 +203,13 @@ namespace TestGame
 
 			Console.Success( Tag, "Map successfully loaded, enjoy" );
 			mGameIsLoaded = true;
+
+			mMenu.Visible = false;
+			mMenu.InGame = true;
 		}
 
-		void LeaveGame()
+		[ConsoleCommand( "disconnect" )]
+		public void LeaveGame()
 		{
 			if ( !mGameIsLoaded )
 			{
@@ -221,6 +226,15 @@ namespace TestGame
 			mWorldspawnNode.QueueFree();
 
 			mGameIsLoaded = false;
+			mMenu.Visible = true;
+			mMenu.InGame = false;
+		}
+
+		[ConsoleCommand( "exit" )]
+		public void Exit()
+		{
+			LeaveGame();
+			mUserWantsToExit = true;
 		}
 
 		#region Move elsewhere

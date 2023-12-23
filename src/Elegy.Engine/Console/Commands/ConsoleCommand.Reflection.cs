@@ -86,7 +86,7 @@ namespace Elegy.ConsoleCommands
 		}
 
 		// The method can be of any signature, we gotta ensure that the string arguments passed in are all tidy
-		private static CommandMethod GetOrCreateCommand( Dictionary<string, ConsoleParameter> dictionary, MethodInfo method )
+		private static CommandMethod GetOrCreateCommand( Dictionary<string, ConsoleParameter> dictionary, MethodInfo method, IPlugin? instance = null )
 		{
 			var parametres = method.GetParameters();
 			bool hasSimpleParams = parametres.Length == 1 && parametres[0].ParameterType == typeof( string[] );
@@ -95,9 +95,9 @@ namespace Elegy.ConsoleCommands
 
 			Func<string[], object?> methodInvocation = (hasSimpleParams, hasNoParams) switch
 			{
-				(true, false) => (args) => method.Invoke( null, new object[] { args } ),
-				(false, true) => (args) => method.Invoke( null, null ),
-				(false, false) => (args) => method.Invoke( null, ResolveCommandParametres( args, dictionary ) ),
+				(true, false) => (args) => method.Invoke( instance, new object[] { args } ),
+				(false, true) => (args) => method.Invoke( instance, null ),
+				(false, false) => (args) => method.Invoke( instance, ResolveCommandParametres( args, dictionary ) ),
 				_ => throw new NotSupportedException() // You can't have both simple and no params
 			};
 
@@ -117,17 +117,18 @@ namespace Elegy.ConsoleCommands
 		}
 
 		/// <summary>
-		/// Creates a <see cref="ConsoleCommand"/> from a provided <paramref name="method"/>, which must be <c>static</c>,
-		/// and its parametres must be primitives (<see cref="int"/>, <see cref="float"/> etc.) or <see cref="string"/>.
+		/// Creates a <see cref="ConsoleCommand"/> from a provided <paramref name="method"/>, whose parametres
+		/// must be primitives (<see cref="int"/>, <see cref="float"/> etc.) or <see cref="string"/>.
+		/// If <paramref name="instance"/> is not provided, <paramref name="method"/> must be static.
 		/// </summary>
-		public static ConsoleCommand? FromMethod( MethodInfo method, ConsoleCommandAttribute attribute )
+		public static ConsoleCommand? FromMethod( MethodInfo method, ConsoleCommandAttribute attribute, IPlugin? instance = null )
 		{
 			bool isOkay = true;
 
-			if ( !method.IsStatic )
+			if ( instance is null && !method.IsStatic )
 			{
 				Console.Error( "ConsoleCommand",
-					$"Method '{method.Name}' is not static. Nonstatic commands are not yet supported." );
+					$"Can't register instance method '{method.DeclaringType.Name}.{method.Name}' without an instance of {method.DeclaringType.Name}." );
 				isOkay = false;
 			}
 
@@ -181,7 +182,7 @@ namespace Elegy.ConsoleCommands
 
 			AutocompleteMethod autocomplete = GetOrCreateAutocomplete( dictionary, method );
 			ValidateMethod validate = GetOrCreateValidate( dictionary, method );
-			CommandMethod commandMethod = GetOrCreateCommand( dictionary, method );
+			CommandMethod commandMethod = GetOrCreateCommand( dictionary, method, instance );
 
 			return new ConsoleCommand( attribute.Name, commandMethod )
 			{
