@@ -7,11 +7,11 @@ namespace TestGame
 {
 	public class Game : IApplication
 	{
+		private TaggedLogger mLogger = new( "Game" );
+
 		public string Name => "Elegy test game";
 		public string Error { get; private set; } = string.Empty;
 		public bool Initialised { get; private set; } = false;
-
-		public const string Tag = "Game";
 
 		public Game()
 		{
@@ -20,22 +20,22 @@ namespace TestGame
 
 		public bool Init()
 		{
-			Console.Log( Tag, "Init" );
+			mLogger.Log( "Init" );
 			Initialised = true;
 
 			ApplicationConfig gameConfig = FileSystem.CurrentConfig;
 
-			Console.Log( Tag,   $"Name:      {gameConfig.Title}" );
-			Console.Log( $"       Developer: {gameConfig.Developer}" );
-			Console.Log( $"       Publisher: {gameConfig.Publisher}" );
-			Console.Log( $"       Version:   {gameConfig.Version}" );
+			mLogger.Log( $" Name:      {gameConfig.Title}" );
+			mLogger.Log( $" Developer: {gameConfig.Developer}" );
+			mLogger.Log( $" Publisher: {gameConfig.Publisher}" );
+			mLogger.Log( $" Version:   {gameConfig.Version}" );
 
 			return true;
 		}
 
 		public bool Start()
 		{
-			Console.Log( Tag, "Start" );
+			mLogger.Log( "Start" );
 
 			mMenu.OnNewGame = ( string mapName ) =>
 			{
@@ -61,7 +61,7 @@ namespace TestGame
 
 		public void Shutdown()
 		{
-			Console.Log( Tag, "Shutdown" );
+			mLogger.Log( "Shutdown" );
 			
 			mEntities.Clear();
 			mClient = null;
@@ -142,7 +142,7 @@ namespace TestGame
 				return;
 			}
 
-			Console.Log( Tag, $"Starting 'maps/{mapFile}'..." );
+			mLogger.Log( $"Starting 'maps/{mapFile}'..." );
 			string? mapPath = FileSystem.PathTo( $"maps/{mapFile}", PathFlags.File );
 			if ( mapPath is null )
 			{
@@ -201,7 +201,7 @@ namespace TestGame
 				Controller = FindEntity<Entities.InfoPlayerStart>()?.SpawnPlayer( this ) ?? CreateEntity<Entities.Player>()
 			};
 
-			Console.Success( Tag, "Map successfully loaded, enjoy" );
+			mLogger.Success( "Map successfully loaded, enjoy" );
 			mGameIsLoaded = true;
 
 			mMenu.Visible = false;
@@ -216,7 +216,7 @@ namespace TestGame
 				return;
 			}
 
-			Console.Log( Tag, "Leaving the game..." );
+			mLogger.Log( "Leaving the game..." );
 
 			mMap = null;
 			mClient = null;
