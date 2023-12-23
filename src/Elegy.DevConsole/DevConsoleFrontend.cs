@@ -47,7 +47,7 @@ namespace Elegy.DevConsole
 
 		public bool Initialised { get; set; } = false;
 
-		public const string Tag = "DevConsole";
+		private TaggedLogger mLogger = new( "DevConsole" );
 
 		public DevConsoleFrontend()
 		{
@@ -66,7 +66,7 @@ namespace Elegy.DevConsole
 				return false;
 			}
 
-			Console.Log( Tag, "Bridge has been established!", ConsoleMessageType.Developer );
+			mLogger.Developer( "Bridge has been established!" );
 
 			mThreadData.Mode = ThreadData.ConnectionMode.Active;
 
@@ -105,12 +105,12 @@ namespace Elegy.DevConsole
 		{
 			if ( data.Length == 0 )
 			{
-				Console.Error( Tag, "Received empty packet from external console" );
+				mLogger.Error( "Received empty packet from external console" );
 				return;
 			}
 			else if ( data.Length < 2 )
 			{
-				Console.Error( Tag, $"Invalid packet data from external console: {Encoding.ASCII.GetString(data)}" );
+				mLogger.Error( $"Invalid packet data from external console: {Encoding.ASCII.GetString(data)}" );
 				return;
 			}
 
@@ -118,14 +118,14 @@ namespace Elegy.DevConsole
 			char receivedType = buffer.ReadChar();
 			if ( receivedType != 'C' )
 			{
-				Console.Log( Tag, $"Received message type '{receivedType}' is not supported!" );
-				Console.Log( Tag, $"Raw data: {Encoding.ASCII.GetString(data)}" );
+				mLogger.Log( $"Received message type '{receivedType}' is not supported!" );
+				mLogger.Log( $"Raw data: {Encoding.ASCII.GetString(data)}" );
 				return;
 			}
 
 			string receivedCommand = buffer.ReadStringAscii( StringLength.Short );
 
-			Console.Log( Tag, $"Received data: {receivedCommand} (raw: '{Encoding.ASCII.GetString( data )}')", ConsoleMessageType.Verbose );
+			mLogger.Verbose( $"Received data: {receivedCommand} (raw: '{Encoding.ASCII.GetString( data )}')" );
 
 			Console.Execute( receivedCommand );
 		}
@@ -148,16 +148,16 @@ namespace Elegy.DevConsole
 			{
 				string peerString = $"'{peer.GetRemoteAddress()}:{peer.GetRemotePort()}'";
 				mPeerMap[peer] = peerString;
-				Console.Log( Tag, $"Connection established! (from {peerString})", ConsoleMessageType.Developer );
+				mLogger.Developer( $"Connection established! (from {peerString})" );
 			}
 			else if ( eventType == ENetConnection.EventType.Disconnect )
 			{
-				Console.Log( Tag, $"Connection terminated (with {mPeerMap[peer]})", ConsoleMessageType.Developer );
+				mLogger.Developer( $"Connection terminated (with {mPeerMap[peer]})" );
 				mPeerMap.Remove( peer );
 			}
 			else if ( eventType == ENetConnection.EventType.Receive )
 			{
-				Console.Log( Tag, $"Received data ({serviceResult[2].AsByteArray().Length} bytes)", ConsoleMessageType.Verbose );
+				mLogger.Verbose( $"Received data ({serviceResult[2].AsByteArray().Length} bytes)" );
 			}
 		}
 
@@ -251,7 +251,7 @@ namespace Elegy.DevConsole
 
 		public void Shutdown()
 		{
-			Console.Log( Tag, "Shutdown" );
+			mLogger.Log( "Shutdown" );
 			Initialised = false;
 
 			// Force send all messages
