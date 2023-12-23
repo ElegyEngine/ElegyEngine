@@ -1,0 +1,13 @@
+
+# Elegy DLLs
+Elegy.Common*
+Elegy.Engine*
+Elegy.DevConsole*
+
+# Game DLL stuff
+Game.dll
+Game.deps.json
+
+# Elegy launcher and Godot stuff
+Elegy.Launcher*
+data_Elegy.Launcher*
