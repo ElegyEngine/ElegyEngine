@@ -8,8 +8,8 @@ namespace Elegy
 {
 	internal sealed class ConsoleInternal
 	{
-		public const string Tag = "Console";
-
+		private TaggedLogger mLogger = new( "Console" );
+		
 		public ConsoleInternal( string[] args )
 		{
 			Console.SetConsole( this );
@@ -19,7 +19,7 @@ namespace Elegy
 		public bool Init()
 		{
 			Console.SetConsole( this );
-			Console.Log( Tag, "Init" );
+			mLogger.Log( "Init" );
 
 			AddFrontend( new ConsoleFrontends.GodotConsoleFrontend() );
 
@@ -38,7 +38,7 @@ namespace Elegy
 
 		public void Shutdown()
 		{
-			Console.Log( Tag, "Shutdown" );
+			mLogger.Log( "Shutdown" );
 
 			foreach ( IConsoleFrontend frontend in mFrontends )
 			{
@@ -128,7 +128,7 @@ namespace Elegy
 		{
 			if ( mFrontends.Contains( frontend ) )
 			{
-				Console.Log( Tag, $"Frontend '{frontend.Name}' already added", ConsoleMessageType.Verbose );
+				mLogger.Verbose( $"Frontend '{frontend.Name}' already added" );
 				return true;
 			}
 
@@ -143,11 +143,11 @@ namespace Elegy
 			if ( frontend.Error == string.Empty )
 			{
 				mFrontends.Add( frontend );
-				Console.Log( Tag, $"Added frontend '{frontend.Name}'", ConsoleMessageType.Developer );
+				mLogger.Developer( $"Added frontend '{frontend.Name}'" );
 				return true;
 			}
 
-			Console.Warning( Tag, $"'{frontend.Name}' failed to initialise with message: '{frontend.Error}'" );
+			mLogger.Warning( $"'{frontend.Name}' failed to initialise with message: '{frontend.Error}'" );
 			return false;
 		}
 
@@ -155,7 +155,7 @@ namespace Elegy
 		{
 			if ( !mFrontends.Exists( internalFrontend => internalFrontend == frontend ) )
 			{
-				Console.Warning( Tag, $"Frontend '{frontend.Name}' is already removed" );
+				mLogger.Warning( $"Frontend '{frontend.Name}' is already removed" );
 				return false;
 			}
 			
@@ -165,7 +165,7 @@ namespace Elegy
 			}
 
 			mFrontends.Remove( frontend );
-			Console.Log( Tag, $"Removed frontend '{frontend.Name}'" );
+			mLogger.Log( $"Removed frontend '{frontend.Name}'" );
 			return true;
 		}
 
@@ -173,7 +173,7 @@ namespace Elegy
 		{
 			if ( mCommands.ContainsKey( command.Name ) )
 			{
-				Console.Warning( Tag, $"Tried registering command '{command.Name}', already exists!" );
+				mLogger.Warning( $"Tried registering command '{command.Name}', already exists!" );
 				return false;
 			}
 
@@ -185,7 +185,7 @@ namespace Elegy
 		{
 			if ( !mCommands.ContainsKey( command.Name ) )
 			{
-				Console.Warning( Tag, $"Tried unregistering command '{command.Name}', but it's not there!" );
+				mLogger.Warning( $"Tried unregistering command '{command.Name}', but it's not there!" );
 				return false;
 			}
 
@@ -209,7 +209,7 @@ namespace Elegy
 
 			if ( !mCommands.ContainsKey( commandName ) )
 			{
-				Console.Warning( Tag, $"Command '{commandName}' does not exist!" );
+				mLogger.Warning( $"Command '{commandName}' does not exist!" );
 				return false;
 			}
 
@@ -227,13 +227,13 @@ namespace Elegy
 		{
 			if ( args.Length == 0 )
 			{
-				Console.Log( Tag, "Launch arguments: empty", ConsoleMessageType.Verbose );
+				mLogger.Verbose( "Launch arguments: empty" );
 				return;
 			}
 
 			var isKey = ( string text ) => text.StartsWith( "-" ) || text.StartsWith( "+" );
 
-			Console.Log( Tag, "Launch arguments:", ConsoleMessageType.Verbose );
+			mLogger.Verbose( "Launch arguments:" );
 
 			for ( int i = 0; i < args.Length; i++ )
 			{
@@ -247,7 +247,7 @@ namespace Elegy
 					}
 
 					mArguments[args[i]] = value;
-					Console.Log( $"    * '{args[i]}' = '{value}'", ConsoleMessageType.Verbose );
+					mLogger.Verbose( $"   * '{args[i]}' = '{value}'" );
 				}
 			}
 		}

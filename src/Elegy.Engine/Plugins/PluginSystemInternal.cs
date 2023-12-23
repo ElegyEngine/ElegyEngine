@@ -7,7 +7,7 @@ namespace Elegy
 {
 	internal sealed class PluginSystemInternal
 	{
-		public const string Tag = "PluginSystem";
+		private TaggedLogger mLogger = new( "PluginSystem" );
 
 		public PluginSystemInternal()
 		{
@@ -19,7 +19,7 @@ namespace Elegy
 
 		public bool Init()
 		{
-			Console.Log( Tag, "Init" );
+			mLogger.Log( "Init" );
 
 			// The game etc. will be loaded additionally, when
 			// mounted by FileSystem.
@@ -34,7 +34,7 @@ namespace Elegy
 				}
 				if ( someEnginePluginsFailed )
 				{
-					Console.Warning( Tag, "One or more engine plugins couldn't load, some things may not work!" );
+					mLogger.Warning( "One or more engine plugins couldn't load, some things may not work!" );
 				}
 
 				bool someGamePluginsFailed = false;
@@ -47,11 +47,11 @@ namespace Elegy
 				}
 				if ( someGamePluginsFailed )
 				{
-					Console.Warning( Tag, "One or more base game plugins couldn't load, some things may not work!" );
+					mLogger.Warning( "One or more base game plugins couldn't load, some things may not work!" );
 				}
 			}
 
-			Console.Log( Tag, $"{mPluginLibraries.Count} plugins loaded correctly, initialising them..." );
+			mLogger.Log( $"{mPluginLibraries.Count} plugins loaded correctly, initialising them..." );
 
 			List<string> failedPlugins = new();
 			mPluginLibraries.ForEach( library =>
@@ -140,7 +140,7 @@ namespace Elegy
 
 		public void Shutdown()
 		{
-			Console.Log( Tag, "Shutdown" );
+			mLogger.Log( "Shutdown" );
 
 			// First shut down any app/game app
 			foreach ( var app in mApplicationPlugins )
@@ -173,7 +173,7 @@ namespace Elegy
 			}
 			catch ( Exception ex )
 			{
-				Console.Error( Tag, "Woops, looks like unloading ain't allowed" );
+				mLogger.Error( "Woops, looks like unloading ain't allowed" );
 				Console.Log( "OS", $"Message: {ex.Message}" );
 			}
 		}
@@ -232,12 +232,12 @@ namespace Elegy
 				}
 			}
 
-			Console.Log( Tag, $"Loading '{path}'..." );
+			mLogger.Log( $"Loading '{path}'..." );
 
 			PluginConfig pluginConfig = new();
 			if ( !Text.JsonHelpers.LoadFrom( ref pluginConfig, path ) )
 			{
-				Console.Error( Tag, $"Cannot load '{path}'" );
+				mLogger.Error( $"Cannot load '{path}'" );
 				return null;
 			}
 
@@ -251,7 +251,7 @@ namespace Elegy
 			}
 			catch ( Exception ex )
 			{
-				Console.Error( Tag, $"Failed to load '{assemblyPath}'" );
+				mLogger.Error( $"Failed to load '{assemblyPath}'" );
 				Console.Error( "OS", $"Exception: {ex.Message}" );
 				return null;
 			}
@@ -259,33 +259,33 @@ namespace Elegy
 			PluginLibraryMetadata metadata = new( pluginConfig );
 			if ( !metadata.Validate( out var errorMessages ) )
 			{
-				Console.Error( Tag, $"'{path}' has invalid data:" );
+				mLogger.Error( $"'{path}' has invalid data:" );
 				foreach ( var error in errorMessages )
 				{
-					Console.Log( Tag, " * {error}" );
+					mLogger.Log( " * {error}" );
 				}
 				return null;
 			}
 
 			if ( !metadata.IsCompatible( Engine.MajorVersion, Engine.OldestSupportedMinor ) )
 			{
-				Console.Error( Tag, $"'{path}' (built for '{metadata.EngineVersionString}') is incompatible (current engine ver. '{Engine.VersionString}')" );
+				mLogger.Error( $"'{path}' (built for '{metadata.EngineVersionString}') is incompatible (current engine ver. '{Engine.VersionString}')" );
 				return null;
 			}
 
 			if ( !ConsoleCommands.HelperManager.RegisterHelpers( assembly ) )
 			{
-				Console.Warning( Tag, $"'{assemblyPath}' has one or more console arg. helpers that failed to load, some console commands may not work!" );
+				mLogger.Warning( $"'{assemblyPath}' has one or more console arg. helpers that failed to load, some console commands may not work!" );
 			}
 
 			PluginLibrary library = new( assembly, metadata, path );
 			if ( !library.LoadedSuccessfully )
 			{
-				Console.Error( Tag, $"'{assemblyPath}' implements a non-existing interface '{pluginConfig.ImplementedInterface}'" );
+				mLogger.Error( $"'{assemblyPath}' implements a non-existing interface '{pluginConfig.ImplementedInterface}'" );
 				return null;
 			}
 
-			Console.Log( Tag, $"'{assemblyPath}' loaded successfully" );
+			mLogger.Log( $"'{assemblyPath}' loaded successfully" );
 			mPluginLibraries.Add( library );
 			return library;
 		}

@@ -27,7 +27,7 @@ namespace Elegy
 
 		public static DateTime StartupTime { get; private set; }
 
-		public const string Tag = "Engine";
+		private TaggedLogger mLogger = new( "Engine" );
 
 		#region Console commands
 		[ConsoleCommand( "test" )]
@@ -92,7 +92,7 @@ namespace Elegy
 
 			if ( mEngineConfig.ConfigName != null )
 			{
-				Console.Log( Tag, $"Engine config: '{mEngineConfig.ConfigName}'", ConsoleMessageType.Developer );
+				mLogger.Developer( $"Engine config: '{mEngineConfig.ConfigName}'" );
 			}
 
 			mFileSystem = new( mEngineConfig );
@@ -121,7 +121,7 @@ namespace Elegy
 				return Shutdown( "Material system failure", true );
 			}
 
-			Console.Log( Tag, "Successfully initialised all systems" );
+			mLogger.Log( "Successfully initialised all systems" );
 			return true;
 		}
 
@@ -137,10 +137,10 @@ namespace Elegy
 
 			if ( MajorVersion < 1 )
 			{
-				Console.Warning( Tag, "This is an early in-development build of the engine. DO NOT use in production!" );
+				mLogger.Warning( "This is an early in-development build of the engine. DO NOT use in production!" );
 			}
 
-			Console.Log( Tag, $"Working directory: '{Directory.GetCurrentDirectory()}'", ConsoleMessageType.Verbose );
+			mLogger.Verbose( $"Working directory: '{Directory.GetCurrentDirectory()}'" );
 			return true;
 		}
 
@@ -148,7 +148,7 @@ namespace Elegy
 		{
 			if ( !File.Exists( path ) )
 			{
-				Console.Log( Tag, $"'{path}' does not exist, creating a default one..." );
+				mLogger.Log( $"'{path}' does not exist, creating a default one..." );
 
 				mEngineConfig = new();
 				Text.JsonHelpers.Write( mEngineConfig, path );
@@ -157,7 +157,7 @@ namespace Elegy
 
 			if ( !Text.JsonHelpers.LoadFrom( ref mEngineConfig, path ) )
 			{
-				Console.Error( Tag, $"'{path}' somehow failed to load" );
+				mLogger.Error( $"'{path}' somehow failed to load" );
 				return false;
 			}
 
@@ -173,11 +173,11 @@ namespace Elegy
 
 			if ( why == "" )
 			{
-				Console.Log( Tag, "Shutting down normally..." );
+				mLogger.Log( "Shutting down normally..." );
 			}
 			else
 			{
-				Console.Error( Tag, $"Shutting down, reason: {why}" );
+				mLogger.Error( $"Shutting down, reason: {why}" );
 			}
 
 			mMaterialSystem.Shutdown();

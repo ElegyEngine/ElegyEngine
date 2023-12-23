@@ -10,7 +10,7 @@ namespace Elegy.ConsoleCommands
 	/// </summary>
 	internal static class HelperManager
 	{
-		private const string Tag = "ConsoleCommands.HelperManager";
+		private static TaggedLogger mLogger = new( "Cons..HelperManager" );
 
 		private static Dictionary<Assembly, List<IConsoleArgumentHelper>> mHelpersByAssembly { get; } = new();
 
@@ -33,7 +33,7 @@ namespace Elegy.ConsoleCommands
 
 			if ( Helpers.ContainsKey( type ) )
 			{
-				Console.Warning( Tag, $"'{type.FullName}' cannot be registered.\nIts type ({type.Name}) is already handled by {Helpers[type].GetType().FullName}." );
+				mLogger.Warning( $"'{type.FullName}' cannot be registered.\nIts type ({type.Name}) is already handled by {Helpers[type].GetType().FullName}." );
 				return false;
 			}
 
@@ -76,7 +76,7 @@ namespace Elegy.ConsoleCommands
 				var helper = Activator.CreateInstance( type ) as IConsoleArgumentHelper;
 				if ( helper is null )
 				{
-					Console.Warning( Tag, $"Failed to create instance of '{type.FullName}'" );
+					mLogger.Warning( $"Failed to create instance of '{type.FullName}'" );
 					continue;
 				}
 

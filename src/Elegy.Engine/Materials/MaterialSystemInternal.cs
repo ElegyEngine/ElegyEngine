@@ -23,14 +23,14 @@ namespace Elegy
 			public Material? Material { get; set; } = null;
 		}
 
-		private const string Tag = "MaterialManager";
+		private TaggedLogger mLogger = new( "MaterialManager" );
 
 		private Dictionary<string, MaterialDefinitionPair> mMaterialDefs = new();
 		private Dictionary<string, Texture2D> mTextures = new();
 
 		public bool Init()
 		{
-			Console.Log( Tag, "Init" );
+			mLogger.Log( "Init" );
 
 			Materials.SetMaterialSystem( this );
 
@@ -39,14 +39,14 @@ namespace Elegy
 				string? path = FileSystem.PathTo( $"{directory}/materials", PathFlags.Directory );
 				if ( path is null )
 				{
-					Console.Error( Tag, $"{name} directory doesn't exist or doesn't have any materials!" );
+					mLogger.Error( $"{name} directory doesn't exist or doesn't have any materials!" );
 					return false;
 				}
 
 				var materialDocumentPaths = FileSystem.GetEntries( path, "*.shader", PathFlags.File, true );
 				if ( materialDocumentPaths is null || materialDocumentPaths.Length == 0 )
 				{
-					Console.Error( Tag, $"{name}'s materials directory is empty!" );
+					mLogger.Error( $"{name}'s materials directory is empty!" );
 					return false;
 				}
 
@@ -55,7 +55,7 @@ namespace Elegy
 					MaterialDocument document = new( File.ReadAllText( materialDocumentPath ) );
 					if ( document.Materials.Count == 0 )
 					{
-						Console.Warning( Tag, $"Parsed 0 materials in '{materialDocumentPath}'" );
+						mLogger.Warning( $"Parsed 0 materials in '{materialDocumentPath}'" );
 						continue;
 					}
 
@@ -65,13 +65,13 @@ namespace Elegy
 						mMaterialDefs[materialDef.Name] = new( materialDef, null );
 					}
 
-					Console.Success( Tag, $"Parsed {document.Materials.Count} materials in '{materialDocumentPath}'" );
+					mLogger.Success( $"Parsed {document.Materials.Count} materials in '{materialDocumentPath}'" );
 				}
 
 				return true;
 			};
 
-			Console.Log( Tag, "Loading engine materials..." );
+			mLogger.Log( "Loading engine materials..." );
 			if ( !loadMaterialsForDirectory( "Engine", FileSystem.EnginePath ) )
 			{
 				return false;
@@ -106,7 +106,7 @@ namespace Elegy
 				return pair.Material;
 			}
 
-			Console.Warning( Tag, $"Material '{materialName}' doesn't exist" );
+			mLogger.Warning( $"Material '{materialName}' doesn't exist" );
 
 			return new StandardMaterial3D()
 			{
