@@ -9,6 +9,8 @@ Check out [Elegy.TestGame](src/Elegy.TestGame) for an example game module, as we
 * [Elegy.MapCompiler](src/Elegy.MapCompiler) - level compiler tool for TrenchBroom and other Quake map editors
 * [Elegy.MaterialGenerator](src/Elegy.MaterialGenerator) - quickly generate materials from a folder full of texture images
 
+For level designers who use TrenchBroom, a [game config](config/trenchbroom) is provided. Other level editors are likely unsupported but could work depending on how well they do Quake 3.
+
 *Note: early WiP, check back in Q3 2024!*
 
 # Building
