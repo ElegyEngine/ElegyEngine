@@ -1,13 +1,17 @@
 ﻿// SPDX-FileCopyrightText: 2023 Admer Šuko
 // SPDX-License-Identifier: MIT
 
-namespace Elegy.ConsoleCommands.Helpers
+using Elegy.ConsoleCommands.Helpers;
+
+namespace Elegy.ConsoleCommands
 {
 	/// <summary>
 	/// Manages instances of <see cref="IConsoleArgumentHelper"/>.
 	/// </summary>
 	internal static class HelperManager
 	{
+		private const string Tag = "ConsoleCommands.HelperManager";
+
 		private static Dictionary<Assembly, List<IConsoleArgumentHelper>> mHelpersByAssembly { get; } = new();
 
 		/// <summary>
@@ -29,7 +33,7 @@ namespace Elegy.ConsoleCommands.Helpers
 
 			if ( Helpers.ContainsKey( type ) )
 			{
-				Console.Warning( "ConsoleCommands.Helpers", $"'{type.FullName}' cannot be registered.\nIts type ({type.Name}) is already handled by {Helpers[type].GetType().FullName}." );
+				Console.Warning( Tag, $"'{type.FullName}' cannot be registered.\nIts type ({type.Name}) is already handled by {Helpers[type].GetType().FullName}." );
 				return false;
 			}
 
@@ -72,7 +76,7 @@ namespace Elegy.ConsoleCommands.Helpers
 				var helper = Activator.CreateInstance( type ) as IConsoleArgumentHelper;
 				if ( helper is null )
 				{
-					Console.Warning( "ConsoleCommands.Helpers", $"Failed to create instance of '{type.FullName}'" );
+					Console.Warning( Tag, $"Failed to create instance of '{type.FullName}'" );
 					continue;
 				}
 

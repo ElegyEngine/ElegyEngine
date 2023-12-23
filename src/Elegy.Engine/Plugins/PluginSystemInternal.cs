@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Assets;
-using Elegy.ConsoleCommands;
 
 namespace Elegy
 {
@@ -83,7 +82,7 @@ namespace Elegy
 				}
 
 				// Register static CVars here so they can be tracked and unregistered when the plugin is unloaded
-				ConVarRegistry cvarRegistry = new( library.Assembly );
+				ConsoleCommands.ConVarRegistry cvarRegistry = new( library.Assembly );
 				cvarRegistry.RegisterAll();
 
 				if ( !plugin.Init() )
@@ -165,7 +164,7 @@ namespace Elegy
 			mGenericPlugins.Clear();
 			mConsoleRegistries.Clear();
 
-			ConsoleCommands.Helpers.HelperManager.UnregisterAllHelpers();
+			ConsoleCommands.HelperManager.UnregisterAllHelpers();
 
 			mPluginLibraries.Clear();
 			try
@@ -274,7 +273,7 @@ namespace Elegy
 				return null;
 			}
 
-			if ( !ConsoleCommands.Helpers.HelperManager.RegisterHelpers( assembly ) )
+			if ( !ConsoleCommands.HelperManager.RegisterHelpers( assembly ) )
 			{
 				Console.Warning( Tag, $"'{assemblyPath}' has one or more console arg. helpers that failed to load, some console commands may not work!" );
 			}
@@ -294,7 +293,7 @@ namespace Elegy
 		public IReadOnlyCollection<IApplication> ApplicationPlugins => mApplicationPlugins.Values;
 		public IReadOnlyCollection<IPlugin> GenericPlugins => mGenericPlugins.Values;
 
-		private Dictionary<IPlugin, ConVarRegistry> mConsoleRegistries = new();
+		private Dictionary<IPlugin, ConsoleCommands.ConVarRegistry> mConsoleRegistries = new();
 		private Dictionary<string, IApplication> mApplicationPlugins = new();
 		private Dictionary<string, IPlugin> mGenericPlugins = new();
 		private List<PluginLibrary> mPluginLibraries = new();
