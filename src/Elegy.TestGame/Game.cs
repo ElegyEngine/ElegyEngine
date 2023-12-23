@@ -23,7 +23,7 @@ namespace TestGame
 			Console.Log( Tag, "Init" );
 			Initialised = true;
 
-			Elegy.Assets.ApplicationConfig gameConfig = FileSystem.CurrentConfig;
+			ApplicationConfig gameConfig = FileSystem.CurrentConfig;
 
 			Console.Log( Tag,   $"Name:      {gameConfig.Title}" );
 			Console.Log( $"       Developer: {gameConfig.Developer}" );
@@ -130,6 +130,17 @@ namespace TestGame
 				LeaveGame();
 			}
 
+			if ( !Path.HasExtension( mapFile ) )
+			{
+				mapFile += ".elf";
+			}
+
+			if ( Path.GetExtension( mapFile ) != ".elf" )
+			{
+				Console.Error( "Game.StartGame", $"Cannot load 'maps/{mapFile}', it's not an Elegy Level File (.elf)" );
+				return;
+			}
+
 			Console.Log( Tag, $"Starting 'maps/{mapFile}'..." );
 			string? mapPath = FileSystem.PathTo( $"maps/{mapFile}", PathFlags.File );
 			if ( mapPath is null )
@@ -151,21 +162,25 @@ namespace TestGame
 			for ( int entityId = 0; entityId < mMap.Entities.Count; entityId++ )
 			{
 				var mapEntity = mMap.Entities[entityId];
-				Entities.Entity? entity = null;
-
 				// TODO: MapEntity attribute that glues the classname to the class
 				string className = mapEntity.Attributes["classname"];
-				switch ( className )
+				Entities.Entity? entity = className switch
 				{
-				case "info_player_start": entity = CreateEntity<Entities.InfoPlayerStart>(); break;
-				case "light": entity = CreateEntity<Entities.Light>(); break;
-				case "light_environment": entity = CreateEntity<Entities.LightEnvironment>(); break;
-				case "func_detail": entity = CreateEntity<Entities.FuncDetail>(); break;
-				case "func_breakable": entity = CreateEntity<Entities.FuncBreakable>(); break;
-				case "func_rotating": entity = CreateEntity<Entities.FuncRotating>(); break;
-				case "func_water": entity = CreateEntity<Entities.FuncWater>(); break;
-				case "prop_test": entity = CreateEntity<Entities.PropTest>(); break;
-				default: Console.Log( "Game.StartGame", $"{Console.Yellow}Unknown map entity class {Console.White}'{className}'", ConsoleMessageType.Developer ); continue;
+					"info_player_start"	=> CreateEntity<Entities.InfoPlayerStart>(),
+					"light"				=> CreateEntity<Entities.Light>(),
+					"light_environment"	=> CreateEntity<Entities.LightEnvironment>(),
+					"func_detail"		=> CreateEntity<Entities.FuncDetail>(),
+					"func_breakable"	=> CreateEntity<Entities.FuncBreakable>(),
+					"func_rotating"		=> CreateEntity<Entities.FuncRotating>(),
+					"func_water"		=> CreateEntity<Entities.FuncWater>(),
+					"prop_test"			=> CreateEntity<Entities.PropTest>(),
+					_					=> null
+				};
+
+				if ( entity is null )
+				{
+					Console.Log( "Game.StartGame", $"{Console.Yellow}Unknown map entity class {Console.White}'{className}'", ConsoleMessageType.Developer );
+					continue;
 				}
 
 				// This is a brush entity

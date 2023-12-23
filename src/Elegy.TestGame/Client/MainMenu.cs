@@ -110,7 +110,7 @@ namespace TestGame.Client
 			{
 				// Strip off the 'game/maps/' part
 				int mapsOffset = mapFiles[i].Find( "/maps/" );
-				button.AddItem( mapFiles[i].Remove( 0, mapsOffset + 6 ) );
+				button.AddItem( Path.GetFileNameWithoutExtension( mapFiles[i].Remove( 0, mapsOffset + 6 ) ) );
 			}
 
 			return button;
