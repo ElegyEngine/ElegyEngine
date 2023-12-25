@@ -9,11 +9,19 @@ namespace Elegy
 	public struct TaggedLogger
 	{
 		/// <summary>
-		/// Constructor.
+		/// Constructor for simple tags.
 		/// </summary>
 		public TaggedLogger( string tag )
 		{
 			Tag = tag;
+		}
+
+		/// <summary>
+		/// Constructor for nested tags.
+		/// </summary>
+		public TaggedLogger( in TaggedLogger parent, string tag )
+		{
+			Tag = $"{parent.Tag}.{tag}";
 		}
 
 		/// <summary>
