@@ -1,6 +1,8 @@
 ﻿// SPDX-FileCopyrightText: 2023 Admer Šuko
 // SPDX-License-Identifier: MIT
 
+using Elegy.Maths;
+
 namespace Elegy.Collections
 {
 	/// <summary>

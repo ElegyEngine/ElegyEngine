@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
 // SPDX-License-Identifier: MIT
 
-using Matrix4x4 = System.Numerics.Matrix4x4;
+using Elegy.Maths;
 
 namespace Elegy.Assets.ModelData
 {
@@ -16,9 +16,9 @@ namespace Elegy.Assets.ModelData
 		}
 
 		public Vector3 Position { get; set; } = Vector3.Zero;
-		public Vector3 Normal { get; set; } = Vector3.Up;
-		public Vector3 Tangent { get; set; } = Vector3.Right;
-		public Vector3 Bitangent { get; set; } = Vector3.Forward;
+		public Vector3 Normal { get; set; } = Vector3.UnitZ;
+		public Vector3 Tangent { get; set; } = Vector3.UnitX;
+		public Vector3 Bitangent { get; set; } = Vector3.UnitY;
 		public Vector2 Uv1 { get; set; } = Vector2.Zero;
 		public Vector2 Uv2 { get; set; } = Vector2.Zero;
 		public Vector4 Color1 { get; set; } = Vector4.One;
