@@ -8,5 +8,10 @@
   <ItemGroup>
     <PackageReference Include="Eto.Platform.Gtk" Version="2.8.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Elegy.Engine\Elegy.Engine.csproj" />
+    <ProjectReference Include="..\Elegy.GuiLauncher.Common\Elegy.GuiLauncher.Common.csproj" />
+  </ItemGroup>
 	
 </Project>

@@ -161,4 +161,15 @@ namespace Elegy.GuiLauncher
 			};
 		}
 	}
+
+	public static class EntryPoint
+	{
+		public static void RunApplication( string[] args, string platform )
+		{
+			Engine engine = new( args, null );
+
+			new Application( platform )
+				.Run( new MainForm( engine ) );
+		}
+	}
 }
