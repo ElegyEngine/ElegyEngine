@@ -3,9 +3,9 @@
 
 namespace Elegy.ConsoleFrontends
 {
-	internal class GodotConsoleFrontend : IConsoleFrontend
+	internal class SystemConsoleFrontend : IConsoleFrontend
 	{
-		public string Name => "Godot Terminal Console";
+		public string Name => "System Console";
 		public string Error => string.Empty;
 		public bool Initialised { get; private set; } = false;
 
@@ -36,31 +36,33 @@ namespace Elegy.ConsoleFrontends
 			switch ( type )
 			{
 				default:
-					GD.Print( messageNoColour );
+					System.Console.WriteLine( messageNoColour );
 					break;
 
 				case ConsoleMessageType.Success:
 					System.Console.ForegroundColor = ConsoleColor.Green;
-					GD.Print( $"{messageNoColour}" );
+					System.Console.WriteLine( $"{messageNoColour}" );
 					System.Console.ResetColor();
 					break;
 
 				case ConsoleMessageType.Warning:
 					System.Console.ForegroundColor = ConsoleColor.Yellow;
-					GD.Print( $"{messageNoColour}" );
+					System.Console.WriteLine( $"{messageNoColour}" );
 					System.Console.ResetColor();
 					break;
 
 				case ConsoleMessageType.Error:
 					System.Console.ForegroundColor = ConsoleColor.Red;
-					GD.PrintErr( $"{messageNoColour}" );
+					System.Console.WriteLine( $"{messageNoColour}" );
+					System.Console.Error.WriteLine( $"{messageNoColour}" );
 					System.Console.ResetColor();
 					break;
 
 				case ConsoleMessageType.Fatal:
 					System.Console.BackgroundColor = ConsoleColor.Red;
 					System.Console.ForegroundColor = ConsoleColor.White;
-					GD.PrintErr( $"[FATAL] {messageNoColour}" );
+					System.Console.WriteLine( $"{messageNoColour}" );
+					System.Console.Error.WriteLine( $"[FATAL] {messageNoColour}" );
 					System.Console.ResetColor();
 					break;
 			}
