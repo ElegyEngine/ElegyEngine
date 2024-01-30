@@ -13,7 +13,7 @@ foreach ( $file in $Files )
 
 	if ( $file -like "*Release*" )
 	{
-		$filePath = $file.FullName
+		$filePath = $file.FullName.Replace( "\", "/" )
 		$fileName = $file.Name
 		$fileRelative = $filePath.Replace( "$CurrentDir\", "" )
 
