@@ -2,10 +2,14 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Assets;
+using System.Diagnostics;
 
 namespace Elegy
 {
-	internal class Engine
+	/// <summary>
+	/// The engine. Launches and updates all subsystems.
+	/// </summary>
+	public class Engine
 	{
 		/// <summary>
 		/// Elegy Engine major version, used for version checking against plugins.
@@ -22,9 +26,14 @@ namespace Elegy
 
 		public static readonly string VersionString = $"{MajorVersion}.{MinorVersion}";
 
-		public static Engine Instance { get; private set; }
-		public static Node3D RootNode => Instance.mRootNode;
+		/// <summary>
+		/// The reason of shutdown. Might be an error.
+		/// </summary>
+		public string? ShutdownReason { get; } = null;
 
+		/// <summary>
+		/// Time the engine started.
+		/// </summary>
 		public static DateTime StartupTime { get; private set; }
 
 		private TaggedLogger mLogger = new( "Engine" );
@@ -67,7 +76,11 @@ namespace Elegy
 
 		}
 		#endregion
-		public Engine( Node3D rootNode, string[] args )
+
+		/// <summary>
+		/// One and only engine constructor.
+		/// </summary>
+		public Engine( string[] args )
 		{
 			mCommandlineArgs = args;
 			mRootNode = rootNode;
@@ -76,18 +89,21 @@ namespace Elegy
 			Instance = this;
 		}
 
+		/// <summary>
+		/// Initialises the engine's systems.
+		/// </summary>
 		public bool Init()
 		{
 			mHasShutdown = false;
 
 			if ( !InitialiseConsole() )
 			{
-				return Shutdown( "Console system failure", true );
+				return Shutdown( "Console system failure" );
 			}
 
 			if ( !LoadOrCreateEngineConfig( "engineConfig.json" ) )
 			{
-				return Shutdown( "Configuration failure", true );
+				return Shutdown( "Configuration failure" );
 			}
 
 			if ( mEngineConfig.ConfigName != null )
@@ -98,13 +114,13 @@ namespace Elegy
 			mFileSystem = new( mEngineConfig );
 			if ( !mFileSystem.Init() )
 			{
-				return Shutdown( "File system failure", true );
+				return Shutdown( "File system failure" );
 			}
 
 			mPluginSystem = new();
 			if ( !mPluginSystem.Init() )
 			{
-				return Shutdown( "Plugin system failure", true );
+				return Shutdown( "Plugin system failure" );
 			}
 
 			foreach ( IPlugin plugin in mPluginSystem.GenericPlugins )
@@ -118,11 +134,27 @@ namespace Elegy
 			mMaterialSystem = new();
 			if ( !mMaterialSystem.Init() )
 			{
-				return Shutdown( "Material system failure", true );
+				return Shutdown( "Material system failure" );
 			}
 
 			mLogger.Log( "Successfully initialised all systems" );
 			return true;
+		}
+
+		/// <summary>
+		/// Kicks off the update loop.
+		/// </summary>
+		public void Run()
+		{
+			Stopwatch sw = Stopwatch.StartNew();
+			double lastTime = -0.016;
+
+			while ( !mHasShutdown )
+			{
+				double currentTime = (double)sw.ElapsedTicks / Stopwatch.Frequency;
+				Update( (float)(currentTime - lastTime) );
+				lastTime = currentTime;
+			}
 		}
 
 		private bool InitialiseConsole()
@@ -164,7 +196,12 @@ namespace Elegy
 			return true;
 		}
 
-		public bool Shutdown( string why = "", bool hardExit = false )
+		/// <summary>
+		/// Shuts down the engine.
+		/// </summary>
+		/// <param name="why">The reason of shutdown. If left empty, it is a normal shutdown, else an error.</param>
+		/// <returns></returns>
+		private bool Shutdown( string why = "" )
 		{
 			if ( mHasShutdown )
 			{
@@ -196,25 +233,15 @@ namespace Elegy
 			mConsole = null;
 			Console.SetConsole( null );
 
-			if ( hardExit )
-			{
-				ExitEngine( why == "" ? 0 : 99 );
-			}
-
 			mHasShutdown = true;
 			return false;
 		}
 
 		/// <summary>
-		/// Actually quits Godot
+		/// Updates the engine subsystems.
 		/// </summary>
-		private void ExitEngine( int returnCode )
-		{
-			mRootNode.GetTree().Quit( returnCode );
-			mRootNode.QueueFree();
-		}
-
-		public void Update( float delta )
+		/// <param name="delta">Delta time since last frame.</param>
+		private void Update( float delta )
 		{
 			Console.Update( delta );
 
@@ -228,23 +255,7 @@ namespace Elegy
 
 			if ( Applications.Count == 0 )
 			{
-				Shutdown( "", true );
-			}
-		}
-
-		public void PhysicsUpdate( float delta )
-		{
-			foreach ( var app in Applications )
-			{
-				app.RunPhysicsFrame( delta );
-			}
-		}
-
-		public void HandleInput( InputEvent @event )
-		{
-			foreach ( var app in Applications )
-			{
-				app.HandleInput( @event );
+				Shutdown( "" );
 			}
 		}
 
@@ -254,8 +265,6 @@ namespace Elegy
 		private MaterialSystemInternal? mMaterialSystem;
 
 		private string[] mCommandlineArgs;
-		private Node3D mRootNode;
-		private Node3D mEngineHostNode;
 		private bool mHasShutdown = false;
 
 		EngineConfig mEngineConfig;
