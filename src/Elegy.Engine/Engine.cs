@@ -83,10 +83,7 @@ namespace Elegy
 		public Engine( string[] args )
 		{
 			mCommandlineArgs = args;
-			mRootNode = rootNode;
-			mEngineHostNode = (Node3D)mRootNode.FindChild( "EngineHost" );
 			StartupTime = DateTime.Now;
-			Instance = this;
 		}
 
 		/// <summary>
@@ -95,6 +92,9 @@ namespace Elegy
 		public bool Init()
 		{
 			mHasShutdown = false;
+
+			mCore = new( Stopwatch.StartNew() );
+			Core.SetCore( mCore );
 
 			if ( !InitialiseConsole() )
 			{
@@ -259,6 +259,7 @@ namespace Elegy
 			}
 		}
 
+		private CoreInternal? mCore;
 		private ConsoleInternal? mConsole;
 		private FileSystemInternal? mFileSystem;
 		private PluginSystemInternal? mPluginSystem;
