@@ -101,7 +101,7 @@ namespace Elegy
 				mCurrentMessage = string.Empty;
 			}
 
-			float timeSubmitted = Time.GetTicksMsec() * 0.001f;
+			float timeSubmitted = Core.SecondsFloat;
 			for ( int i = 0; i < stringsToSend; i++ )
 			{
 				LogToFrontends( messageLines[i], type, timeSubmitted );

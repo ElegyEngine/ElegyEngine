@@ -24,6 +24,9 @@ namespace Elegy
 		/// </summary>
 		public const int OldestSupportedMinor = 0;
 
+		/// <summary>
+		/// Version string to be displayed when the engine starts up.
+		/// </summary>
 		public static readonly string VersionString = $"{MajorVersion}.{MinorVersion}";
 
 		/// <summary>
