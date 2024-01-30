@@ -61,7 +61,7 @@ namespace Elegy
 		{
 			mHasShutdown = false;
 
-			mCore = new( Stopwatch.StartNew() );
+			mCore = new( Stopwatch.StartNew(), mWindowPlatform );
 			Core.SetCore( mCore );
 
 			if ( !InitialiseConsole() )
