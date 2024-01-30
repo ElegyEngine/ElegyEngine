@@ -60,7 +60,7 @@ namespace Elegy.MapCompiler.Processors
 
 		public void UpdateBoundaries()
 		{
-			Data.MapBoundaries = new Aabb( Vector3.Zero, Vector3.One * 0.1f );
+			Data.MapBoundaries = new Box3( Vector3.Zero, Vector3.One * 0.1f );
 
 			foreach ( var entity in Data.Entities )
 			{
