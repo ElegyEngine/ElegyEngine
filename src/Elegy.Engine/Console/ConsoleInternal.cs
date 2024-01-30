@@ -16,12 +16,18 @@ namespace Elegy
 			InitialiseArguments( args );
 		}
 
-		public bool Init()
+		public bool Init( IConsoleFrontend? extraFrontend = null )
 		{
 			Console.SetConsole( this );
-			mLogger.Log( "Init" );
 
+			// Log as early as possible
 			AddFrontend( new ConsoleFrontends.SystemConsoleFrontend() );
+			if ( extraFrontend is not null )
+			{
+				AddFrontend( extraFrontend );
+			}
+
+			mLogger.Log( "Init" );
 
 			Console.Verbose = mArguments.GetBool( "-verbose" );
 			Console.Developer = Console.Verbose || mArguments.GetBool( "-developer" );

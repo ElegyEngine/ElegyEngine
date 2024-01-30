@@ -23,6 +23,11 @@ namespace Elegy
 		/// </summary>
 		public static IApplication? GetApplication( string path ) => mPluginSystem.GetApplication( path );
 
+		/// <summary>
+		/// Registers a plugin.
+		/// </summary>
+		public static bool RegisterPlugin( IPlugin plugin ) => mPluginSystem.RegisterPlugin( plugin );
+
 		/// <returns>All plugins except IApplication-based ones.</returns>
 		public static IReadOnlyCollection<IPlugin> GenericPlugins => mPluginSystem.GenericPlugins;
 

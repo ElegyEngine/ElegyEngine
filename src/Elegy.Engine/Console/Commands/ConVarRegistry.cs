@@ -13,7 +13,7 @@ namespace Elegy.ConsoleCommands
 					BindingFlags.Public |
 					BindingFlags.NonPublic;
 
-		private const BindingFlags StaticBindingFlags = 
+		private const BindingFlags StaticBindingFlags =
 					BaseBindingFlags | BindingFlags.Static;
 
 		private const BindingFlags InstanceBindingFlags =
@@ -21,42 +21,45 @@ namespace Elegy.ConsoleCommands
 
 		public List<ConsoleCommand> Commands { get; } = new();
 
-		public ConVarRegistry( Assembly assembly, IPlugin? instance = null )
+		public ConVarRegistry( Assembly? assembly = null, IPlugin? instance = null )
 		{
-			var types = assembly.GetTypes();
-			for ( int i = 0; i < types.Length; i++ )
+			if ( assembly is not null )
 			{
-				var type = types[i];
-
-				// 1. ConsoleCommand members
-				var staticMembers = type.GetFields( StaticBindingFlags );
-				foreach ( var member in staticMembers )
+				var types = assembly.GetTypes();
+				for ( int i = 0; i < types.Length; i++ )
 				{
-					if ( member.FieldType == typeof( ConsoleCommand ) )
-					{
-						ConsoleCommand? cmd = member.GetValue( null ) as ConsoleCommand;
-						Commands.Add( cmd );
-					}
-				}
+					var type = types[i];
 
-				// 2. Methods with ConsoleCommandAttribute
-				var staticMethods = type.GetMethods( StaticBindingFlags );
-				foreach ( var method in staticMethods )
-				{
-					ConsoleCommandAttribute? attribute = method.GetCustomAttribute<ConsoleCommandAttribute>();
-					if ( attribute is null )
+					// 1. ConsoleCommand members
+					var staticMembers = type.GetFields( StaticBindingFlags );
+					foreach ( var member in staticMembers )
 					{
-						continue;
+						if ( member.FieldType == typeof( ConsoleCommand ) )
+						{
+							ConsoleCommand? cmd = member.GetValue( null ) as ConsoleCommand;
+							Commands.Add( cmd );
+						}
 					}
 
-					ConsoleCommand? consoleCommand = ConsoleCommand.FromMethod( method, attribute );
-					if ( consoleCommand is null )
+					// 2. Methods with ConsoleCommandAttribute
+					var staticMethods = type.GetMethods( StaticBindingFlags );
+					foreach ( var method in staticMethods )
 					{
-						Console.Warning( "ConVarRegistry", $"Cannot create console command '{attribute.Name}' ({method.DeclaringType.Name}.{method.Name})" );
-						continue;
-					}
+						ConsoleCommandAttribute? attribute = method.GetCustomAttribute<ConsoleCommandAttribute>();
+						if ( attribute is null )
+						{
+							continue;
+						}
 
-					Commands.Add( consoleCommand );
+						ConsoleCommand? consoleCommand = ConsoleCommand.FromMethod( method, attribute );
+						if ( consoleCommand is null )
+						{
+							Console.Warning( "ConVarRegistry", $"Cannot create console command '{attribute.Name}' ({method.DeclaringType.Name}.{method.Name})" );
+							continue;
+						}
+
+						Commands.Add( consoleCommand );
+					}
 				}
 			}
 
