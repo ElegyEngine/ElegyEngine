@@ -2,13 +2,14 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Geometry;
+using Elegy.Maths;
 
 namespace Elegy.Assets.BrushMapData
 {
 	public class Brush
 	{
 		public Vector3 Centre = Vector3.Zero;
-		public Aabb BoundingBox = new();
+		public Box3 BoundingBox = new();
 		public List<Face> Faces = new();
 
 		public void IntersectPlanes()

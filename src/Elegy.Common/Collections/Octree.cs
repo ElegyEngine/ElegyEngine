@@ -1,6 +1,8 @@
 ﻿// SPDX-FileCopyrightText: 2023 Admer Šuko
 // SPDX-License-Identifier: MIT
 
+using Elegy.Maths;
+
 namespace Elegy.Collections
 {
 	/// <summary>
@@ -8,7 +10,7 @@ namespace Elegy.Collections
 	/// Elegy.MapCompiler uses them to quickly and roughly subdivide a level.
 	/// </summary>
 	/// <typeparam name="TItem"></typeparam>
-	public class Octree<TItem> : STree<Aabb, TItem>
+	public class Octree<TItem> : STree<Box3, TItem>
 	{
 		/// <summary>
 		/// Constructs an octree.
@@ -29,7 +31,7 @@ namespace Elegy.Collections
 		/// When collecting intersections, one (<c>true</c>) or multiple (<c>false</c>) children will receive a reference to a given item.
 		/// If you have geometric objects that happen to be inside multiple nodes, this is pretty relevant.
 		/// </param>
-		public Octree( Aabb rootBound, IReadOnlyList<TItem> items,
+		public Octree( Box3 rootBound, IReadOnlyList<TItem> items,
 			IsInBoundFn isInBoundMethod,
 			ShouldSubdivideFn shouldSubdivideMethod,
 			bool onlyFirstIntersection = false )

@@ -1,12 +1,14 @@
 ﻿// SPDX-FileCopyrightText: 2023 Admer Šuko
 // SPDX-License-Identifier: MIT
 
+using Elegy.Maths;
+
 namespace Elegy.Assets.BrushMapData
 {
 	public class Entity
 	{
 		public Vector3 Centre = Vector3.Zero;
-		public Aabb BoundingBox = new();
+		public Box3 BoundingBox = new();
 		public List<Brush> Brushes = new();
 
 		public string ClassName = string.Empty;

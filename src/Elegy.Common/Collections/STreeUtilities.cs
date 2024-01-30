@@ -1,6 +1,8 @@
 ﻿// SPDX-FileCopyrightText: 2023 Admer Šuko
 // SPDX-License-Identifier: MIT
 
+using Elegy.Maths;
+
 namespace Elegy.Collections
 {
 	/// <summary>
@@ -10,24 +12,24 @@ namespace Elegy.Collections
 	{
 		#region IsInBoundFn methods
 		/// <summary>
-		/// TBound: <see cref="Aabb"/>
+		/// TBound: <see cref="Box3"/>
 		/// TItem: <see cref="Vector3"/>
 		/// </summary>
-		public static STree<Aabb, Vector3>.IsInBoundFn IsInBoundVector3()
+		public static STree<Box3, Vector3>.IsInBoundFn IsInBoundVector3()
 		{
-			return ( in Vector3 item, in Aabb bound ) =>
+			return ( in Vector3 item, in Box3 bound ) =>
 			{
 				return bound.HasPoint( item );
 			};
 		}
 
 		/// <summary>
-		/// TBound: <see cref="Aabb"/>
+		/// TBound: <see cref="Box3"/>
 		/// TItem: <see cref="Vector4"/>
 		/// </summary>
-		public static STree<Aabb, Vector4>.IsInBoundFn IsInBoundVector4()
+		public static STree<Box3, Vector4>.IsInBoundFn IsInBoundVector4()
 		{
-			return ( in Vector4 item, in Aabb bound ) =>
+			return ( in Vector4 item, in Box3 bound ) =>
 			{
 				return bound.HasPoint( item.ToVector3() );
 			};
@@ -69,9 +71,9 @@ namespace Elegy.Collections
 		/// Subdivides an AABB into 8 equal octants.
 		/// Restriction: dimensionality must be 3.
 		/// </summary>
-		public static STree<Aabb, TItem>.GetChildVolumeFn GetChildVolumeOctree<TItem>()
+		public static STree<Box3, TItem>.GetChildVolumeFn GetChildVolumeOctree<TItem>()
 		{
-			return ( in Aabb parentBox, in int childIndex ) =>
+			return ( in Box3 parentBox, in int childIndex ) =>
 			{
 				Vector3[] sizes = { parentBox.Position, parentBox.End };
 
@@ -83,7 +85,7 @@ namespace Elegy.Collections
 					Z = sizes[OctreeMinMaxIndices[childIndex * 3 + 2]].Z
 				};
 
-				return new Aabb( centre, extent );
+				return new Box3( centre, extent );
 			};
 		}
 		#endregion
@@ -92,9 +94,9 @@ namespace Elegy.Collections
 		/// <summary>
 		/// Accumulates all intersections into a node's children. Meaning if your item intersects all children, all children get that item.
 		/// </summary>
-		public static STree<Aabb, TItem>.CollectIntersectionsFn CollectIntersectionsOctreeAll<TItem>( STree<Aabb, TItem>.IsInBoundFn intersectionMethod )
+		public static STree<Box3, TItem>.CollectIntersectionsFn CollectIntersectionsOctreeAll<TItem>( STree<Box3, TItem>.IsInBoundFn intersectionMethod )
 		{
-			return ( in STreeNode<Aabb, TItem> parentNode, in TItem item, out int[] hits ) =>
+			return ( in STreeNode<Box3, TItem> parentNode, in TItem item, out int[] hits ) =>
 			{
 				int numHits = 0;
 				Span<int> hitSpan = stackalloc int[parentNode.Combinations];
@@ -122,9 +124,9 @@ namespace Elegy.Collections
 		/// <summary>
 		/// Only takes in the first intersection.
 		/// </summary>
-		public static STree<Aabb, TItem>.CollectIntersectionsFn CollectIntersectionsOctreeFirst<TItem>( STree<Aabb, TItem>.IsInBoundFn intersectionMethod )
+		public static STree<Box3, TItem>.CollectIntersectionsFn CollectIntersectionsOctreeFirst<TItem>( STree<Box3, TItem>.IsInBoundFn intersectionMethod )
 		{
-			return ( in STreeNode<Aabb, TItem> parentNode, in TItem item, out int[] hits ) =>
+			return ( in STreeNode<Box3, TItem> parentNode, in TItem item, out int[] hits ) =>
 			{
 				for ( int i = 0; i < parentNode.Combinations; i++ )
 				{

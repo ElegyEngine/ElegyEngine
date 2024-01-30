@@ -8,7 +8,7 @@ namespace Elegy.Collections
 	/// from its parent tree that intersect with its <typeparamref name="TBound"/>.
 	/// </summary>
 	/// <typeparam name="TBound">
-	/// For example: <seealso cref="Aabb"/> or <seealso cref="Rect2"/>.
+	/// For example: <seealso cref="Box3"/> or <seealso cref="Rect2"/>.
 	/// </typeparam>
 	/// <typeparam name="TItem">
 	/// For example: <seealso cref="Vector3"/> or anything, really!
