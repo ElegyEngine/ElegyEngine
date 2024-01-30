@@ -20,7 +20,6 @@ namespace Elegy
 			// Plugins are likely to be using these primarily
 			switch ( assemblyName.Name )
 			{
-				case "GodotSharp": return typeof( GD ).Assembly;
 				case "Elegy.Engine": return typeof( Engine ).Assembly;
 				case "Elegy.Common": return typeof( Text.Lexer ).Assembly;
 			}
