@@ -8,7 +8,7 @@ namespace Elegy.MapCompiler.Data.Processing
 	public class Brush
 	{
 		public Vector3 Centre { get; set; } = Vector3.Zero;
-		public Aabb BoundingBox { get; set; } = new();
+		public Box3 BoundingBox { get; set; } = new();
 		public List<Face> Faces { get; set; } = new();
 
 		public Brush( BrushMapBrush mapBrush )
