@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{67E68E0F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{CC1F6BCD-8998-4934-A18E-848DDD5D9B1E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.Launcher2", "Elegy.Launcher2\Elegy.Launcher2.csproj", "{0606D505-5287-407E-9632-A20CD4696FA9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{AB3F2BC5-BA9B-492A-931C-E4B7FEAE834E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB3F2BC5-BA9B-492A-931C-E4B7FEAE834E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB3F2BC5-BA9B-492A-931C-E4B7FEAE834E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0606D505-5287-407E-9632-A20CD4696FA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0606D505-5287-407E-9632-A20CD4696FA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0606D505-5287-407E-9632-A20CD4696FA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0606D505-5287-407E-9632-A20CD4696FA9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
