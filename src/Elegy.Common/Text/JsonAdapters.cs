@@ -1,4 +1,5 @@
 ﻿
+using Elegy.Maths;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -73,9 +74,9 @@ namespace Elegy.Text.JsonAdapters
 		}
 	}
 
-	internal class GodotAabbConverter : JsonConverter<Aabb>
+	internal class GodotAabbConverter : JsonConverter<Box3>
 	{
-		public override Aabb Read( ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options )
+		public override Box3 Read( ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options )
 		{
 			Vector3 position = Vector3.Zero;
 			Vector3 size = Vector3.Zero;
@@ -94,11 +95,11 @@ namespace Elegy.Text.JsonAdapters
 			size.Z = reader.GetSingle();
 			reader.Read();
 
-			Aabb value = new( position, size );
+			Box3 value = new( position, size );
 			return value;
 		}
 
-		public override void Write( Utf8JsonWriter writer, Aabb value, JsonSerializerOptions options )
+		public override void Write( Utf8JsonWriter writer, Box3 value, JsonSerializerOptions options )
 		{
 			writer.WriteRawValue( $"[{value.Position.X}, {value.Position.Y}, {value.Position.Z}, {value.Size.X}, {value.Size.Y}, {value.Size.Z}]", true );
 		}
