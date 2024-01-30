@@ -107,11 +107,9 @@ namespace Elegy
 
 			mLogger.Warning( $"Material '{materialName}' doesn't exist" );
 
-			return new StandardMaterial3D()
+			return new()
 			{
-				AlbedoColor = Color.Color8( 255, 128, 192 ),
-				Roughness = 0.5f,
-				Metallic = 0.5f
+				ResourceName = materialName
 			};
 		}
 
@@ -120,25 +118,15 @@ namespace Elegy
 			Texture2D? texture = LoadTexture( materialDef.DiffuseMap );
 			if ( texture is null )
 			{
-				return new StandardMaterial3D()
+				return new()
 				{
-					AlbedoColor = Color.Color8( 255, 128, 192 ),
-					Roughness = 0.5f,
-					Metallic = 0.5f
+					ResourceName = "Default"
 				};
 			}
 
-			return new StandardMaterial3D()
+			return new()
 			{
-				ResourceName = materialDef.Name,
-
-				Roughness = 1.0f,
-				Metallic = 0.0f,
-				MetallicSpecular = 0.0f,
-				SpecularMode = BaseMaterial3D.SpecularModeEnum.Disabled,
-				TextureFilter = BaseMaterial3D.TextureFilterEnum.NearestWithMipmapsAnisotropic,
-
-				AlbedoTexture = texture
+				ResourceName = materialDef.Name
 			};
 		}
 
@@ -159,7 +147,7 @@ namespace Elegy
 
 			if ( Path.HasExtension( texturePath ) )
 			{
-				return ImageTexture.CreateFromImage( Image.LoadFromFile( texturePath ) );
+				return Texture2D.CreateFromImageFile( texturePath );
 			}
 
 			foreach ( var textureExtension in TextureExtensions )
@@ -170,7 +158,7 @@ namespace Elegy
 					continue;
 				}
 
-				return ImageTexture.CreateFromImage( Image.LoadFromFile( fullTexturePath ) );
+				return Texture2D.CreateFromImageFile( fullTexturePath );
 			}
 
 			return null;
