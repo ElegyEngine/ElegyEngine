@@ -52,7 +52,7 @@ namespace Elegy.Geometry
 		public Polygon3D( Plane plane, float radius )
 		{
 			Vector3 direction = plane.GetClosestAxis();
-			Vector3 bidirection = direction == Vector3.Up ? Vector3.Left : Vector3.Down;
+			Vector3 bidirection = direction == Vector3.UnitZ ? -Vector3.UnitX : -Vector3.UnitZ;
 
 			Vector3 up = bidirection.Cross( plane.Normal ).Normalized();
 			Vector3 right = plane.Normal.Cross( up ).Normalized();
@@ -74,7 +74,7 @@ namespace Elegy.Geometry
 		#endregion
 
 		#region Properties
-		public Plane Plane => new Plane( Points[0], Points[1], Points[2] );
+		public Plane Plane => Plane.CreateFromVertices( Points[0], Points[1], Points[2] );
 		public Vector3 Origin
 		{
 			get
@@ -133,7 +133,7 @@ namespace Elegy.Geometry
 
 			// Points at negative distances will become part of the "back" polygon,
 			// and points at positive distances will become part of the "front" polygon
-			var distances = Points.Select( plane.DistanceTo ).ToList();
+			var distances = Points.Select( p => plane.DistanceTo( p ) ).ToList();
 
 			int numFrontPoints = 0, numBackPoints = 0;
 			for ( int i = 0; i < distances.Count; i++ )
