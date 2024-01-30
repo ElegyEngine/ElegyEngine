@@ -1,4 +1,7 @@
 ﻿
+using Silk.NET.Input;
+using Silk.NET.Windowing;
+
 namespace Elegy.Launcher2
 {
 	internal class Program
@@ -12,11 +15,22 @@ namespace Elegy.Launcher2
 			System.Console.ForegroundColor = ConsoleColor.White;
 		}
 
+		static IWindowPlatform? GetWindowPlatform()
+		{
+			Window.PrioritizeSdl();
+			if ( Window.GetWindowPlatform( false )?.Name.ToLower().Contains( "sdl" ) ?? false )
+			{
+				return null;
+			}
+
+
+		}
+
 		static void Main( string[] args )
 		{
-			System.Console.Title = "Elegy test game";
+			System.Console.Title = "Elegy.Launcher2";
 
-			Engine engine = new( args );
+			Engine engine = new( args, GetWindowPlatform() );
 
 			while ( !engine.Init() )
 			{

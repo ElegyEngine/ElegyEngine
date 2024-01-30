@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Assets;
+using Silk.NET.Input;
+using Silk.NET.Windowing;
 using System.Diagnostics;
 
 namespace Elegy
@@ -83,10 +85,12 @@ namespace Elegy
 		/// <summary>
 		/// One and only engine constructor.
 		/// </summary>
-		public Engine( string[] args )
+		public Engine( string[] args, IWindowPlatform? windowPlatform )
 		{
-			mCommandlineArgs = args;
 			StartupTime = DateTime.Now;
+			
+			mCommandlineArgs = args;
+			mWindowPlatform = windowPlatform;
 		}
 
 		/// <summary>
@@ -268,6 +272,8 @@ namespace Elegy
 		private PluginSystemInternal? mPluginSystem;
 		private MaterialSystemInternal? mMaterialSystem;
 
+		private IWindowPlatform? mWindowPlatform;
+		
 		private string[] mCommandlineArgs;
 		private bool mHasShutdown = false;
 

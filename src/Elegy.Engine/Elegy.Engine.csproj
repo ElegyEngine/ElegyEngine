@@ -32,6 +32,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Silk.NET.Core" Version="2.20.0" />
+    <PackageReference Include="Silk.NET.Input.Common" Version="2.20.0" />
+    <PackageReference Include="Silk.NET.Windowing.Common" Version="2.20.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Elegy.Common\Elegy.Common.csproj" />
   </ItemGroup>
 

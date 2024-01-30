@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Silk.NET.Input.Sdl" Version="2.20.0" />
+    <PackageReference Include="Silk.NET.Windowing.Sdl" Version="2.20.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Elegy.Engine\Elegy.Engine.csproj" />
   </ItemGroup>
 
