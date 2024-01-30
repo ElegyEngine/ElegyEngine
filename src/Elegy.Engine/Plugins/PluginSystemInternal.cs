@@ -262,7 +262,7 @@ namespace Elegy
 				mLogger.Error( $"'{path}' has invalid data:" );
 				foreach ( var error in errorMessages )
 				{
-					mLogger.Log( " * {error}" );
+					mLogger.Log( $" * {error}" );
 				}
 				return null;
 			}
