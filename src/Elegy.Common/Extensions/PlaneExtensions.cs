@@ -1,6 +1,8 @@
 ﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
 // SPDX-License-Identifier: MIT
 
+using Elegy.Maths;
+
 namespace Elegy.Extensions
 {
 	public static class PlaneExtensions
@@ -11,15 +13,32 @@ namespace Elegy.Extensions
 
 			if ( normal.Z >= normal.X && normal.Z >= normal.Y )
 			{
-				return Vector3.Forward;
+				return Vector3.UnitY;
 			}
 
 			if ( normal.X >= normal.Y )
 			{
-				return Vector3.Right;
+				return Vector3.UnitX;
 			}
 
-			return Vector3.Up;
+			return Vector3.UnitZ;
+		}
+
+		public static Vector3D GetClosestAxis( this PlaneD plane )
+		{
+			Vector3D normal = plane.Normal.Abs();
+
+			if ( normal.Z >= normal.X && normal.Z >= normal.Y )
+			{
+				return Vector3D.UnitY;
+			}
+
+			if ( normal.X >= normal.Y )
+			{
+				return Vector3D.UnitX;
+			}
+
+			return Vector3D.UnitZ;
 		}
 	}
 }
