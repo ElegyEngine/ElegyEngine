@@ -3,7 +3,7 @@
 
 namespace Elegy.Extensions
 {
-	public static class VectorExtensions
+	public static class Vector3Extensions
 	{
 		public static Vector3 ToGodot( this Vector3 vector, float scale = 1.0f / 39.37f )
 		{
@@ -67,36 +67,6 @@ namespace Elegy.Extensions
 			}
 
 			return uniqueValues;
-		}
-
-		public static Vector3 Forward( this Transform3D transform )
-		{
-			return -transform.Basis.Z;
-		}
-
-		public static Vector3 Back( this Transform3D transform )
-		{
-			return transform.Basis.Z;
-		}
-
-		public static Vector3 Right( this Transform3D transform )
-		{
-			return transform.Basis.X;
-		}
-
-		public static Vector3 Left( this Transform3D transform )
-		{
-			return -transform.Basis.X;
-		}
-
-		public static Vector3 Up( this Transform3D transform )
-		{
-			return transform.Basis.Y;
-		}
-
-		public static Vector3 Down( this Transform3D transform )
-		{
-			return -transform.Basis.Y;
 		}
 
 		public static Vector3 ToVector3( this Vector4 vector )
