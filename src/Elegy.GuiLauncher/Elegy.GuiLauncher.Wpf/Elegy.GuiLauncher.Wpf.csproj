@@ -7,7 +7,8 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Elegy.GuiLauncher\Elegy.GuiLauncher.csproj" />
+    <ProjectReference Include="..\..\Elegy.Engine\Elegy.Engine.csproj" />
+    <ProjectReference Include="..\Elegy.GuiLauncher.Common\Elegy.GuiLauncher.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

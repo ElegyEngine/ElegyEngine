@@ -1,7 +1,5 @@
 ﻿
 using Silk.NET.Windowing;
-using System;
-using System.Collections.Generic;
 
 namespace Elegy.GuiLauncher
 {
@@ -9,7 +7,7 @@ namespace Elegy.GuiLauncher
 	{
 		public bool IsViewOnly => false;
 
-		public bool IsApplicable => throw new NotImplementedException();
+		public bool IsApplicable => true;
 
 		public void ClearContexts()
 		{

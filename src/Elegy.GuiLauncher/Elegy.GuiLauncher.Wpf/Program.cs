@@ -1,6 +1,5 @@
 ﻿
 using Eto.Forms;
-using Silk.NET.Windowing;
 using System;
 
 namespace Elegy.GuiLauncher.Wpf
@@ -10,9 +9,10 @@ namespace Elegy.GuiLauncher.Wpf
 		[STAThread]
 		public static void Main( string[] args )
 		{
+			Engine engine = new( args, null );
 
-
-			new Application( Eto.Platforms.Wpf ).Run( new MainForm() );
+			new Application( Eto.Platforms.Wpf )
+				.Run( new MainForm( engine ) );
 		}
 	}
 }

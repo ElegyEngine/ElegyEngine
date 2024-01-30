@@ -6,10 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Elegy.GuiLauncher\Elegy.GuiLauncher.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Eto.Platform.Gtk" Version="2.8.2" />
   </ItemGroup>
 	
