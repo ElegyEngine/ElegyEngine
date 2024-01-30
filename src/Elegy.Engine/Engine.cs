@@ -11,7 +11,7 @@ namespace Elegy
 	/// <summary>
 	/// The engine. Launches and updates all subsystems.
 	/// </summary>
-	public class Engine
+	public partial class Engine
 	{
 		/// <summary>
 		/// Elegy Engine major version, used for version checking against plugins.
@@ -42,45 +42,6 @@ namespace Elegy
 		public static DateTime StartupTime { get; private set; }
 
 		private TaggedLogger mLogger = new( "Engine" );
-
-		#region Console commands
-		[ConsoleCommand( "test" )]
-		public static bool Command_Test( int a, int b = 20 )
-		{
-			Console.Log( $"You've successfully called 'test' with {a} and {b}!" );
-			return true;
-		}
-
-		[ConsoleCommand( "test_badparams" )]
-		public static bool Command_BadParameters( byte a, short b, long c, Half d, DateTime e )
-		{
-			return true;
-		}
-
-		[ConsoleCommand( "test_badreturn" )]
-		public static int Command_BadReturnType( int a )
-		{
-			return 0;
-		}
-
-		[ConsoleCommand( "test_args" )]
-		public static void Command_OnlyArgs( string[] args )
-		{
-
-		}
-
-		[ConsoleCommand( "test_noparams" )]
-		public static void Command_NoParameters()
-		{
-
-		}
-
-		[ConsoleCommand( "test_nonstatic" )]
-		public void Command_NonStatic()
-		{
-
-		}
-		#endregion
 
 		/// <summary>
 		/// One and only engine constructor.
