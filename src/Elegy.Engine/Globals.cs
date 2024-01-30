@@ -4,6 +4,4 @@
 global using StringDictionary = System.Collections.Generic.Dictionary<string, string>;
 
 global using Elegy.Extensions;
-global using Godot;
-global using System;
 global using System.Reflection;
