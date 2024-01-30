@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Assets;
-using System.IO;
 
 namespace Elegy
 {

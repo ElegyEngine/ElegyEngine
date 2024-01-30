@@ -3,9 +3,7 @@
 
 using Elegy.Utilities;
 using Elegy.Utilities.Interfaces;
-using Godot;
 using System.Text;
-using ENetConnection = Godot.ENetConnection;
 
 namespace Elegy.DevConsole
 {
