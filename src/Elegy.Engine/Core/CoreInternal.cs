@@ -13,11 +13,17 @@ namespace Elegy
 		private IWindowPlatform? mWindowPlatform;
 		private List<IWindow> mWindows;
 		private List<IInputContext> mInputContexts;
-		private IWindow? mFocusWindow = null;
-		private IInputContext? mFocusInputContext = null;
+		private IWindow mFocusWindow;
+		private IInputContext mFocusInputContext;
+
+		private readonly IWindow mDummyWindow = new WindowNull();
+		private readonly IInputContext mDummyInput = new InputContextNull();
 
 		internal CoreInternal( Stopwatch sw, IWindowPlatform? windowPlatform )
 		{
+			mFocusWindow = mDummyWindow;
+			mFocusInputContext = mDummyInput;
+
 			mWindowPlatform = windowPlatform;
 			mStopwatch = sw;
 			sw.Restart();
@@ -66,8 +72,8 @@ namespace Elegy
 
 					if ( mFocusWindow == window )
 					{
-						mFocusWindow = null;
-						mFocusInputContext = null;
+						mFocusWindow = mDummyWindow;
+						mFocusInputContext = mDummyInput;
 					}
 
 					return true;
@@ -87,12 +93,12 @@ namespace Elegy
 			return mWindowPlatform.CreateWindow( options );
 		}
 
-		public IWindow? GetCurrentWindow()
+		public IWindow GetCurrentWindow()
 		{
 			return mFocusWindow;
 		}
 
-		public IInputContext? GetCurrentInputContext()
+		public IInputContext GetCurrentInputContext()
 		{
 			return mFocusInputContext;
 		}

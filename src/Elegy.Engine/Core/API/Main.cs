@@ -41,13 +41,13 @@ namespace Elegy
 		/// Returns the window that is currently in focus, or <c>null</c> if there are no windows.
 		/// </summary>
 		/// <returns></returns>
-		public static IWindow? GetCurrentWindow()
+		public static IWindow GetCurrentWindow()
 			=> mCoreSystem.GetCurrentWindow();
 
 		/// <summary>
 		/// Returns the currently focused window's input context, or <c>null</c> if there are no windows.
 		/// </summary>
-		public static IInputContext? GetCurrentInputContext()
+		public static IInputContext GetCurrentInputContext()
 			=> mCoreSystem.GetCurrentInputContext();
 
 		/// <summary>
