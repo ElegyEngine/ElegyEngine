@@ -33,7 +33,7 @@ namespace Elegy
 		/// <summary>
 		/// The reason of shutdown. Might be an error.
 		/// </summary>
-		public string? ShutdownReason { get; } = null;
+		public string? ShutdownReason { get; private set; } = null;
 
 		/// <summary>
 		/// Time the engine started.
@@ -56,14 +56,14 @@ namespace Elegy
 		/// <summary>
 		/// Initialises the engine's systems.
 		/// </summary>
-		public bool Init()
+		public bool Init( IConsoleFrontend? extraFrontend = null )
 		{
 			mHasShutdown = false;
 
 			mCore = new( Stopwatch.StartNew(), mWindowPlatform );
 			Core.SetCore( mCore );
 
-			if ( !InitialiseConsole() )
+			if ( !InitialiseConsole( extraFrontend ) )
 			{
 				return Shutdown( "Console system failure" );
 			}
@@ -124,15 +124,15 @@ namespace Elegy
 			}
 		}
 
-		private bool InitialiseConsole()
+		private bool InitialiseConsole( IConsoleFrontend? extraFrontend = null )
 		{
 			mConsole = new( mCommandlineArgs );
-			if ( !mConsole.Init() )
+			if ( !mConsole.Init( extraFrontend ) )
 			{
 				return false;
 			}
 
-			Console.Log( $"Initialising Elegy Engine ({VersionString}) by Admer456" );
+			Console.Log( $"Initialising Elegy Engine ({VersionString})" );
 
 			if ( MajorVersion < 1 )
 			{
