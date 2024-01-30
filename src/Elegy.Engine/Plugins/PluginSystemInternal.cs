@@ -81,27 +81,7 @@ namespace Elegy
 					return;
 				}
 
-				// Register CVars here so they can be tracked and unregistered when the plugin is unloaded
-				ConsoleCommands.ConVarRegistry cvarRegistry = new( library.Assembly, plugin );
-				cvarRegistry.RegisterAll();
-
-				if ( !plugin.Init() )
-				{
-					failedPlugins.Add( $"{pluginIdentifier} - failed to initialise (error message: '{plugin.Error}')" );
-					cvarRegistry.UnregisterAll();
-					return;
-				}
-
-				mConsoleRegistries.Add( plugin, cvarRegistry );
-
-				if ( plugin is IApplication )
-				{
-					mApplicationPlugins.Add( library.MetadataPath, plugin as IApplication );
-				}
-				else
-				{
-					mGenericPlugins.Add( library.MetadataPath, plugin );
-				}
+				RegisterPlugin( plugin, library.Assembly, library.MetadataPath, failedPlugins );
 			} );
 
 			if ( failedPlugins.Count > 0 )
@@ -186,6 +166,33 @@ namespace Elegy
 		public IApplication? GetApplication( string path )
 		{
 			return mApplicationPlugins.GetValueOrDefault( path );
+		}
+
+		public bool RegisterPlugin( IPlugin plugin, Assembly? assembly = null, string? metadataPath = null, List<string>? failedPlugins = null )
+		{
+			// Register CVars here so they can be tracked and unregistered when the plugin is unloaded
+			ConsoleCommands.ConVarRegistry cvarRegistry = new( assembly, plugin );
+			cvarRegistry.RegisterAll();
+
+			if ( !plugin.Init() )
+			{
+				failedPlugins?.Add( $"{plugin.Name} - failed to initialise (error message: '{plugin.Error}')" );
+				cvarRegistry.UnregisterAll();
+				return false;
+			}
+
+			mConsoleRegistries.Add( plugin, cvarRegistry );
+
+			if ( plugin is IApplication )
+			{
+				mApplicationPlugins.Add( metadataPath ?? plugin.Name, plugin as IApplication );
+			}
+			else
+			{
+				mGenericPlugins.Add( metadataPath ?? plugin.Name, plugin );
+			}
+
+			return true;
 		}
 
 		public bool UnloadGenericPlugin( IPlugin plugin )
