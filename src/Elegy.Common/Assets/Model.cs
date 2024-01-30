@@ -18,7 +18,7 @@ namespace Elegy.Assets
 	{
 		public string Name { get; set; } = string.Empty;
 
-		public List<ModelData.Mesh> Meshes { get; set; } = new();
+		public List<Mesh> Meshes { get; set; } = new();
 
 		public List<BoneJoint> Joints { get; set; } = new();
 	}
