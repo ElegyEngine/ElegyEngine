@@ -19,7 +19,7 @@ namespace Elegy.Assets.BrushMapData
 			CreateBrushPolygons( Faces, BoundingBox.GetLongestAxisSize() * 2.5f );
 		}
 
-		private static void IntersectPolygonWithOthers( ref Polygon3D polygon, List<Face> faces, int skipIndex )
+		private static void IntersectPolygonWithOthers( ref Polygon3 polygon, List<Face> faces, int skipIndex )
 		{
 			for ( int i = 0; i < faces.Count; i++ )
 			{
@@ -45,7 +45,7 @@ namespace Elegy.Assets.BrushMapData
 				Plane plane = faces[i].Plane;
 
 				// Create a polygon in the centre of the world
-				Polygon3D poly = new Polygon3D( plane, radius );
+				Polygon3 poly = new Polygon3( plane, radius );
 
 				// Then align its centre to the centre of this face... if we got any
 				// Otherwise precision issues will occur

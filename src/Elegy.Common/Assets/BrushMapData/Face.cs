@@ -17,7 +17,7 @@ namespace Elegy.Assets.BrushMapData
 		public Vector2 Scale = Vector2.One;
 
 		// Filled in after parsing (fields above are during parsing)
-		public Polygon3D Polygon = new();
+		public Polygon3 Polygon = new();
 
 		public Vector3 Centre => (PlaneDefinition[0] + PlaneDefinition[1] + PlaneDefinition[2]) / 3.0f;
 
