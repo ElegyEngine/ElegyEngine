@@ -21,7 +21,7 @@ namespace Elegy
 			Console.SetConsole( this );
 			mLogger.Log( "Init" );
 
-			AddFrontend( new ConsoleFrontends.GodotConsoleFrontend() );
+			AddFrontend( new ConsoleFrontends.SystemConsoleFrontend() );
 
 			Console.Verbose = mArguments.GetBool( "-verbose" );
 			Console.Developer = Console.Verbose || mArguments.GetBool( "-developer" );
