@@ -53,7 +53,6 @@ namespace Elegy.ConsoleFrontends
 
 				case ConsoleMessageType.Error:
 					System.Console.ForegroundColor = ConsoleColor.Red;
-					System.Console.WriteLine( $"{messageNoColour}" );
 					System.Console.Error.WriteLine( $"{messageNoColour}" );
 					System.Console.ResetColor();
 					break;
@@ -61,7 +60,6 @@ namespace Elegy.ConsoleFrontends
 				case ConsoleMessageType.Fatal:
 					System.Console.BackgroundColor = ConsoleColor.Red;
 					System.Console.ForegroundColor = ConsoleColor.White;
-					System.Console.WriteLine( $"{messageNoColour}" );
 					System.Console.Error.WriteLine( $"[FATAL] {messageNoColour}" );
 					System.Console.ResetColor();
 					break;
