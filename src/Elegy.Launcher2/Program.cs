@@ -18,12 +18,18 @@ namespace Elegy.Launcher2
 		static IWindowPlatform? GetWindowPlatform()
 		{
 			Window.PrioritizeSdl();
-			if ( Window.GetWindowPlatform( false )?.Name.ToLower().Contains( "sdl" ) ?? false )
+			IWindowPlatform? windowPlatform = Window.GetWindowPlatform( false );
+			if ( windowPlatform is null )
 			{
 				return null;
 			}
 
+			if ( windowPlatform.Name.ToLower().Contains( "sdl" ) )
+			{
+				return null;
+			}
 
+			return windowPlatform;
 		}
 
 		static void Main( string[] args )
