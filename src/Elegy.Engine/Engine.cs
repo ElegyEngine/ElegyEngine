@@ -200,6 +200,8 @@ namespace Elegy
 			mConsole = null;
 			Console.SetConsole( null );
 
+			ShutdownReason = why;
+
 			mHasShutdown = true;
 			return false;
 		}
