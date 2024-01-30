@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Assets;
-using Silk.NET.Input;
 using Silk.NET.Windowing;
 using System.Diagnostics;
 
@@ -185,19 +184,19 @@ namespace Elegy
 				mLogger.Error( $"Shutting down, reason: {why}" );
 			}
 
-			mMaterialSystem.Shutdown();
+			mMaterialSystem?.Shutdown();
 			mMaterialSystem = null;
 			Materials.SetMaterialSystem( null );
 
-			mPluginSystem.Shutdown();
+			mPluginSystem?.Shutdown();
 			mPluginSystem = null;
 			Plugins.SetPluginSystem( null );
 
-			mFileSystem.Shutdown();
+			mFileSystem?.Shutdown();
 			mFileSystem = null;
 			FileSystem.SetFileSystem( null );
 
-			mConsole.Shutdown();
+			mConsole?.Shutdown();
 			mConsole = null;
 			Console.SetConsole( null );
 
