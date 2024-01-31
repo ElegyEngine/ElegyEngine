@@ -1,0 +1,3 @@
+[submodule "extern/Elegy.Veldrid"]
+	path = extern/Elegy.Veldrid
+	url = https://github.com/Admer456/veldrid.git
