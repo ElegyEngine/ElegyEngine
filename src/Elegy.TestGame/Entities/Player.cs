@@ -12,6 +12,7 @@ namespace TestGame.Entities
 
 		public override void Spawn()
 		{
+			/*
 			mBody = Nodes.CreateNode<CharacterBody3D>();
 			mBody.GlobalPosition += Vector3.Up * 1.5f;
 
@@ -23,13 +24,14 @@ namespace TestGame.Entities
 			mShape.Shape = mCapsule;
 
 			mRootNode = mBody;
+			*/
 		}
 
 		public override void PhysicsUpdate( float delta )
 		{
 			Move( delta );
 
-			mBody.GlobalRotation = new Vector3( 0.0f, mLastCommands.ViewAngles.Y, 0.0f );
+			//mBody.GlobalRotation = new Vector3( 0.0f, mLastCommands.ViewAngles.Y, 0.0f );
 		}
 
 		public void HandleClientInput( ClientCommands commands )
@@ -41,15 +43,15 @@ namespace TestGame.Entities
 		{
 			return new()
 			{
-				Position = mBody.GlobalPosition + Vector3.Up * EyeHeight * 0.5f,
-				Angles = mBody.GlobalRotation
+				Position = Position, //mBody.GlobalPosition + Vector3.Up * EyeHeight * 0.5f,
+				Angles = Vector3.Zero //mBody.GlobalRotation
 			};
 		}
 
 		ClientCommands mLastCommands;
 		
-		CharacterBody3D mBody;
-		CollisionShape3D mShape;
-		CapsuleShape3D mCapsule;
+		//CharacterBody3D mBody;
+		//CollisionShape3D mShape;
+		//CapsuleShape3D mCapsule;
 	}
 }

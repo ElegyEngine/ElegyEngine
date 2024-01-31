@@ -32,24 +32,24 @@ namespace TestGame.Entities
 			}
 
 			// On ground, apply friction'n'stuff
-			KinematicCollision3D collision = new();
-			bool onGround = mBody.TestMove( mBody.GlobalTransform, Vector3.Down * 0.02f, collision );
+			//KinematicCollision3D collision = new();
+			bool onGround = false; //mBody.TestMove( mBody.GlobalTransform, -Vector3.UnitZ * 0.02f, collision );
 			
 			if ( onGround )
 			{
-				WalkMove( delta, speedModifier, collision.GetNormal() );
+				WalkMove( delta, speedModifier, Vector3.UnitZ /*collision.GetNormal()*/ );
 			}
 			else
 			{
 				AirMove( delta, speedModifier );
 			}
 
-			mBody.MoveAndSlide();
+			//mBody.MoveAndSlide();
 		}
 
 		private void WalkMove( float delta, float speedModifier, Vector3 groundNormal )
 		{
-			float groundDot = groundNormal.Dot( Vector3.Up );
+			float groundDot = groundNormal.Dot( Vector3.UnitZ );
 			bool tooSteep = groundDot < 0.7f;
 			if ( tooSteep )
 			{
@@ -62,23 +62,23 @@ namespace TestGame.Entities
 			if ( !tooSteep )
 			{
 				// Friction
-				mBody.Velocity *= 0.85f;
+				//mBody.Velocity *= 0.85f;
 
 				if ( mLastCommands.MovementDirection.Y > 0.0f )
 				{
-					mBody.Velocity += Vector3.Up * JumpForce * delta;
+					//mBody.Velocity += Vector3.UnitZ * JumpForce * delta;
 				}
 			}
 			else
 			{
 				AirFall( delta, groundNormal );
-				mBody.Velocity = ClipVelocity( delta, mBody.Velocity, groundNormal, 1.0f );
+				//mBody.Velocity = ClipVelocity( delta, mBody.Velocity, groundNormal, 1.0f );
 			}
 		}
 
 		private void AirMove( float delta, float speedMultiplier )
 		{
-			Accelerate( delta, mLastCommands.MovementDirection, AirSpeed * speedMultiplier, AirAcceleration, AccelerationMultiplier, AirSpeedThreshold, Friction, Vector3.Up );
+			Accelerate( delta, mLastCommands.MovementDirection, AirSpeed * speedMultiplier, AirAcceleration, AccelerationMultiplier, AirSpeedThreshold, Friction, Vector3.UnitZ );
 			AirFall( delta, Vector3.Zero );
 		}
 
@@ -86,18 +86,18 @@ namespace TestGame.Entities
 		{
 			Vector3 moveDirectionFlat = wishDirection.XOZ();
 			Vector3 moveDirectionFlatUnit = moveDirectionFlat.Normalized();
-			Vector3 velocityFlat = mBody.Velocity.XOZ();
+			Vector3 velocityFlat = Vector3.Zero; //mBody.Velocity.XOZ();
 
 			float currentSpeed = velocityFlat.Dot( moveDirectionFlatUnit );
-			float addSpeed = Mathf.Min( threshold, speed ) - currentSpeed;
+			float addSpeed = MathF.Min( threshold, speed ) - currentSpeed;
 
 			if ( addSpeed <= 0.0f )
 			{
 				return;
 			}
 
-			float accelerationSpeed = Mathf.Min( acceleration * speed * friction, addSpeed );
-			mBody.Velocity += accelerationSpeed * ClipVelocity( delta, moveDirectionFlat, groundNormal, 1.0f ) * delta * accelerationMultiplier;
+			float accelerationSpeed = MathF.Min( acceleration * speed * friction, addSpeed );
+			//mBody.Velocity += accelerationSpeed * ClipVelocity( delta, moveDirectionFlat, groundNormal, 1.0f ) * delta * accelerationMultiplier;
 		}
 
 		const float GameBounce = 1.0f;
@@ -105,23 +105,15 @@ namespace TestGame.Entities
 
 		private void AirFall( float delta, Vector3 groundNormal )
 		{
-			Vector3 downVelocity = Vector3.Down * 9.81f * 2.5f;
+			Vector3 downVelocity = -Vector3.UnitZ * 9.81f * 2.5f;
 			
 			if ( groundNormal != Vector3.Zero )
 			{
-				float dot = groundNormal.Dot( Vector3.Up );
-				//bool tooSteep = dot < 0.7f;
-				//float overbounce = 1.0f + (tooSteep ? 1.0f * GameBounce * (1.0f - GameFriction) : 0.0f);
-				//float overbounce = 1.0f;
-
-				//downVelocity = downVelocity.Slide( groundNormal ) * (1.0f - downVelocity.Dot( groundNormal ));
-				//downVelocity = ClipVelocity( delta, downVelocity, groundNormal, overbounce );
+				float dot = groundNormal.Dot( Vector3.UnitZ );
 				downVelocity *= dot;
-				//mBody.Velocity = ClipVelocity( delta, mBody.Velocity, groundNormal, overbounce );
-				//GD.Print( $"Player.AirFall: {downVelocity}" );
 			}
 
-			mBody.Velocity += downVelocity * delta;
+			//mBody.Velocity += downVelocity * delta;
 		}
 
 		private Vector3 ClipVelocity( float delta, in Vector3 velocity, Vector3 groundNormal, float overbounce )
