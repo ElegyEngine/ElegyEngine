@@ -10,6 +10,7 @@ namespace TestGame.Assets
 {
 	public static class MapGeometry
 	{
+		/*
 		private static void AppendMapSurfaceToMesh( ArrayMesh mesh, Material material, RenderSurface surface )
 		{
 			SurfaceTool builder = new();
@@ -27,7 +28,9 @@ namespace TestGame.Assets
 			builder.SetMaterial( material );
 			builder.Commit( mesh );
 		}
+		*/
 
+		/*
 		public static Node3D CreateBrushModelNode( ElegyMapDocument map, int brushEntityId )
 		{ 
 			var brushEntity = map.Entities[brushEntityId];
@@ -69,5 +72,6 @@ namespace TestGame.Assets
 
 			return parentNode;
 		}
+		*/
 	}
 }
