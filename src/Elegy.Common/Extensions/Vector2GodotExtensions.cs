@@ -276,6 +276,23 @@ namespace Elegy.Extensions
 		}
 
 		/// <summary>
+		/// Returns the result of the linear interpolation between
+		/// this vector and <paramref name="to"/> by amount <paramref name="weight"/>.
+		/// </summary>
+		/// <param name="v"></param>
+		/// <param name="to">The destination vector for interpolation.</param>
+		/// <param name="weight">A value on the range of 0.0 to 1.0, representing the amount of interpolation.</param>
+		/// <returns>The resulting vector of the interpolation.</returns>
+		public static Vector2 Lerp( in this Vector2 v, Vector2 to, float weight )
+		{
+			return new Vector2
+			(
+				Utils.Lerp( v.X, to.X, weight ),
+				Utils.Lerp( v.Y, to.Y, weight )
+			);
+		}
+
+		/// <summary>
 		/// Returns the vector with a maximum length by limiting its length to <paramref name="length"/>.
 		/// </summary>
 		/// <param name="v"></param>
