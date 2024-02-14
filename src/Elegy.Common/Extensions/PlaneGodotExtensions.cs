@@ -8,6 +8,9 @@ using Elegy.Maths;
 
 namespace Elegy.Extensions
 {
+	/// <summary>
+	/// <see cref="Plane"/> extensions from Godot's own Plane class. Lots of useful gamedev-specific stuff there.
+	/// </summary>
 	public static class PlaneGodotExtensions
 	{
 		/// <summary>
