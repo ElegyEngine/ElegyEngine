@@ -8,6 +8,9 @@ using Elegy.Maths;
 
 namespace Elegy.Extensions
 {
+	/// <summary>
+	/// <see cref="Vector2"/> extensions from Godot's own Vector2 class. Lots of useful gamedev-specific stuff there.
+	/// </summary>
 	public static class Vector2GodotExtensions
 	{
 		/// <summary>
