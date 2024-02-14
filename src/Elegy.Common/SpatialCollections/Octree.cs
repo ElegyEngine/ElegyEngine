@@ -1,9 +1,9 @@
-﻿// SPDX-FileCopyrightText: 2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
 using Elegy.Maths;
 
-namespace Elegy.Collections
+namespace Elegy.SpatialCollections
 {
 	/// <summary>
 	/// An octree container.

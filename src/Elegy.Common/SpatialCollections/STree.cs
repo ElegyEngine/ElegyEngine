@@ -1,7 +1,7 @@
-﻿// SPDX-FileCopyrightText: 2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Elegy.Collections
+namespace Elegy.SpatialCollections
 {
 	/// <summary>
 	/// N-dimensional spatial tree (s-tree) that stores <typeparamref name="TItem"/>s inside a <typeparamref name="TBound"/>.

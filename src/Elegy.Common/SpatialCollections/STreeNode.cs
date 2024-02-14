@@ -1,7 +1,7 @@
-﻿// SPDX-FileCopyrightText: 2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Elegy.Collections
+namespace Elegy.SpatialCollections
 {
 	/// <summary>
 	/// N-dimensional tree node, stores a list of <typeparamref name="TItem"/>s
