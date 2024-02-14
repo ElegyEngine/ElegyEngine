@@ -5,13 +5,22 @@ using Elegy.Utilities;
 
 namespace Elegy.Extensions
 {
+	/// <summary>
+	/// Elegy-specific string extensions.
+	/// </summary>
 	public static class StringExtensions
 	{
+		/// <summary>
+		/// Returns if a character is numeric.
+		/// </summary>
 		public static bool IsNumeric( this char c )
 		{
 			return c >= '0' && c <= '9';
 		}
 
+		/// <summary>
+		/// Specialisation of float splitting from a single string.
+		/// </summary>
 		public static List<float> SplitFloatsElegy( this string text, char separator = ' ' )
 		{
 			List<float> result = new();
@@ -24,7 +33,10 @@ namespace Elegy.Extensions
 
 			return result;
 		}
-
+		
+		/// <summary>
+		/// Converts a string into a <see cref="Vector2"/>.
+		/// </summary>
 		public static Vector2 ToVector2( this string text )
 		{
 			if ( text == string.Empty )
@@ -41,6 +53,9 @@ namespace Elegy.Extensions
 			return new( components[0], components[1] );
 		}
 
+		/// <summary>
+		/// Converts a string into a <see cref="Vector3"/>.
+		/// </summary>
 		public static Vector3 ToVector3( this string text )
 		{
 			if ( text == string.Empty )
@@ -57,6 +72,9 @@ namespace Elegy.Extensions
 			return new( components[0], components[1], components[2] );
 		}
 
+		/// <summary>
+		/// Converts a string into a <see cref="Vector4"/>.
+		/// </summary>
 		public static Vector4 ToVector4( this string text )
 		{
 			if ( text == string.Empty )
