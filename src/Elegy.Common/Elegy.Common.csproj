@@ -22,6 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Collections.Pooled" Version="2.0.0-preview.27" />
     <PackageReference Include="System.Text.Json" Version="8.0.1" />
   </ItemGroup>
 
