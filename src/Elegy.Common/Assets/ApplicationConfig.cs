@@ -17,5 +17,8 @@ namespace Elegy.Assets
 
 		public string[] Plugins { get; set; } = Array.Empty<string>();
 		public string[] Mounts { get; set; } = Array.Empty<string>();
+
+		public string RenderFrontend { get; set; } = "engine/plugins/RenderStandard";
+		public string AudioSystem { get; set; } = "engine/plugins/AudioLoudPizza";
 	}
 }
