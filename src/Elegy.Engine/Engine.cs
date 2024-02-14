@@ -2,8 +2,11 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Assets;
+using Elegy.RenderBackend.Extensions;
 using Silk.NET.Windowing;
 using System.Diagnostics;
+
+using IView = Elegy.Rendering.IView;
 
 namespace Elegy
 {
@@ -106,6 +109,11 @@ namespace Elegy
 				return Shutdown( "Material system failure" );
 			}
 
+			if ( !InitialiseWindowAndRenderer() )
+			{
+				return Shutdown( "Render system failure" );
+			}
+
 			mLogger.Log( "Successfully initialised all systems" );
 			return true;
 		}
@@ -115,14 +123,54 @@ namespace Elegy
 		/// </summary>
 		public void Run()
 		{
-			Stopwatch sw = Stopwatch.StartNew();
-			double lastTime = -0.016;
+			if ( Core.IsHeadless )
+			{
+				RunHeadless();
+				return;
+			}
+
+			IWindow window = Core.GetCurrentWindow();
+			IView? renderView = Render.Instance.GetView( window );
+			Debug.Assert( renderView is not null );
+
+			window.Update += ( deltaTime ) =>
+			{
+				Update( (float)deltaTime );
+
+				if ( mHasShutdown )
+				{
+					window.Close();
+				}
+			};
+
+			int counter = 0;
+
+			window.Render += ( deltaTime ) =>
+			{
+				if ( window.CanSwap() )
+				{
+					RenderFrame( renderView );
+				}
+
+				counter++;
+				mLogger.Log( $"Frame {counter}" );
+			};
+
+			window.Run();
+			Shutdown();
+		}
+
+		/// <summary>
+		/// Kicks off the update loop without rendering nor input.
+		/// </summary>
+		public void RunHeadless()
+		{
+			float lastTime = -0.016f;
 
 			while ( !mHasShutdown )
 			{
-				double currentTime = (double)sw.ElapsedTicks / Stopwatch.Frequency;
-				Update( (float)(currentTime - lastTime) );
-				lastTime = currentTime;
+				float deltaTime = Core.SecondsFloat - lastTime;
+				Update( deltaTime );
 			}
 		}
 
@@ -142,6 +190,56 @@ namespace Elegy
 			}
 
 			mLogger.Verbose( $"Working directory: '{Directory.GetCurrentDirectory()}'" );
+			return true;
+		}
+
+		private bool InitialiseWindowAndRenderer()
+		{
+			if ( Core.IsHeadless )
+			{
+				// TODO: use dummy render frontend
+			}
+
+			IWindow? window = Core.GetCurrentWindow();
+
+			// Now that the engine is mostly initialised, we can create a window for the application
+			// Assuming, of course, this isn't a headless instance, and a window isn't already provided
+			if ( window is WindowNull )
+			{
+				window = Core.CreateWindow( new()
+				{
+					API = GraphicsAPI.DefaultVulkan,
+					FramesPerSecond = 120.0,
+					UpdatesPerSecond = 120.0,
+					Size = new( 320, 240 )
+				} );
+
+				if ( window is null )
+				{
+					mLogger.Error( "Cannot create window!" );
+					return false;
+				}
+			}
+
+			string renderFrontendPath = FileSystem.CurrentConfig.RenderFrontend;
+
+			IPlugin? renderFrontendPlugin = Plugins.LoadPlugin( renderFrontendPath );
+			if ( renderFrontendPlugin is null )
+			{
+				mLogger.Error( "Cannot load render frontend plugin" );
+				return false;
+			}
+
+			mRenderFrontend = renderFrontendPlugin as IRenderFrontend;
+			if ( mRenderFrontend is null )
+			{
+				mLogger.Error( $"Render frontend plugin '{renderFrontendPath}' doesn't actually implement an IRenderFrontend!" );
+				return false;
+			}
+
+			mRenderView = mRenderFrontend.CreateView( window );
+			Render.SetRenderFrontend( mRenderFrontend );
+
 			return true;
 		}
 
@@ -186,6 +284,9 @@ namespace Elegy
 				mLogger.Error( $"Shutting down, reason: {why}" );
 			}
 
+			mRenderFrontend?.Shutdown();
+			Render.SetRenderFrontend( null );
+
 			mMaterialSystem?.Shutdown();
 			mMaterialSystem = null;
 			Materials.SetMaterialSystem( null );
@@ -212,7 +313,7 @@ namespace Elegy
 		/// Updates the engine subsystems.
 		/// </summary>
 		/// <param name="delta">Delta time since last frame.</param>
-		private void Update( float delta )
+		public void Update( float delta )
 		{
 			Console.Update( delta );
 
@@ -230,6 +331,34 @@ namespace Elegy
 			}
 		}
 
+		/// <summary>
+		/// Renders everything for a given window.
+		/// </summary>
+		/// <param name="window">The window to render into.</param>
+		public void RenderFrame( IWindow window )
+		{
+			IView? view = Render.Instance.GetView( window );
+			if ( view is null )
+			{
+				mLogger.Error( "Cannot render frame - there is no renderview for the window!" );
+				return;
+			}
+
+			RenderFrame( view );
+		}
+
+		/// <summary>
+		/// Renders everything for a given view.
+		/// </summary>
+		/// <param name="view">The view to render from. Will render and update an <see cref="IWindow"/>.</param>
+		public void RenderFrame( IView view )
+		{
+			Render.Instance.BeginFrame();
+			Render.Instance.RenderView( view );
+			Render.Instance.EndFrame();
+			Render.Instance.PresentView( view );
+		}
+
 		private CoreInternal? mCore;
 		private ConsoleInternal? mConsole;
 		private FileSystemInternal? mFileSystem;
@@ -237,7 +366,9 @@ namespace Elegy
 		private MaterialSystemInternal? mMaterialSystem;
 
 		private IWindowPlatform? mWindowPlatform;
-		
+		private IRenderFrontend? mRenderFrontend;
+		private IView? mRenderView;
+
 		private string[] mCommandlineArgs;
 		private bool mHasShutdown = false;
 

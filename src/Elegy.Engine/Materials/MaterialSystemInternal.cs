@@ -6,7 +6,7 @@ using Elegy.Assets;
 namespace Elegy
 {
 	/// <summary>
-	/// Material system implementation.
+	/// IMaterial system implementation.
 	/// </summary>
 	internal sealed class MaterialSystemInternal
 	{

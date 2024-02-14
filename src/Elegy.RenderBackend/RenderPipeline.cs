@@ -43,7 +43,7 @@ namespace Elegy.RenderBackend
 		public RasterPreset RasterPreset { get; }
 		public ResourceLayout[] ResourceLayouts { get; }
 
-		internal RenderPipeline( Pipeline pipeline, Shader[] shaders, RasterPreset rasterPreset, ResourceLayout[] resourceLayouts )
+		public RenderPipeline( Pipeline pipeline, Shader[] shaders, RasterPreset rasterPreset, ResourceLayout[] resourceLayouts )
 		{
 			Pipeline = pipeline;
 			Shaders = shaders;
@@ -53,12 +53,17 @@ namespace Elegy.RenderBackend
 
 		public void Dispose()
 		{
+			Pipeline.Dispose();
+
+			for ( int i = 0; i < ResourceLayouts.Length; i++ )
+			{
+				ResourceLayouts[i].Dispose();
+			}
+
 			for ( int i = 0; i < Shaders.Length; i++ )
 			{
 				Shaders[i].Dispose();
 			}
-
-			Pipeline.Dispose();
 		}
 	}
 }

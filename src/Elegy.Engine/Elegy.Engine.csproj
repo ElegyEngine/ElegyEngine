@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Elegy.Common\Elegy.Common.csproj" />
+    <ProjectReference Include="..\Elegy.RenderBackend\Elegy.RenderBackend.csproj" />
   </ItemGroup>
 
 </Project>

@@ -11,8 +11,8 @@ namespace Elegy
 	{
 		private Stopwatch mStopwatch;
 		private IWindowPlatform? mWindowPlatform;
-		private List<IWindow> mWindows;
-		private List<IInputContext> mInputContexts;
+		private List<IWindow> mWindows = [];
+		private List<IInputContext> mInputContexts = [];
 		private IWindow mFocusWindow;
 		private IInputContext mFocusInputContext;
 
@@ -36,22 +36,39 @@ namespace Elegy
 				return false;
 			}
 
-			IInputContext inputContext = window.CreateInput();
-
-			window.FocusChanged += ( newState ) =>
+			var doRegisterWindow = () =>
 			{
-				if ( newState && HasWindow( window ) )
+				IInputContext inputContext = window.CreateInput();
+
+				mWindows.Add( window );
+				mInputContexts.Add( inputContext );
+
+				mFocusWindow = window;
+				mFocusInputContext = inputContext;
+
+				window.FocusChanged += ( newState ) =>
 				{
-					mFocusWindow = window;
-					mFocusInputContext = inputContext;
-				}
+					if ( newState && HasWindow( window ) )
+					{
+						mFocusWindow = window;
+						mFocusInputContext = inputContext;
+					}
+				};
+
+				window.Closing += () => RemoveWindow( window );
 			};
 
-			window.Closing += () => RemoveWindow( window );
+			// In case a window is not yet initialised (just created), create an
+			// input context etc. on load, when the window is actually ready to do so
+			if ( !window.IsInitialized )
+			{
+				window.Load += doRegisterWindow;
+				window.Initialize();
+				window.IsVisible = true;
+				return true;
+			}
 
-			mWindows.Add( window );
-			mInputContexts.Add( inputContext );
-
+			doRegisterWindow();
 			return true;
 		}
 
@@ -90,7 +107,10 @@ namespace Elegy
 				return null;
 			}
 
-			return mWindowPlatform.CreateWindow( options );
+			IWindow window = mWindowPlatform.CreateWindow( options );
+			AddWindow( window );
+
+			return window;
 		}
 
 		public IWindow GetCurrentWindow()

@@ -4,7 +4,7 @@
 namespace Elegy
 {
 	/// <summary>
-	/// Material system.
+	/// IMaterial system.
 	/// </summary>
 	public static partial class Materials
 	{
