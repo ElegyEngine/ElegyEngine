@@ -125,7 +125,7 @@ namespace Elegy
 
 		public long GetTicks() => mStopwatch.ElapsedTicks;
 
-		public double GetSeconds() => mStopwatch.ElapsedTicks / Stopwatch.Frequency;
+		public double GetSeconds() => (double)mStopwatch.ElapsedTicks / Stopwatch.Frequency;
 
 		public bool IsHeadless { get; internal set; } = false;
 	}
