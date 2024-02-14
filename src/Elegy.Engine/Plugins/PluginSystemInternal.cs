@@ -195,6 +195,31 @@ namespace Elegy
 			return true;
 		}
 
+		public IPlugin? LoadPlugin( string path )
+		{
+			IPlugin? plugin = GetPlugin( path );
+			if ( plugin is not null )
+			{
+				return plugin;
+			}
+
+			PluginLibrary? library = LoadLibrary( $"{path}/pluginConfig.json" );
+			if ( library is null )
+			{
+				return null;
+			}
+
+			plugin = library.Factory();
+			if ( !RegisterPlugin( plugin, library.Assembly, path ) )
+			{
+				mLogger.Warning( $"LoadPlugin: failed to load plugin '{path}'" );
+				mLogger.Warning( $"Reason: {plugin.Error}" );
+				return null;
+			}
+
+			return plugin;
+		}
+
 		public bool UnloadGenericPlugin( IPlugin plugin )
 		{
 			int i = 0;
