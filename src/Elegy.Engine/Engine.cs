@@ -143,17 +143,12 @@ namespace Elegy
 				}
 			};
 
-			int counter = 0;
-
 			window.Render += ( deltaTime ) =>
 			{
 				if ( window.CanSwap() )
 				{
 					RenderFrame( renderView );
 				}
-
-				counter++;
-				mLogger.Log( $"Frame {counter}" );
 			};
 
 			window.Run();
