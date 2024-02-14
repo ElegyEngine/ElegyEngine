@@ -13,7 +13,7 @@
     <Company>Elegy Engine Organisation</Company>
     <Authors>Admer456</Authors>
     <Description>Elegy Engine shared library</Description>
-    <Copyright>Copyright © 2022-2023 Admer Šuko</Copyright>
+    <Copyright>Copyright © 2022-present Elegy Engine contributors</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/ElegyEngine/ElegyCommon</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

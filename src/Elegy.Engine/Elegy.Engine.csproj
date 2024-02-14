@@ -19,7 +19,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Authors>Admer456</Authors>
     <Company>Elegy Engine Organisation</Company>
-    <Copyright>Copyright © 2022-2023 Admer Šuko</Copyright>
+    <Copyright>Copyright © 2022-present Elegy Engine contributors</Copyright>
     <RepositoryType>git</RepositoryType>
     <RootNamespace>Elegy</RootNamespace>
   </PropertyGroup>
