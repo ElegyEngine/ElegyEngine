@@ -69,5 +69,10 @@ namespace Elegy
 		/// Seconds elapsed since engine start.
 		/// </summary>
 		public static float SecondsFloat => (float)Seconds;
+
+		/// <summary>
+		/// Whether the engine was launched in headless/dedicated server mode or not.
+		/// </summary>
+		public static bool IsHeadless => mCoreSystem.IsHeadless;
 	}
 }

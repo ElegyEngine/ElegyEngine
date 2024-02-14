@@ -68,6 +68,8 @@ namespace Elegy
 				return Shutdown( "Console system failure" );
 			}
 
+			mCore.IsHeadless = Console.Arguments.GetBool( "headless" );
+
 			if ( !LoadOrCreateEngineConfig( "engineConfig.json" ) )
 			{
 				return Shutdown( "Configuration failure" );
