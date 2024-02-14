@@ -11,6 +11,9 @@ using static Elegy.Maths.Vector3D;
 
 namespace Elegy.Extensions
 {
+	/// <summary>
+	/// <see cref="Vector3"/> extensions from Godot's own Vector3 class. Lots of useful gamedev-specific stuff there.
+	/// </summary>
 	public static class Vector3GodotExtensions
 	{
 		/// <summary>
