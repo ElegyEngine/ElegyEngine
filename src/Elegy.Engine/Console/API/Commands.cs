@@ -26,5 +26,11 @@ namespace Elegy
 		/// </summary>
 		public static bool Execute( string command )
 			=> mConsole.Execute( command );
+
+		/// <summary>
+		/// Commandline arguments passed to the launcher.
+		/// </summary>
+		public static StringDictionary Arguments
+			=> mConsole.GetArguments();
 	}
 }

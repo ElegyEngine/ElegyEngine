@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.ConsoleCommands;
-using Elegy.ConsoleCommands.Helpers;
 
 namespace Elegy
 {
@@ -257,6 +256,8 @@ namespace Elegy
 				}
 			}
 		}
+
+		public StringDictionary GetArguments() => mArguments;
 
 		private ConVarRegistry mEngineConvarRegistry;
 		private List<IConsoleFrontend> mFrontends = new();
