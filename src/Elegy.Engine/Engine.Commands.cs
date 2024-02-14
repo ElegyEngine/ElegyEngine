@@ -12,13 +12,13 @@ public partial class Engine
 		return true;
 	}
 
-	[ConsoleCommand( "test_badparams" )]
+	//[ConsoleCommand( "test_badparams" )]
 	public static bool Command_BadParameters( byte a, short b, long c, Half d, DateTime e )
 	{
 		return true;
 	}
 
-	[ConsoleCommand( "test_badreturn" )]
+	//[ConsoleCommand( "test_badreturn" )]
 	public static int Command_BadReturnType( int a )
 	{
 		return 0;
