@@ -155,7 +155,7 @@ namespace TestGame
 					"info_player_start"	=> CreateEntity<Entities.InfoPlayerStart>(),
 					//"light"				=> CreateEntity<Entities.Light>(),
 					//"light_environment"	=> CreateEntity<Entities.LightEnvironment>(),
-					"func_detail"		=> CreateEntity<Entities.FuncDetail>(),
+					//"func_detail"		=> CreateEntity<Entities.FuncDetail>(),
 					"func_breakable"	=> CreateEntity<Entities.FuncBreakable>(),
 					//"func_rotating"		=> CreateEntity<Entities.FuncRotating>(),
 					//"func_water"		=> CreateEntity<Entities.FuncWater>(),
