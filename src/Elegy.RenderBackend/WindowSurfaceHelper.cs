@@ -24,7 +24,7 @@ namespace Elegy.RenderBackend
 				SyncToVerticalBlank = window.VSync
 			};
 
-			return device.CreateSwapchainFromSource( desc );
+			return device.ResourceFactory.CreateSwapchain( desc );
 		}
 
 		public static SwapchainSource GetSwapchainSource( INativeWindow view )
