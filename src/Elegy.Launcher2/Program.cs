@@ -26,7 +26,7 @@ namespace Elegy.Launcher2
 				return null;
 			}
 
-			if ( windowPlatform.Name.ToLower().Contains( "sdl" ) )
+			if ( !windowPlatform.Name.ToLower().Contains( "sdl" ) )
 			{
 				return null;
 			}
