@@ -6,7 +6,10 @@ using Silk.NET.Windowing;
 
 namespace Elegy
 {
-	internal class WindowNull : IWindow
+	/// <summary>
+	/// Dummy window class for headless instances.
+	/// </summary>
+	public class WindowNull : IWindow
 	{
 		public IWindowHost? Parent => null;
 
