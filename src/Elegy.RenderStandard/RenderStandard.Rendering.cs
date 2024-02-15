@@ -119,14 +119,23 @@ public partial class RenderStandard : IRenderFrontend
 		return Path.ChangeExtension( Path.ChangeExtension( path, null ), null );
 	}
 
+	double mCpuTime = 0.0;
+	double mGpuTime = 0.0;
+	double mPresentTime = 0.0;
+
 	public void BeginFrame()
 	{
-
+		mCpuTime = Core.Seconds;
 	}
 
 	public void EndFrame()
 	{
+		mCpuTime = Core.Seconds - mCpuTime;
+		mGpuTime = Core.Seconds;
+
 		mDevice.WaitForIdle();
+
+		mGpuTime = Core.Seconds - mGpuTime;
 	}
 
 	public void RenderView( in IView view )
@@ -168,7 +177,14 @@ public partial class RenderStandard : IRenderFrontend
 	public void PresentView( in IView view )
 	{
 		Debug.Assert( view.TargetSwapchain is not null );
+
+		mPresentTime = Core.Seconds;
 		mDevice.SwapBuffers( view.TargetSwapchain );
-		mDevice.WaitForIdle();
+		mPresentTime = Core.Seconds - mPresentTime;
+
+		//mLogger.Log( "New frame" );
+		//mLogger.Log( $"CPU: {mCpuTime * 1000.0 * 1000.0} us" );
+		//mLogger.Log( $"GPU: {mGpuTime * 1000.0 * 1000.0} us" );
+		//mLogger.Log( $"SWP: {mPresentTime * 1000.0 * 1000.0} us" );
 	}
 }
