@@ -266,14 +266,21 @@ namespace Elegy
 
 			mLogger.Log( $"Loading '{path}'..." );
 
+			string? fullPath = FileSystem.PathTo( path, PathFlags.File );
+			if ( fullPath is null )
+			{
+				mLogger.Error( $"Cannot load '{path}', it doesn't exist" );
+				return null;
+			}
+
 			PluginConfig pluginConfig = new();
-			if ( !Text.JsonHelpers.LoadFrom( ref pluginConfig, path ) )
+			if ( !Text.JsonHelpers.LoadFrom( ref pluginConfig, fullPath ) )
 			{
 				mLogger.Error( $"Cannot load '{path}'" );
 				return null;
 			}
 
-			string pluginDirectory = path[..path.LastIndexOf( '/' )];
+			string pluginDirectory = fullPath[..fullPath.LastIndexOf( '/' )];
 			string assemblyPath = $"{pluginDirectory}/{pluginConfig.AssemblyName}.dll";
 
 			Assembly assembly;
