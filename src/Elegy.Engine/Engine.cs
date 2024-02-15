@@ -51,7 +51,7 @@ namespace Elegy
 		public Engine( string[] args, IWindowPlatform? windowPlatform )
 		{
 			StartupTime = DateTime.Now;
-			
+
 			mCommandlineArgs = args;
 			mWindowPlatform = windowPlatform;
 		}
@@ -59,7 +59,7 @@ namespace Elegy
 		/// <summary>
 		/// Initialises the engine's systems.
 		/// </summary>
-		public bool Init( IConsoleFrontend? extraFrontend = null )
+		public bool Init( bool withMainWindow, IConsoleFrontend? extraFrontend = null )
 		{
 			mHasShutdown = false;
 
@@ -109,7 +109,7 @@ namespace Elegy
 				return Shutdown( "Material system failure" );
 			}
 
-			if ( !InitialiseWindowAndRenderer() )
+			if ( !InitialiseWindowAndRenderer( withMainWindow ) )
 			{
 				return Shutdown( "Render system failure" );
 			}
@@ -188,32 +188,11 @@ namespace Elegy
 			return true;
 		}
 
-		private bool InitialiseWindowAndRenderer()
+		private bool InitialiseWindowAndRenderer( bool initialiseWindow )
 		{
 			if ( Core.IsHeadless )
 			{
 				// TODO: use dummy render frontend
-			}
-
-			IWindow? window = Core.GetCurrentWindow();
-
-			// Now that the engine is mostly initialised, we can create a window for the application
-			// Assuming, of course, this isn't a headless instance, and a window isn't already provided
-			if ( window is WindowNull )
-			{
-				window = Core.CreateWindow( new()
-				{
-					API = GraphicsAPI.DefaultVulkan,
-					FramesPerSecond = 120.0,
-					UpdatesPerSecond = 120.0,
-					Size = new( 320, 240 )
-				} );
-
-				if ( window is null )
-				{
-					mLogger.Error( "Cannot create window!" );
-					return false;
-				}
 			}
 
 			string renderFrontendPath = FileSystem.CurrentConfig.RenderFrontend;
@@ -232,8 +211,33 @@ namespace Elegy
 				return false;
 			}
 
-			mRenderView = mRenderFrontend.CreateView( window );
 			Render.SetRenderFrontend( mRenderFrontend );
+
+			if ( initialiseWindow )
+			{
+				IWindow? window = Core.GetCurrentWindow();
+
+				// Now that the engine is mostly initialised, we can create a window for the application
+				// Assuming, of course, this isn't a headless instance, and a window isn't already provided
+				if ( window is WindowNull )
+				{
+					window = Core.CreateWindow( new()
+					{
+						API = GraphicsAPI.DefaultVulkan,
+						FramesPerSecond = 120.0,
+						UpdatesPerSecond = 120.0,
+						Size = new( 320, 240 )
+					} );
+
+					if ( window is null )
+					{
+						mLogger.Error( "Cannot create window!" );
+						return false;
+					}
+				}
+
+				mRenderView = mRenderFrontend.CreateView( window );
+			}
 
 			return true;
 		}

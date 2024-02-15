@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\extern\Silk.Eto\src\Silk.Eto.Gtk\Silk.Eto.Gtk.csproj" />
     <ProjectReference Include="..\..\Elegy.Engine\Elegy.Engine.csproj" />
     <ProjectReference Include="..\Elegy.GuiLauncher.Common\Elegy.GuiLauncher.Common.csproj" />
   </ItemGroup>

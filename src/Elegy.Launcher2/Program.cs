@@ -40,7 +40,7 @@ namespace Elegy.Launcher2
 
 			Engine engine = new( args, GetWindowPlatform() );
 
-			while ( !engine.Init() )
+			while ( !engine.Init( withMainWindow: true ) )
 			{
 				if ( engine.ShutdownReason is null )
 				{

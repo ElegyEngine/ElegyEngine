@@ -1,7 +1,10 @@
 
-using Eto.Drawing;
+using Elegy.Rendering;
 using Eto.Forms;
-using System.Runtime.InteropServices;
+using Silk.Eto;
+
+using SilkWindow = Silk.NET.Windowing.Window;
+using SilkInput = Silk.NET.Input.InputWindowExtensions;
 
 namespace Elegy.GuiLauncher
 {
@@ -71,10 +74,7 @@ namespace Elegy.GuiLauncher
 
 		public bool RunFrame( float delta )
 		{
-			Console.Log( $"Remaining clicks: {Clicks + 1}" );
-			Clicks--;
-
-			return Clicks > 0;
+			return true;
 		}
 
 		public void Shutdown()
@@ -90,10 +90,13 @@ namespace Elegy.GuiLauncher
 
 	public partial class MainForm : Form
 	{
-		private SilkWindow mSilkWindow;
+		private SilkSurface mSurface;
 		private FormLogger mLogger;
 		private TextArea mTextArea;
+		private Label mStatusLabel;
 		private Engine mEngine;
+
+		private IView? mRenderView = null;
 
 		private Command CreateButton( string name, EventHandler<EventArgs> action )
 		{
@@ -115,14 +118,19 @@ namespace Elegy.GuiLauncher
 			Title = "My Eto Form";
 			MinimumSize = new( 1280, 960 );
 
-			//mSilkWindow = new SilkWindow()
-			//{
-			//	Size = new Size( 800, 600 )
-			//};
+			mStatusLabel = new()
+			{
+				Text = "FPS:"
+			};
+
+			mSurface = new()
+			{
+				Size = new( 1280, 720 )
+			};
 
 			mTextArea = new()
 			{
-				Size = new( 1200, 900 ),
+				Size = new( 1280, 120 ),
 				ReadOnly = true
 			};
 
@@ -130,35 +138,93 @@ namespace Elegy.GuiLauncher
 
 			Content = new StackLayout
 			{
-				Padding = 10,
+				Padding = 5,
 				Items =
 				{
+					mStatusLabel,
+					mSurface,
 					"Engine output:",
 					mTextArea
-				}
+				},
+				Size = new( -1, -1 )
 			};
 
 			ToolBar = new ToolBar
 			{
 				Items =
 				{
-					CreateButton( "Start engine", (sender, e) =>
+					CreateButton( "Restart engine", (sender, e) =>
 					{
-						if ( !mEngine.Init( mLogger ) )
+						if ( !mEngine.Init( false, mLogger ) )
 						{
 							MessageBox.Show( mEngine.ShutdownReason );
 							return;
 						}
 
+						Core.AddWindow( mSurface );
+						mRenderView = Render.Instance.CreateView( mSurface );
+
 						Plugins.RegisterPlugin( new FormApp() );
 					} ),
 
-					CreateButton( "Run engine", (sender, e) =>
+					CreateButton( "Shutdown engine", (sender, e) =>
 					{
-						mEngine.Run();
+						
 					} )
 				}
 			};
+
+			mSurface.LoadComplete += OnLoad;
+		}
+
+		private void OnLoad( object? sender, EventArgs e )
+		{
+			if ( !mEngine.Init( false, mLogger ) )
+			{
+				MessageBox.Show( mEngine.ShutdownReason );
+				return;
+			}
+
+			Core.AddWindow( mSurface );
+			mRenderView = Render.Instance.CreateView( mSurface );
+
+			// Just to give the engine something to do
+			Plugins.RegisterPlugin( new FormApp() );
+
+			mLastTime = Core.Seconds;
+			mSurface.Draw += OnRender;
+		}
+
+		private double mAverageFps = 60.0;
+		private double mLastTime = 0.0;
+		private double mVerticalSyncTimer = 1.0 / 120.0;
+		private void OnRender( object? sender, EventArgs e )
+		{
+			double deltaTime = Core.Seconds - mLastTime;
+
+			mVerticalSyncTimer -= deltaTime;
+			if ( mVerticalSyncTimer > 0.0 )
+			{
+				return;
+			}
+
+			mVerticalSyncTimer = 1.0 / 60.0;
+			mEngine.Update( (float)deltaTime );
+
+			if ( mRenderView.RenderSize.X > 0.0f )
+			{
+				mEngine.RenderFrame( mRenderView );
+			}
+			else
+			{
+				mSurface.ForceResizeEvent();
+				mRenderView.RenderSize = new( mSurface.RenderWidth, mSurface.RenderHeight );
+			}
+
+			mLastTime = Core.Seconds;
+
+			mAverageFps = mAverageFps * 0.9 + (1.0 / deltaTime) * 0.1;
+			mStatusLabel.Text = string.Format( "FPS: {0:F}", mAverageFps );
 		}
 	}
 
@@ -167,6 +233,9 @@ namespace Elegy.GuiLauncher
 		public static void RunApplication( string[] args, string platform )
 		{
 			Engine engine = new( args, null );
+
+			SilkWindow.Add( new EtoWindowPlatform() );
+			SilkInput.Add( new EtoInputPlatform() );
 
 			new Application( platform )
 				.Run( new MainForm( engine ) );
