@@ -1,3 +1,6 @@
 [submodule "extern/Elegy.Veldrid"]
 	path = extern/Elegy.Veldrid
 	url = https://github.com/Admer456/veldrid.git
+[submodule "extern/Silk.Eto"]
+	path = extern/Silk.Eto
+	url = https://github.com/Admer456/Silk.Eto.git
