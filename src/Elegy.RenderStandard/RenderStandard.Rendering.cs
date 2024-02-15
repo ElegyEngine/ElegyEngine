@@ -140,6 +140,7 @@ public partial class RenderStandard : IRenderFrontend
 		mRenderCommands.SetFramebuffer( rview.RenderFramebuffer );
 		mRenderCommands.ClearColorTarget( 0, new( 0.01f, 0.05f, 0.06f, 1.0f ) );
 		mRenderCommands.ClearDepthStencil( 0.0f );
+		mRenderCommands.SetViewport( 0, new( 0.0f, 0.0f, rview.RenderSize.X, rview.RenderSize.Y, 0.0f, 1.0f ) );
 
 		mRenderCommands.SetPipeline( mTrianglePipeline.Pipeline );
 		mRenderCommands.SetVertexBuffer( 0, mTriangleVertexBuffer );
@@ -151,6 +152,7 @@ public partial class RenderStandard : IRenderFrontend
 		// Now render that framebuffer onto the window
 		mRenderCommands.SetFramebuffer( rview.Framebuffer );
 		mRenderCommands.ClearColorTarget( 0, new( 0.02f, 0.10f, 0.12f, 1.0f ) );
+		mRenderCommands.SetViewport( 0, new( 0.0f, 0.0f, rview.RenderSize.X, rview.RenderSize.Y, 0.0f, 1.0f ) );
 		
 		mRenderCommands.SetPipeline( mWindowPipeline.Pipeline );
 		mRenderCommands.SetGraphicsResourceSet( 0, rview.WindowSet );
