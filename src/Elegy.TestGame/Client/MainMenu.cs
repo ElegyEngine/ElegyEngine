@@ -1,8 +1,5 @@
-﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
-
-//using Godot;
-using static Godot.Control;
 
 namespace TestGame.Client
 {
@@ -10,7 +7,7 @@ namespace TestGame.Client
 	{
 		public MainMenu()
 		{
-			mRoot = SetupControlAutoexpand<Control>( null, true, true );
+
 		}
 
 		public Action<string> OnNewGame { get; set; }
@@ -19,17 +16,20 @@ namespace TestGame.Client
 
 		public bool Visible
 		{
-			get => mRoot.Visible;
-			set => mRoot.Visible = value;
+			get; set;
+			//get => mRoot.Visible;
+			//set => mRoot.Visible = value;
 		}
 
 		public bool InGame
 		{
-			set => mLeaveGameButton.Disabled = !value;
+			get; set;
+			//set => mLeaveGameButton.Disabled = !value;
 		}
 
 		public void Init()
 		{
+			/*
 			mRoot.Size = mRoot.GetViewportRect().Size;
 
 			var panel			= SetupControlAutoexpand<Panel>( mRoot, true, true );
@@ -54,12 +54,10 @@ namespace TestGame.Client
 			mMapSelectionButton = MapSelection( container );
 
 			ButtonTextAction( container, "Exit", OnExit );
+			*/
 		}
 
-		private Button mNewGameButton;
-		private Button mLeaveGameButton;
-		private OptionButton? mMapSelectionButton = null;
-
+		/*
 		private void NewGamePressed()
 		{
 			mLeaveGameButton.Disabled = false;
@@ -71,36 +69,9 @@ namespace TestGame.Client
 				OnNewGame( mapName );
 			}
 		}
+		*/
 
-		private TControl SetupControlAutoexpand<TControl>( Control? parent, bool anchor, bool fullRect = false ) where TControl : Control, new()
-		{
-			TControl control = parent?.CreateChild<TControl>() ?? Nodes.CreateNode<TControl>();
-
-			const SizeFlags sizeFlags = SizeFlags.ExpandFill;
-			control.SizeFlagsHorizontal = sizeFlags;
-			control.SizeFlagsVertical = sizeFlags;
-
-			if ( anchor )
-			{
-				control.LayoutMode = 1;
-			}
-
-			if ( fullRect )
-			{
-				control.Size = control.GetViewportRect().Size;
-			}
-
-			control.SetAnchorsPreset( LayoutPreset.FullRect );
-
-			return control;
-		}
-
-		private void MapErrorReport( Control parent, string text )
-		{
-			Label noMapLabel = parent.CreateChild<Label>();
-			noMapLabel.Text = text;
-		}
-
+		/*
 		private OptionButton? MapSelection( Control parent )
 		{
 			string[]? mapFiles = FileSystem.GetFiles( "maps", "*.elf", true );
@@ -120,18 +91,6 @@ namespace TestGame.Client
 
 			return button;
 		}
-
-		private Button ButtonTextAction( Control parent, string text, Action? onPressed )
-		{
-			var button = parent.CreateChild<Button>();
-			button.Text = text;
-			if ( onPressed != null )
-			{
-				button.Pressed += onPressed;
-			}
-			return button;
-		}
-
-		private Control mRoot;
+		*/
 	}
 }

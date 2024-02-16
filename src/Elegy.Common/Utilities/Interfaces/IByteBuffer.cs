@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
 using System.Text;
@@ -190,7 +190,7 @@ namespace Elegy.Utilities.Interfaces
 		/// </summary>
 		/// <param name="value">The value to encode.</param>
 		/// <param name="stringEncoding">What type of string encoding to use (ASCII, UTF-8).</param>
-		/// <param name="stringLength">Choose between 256 (<see cref="StringLength.Short"/>), 65k (<see cref="StringLength.Medium"/>) and 2B max characters (<see cref="StringLength.Long")/>.</param>
+		/// <param name="stringLength">Choose between 256 (<see cref="StringLength.Short"/>), 65k (<see cref="StringLength.Medium"/>) and 2B max characters (<see cref="StringLength.Long"/>).</param>
 		public void WriteString( string value, Encoding stringEncoding, StringLength stringLength );
 
 		/// <summary>
@@ -207,7 +207,7 @@ namespace Elegy.Utilities.Interfaces
 		/// Reads a string from the buffer.
 		/// </summary>
 		/// <param name="stringEncoding">What type of encoding to use.</param>
-		/// <param name="stringLength">Choose between 256 (<see cref="StringLength.Short"/>), 65k (<see cref="StringLength.Medium"/>) and 2B max characters (<see cref="StringLength.Long")/>.</param>
+		/// <param name="stringLength">Choose between 256 (<see cref="StringLength.Short"/>), 65k (<see cref="StringLength.Medium"/>) and 2B max characters (<see cref="StringLength.Long"/>).</param>
 		/// <exception cref="IndexOutOfRangeException"/>
 		public string ReadString( Encoding stringEncoding, StringLength stringLength );
 

@@ -1,5 +1,8 @@
-﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
+
+using Elegy.Extensions;
+using Silk.NET.Input;
 
 namespace TestGame.Client
 {
@@ -10,47 +13,38 @@ namespace TestGame.Client
 			GrabMouse();
 		}
 
-		public void UserInput( InputEvent @event )
-		{
-			if ( @event is InputEventMouseMotion && Input.MouseMode == Input.MouseModeEnum.Captured )
-			{
-				var mouseMotion = @event as InputEventMouseMotion;
-				mMousePositionDelta += mouseMotion.Relative;
-			}
-		}
-
 		public void Update()
 		{
-			Basis basis = new Basis( Quaternion.FromEuler( mAngles * new Vector3( 0.0f, 1.0f, 0.0f ) ) );
-			Vector3 viewForward = -basis.Z;
-			Vector3 viewRight = basis.X;
+			//Basis basis = new Basis( Quaternion.FromEuler( mAngles * new Vector3( 0.0f, 1.0f, 0.0f ) ) );
+			Vector3 viewForward = Vector3.UnitY; // -basis.Z;
+			Vector3 viewRight = Vector3.UnitX; //basis.X;
 
 			mMovementDirection = Vector3.Zero;
 
-			if ( Input.IsKeyPressed( Key.W ) )
+			if ( Input.Keyboard.IsKeyPressed( Key.W ) )
 			{
 				mMovementDirection += viewForward;
 			}
-			if ( Input.IsKeyPressed( Key.A ) )
+			if ( Input.Keyboard.IsKeyPressed( Key.A ) )
 			{
 				mMovementDirection -= viewRight;
 			}
-			if ( Input.IsKeyPressed( Key.S ) )
+			if ( Input.Keyboard.IsKeyPressed( Key.S ) )
 			{
 				mMovementDirection -= viewForward;
 			}
-			if ( Input.IsKeyPressed( Key.D ) )
+			if ( Input.Keyboard.IsKeyPressed( Key.D ) )
 			{
 				mMovementDirection += viewRight;
 			}
 
-			if ( Input.IsKeyPressed( Key.Space ) )
+			if ( Input.Keyboard.IsKeyPressed( Key.Space ) )
 			{
-				mMovementDirection += Vector3.Up;
+				mMovementDirection += Vector3.UnitZ;
 			}
-			if ( Input.IsKeyPressed( Key.Ctrl ) )
+			if ( Input.Keyboard.IsKeyPressed( Key.ControlLeft ) )
 			{
-				mMovementDirection -= Vector3.Up;
+				mMovementDirection -= Vector3.UnitZ;
 			}
 
 			mMousePositionDeltaSmooth = mMousePositionDeltaSmooth.Lerp( mMousePositionDelta, 0.99f );
@@ -78,49 +72,49 @@ namespace TestGame.Client
 
 		public void GrabMouse()
 		{
-			Input.MouseMode = Input.MouseModeEnum.Captured;
+			Input.Mouse.Cursor.CursorMode = CursorMode.Hidden;
 		}
 
 		public void ReleaseMouse()
 		{
-			Input.MouseMode = Input.MouseModeEnum.Visible;
+			Input.Mouse.Cursor.CursorMode = CursorMode.Normal;
 		}
 
 		private ClientActions GrabActionStates()
 		{
 			ClientActions actionStates = 0;
 
-			if ( Input.IsMouseButtonPressed( MouseButton.Left ) )
+			if ( Input.Mouse.IsButtonPressed( MouseButton.Left ) )
 				actionStates |= ClientActions.PrimaryAttack;
-			if ( Input.IsMouseButtonPressed( MouseButton.Right ) )
+			if ( Input.Mouse.IsButtonPressed( MouseButton.Right ) )
 				actionStates |= ClientActions.SecondaryAttack;
-			if ( Input.IsMouseButtonPressed( MouseButton.Middle ) )
+			if ( Input.Mouse.IsButtonPressed( MouseButton.Middle ) )
 				actionStates |= ClientActions.TertiaryAttack;
 
-			if ( Input.IsKeyPressed( Key.Shift ) )
+			if ( Input.Keyboard.IsKeyPressed( Key.ShiftLeft ) )
 				actionStates |= ClientActions.Sprint;
-			if ( Input.IsKeyPressed( Key.E ) )
+			if ( Input.Keyboard.IsKeyPressed( Key.E ) )
 				actionStates |= ClientActions.Use;
-			if ( Input.IsKeyPressed( Key.R ) )
+			if ( Input.Keyboard.IsKeyPressed( Key.R ) )
 				actionStates |= ClientActions.Reload;
-			if ( Input.IsKeyPressed( Key.F ) )
+			if ( Input.Keyboard.IsKeyPressed( Key.F ) )
 				actionStates |= ClientActions.Flashlight;
 
-			if ( Input.IsKeyPressed( Key.Alt ) )
+			if ( Input.Keyboard.IsKeyPressed( Key.AltLeft ) )
 			{
-				if ( Input.IsKeyPressed( Key.A ) )
+				if ( Input.Keyboard.IsKeyPressed( Key.A ) )
 					actionStates |= ClientActions.LeanLeft;
-				if ( Input.IsKeyPressed( Key.D ) )
+				if ( Input.Keyboard.IsKeyPressed( Key.D ) )
 					actionStates |= ClientActions.LeanRight;
-				if ( Input.IsKeyPressed( Key.W ) )
+				if ( Input.Keyboard.IsKeyPressed( Key.W ) )
 					actionStates |= ClientActions.LeanForward;
 			}
 
-			if ( Input.IsKeyPressed( Key.Escape ) )
+			if ( Input.Keyboard.IsKeyPressed( Key.Escape ) )
 				actionStates |= ClientActions.Escape;
-			if ( Input.IsKeyPressed( Key.Tab ) )
+			if ( Input.Keyboard.IsKeyPressed( Key.Tab ) )
 				actionStates |= ClientActions.Tab;
-			if ( Input.IsKeyPressed( Key.Enter ) )
+			if ( Input.Keyboard.IsKeyPressed( Key.Enter ) )
 				actionStates |= ClientActions.Enter;
 
 			return actionStates;

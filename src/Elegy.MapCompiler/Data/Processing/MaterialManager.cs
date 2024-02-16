@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
 // TODO: Replace with Elegy's material system when it has one

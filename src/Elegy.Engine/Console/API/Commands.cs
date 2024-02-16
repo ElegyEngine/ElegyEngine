@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
+// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
 using Elegy.ConsoleCommands;
@@ -26,5 +26,11 @@ namespace Elegy
 		/// </summary>
 		public static bool Execute( string command )
 			=> mConsole.Execute( command );
+
+		/// <summary>
+		/// Commandline arguments passed to the launcher.
+		/// </summary>
+		public static StringDictionary Arguments
+			=> mConsole.GetArguments();
 	}
 }

@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
 namespace Elegy.Assets
@@ -17,5 +17,8 @@ namespace Elegy.Assets
 
 		public string[] Plugins { get; set; } = Array.Empty<string>();
 		public string[] Mounts { get; set; } = Array.Empty<string>();
+
+		public string RenderFrontend { get; set; } = "engine/plugins/RenderStandard";
+		public string AudioSystem { get; set; } = "engine/plugins/AudioLoudPizza";
 	}
 }

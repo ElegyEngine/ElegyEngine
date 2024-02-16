@@ -1,11 +1,19 @@
-﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
 using Elegy.Assets;
+using Elegy.RenderBackend.Extensions;
+using Silk.NET.Windowing;
+using System.Diagnostics;
+
+using IView = Elegy.Rendering.IView;
 
 namespace Elegy
 {
-	internal class Engine
+	/// <summary>
+	/// The engine. Launches and updates all subsystems.
+	/// </summary>
+	public partial class Engine
 	{
 		/// <summary>
 		/// Elegy Engine major version, used for version checking against plugins.
@@ -20,74 +28,54 @@ namespace Elegy
 		/// </summary>
 		public const int OldestSupportedMinor = 0;
 
+		/// <summary>
+		/// Version string to be displayed when the engine starts up.
+		/// </summary>
 		public static readonly string VersionString = $"{MajorVersion}.{MinorVersion}";
 
-		public static Engine Instance { get; private set; }
-		public static Node3D RootNode => Instance.mRootNode;
+		/// <summary>
+		/// The reason of shutdown. Might be an error.
+		/// </summary>
+		public string? ShutdownReason { get; private set; } = null;
 
+		/// <summary>
+		/// Time the engine started.
+		/// </summary>
 		public static DateTime StartupTime { get; private set; }
 
 		private TaggedLogger mLogger = new( "Engine" );
 
-		#region Console commands
-		[ConsoleCommand( "test" )]
-		public static bool Command_Test( int a, int b = 20 )
+		/// <summary>
+		/// One and only engine constructor.
+		/// </summary>
+		public Engine( string[] args, IWindowPlatform? windowPlatform )
 		{
-			Console.Log( $"You've successfully called 'test' with {a} and {b}!" );
-			return true;
-		}
-
-		[ConsoleCommand( "test_badparams" )]
-		public static bool Command_BadParameters( byte a, short b, long c, Half d, DateTime e )
-		{
-			return true;
-		}
-
-		[ConsoleCommand( "test_badreturn" )]
-		public static int Command_BadReturnType( int a )
-		{
-			return 0;
-		}
-
-		[ConsoleCommand( "test_args" )]
-		public static void Command_OnlyArgs( string[] args )
-		{
-
-		}
-
-		[ConsoleCommand( "test_noparams" )]
-		public static void Command_NoParameters()
-		{
-
-		}
-
-		[ConsoleCommand( "test_nonstatic" )]
-		public void Command_NonStatic()
-		{
-
-		}
-		#endregion
-		public Engine( Node3D rootNode, string[] args )
-		{
-			mCommandlineArgs = args;
-			mRootNode = rootNode;
-			mEngineHostNode = (Node3D)mRootNode.FindChild( "EngineHost" );
 			StartupTime = DateTime.Now;
-			Instance = this;
+
+			mCommandlineArgs = args;
+			mWindowPlatform = windowPlatform;
 		}
 
-		public bool Init()
+		/// <summary>
+		/// Initialises the engine's systems.
+		/// </summary>
+		public bool Init( bool withMainWindow, IConsoleFrontend? extraFrontend = null )
 		{
 			mHasShutdown = false;
 
-			if ( !InitialiseConsole() )
+			mCore = new( Stopwatch.StartNew(), mWindowPlatform );
+			Core.SetCore( mCore );
+
+			if ( !InitialiseConsole( extraFrontend ) )
 			{
-				return Shutdown( "Console system failure", true );
+				return Shutdown( "Console system failure" );
 			}
+
+			mCore.IsHeadless = Console.Arguments.GetBool( "headless" );
 
 			if ( !LoadOrCreateEngineConfig( "engineConfig.json" ) )
 			{
-				return Shutdown( "Configuration failure", true );
+				return Shutdown( "Configuration failure" );
 			}
 
 			if ( mEngineConfig.ConfigName != null )
@@ -98,13 +86,13 @@ namespace Elegy
 			mFileSystem = new( mEngineConfig );
 			if ( !mFileSystem.Init() )
 			{
-				return Shutdown( "File system failure", true );
+				return Shutdown( "File system failure" );
 			}
 
 			mPluginSystem = new();
 			if ( !mPluginSystem.Init() )
 			{
-				return Shutdown( "Plugin system failure", true );
+				return Shutdown( "Plugin system failure" );
 			}
 
 			foreach ( IPlugin plugin in mPluginSystem.GenericPlugins )
@@ -118,22 +106,78 @@ namespace Elegy
 			mMaterialSystem = new();
 			if ( !mMaterialSystem.Init() )
 			{
-				return Shutdown( "Material system failure", true );
+				return Shutdown( "Material system failure" );
+			}
+
+			if ( !InitialiseWindowAndRenderer( withMainWindow ) )
+			{
+				return Shutdown( "Render system failure" );
 			}
 
 			mLogger.Log( "Successfully initialised all systems" );
 			return true;
 		}
 
-		private bool InitialiseConsole()
+		/// <summary>
+		/// Kicks off the update loop.
+		/// </summary>
+		public void Run()
+		{
+			if ( Core.IsHeadless )
+			{
+				RunHeadless();
+				return;
+			}
+
+			IWindow window = Core.GetCurrentWindow();
+			IView? renderView = Render.Instance.GetView( window );
+			Debug.Assert( renderView is not null );
+
+			window.Update += ( deltaTime ) =>
+			{
+				Update( (float)deltaTime );
+
+				if ( mHasShutdown )
+				{
+					window.Close();
+				}
+			};
+
+			window.Render += ( deltaTime ) =>
+			{
+				if ( window.CanSwap() )
+				{
+					RenderFrame( renderView );
+				}
+			};
+
+			window.Run();
+			Shutdown();
+		}
+
+		/// <summary>
+		/// Kicks off the update loop without rendering nor input.
+		/// </summary>
+		public void RunHeadless()
+		{
+			float lastTime = -0.016f;
+
+			while ( !mHasShutdown )
+			{
+				float deltaTime = Core.SecondsFloat - lastTime;
+				Update( deltaTime );
+			}
+		}
+
+		private bool InitialiseConsole( IConsoleFrontend? extraFrontend = null )
 		{
 			mConsole = new( mCommandlineArgs );
-			if ( !mConsole.Init() )
+			if ( !mConsole.Init( extraFrontend ) )
 			{
 				return false;
 			}
 
-			Console.Log( $"Initialising Elegy Engine ({VersionString}) by Admer456" );
+			Console.Log( $"Initialising Elegy Engine ({VersionString})" );
 
 			if ( MajorVersion < 1 )
 			{
@@ -141,6 +185,60 @@ namespace Elegy
 			}
 
 			mLogger.Verbose( $"Working directory: '{Directory.GetCurrentDirectory()}'" );
+			return true;
+		}
+
+		private bool InitialiseWindowAndRenderer( bool initialiseWindow )
+		{
+			if ( Core.IsHeadless )
+			{
+				// TODO: use dummy render frontend
+			}
+
+			string renderFrontendPath = FileSystem.CurrentConfig.RenderFrontend;
+
+			IPlugin? renderFrontendPlugin = Plugins.LoadPlugin( renderFrontendPath );
+			if ( renderFrontendPlugin is null )
+			{
+				mLogger.Error( "Cannot load render frontend plugin" );
+				return false;
+			}
+
+			mRenderFrontend = renderFrontendPlugin as IRenderFrontend;
+			if ( mRenderFrontend is null )
+			{
+				mLogger.Error( $"Render frontend plugin '{renderFrontendPath}' doesn't actually implement an IRenderFrontend!" );
+				return false;
+			}
+
+			Render.SetRenderFrontend( mRenderFrontend );
+
+			if ( initialiseWindow )
+			{
+				IWindow? window = Core.GetCurrentWindow();
+
+				// Now that the engine is mostly initialised, we can create a window for the application
+				// Assuming, of course, this isn't a headless instance, and a window isn't already provided
+				if ( window is WindowNull )
+				{
+					window = Core.CreateWindow( new()
+					{
+						API = GraphicsAPI.DefaultVulkan,
+						FramesPerSecond = 120.0,
+						UpdatesPerSecond = 120.0,
+						Size = new( 320, 240 )
+					} );
+
+					if ( window is null )
+					{
+						mLogger.Error( "Cannot create window!" );
+						return false;
+					}
+				}
+
+				mRenderView = mRenderFrontend.CreateView( window );
+			}
+
 			return true;
 		}
 
@@ -164,7 +262,12 @@ namespace Elegy
 			return true;
 		}
 
-		public bool Shutdown( string why = "", bool hardExit = false )
+		/// <summary>
+		/// Shuts down the engine.
+		/// </summary>
+		/// <param name="why">The reason of shutdown. If left empty, it is a normal shutdown, else an error.</param>
+		/// <returns></returns>
+		private bool Shutdown( string why = "" )
 		{
 			if ( mHasShutdown )
 			{
@@ -180,40 +283,35 @@ namespace Elegy
 				mLogger.Error( $"Shutting down, reason: {why}" );
 			}
 
-			mMaterialSystem.Shutdown();
+			mRenderFrontend?.Shutdown();
+			Render.SetRenderFrontend( null );
+
+			mMaterialSystem?.Shutdown();
 			mMaterialSystem = null;
 			Materials.SetMaterialSystem( null );
 
-			mPluginSystem.Shutdown();
+			mPluginSystem?.Shutdown();
 			mPluginSystem = null;
 			Plugins.SetPluginSystem( null );
 
-			mFileSystem.Shutdown();
+			mFileSystem?.Shutdown();
 			mFileSystem = null;
 			FileSystem.SetFileSystem( null );
 
-			mConsole.Shutdown();
+			mConsole?.Shutdown();
 			mConsole = null;
 			Console.SetConsole( null );
 
-			if ( hardExit )
-			{
-				ExitEngine( why == "" ? 0 : 99 );
-			}
+			ShutdownReason = why;
 
 			mHasShutdown = true;
 			return false;
 		}
 
 		/// <summary>
-		/// Actually quits Godot
+		/// Updates the engine subsystems.
 		/// </summary>
-		private void ExitEngine( int returnCode )
-		{
-			mRootNode.GetTree().Quit( returnCode );
-			mRootNode.QueueFree();
-		}
-
+		/// <param name="delta">Delta time since last frame.</param>
 		public void Update( float delta )
 		{
 			Console.Update( delta );
@@ -228,34 +326,49 @@ namespace Elegy
 
 			if ( Applications.Count == 0 )
 			{
-				Shutdown( "", true );
+				Shutdown( "" );
 			}
 		}
 
-		public void PhysicsUpdate( float delta )
+		/// <summary>
+		/// Renders everything for a given window.
+		/// </summary>
+		/// <param name="window">The window to render into.</param>
+		public void RenderFrame( IWindow window )
 		{
-			foreach ( var app in Applications )
+			IView? view = Render.Instance.GetView( window );
+			if ( view is null )
 			{
-				app.RunPhysicsFrame( delta );
+				mLogger.Error( "Cannot render frame - there is no renderview for the window!" );
+				return;
 			}
+
+			RenderFrame( view );
 		}
 
-		public void HandleInput( InputEvent @event )
+		/// <summary>
+		/// Renders everything for a given view.
+		/// </summary>
+		/// <param name="view">The view to render from. Will render and update an <see cref="IWindow"/>.</param>
+		public void RenderFrame( IView view )
 		{
-			foreach ( var app in Applications )
-			{
-				app.HandleInput( @event );
-			}
+			Render.Instance.BeginFrame();
+			Render.Instance.RenderView( view );
+			Render.Instance.EndFrame();
+			Render.Instance.PresentView( view );
 		}
 
+		private CoreInternal? mCore;
 		private ConsoleInternal? mConsole;
 		private FileSystemInternal? mFileSystem;
 		private PluginSystemInternal? mPluginSystem;
 		private MaterialSystemInternal? mMaterialSystem;
 
+		private IWindowPlatform? mWindowPlatform;
+		private IRenderFrontend? mRenderFrontend;
+		private IView? mRenderView;
+
 		private string[] mCommandlineArgs;
-		private Node3D mRootNode;
-		private Node3D mEngineHostNode;
 		private bool mHasShutdown = false;
 
 		EngineConfig mEngineConfig;

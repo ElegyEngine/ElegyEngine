@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>Elegy</RootNamespace>
@@ -13,7 +13,7 @@
     <Company>Elegy Engine Organisation</Company>
     <Authors>Admer456</Authors>
     <Description>Elegy Engine shared library</Description>
-    <Copyright>Copyright © 2022-2023 Admer Šuko</Copyright>
+    <Copyright>Copyright © 2022-present Elegy Engine contributors</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/ElegyEngine/ElegyCommon</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -22,8 +22,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GodotSharp" Version="4.0.0" />
-    <PackageReference Include="System.Text.Json" Version="6.0.7" />
+    <PackageReference Include="Collections.Pooled" Version="2.0.0-preview.27" />
+    <PackageReference Include="System.Text.Json" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>

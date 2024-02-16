@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
 using Elegy.Assets;
@@ -81,27 +81,7 @@ namespace Elegy
 					return;
 				}
 
-				// Register CVars here so they can be tracked and unregistered when the plugin is unloaded
-				ConsoleCommands.ConVarRegistry cvarRegistry = new( library.Assembly, plugin );
-				cvarRegistry.RegisterAll();
-
-				if ( !plugin.Init() )
-				{
-					failedPlugins.Add( $"{pluginIdentifier} - failed to initialise (error message: '{plugin.Error}')" );
-					cvarRegistry.UnregisterAll();
-					return;
-				}
-
-				mConsoleRegistries.Add( plugin, cvarRegistry );
-
-				if ( plugin is IApplication )
-				{
-					mApplicationPlugins.Add( library.MetadataPath, plugin as IApplication );
-				}
-				else
-				{
-					mGenericPlugins.Add( library.MetadataPath, plugin );
-				}
+				RegisterPlugin( plugin, library.Assembly, library.MetadataPath, failedPlugins );
 			} );
 
 			if ( failedPlugins.Count > 0 )
@@ -188,6 +168,58 @@ namespace Elegy
 			return mApplicationPlugins.GetValueOrDefault( path );
 		}
 
+		public bool RegisterPlugin( IPlugin plugin, Assembly? assembly = null, string? metadataPath = null, List<string>? failedPlugins = null )
+		{
+			// Register CVars here so they can be tracked and unregistered when the plugin is unloaded
+			ConsoleCommands.ConVarRegistry cvarRegistry = new( assembly, plugin );
+			cvarRegistry.RegisterAll();
+
+			if ( !plugin.Init() )
+			{
+				failedPlugins?.Add( $"{plugin.Name} - failed to initialise (error message: '{plugin.Error}')" );
+				cvarRegistry.UnregisterAll();
+				return false;
+			}
+
+			mConsoleRegistries.Add( plugin, cvarRegistry );
+
+			if ( plugin is IApplication )
+			{
+				mApplicationPlugins.Add( metadataPath ?? plugin.Name, plugin as IApplication );
+			}
+			else
+			{
+				mGenericPlugins.Add( metadataPath ?? plugin.Name, plugin );
+			}
+
+			return true;
+		}
+
+		public IPlugin? LoadPlugin( string path )
+		{
+			IPlugin? plugin = GetPlugin( path );
+			if ( plugin is not null )
+			{
+				return plugin;
+			}
+
+			PluginLibrary? library = LoadLibrary( $"{path}/pluginConfig.json" );
+			if ( library is null )
+			{
+				return null;
+			}
+
+			plugin = library.Factory();
+			if ( !RegisterPlugin( plugin, library.Assembly, path ) )
+			{
+				mLogger.Warning( $"LoadPlugin: failed to load plugin '{path}'" );
+				mLogger.Warning( $"Reason: {plugin.Error}" );
+				return null;
+			}
+
+			return plugin;
+		}
+
 		public bool UnloadGenericPlugin( IPlugin plugin )
 		{
 			int i = 0;
@@ -234,14 +266,21 @@ namespace Elegy
 
 			mLogger.Log( $"Loading '{path}'..." );
 
+			string? fullPath = FileSystem.PathTo( path, PathFlags.File );
+			if ( fullPath is null )
+			{
+				mLogger.Error( $"Cannot load '{path}', it doesn't exist" );
+				return null;
+			}
+
 			PluginConfig pluginConfig = new();
-			if ( !Text.JsonHelpers.LoadFrom( ref pluginConfig, path ) )
+			if ( !Text.JsonHelpers.LoadFrom( ref pluginConfig, fullPath ) )
 			{
 				mLogger.Error( $"Cannot load '{path}'" );
 				return null;
 			}
 
-			string pluginDirectory = path[..path.LastIndexOf( '/' )];
+			string pluginDirectory = fullPath[..fullPath.LastIndexOf( '/' )];
 			string assemblyPath = $"{pluginDirectory}/{pluginConfig.AssemblyName}.dll";
 
 			Assembly assembly;
@@ -262,7 +301,7 @@ namespace Elegy
 				mLogger.Error( $"'{path}' has invalid data:" );
 				foreach ( var error in errorMessages )
 				{
-					mLogger.Log( " * {error}" );
+					mLogger.Log( $" * {error}" );
 				}
 				return null;
 			}

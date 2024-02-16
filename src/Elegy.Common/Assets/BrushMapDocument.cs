@@ -1,7 +1,8 @@
-﻿// SPDX-FileCopyrightText: 2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
 using Elegy.Assets.BrushMapData;
+using Elegy.Maths;
 using Elegy.Text;
 using Elegy.Utilities;
 
@@ -55,7 +56,7 @@ namespace Elegy.Assets
 				}
 			}
 
-			face.Plane = new Plane( face.PlaneDefinition[0], face.PlaneDefinition[1], face.PlaneDefinition[2] );
+			face.Plane = Plane.CreateFromVertices( face.PlaneDefinition[0], face.PlaneDefinition[1], face.PlaneDefinition[2] );
 
 			// We could potentially have slashes in here and all kinds of wacky characters
 			lex.IgnoreDelimiters = true;
@@ -149,7 +150,7 @@ namespace Elegy.Assets
 			//
 			// In other words, bounding boxes & centres in Data.Map.* are slightly inaccurate, however
 			// they get very refined in Data.Processing.*
-			brush.BoundingBox = new Aabb( brush.Faces[0].Centre, Vector3.One * 0.001f );
+			brush.BoundingBox = new Box3( brush.Faces[0].Centre, Vector3.One * 0.001f );
 			brush.Faces.ForEach( face =>
 			{
 				for ( int i = 0; i < 3; i++ )

@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
 using System.Runtime.Loader;
@@ -20,7 +20,6 @@ namespace Elegy
 			// Plugins are likely to be using these primarily
 			switch ( assemblyName.Name )
 			{
-				case "GodotSharp": return typeof( GD ).Assembly;
 				case "Elegy.Engine": return typeof( Engine ).Assembly;
 				case "Elegy.Common": return typeof( Text.Lexer ).Assembly;
 			}

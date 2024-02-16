@@ -1,6 +1,7 @@
 
 param(
-	[switch]$release = $false
+	[switch]$release = $false,
+	$plugin = "none"
 )
 
 Write-Host "========= COPYING MODULES ========="
@@ -21,10 +22,20 @@ if ( !$release )
 	Write-Output "If you'd like to use the Release configuration, use the -release flag"
 }
 
-## Copy the debug DLLs there
-Copy-Item "$input_dir/src/Elegy.DevConsole/bin/$build_config/net6.0/Elegy.DevConsole.*"	-Destination "$output_dir/engine/plugins/DevConsole"
-Copy-Item "$input_dir/src/Elegy.TestGame/bin/$build_config/net6.0/Game.*"				-Destination "$output_dir/game/plugins/Game"
-Copy-Item "$input_dir/src/Elegy.Common/bin/$build_config/net6.0/Elegy.Common.*"			-Destination "$output_dir"
-Copy-Item "$input_dir/src/Elegy.Engine/bin/$build_config/net6.0/Elegy.Engine.*"			-Destination "$output_dir"
+if ( $plugin = "none" )
+{
+	## Copy the launcher executable, engine DLL and its dependencies
+	Copy-Item "$input_dir/src/Elegy.Launcher2/bin/$build_config/net8.0/*" 							-Destination "$output_dir" -Recurse -Force
 
-Write-Output "Successfully copied Elegy.DevConsole.dll, Elegy.Common.dll and Elegy.Engine.dll into '$output_dir'"
+	## Copy the plugin DLLs without their dependencies
+	Copy-Item "$input_dir/src/Elegy.DevConsole/bin/$build_config/net8.0/Elegy.DevConsole.*"			-Destination "$output_dir/engine/plugins/DevConsole"
+	Copy-Item "$input_dir/src/Elegy.RenderStandard/bin/$build_config/net8.0/Elegy.RenderStandard.*"	-Destination "$output_dir/engine/plugins/RenderStandard"
+	Copy-Item "$input_dir/src/Elegy.TestGame/bin/$build_config/net8.0/Game.*"						-Destination "$output_dir/game/plugins/Game"
+}
+else
+{
+	## Copy a plugin DLL
+	Copy-Item "$input_dir/src/$plugin/bin/$build_config/net8.0/$plugin.*" -Destination "$output_dir/game/plugins/$plugin"
+}
+
+Write-Output "Successfully copied DLLs into '$output_dir'"

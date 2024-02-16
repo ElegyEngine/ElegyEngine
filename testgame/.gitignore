@@ -1,13 +1,14 @@
 
-# Elegy DLLs
-Elegy.Common*
-Elegy.Engine*
-Elegy.DevConsole*
+# DLLs and related
+*.dll
+*.so
+*.a
+*.dylib
+*.pdb
+*.exe
+*.runtimeconfig.json
+*.deps.json
 
-# Game DLL stuff
-Game.dll
-Game.deps.json
-
-# Elegy launcher and Godot stuff
-Elegy.Launcher*
-data_Elegy.Launcher*
+# Elegy documentation
+Elegy.Common.xml
+Elegy.Engine.xml

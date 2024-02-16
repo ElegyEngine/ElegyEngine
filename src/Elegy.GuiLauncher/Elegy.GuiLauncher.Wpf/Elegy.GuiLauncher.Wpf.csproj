@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\extern\Silk.Eto\src\Silk.Eto.Wpf\Silk.Eto.Wpf.csproj" />
+    <ProjectReference Include="..\..\Elegy.Engine\Elegy.Engine.csproj" />
+    <ProjectReference Include="..\Elegy.GuiLauncher.Common\Elegy.GuiLauncher.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Eto.Platform.Wpf" Version="2.8.2" />
+  </ItemGroup>
+
+</Project>

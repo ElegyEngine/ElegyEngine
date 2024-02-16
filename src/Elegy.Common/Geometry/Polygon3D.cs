@@ -1,21 +1,23 @@
-﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
+
+using Elegy.Maths;
 
 namespace Elegy.Geometry
 {
-	public struct PolygonSplitResult
+	public struct Polygon3DSplitResult
 	{
-		public PolygonSplitResult()
+		public Polygon3DSplitResult()
 		{
 
 		}
 
-		public static bool operator true( PolygonSplitResult psr )
+		public static bool operator true( Polygon3DSplitResult psr )
 		{
 			return psr.DidIntersect;
 		}
 
-		public static bool operator false( PolygonSplitResult psr )
+		public static bool operator false( Polygon3DSplitResult psr )
 		{
 			return !psr.DidIntersect;
 		}
@@ -31,17 +33,17 @@ namespace Elegy.Geometry
 	public struct Polygon3D
 	{
 		#region Constructors
-		public Polygon3D( List<Vector3> points )
+		public Polygon3D( List<Vector3D> points )
 		{
 			Points = points;
 		}
 
-		public Polygon3D( IEnumerable<Vector3> points )
+		public Polygon3D( IEnumerable<Vector3D> points )
 		{
 			Points = points.ToList();
 		}
 
-		public Polygon3D( Vector3 a, Vector3 b, Vector3 c )
+		public Polygon3D( Vector3D a, Vector3D b, Vector3D c )
 		{
 			Points = new()
 			{
@@ -49,17 +51,17 @@ namespace Elegy.Geometry
 			};
 		}
 
-		public Polygon3D( Plane plane, float radius )
+		public Polygon3D( PlaneD plane, double radius )
 		{
-			Vector3 direction = plane.GetClosestAxis();
-			Vector3 bidirection = direction == Vector3.Up ? Vector3.Left : Vector3.Down;
+			Vector3D direction = plane.GetClosestAxis();
+			Vector3D bidirection = direction == Vector3D.UnitZ ? -Vector3D.UnitX : -Vector3D.UnitZ;
 
-			Vector3 up = bidirection.Cross( plane.Normal ).Normalized();
-			Vector3 right = plane.Normal.Cross( up ).Normalized();
+			Vector3D up = bidirection.Cross( plane.Normal ).Normalized();
+			Vector3D right = plane.Normal.Cross( up ).Normalized();
 
-			Vector3 pointOnPlane = plane.GetCenter();
+			Vector3D pointOnPlane = plane.GetCenter();
 
-			Vector3[] planePoints = new Vector3[4]
+			Vector3D[] planePoints = new Vector3D[4]
 			{
 				pointOnPlane + right + up, // Top right
 				pointOnPlane - right + up, // Top left
@@ -67,19 +69,19 @@ namespace Elegy.Geometry
 				pointOnPlane + right - up // Bottom right
 			};
 
-			Vector3 centre = planePoints.Average();
+			Vector3D centre = planePoints.Average();
 
 			Points = planePoints.Select( v => (v - centre).Normalized() * radius + centre ).ToList();
 		}
 		#endregion
 
 		#region Properties
-		public Plane Plane => new Plane( Points[0], Points[1], Points[2] );
-		public Vector3 Origin
+		public PlaneD Plane => PlaneD.CreateFromVertices( Points[0], Points[1], Points[2] );
+		public Vector3D Origin
 		{
 			get
 			{
-				Vector3 sum = Vector3.Zero;
+				Vector3D sum = Vector3D.Zero;
 				Points.ForEach( v => sum += v );
 				return sum / Points.Count;
 			}
@@ -95,14 +97,14 @@ namespace Elegy.Geometry
 
 			if ( requirePlanar )
 			{
-				Plane plane = Plane;
+				PlaneD plane = Plane;
 				return Points.TrueForAll( v => plane.HasPoint( v ) );
 			}
 
 			return true;
 		}
 
-		public void Shift( Vector3 shift )
+		public void Shift( Vector3D shift )
 		{
 			for ( int i = 0; i < Points.Count; i++ )
 			{
@@ -110,12 +112,12 @@ namespace Elegy.Geometry
 			}
 		}
 
-		public bool Split( Plane plane, out Polygon3D? back, out Polygon3D? front )
+		public bool Split( PlaneD plane, out Polygon3D? back, out Polygon3D? front )
 		{
 			return Split( plane, out back, out front, out _, out _ );
 		}
 
-		public bool Split( Plane plane, out Polygon3D? back, out Polygon3D? front, out Polygon3D? coplanarBack, out Polygon3D? coplanarFront )
+		public bool Split( PlaneD plane, out Polygon3D? back, out Polygon3D? front, out Polygon3D? coplanarBack, out Polygon3D? coplanarFront )
 		{
 			var result = Split( plane );
 
@@ -127,13 +129,13 @@ namespace Elegy.Geometry
 			return result.DidIntersect;
 		}
 
-		public PolygonSplitResult Split( Plane plane )
+		public Polygon3DSplitResult Split( PlaneD plane )
 		{
-			PolygonSplitResult result = new();
+			Polygon3DSplitResult result = new();
 
 			// Points at negative distances will become part of the "back" polygon,
 			// and points at positive distances will become part of the "front" polygon
-			var distances = Points.Select( plane.DistanceTo ).ToList();
+			var distances = Points.Select( p => plane.DistanceTo( p ) ).ToList();
 
 			int numFrontPoints = 0, numBackPoints = 0;
 			for ( int i = 0; i < distances.Count; i++ )
@@ -151,7 +153,7 @@ namespace Elegy.Geometry
 			// Non-spanning cases
 			if ( numFrontPoints == 0 && numBackPoints == 0 )
 			{
-				float dot = Plane.Normal.Dot( plane.Normal );
+				double dot = Plane.Normal.Dot( plane.Normal );
 
 				// Usually the dot product will be 1 or -1 here
 				// If it's 1, it means this polygon's plane is really coplanar to
@@ -181,15 +183,15 @@ namespace Elegy.Geometry
 
 			// There has been a split, let's actually calculate the two intersection points
 			// and split up back & front verts into two polygons
-			List<Vector3> backVerts = new();
-			List<Vector3> frontVerts = new();
+			List<Vector3D> backVerts = new();
+			List<Vector3D> frontVerts = new();
 
 			for ( int i = 0; i < Points.Count; i++ )
 			{
 				int j = (i + 1) % Points.Count;
 
 				// 2 vectors that form an edge
-				Vector3 v1 = Points[i], v2 = Points[j];
+				Vector3D v1 = Points[i], v2 = Points[j];
 				double d1 = distances[i], d2 = distances[j];
 
 				if ( d1 <= 0.0 )
@@ -210,7 +212,7 @@ namespace Elegy.Geometry
 					double y = v1.Y * (1.0 - t) + v2.Y * t;
 					double z = v1.Z * (1.0 - t) + v2.Z * t;
 
-					Vector3 intersectionPoint = new( (float)x, (float)y, (float)z );
+					Vector3D intersectionPoint = new( (double)x, (double)y, (double)z );
 				
 					backVerts.Add( intersectionPoint );
 					frontVerts.Add( intersectionPoint );
@@ -220,14 +222,14 @@ namespace Elegy.Geometry
 			result.DidIntersect = true;
 			// Before you say "OH NO! O(n^2)!", rest assured that even in
 			// the craziest of cases, we won't have >64 verts per polygon
-			result.Back = new Polygon3D( backVerts.WithUniqueValuesInRadius( Vector3.One * 0.125f ) );
+			result.Back = new Polygon3D( backVerts.WithUniqueValuesInRadius( Vector3D.One * 0.125f ) );
 			// Now if we were dealing with lots of vertices, which we likely
 			// will later on in a custom compiler, I'd use a dictionary
-			result.Front = new Polygon3D( frontVerts.WithUniqueValuesInRadius( Vector3.One * 0.125f ) );
+			result.Front = new Polygon3D( frontVerts.WithUniqueValuesInRadius( Vector3D.One * 0.125f ) );
 
 			return result;
 		}
 
-		public List<Vector3> Points = new();
+		public List<Vector3D> Points = new();
 	}
 }

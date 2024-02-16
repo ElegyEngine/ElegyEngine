@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
 namespace Elegy
@@ -21,17 +21,5 @@ namespace Elegy
 		/// <param name="delta"></param>
 		/// <returns></returns>
 		bool RunFrame( float delta );
-
-		/// <summary>
-		/// Execute a single physics frame.
-		/// </summary>
-		/// <param name="delta"></param>
-		void RunPhysicsFrame( float delta );
-
-		/// <summary>
-		/// Handle user input.
-		/// </summary>
-		/// <param name="event"></param>
-		void HandleInput( InputEvent @event );
 	}
 }

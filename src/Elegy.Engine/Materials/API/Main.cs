@@ -1,10 +1,10 @@
-﻿// SPDX-FileCopyrightText: 2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
 namespace Elegy
 {
 	/// <summary>
-	/// Material system.
+	/// IMaterial system.
 	/// </summary>
 	public static partial class Materials
 	{

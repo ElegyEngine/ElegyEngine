@@ -1,5 +1,7 @@
-﻿// SPDX-FileCopyrightText: 2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
+
+using Elegy.Maths;
 
 namespace Elegy.Assets.ElegyMapData
 {
@@ -14,7 +16,7 @@ namespace Elegy.Assets.ElegyMapData
 		/// <summary>
 		/// AABB of this render surface.
 		/// </summary>
-		public Aabb BoundingBox { get; set; } = new();
+		public Box3 BoundingBox { get; set; } = new();
 		/// <summary>
 		/// Position buffer.
 		/// </summary>

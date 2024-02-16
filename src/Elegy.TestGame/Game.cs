@@ -1,7 +1,8 @@
-﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
 using Elegy.Assets;
+using Silk.NET.Input;
 
 namespace TestGame
 {
@@ -72,19 +73,20 @@ namespace TestGame
 			if ( !mGameIsLoaded )
 			{
 				mMenu.Visible = true;
-				Input.MouseMode = Input.MouseModeEnum.Visible;
+				Input.Mouse.Cursor.CursorMode = CursorMode.Normal;
 				return;
 			}
 
 			mMenu.Visible = !mMenu.Visible;
-			Input.MouseMode = mMenu.Visible ? Input.MouseModeEnum.Visible : Input.MouseModeEnum.Captured;
+			Input.Mouse.Cursor.CursorMode = mMenu.Visible ?
+				CursorMode.Normal : CursorMode.Hidden;
 		}
 
 		public bool RunFrame( float delta )
 		{
 			// Quick little toggle quickly cobbled together,
 			// until we have an extension to the input system
-			if ( Input.IsKeyPressed( Key.Escape ) )
+			if ( Input.Keyboard.IsKeyPressed( Key.Escape ) )
 			{
 				if ( !mEscapeWasHeld )
 				{
@@ -105,22 +107,6 @@ namespace TestGame
 			}
 
 			return !mUserWantsToExit;
-		}
-
-		public void RunPhysicsFrame( float delta )
-		{
-			if ( mGameIsLoaded )
-			{
-				mEntities.ForEach( entity => entity.PhysicsUpdate( delta ) );
-			}
-		}
-
-		public void HandleInput( InputEvent @event )
-		{
-			if ( mGameIsLoaded )
-			{
-				mClient.UserInput( @event );
-			}
 		}
 
 		[ConsoleCommand( "map" )]
@@ -159,7 +145,6 @@ namespace TestGame
 
 			mEntities = new();
 			
-			mWorldspawnNode = Assets.MapGeometry.CreateBrushModelNode( mMap, 0 );
 			for ( int entityId = 0; entityId < mMap.Entities.Count; entityId++ )
 			{
 				var mapEntity = mMap.Entities[entityId];
@@ -168,13 +153,13 @@ namespace TestGame
 				Entities.Entity? entity = className switch
 				{
 					"info_player_start"	=> CreateEntity<Entities.InfoPlayerStart>(),
-					"light"				=> CreateEntity<Entities.Light>(),
-					"light_environment"	=> CreateEntity<Entities.LightEnvironment>(),
-					"func_detail"		=> CreateEntity<Entities.FuncDetail>(),
+					//"light"				=> CreateEntity<Entities.Light>(),
+					//"light_environment"	=> CreateEntity<Entities.LightEnvironment>(),
+					//"func_detail"		=> CreateEntity<Entities.FuncDetail>(),
 					"func_breakable"	=> CreateEntity<Entities.FuncBreakable>(),
-					"func_rotating"		=> CreateEntity<Entities.FuncRotating>(),
-					"func_water"		=> CreateEntity<Entities.FuncWater>(),
-					"prop_test"			=> CreateEntity<Entities.PropTest>(),
+					//"func_rotating"		=> CreateEntity<Entities.FuncRotating>(),
+					//"func_water"		=> CreateEntity<Entities.FuncWater>(),
+					//"prop_test"			=> CreateEntity<Entities.PropTest>(),
 					_					=> null
 				};
 
@@ -223,8 +208,6 @@ namespace TestGame
 			mEntities.ForEach( entity => entity.Destroy() );
 			mEntities.Clear();
 
-			mWorldspawnNode.QueueFree();
-
 			mGameIsLoaded = false;
 			mMenu.Visible = true;
 			mMenu.InGame = false;
@@ -269,8 +252,7 @@ namespace TestGame
 		private Client.MainMenu mMenu = new();
 		private List<Entities.Entity> mEntities = new();
 		private ElegyMapDocument? mMap;
-		private Node3D mWorldspawnNode;
-
+		
 		private bool mGameIsLoaded = false;
 		private bool mEscapeWasHeld = false;
 		private bool mUserWantsToExit = false;

@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2023 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
 namespace Elegy.MapCompiler.Data.Processing
@@ -6,7 +6,7 @@ namespace Elegy.MapCompiler.Data.Processing
 	public class Entity
 	{
 		public Vector3 Centre = Vector3.Zero;
-		public Aabb BoundingBox = new();
+		public Box3 BoundingBox = new();
 		public List<Brush> Brushes = new();
 
 		public string ClassName = string.Empty;
