@@ -1,4 +1,6 @@
-﻿
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
+// SPDX-License-Identifier: MIT
+
 using Silk.NET.Core;
 using Silk.NET.Core.Contexts;
 using Silk.NET.Maths;
