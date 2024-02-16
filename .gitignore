@@ -31,4 +31,4 @@ _ReSharper*/
 #Nuget packages folder
 packages/
 #Publishing profiles etc.
-src/Properties/
+src/**/Properties/
