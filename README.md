@@ -16,9 +16,12 @@ For level designers who use TrenchBroom, a [game config](config/trenchbroom) is 
 # Building
 
 If you're brave enough to touch this code:
-* you can build all projects from `src/Elegy.sln`
-* compiled code than then be copied into `testgame/` via `build/copy_dlls.ps1`
-* to actually launch the thing, you'll need the latest build of [Elegy.Launcher](https://github.com/ElegyEngine/ElegyLauncher) extracted into `testgame`
+* you can build all projects from `src/Elegy.sln`, you'll specifically need:
+	* Elegy.Engine
+	* Elegy.RenderStandard
+	* Elegy.DevConsole
+	* Elegy.TestGame
+* compiled modules can than then be copied into `testgame/` via `build/copy_dlls.ps1`
 
 Optional notes:
 * if you decide to make NuGet packages, you may find some of the scripts in `build/` useful, just make sure to adjust the paths
