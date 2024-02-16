@@ -1,8 +1,6 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Silk.NET.Windowing;
-using Silk.NET.Windowing.Extensions.Veldrid;
 using Veldrid;
 
 namespace Elegy.RenderStandard;
