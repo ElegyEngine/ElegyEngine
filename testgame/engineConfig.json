@@ -13,6 +13,6 @@
 	// Of course, you can always make another engine config intended for playing,
 	// which won't have these debugging things.
 	"enginePlugins": [
-		"plugins/DevConsole"
-	]
+		//"plugins/DevConsole"
+	] // DevConsole is broken a.t.m. so
 }
