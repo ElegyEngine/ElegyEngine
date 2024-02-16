@@ -22,3 +22,7 @@ If you're brave enough to touch this code:
 
 Optional notes:
 * if you decide to make NuGet packages, you may find some of the scripts in `build/` useful, just make sure to adjust the paths
+
+# Licence
+
+[MIT](LICENSE.md) licence. The Elegy.Common module [contains](legal/Godot/README.md) code adapted from Godot Engine.
