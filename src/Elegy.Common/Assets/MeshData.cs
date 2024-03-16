@@ -3,7 +3,7 @@
 
 using Elegy.Maths;
 
-namespace Elegy.Assets.ModelData
+namespace Elegy.Assets.MeshData
 {
 	/// <summary>
 	/// All possible vertex data that can be stored in EMFs.
@@ -60,6 +60,8 @@ namespace Elegy.Assets.ModelData
 	public class BoneJoint
 	{
 		public string Name { get; set; } = string.Empty;
+
+		public string Parent { get; set; } = string.Empty;
 
 		public Matrix4x4 Transform { get; set; } = Matrix4x4.Identity;
 	}

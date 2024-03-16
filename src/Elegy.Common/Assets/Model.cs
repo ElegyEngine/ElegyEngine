@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Assets.ModelData;
+using Elegy.Assets.MeshData;
 
 namespace Elegy.Assets
 {
@@ -19,7 +19,5 @@ namespace Elegy.Assets
 		public string Name { get; set; } = string.Empty;
 
 		public List<Mesh> Meshes { get; set; } = new();
-
-		public List<BoneJoint> Joints { get; set; } = new();
 	}
 }
