@@ -1,12 +1,9 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.JavaScript;
 using Veldrid;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Elegy.RenderBackend
 {
