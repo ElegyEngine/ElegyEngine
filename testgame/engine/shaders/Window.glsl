@@ -17,7 +17,7 @@ PixelOutput( outColour );
 
 VertexShader( DEFAULT,
 	gl_Position = vec4( vPosition, 0.5, 1.0 );
-	pPosition = vPosition; test123
+	pPosition = vPosition;
 	pUv = vec2( vUv.x, 1.0 - vUv.y );
 )
 
