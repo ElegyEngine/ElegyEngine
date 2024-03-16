@@ -3,7 +3,6 @@
 
 using Elegy.Assets;
 using Elegy.Rendering;
-using Elegy.Utilities;
 
 namespace Elegy.RenderStandard;
 
