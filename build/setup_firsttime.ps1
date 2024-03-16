@@ -40,7 +40,8 @@ Write-Host "Copied Elegy.ShaderTool"
 Write-Host ""
 
 ## Step 5: Finally, compile the shaders
-Invoke-Expression "$output_dir/Elegy.ShaderTool $output_dir/engine/shaders -force"
+Write-Host "====== BUILDING SHADERS ======"
+Invoke-Expression "$PSScriptRoot/build_shaders.ps1"
 Write-Host ""
 
 Write-Host "Done!"
