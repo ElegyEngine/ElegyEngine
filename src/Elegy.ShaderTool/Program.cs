@@ -68,9 +68,10 @@ namespace Elegy.ShaderTool
 				string shaderFullName = $"{pathNoExtension}.{permutation.Variant}".Replace( '\\', '/' );
 				// engine/shaders/generated/Shader.VARIANT
 				string generatedShaderPath = shaderFullName.Replace( "shaders/", "shaders/generated/" );
+				// engine/shaders/bin/Shader.VARIANT
 				string generatedShaderBinaryPath = shaderFullName.Replace( "shaders/", "shaders/bin/" );
 
-				// File.WriteAllText is gonna complain if the folder ain't there
+				// File.WriteAllText is gonna complain if the folders ain't there
 				CreateDirectoriesAdHoc( generatedShaderPath );
 				CreateDirectoriesAdHoc( generatedShaderBinaryPath );
 
