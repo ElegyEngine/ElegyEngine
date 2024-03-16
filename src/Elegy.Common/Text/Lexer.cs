@@ -156,10 +156,10 @@ namespace Elegy.Text
 		/// and <paramref name="what"/>. If <paramref name="skipPeeked"/> is <c>true</c>,
 		/// the cursor will skip the result too.
 		/// </summary>
-		public string PeekUntil( string what, bool skipPeeked = false )
+		public string PeekUntil( string what, bool skipPeeked = false, bool skipWhatToo = true )
 		{
 			StashPosition();
-			SkipUntil( what, true );
+			SkipUntil( what, skipWhatToo );
 
 			string result = string.Empty;
 			if ( mPositionStash != mPosition )
