@@ -1,41 +1,21 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using System;
-using System.Runtime.InteropServices;
+using Elegy.RenderBackend.Assets; 
 using Veldrid;
 
 namespace Elegy.RenderBackend.Extensions
 {
 	public static class FactoryExtensions
 	{
-		private static uint StrideOf<T>( BufferUsage usage )
-			where T : unmanaged
-		{
-			if ( usage.HasFlag( BufferUsage.StructuredBufferReadOnly | BufferUsage.StructuredBufferReadWrite) )
-			{
-				return (uint)Marshal.SizeOf<T>();
-			}
-
-			return 0U;
-		}
-
-		private static uint NearestSize16<T>( int numElements )
-			where T : unmanaged
-		{
-			uint bytes = (uint)(numElements * Marshal.SizeOf<T>());
-
-			return bytes + (bytes % 16);
-		}
-
 		public static DeviceBuffer CreateBufferForList<T>( this ResourceFactory factory, BufferUsage usage, IList<T> buffer )
 			where T : unmanaged
 		{
 			BufferDescription desc = new()
 			{
 				Usage = usage,
-				SizeInBytes = NearestSize16<T>( buffer.Count ),
-				StructureByteStride = StrideOf<T>( usage )
+				SizeInBytes = Utils.NearestSize16<T>( buffer.Count ),
+				StructureByteStride = Utils.StrideOf<T>( usage )
 			};
 
 			return factory.CreateBuffer( desc );
@@ -47,8 +27,8 @@ namespace Elegy.RenderBackend.Extensions
 			BufferDescription desc = new()
 			{
 				Usage = usage,
-				SizeInBytes = NearestSize16<T>( span.Length ),
-				StructureByteStride = StrideOf<T>( usage )
+				SizeInBytes = Utils.NearestSize16<T>( span.Length ),
+				StructureByteStride = Utils.StrideOf<T>( usage )
 			};
 
 			return factory.CreateBuffer( desc );
@@ -60,11 +40,28 @@ namespace Elegy.RenderBackend.Extensions
 			BufferDescription desc = new()
 			{
 				Usage = usage,
-				SizeInBytes = NearestSize16<T>( 1 ),
-				StructureByteStride = StrideOf<T>( usage )
+				SizeInBytes = Utils.NearestSize16<T>( 1 ),
+				StructureByteStride = Utils.StrideOf<T>( usage )
 			};
 
 			return factory.CreateBuffer( desc );
+		}
+
+		public static Shader LoadShaderDirect( this ResourceFactory factory, string path, ShaderStages stage )
+		{
+			string stageInfix = stage switch
+			{
+				ShaderStages.Vertex => "vs",
+				ShaderStages.Fragment => "ps",
+				_ => "cs"
+			};
+
+			return factory.CreateShader( new()
+			{
+				EntryPoint = $"main_{stageInfix}",
+				ShaderBytes = Utils.LoadShaderBytes( $"{path}.{stageInfix}.spv" ),
+				Stage = stage
+			} ); ;
 		}
 
 		public static (Shader vertexShader, Shader pixelShader) LoadShaders( this ResourceFactory mFactory, string filePrefix )
@@ -98,6 +95,31 @@ namespace Elegy.RenderBackend.Extensions
 			};
 
 			return mFactory.CreateShader( pixelShaderDesc );
+		}
+
+		public static Pipeline CreatePipeline( this ResourceFactory factory, MaterialTemplate materialTemplate, ShaderTemplateEntry shaderTemplateEntry,
+			Shader vertexShader, Shader pixelShader, ResourceLayout[] layouts, Framebuffer outputFramebuffer )
+		{
+			GraphicsPipelineDescription pipelineDesc = new()
+			{
+				PrimitiveTopology = PrimitiveTopology.TriangleList,
+				BlendState = Utils.ExtractBlendState( materialTemplate ),
+				ResourceBindingModel = ResourceBindingModel.Improved,
+
+				ShaderSet =
+				{
+					Shaders = [ vertexShader, pixelShader ],
+					VertexLayouts = Utils.ExtractVertexLayouts( shaderTemplateEntry )
+				},
+
+				RasterizerState = Utils.ExtractRasterizerState( materialTemplate ),
+				DepthStencilState = Utils.ExtractDepthStencilState( materialTemplate ),
+
+				ResourceLayouts = layouts,
+				Outputs = outputFramebuffer.OutputDescription
+			};
+
+			return factory.CreateGraphicsPipeline( pipelineDesc );
 		}
 
 		public static RenderPipeline CreateGraphicsPipeline<TVertex>( this ResourceFactory mFactory, string shaderPath, RasterPreset preset,
@@ -207,6 +229,25 @@ namespace Elegy.RenderBackend.Extensions
 				Elements = elements
 			};
 			return mFactory.CreateResourceLayout( layoutDesc );
+		}
+
+		public static ResourceLayout CreateLayout( this ResourceFactory mFactory, Assets.ResourceLayoutEntry entry )
+		{
+			ResourceLayoutElementDescription[] elementDescs = new ResourceLayoutElementDescription[entry.Elements.Count];
+			int i = 0;
+			foreach ( var element in entry.Elements )
+			{
+				elementDescs[i] = new()
+				{
+					Name = element.Name,
+					Stages = ShaderStages.Vertex | ShaderStages.Fragment,
+					Kind = Utils.TypeToResourceKind( element.Type )
+				};
+
+				i++;
+			}
+
+			return mFactory.CreateResourceLayout( new() { Elements = elementDescs } );
 		}
 
 		public static ResourceSet CreateSet( this ResourceFactory mFactory, ResourceLayout layout, params BindableResource[] resources )
