@@ -310,6 +310,15 @@ namespace Elegy.Text
 		{
 			return mLineNumber;
 		}
+
+		/// <summary>
+		/// Throws an exception with the attached <paramref name="errorMessage"/>.
+		/// Includes line and column info.
+		/// </summary>
+		public Exception ParsingException( string errorMessage )
+		{
+			return new Exception( $"{errorMessage} {GetLineInfo()}" );
+		}
 		#endregion
 
 		#region Properties
