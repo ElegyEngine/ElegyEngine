@@ -1,0 +1,11 @@
+
+{
+	"name": "StandardAlphatestTwosided",
+	"shaderTemplate": "StandardST",
+	"pipelineInfo":
+	{
+		"alphaTest": true,
+		"faceCulling": "None",
+		"blending": "Opaque"
+	}
+}

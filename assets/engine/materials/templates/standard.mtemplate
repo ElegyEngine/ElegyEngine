@@ -1,0 +1,11 @@
+
+{
+	"name": "Standard",
+	"shaderTemplate": "StandardST",
+	"pipelineInfo":
+	{
+		"alphaTest": false,
+		"faceCulling": "Back",
+		"blending": "Opaque"
+	}
+}
