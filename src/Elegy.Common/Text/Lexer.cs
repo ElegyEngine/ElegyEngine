@@ -233,6 +233,10 @@ namespace Elegy.Text
 			while ( !IsEnd() && !IsEndOfLine() )
 			{
 				IncrementPosition();
+				if ( IsEndOfLine() )
+				{
+					break;
+				}
 
 				if ( mText[mPosition] != ' ' )
 				{
