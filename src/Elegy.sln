@@ -51,6 +51,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Silk.Eto.Gtk", "..\extern\S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Silk.Eto.Wpf", "..\extern\Silk.Eto\src\Silk.Eto.Wpf\Silk.Eto.Wpf.csproj", "{AA3160FA-96A4-43DD-B6DC-25FC4C72D4A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elegy.ShaderTool", "Elegy.ShaderTool\Elegy.ShaderTool.csproj", "{59E28FE1-0040-4382-8504-2DA246DEEEAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,10 @@ Global
 		{AA3160FA-96A4-43DD-B6DC-25FC4C72D4A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA3160FA-96A4-43DD-B6DC-25FC4C72D4A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA3160FA-96A4-43DD-B6DC-25FC4C72D4A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59E28FE1-0040-4382-8504-2DA246DEEEAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59E28FE1-0040-4382-8504-2DA246DEEEAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59E28FE1-0040-4382-8504-2DA246DEEEAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59E28FE1-0040-4382-8504-2DA246DEEEAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -148,6 +154,7 @@ Global
 		{EE1C14AE-7306-46C9-A243-EAA632B6CA81} = {D8485DC9-1A70-4CCB-86D9-D10AED7442C2}
 		{4A25F2D8-A899-4953-886F-719F3F9D357E} = {D8485DC9-1A70-4CCB-86D9-D10AED7442C2}
 		{AA3160FA-96A4-43DD-B6DC-25FC4C72D4A4} = {D8485DC9-1A70-4CCB-86D9-D10AED7442C2}
+		{59E28FE1-0040-4382-8504-2DA246DEEEAE} = {5EF00ABB-3E75-406C-ABC0-1799A8D2AA5D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {78AE737A-E080-41E8-84B7-5EFB2C7E7E5B}
