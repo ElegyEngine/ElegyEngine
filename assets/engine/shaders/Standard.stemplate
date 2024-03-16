@@ -1,0 +1,281 @@
+{
+  "name": "StandardST",
+  "parameters": [
+    {
+      "name": "Sampler",
+      "shaderName": "uSampler",
+      "type": 18
+    },
+    {
+      "name": "DiffuseTexture",
+      "shaderName": "uDiffuseTexture",
+      "type": 16
+    },
+    {
+      "name": "Sampler",
+      "shaderName": "uLightmapSampler",
+      "type": 18
+    },
+    {
+      "name": "LightmapTexture",
+      "shaderName": "uLightmapTexture",
+      "type": 16
+    },
+    {
+      "name": "ViewData",
+      "shaderName": "uView",
+      "type": 13
+    }
+  ],
+  "shaderVariants": [
+    {
+      "shaderDefine": "GENERAL",
+      "vertexLayouts": [
+        {
+          "name": "vPosition",
+          "type": 2
+        },
+        {
+          "name": "vNormal",
+          "type": 2
+        },
+        {
+          "name": "vUv",
+          "type": 1
+        }
+      ],
+      "resourceLayouts": [
+        {
+          "set": 1,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "Sampler",
+              "type": 18
+            },
+            {
+              "binding": 1,
+              "name": "DiffuseTexture",
+              "type": 16
+            }
+          ]
+        },
+        {
+          "set": 1,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "ViewData",
+              "type": 13
+            }
+          ]
+        },
+        {
+          "set": 0,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "ViewData",
+              "type": 13
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "shaderDefine": "LIGHTMAP",
+      "vertexLayouts": [
+        {
+          "name": "vPosition",
+          "type": 2
+        },
+        {
+          "name": "vNormal",
+          "type": 2
+        },
+        {
+          "name": "vUv",
+          "type": 1
+        },
+        {
+          "name": "vUvLightmap",
+          "type": 1
+        }
+      ],
+      "resourceLayouts": [
+        {
+          "set": 1,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "Sampler",
+              "type": 18
+            },
+            {
+              "binding": 1,
+              "name": "DiffuseTexture",
+              "type": 16
+            },
+            {
+              "binding": 0,
+              "name": "Sampler",
+              "type": 18
+            },
+            {
+              "binding": 1,
+              "name": "LightmapTexture",
+              "type": 16
+            }
+          ]
+        },
+        {
+          "set": 2,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "Sampler",
+              "type": 18
+            },
+            {
+              "binding": 1,
+              "name": "DiffuseTexture",
+              "type": 16
+            },
+            {
+              "binding": 0,
+              "name": "Sampler",
+              "type": 18
+            },
+            {
+              "binding": 1,
+              "name": "LightmapTexture",
+              "type": 16
+            }
+          ]
+        },
+        {
+          "set": 1,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "ViewData",
+              "type": 13
+            }
+          ]
+        },
+        {
+          "set": 2,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "ViewData",
+              "type": 13
+            }
+          ]
+        },
+        {
+          "set": 0,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "ViewData",
+              "type": 13
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "shaderDefine": "DEPTH",
+      "vertexLayouts": [
+        {
+          "name": "vPosition",
+          "type": 2
+        }
+      ],
+      "resourceLayouts": [
+        {
+          "set": 1,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "Sampler",
+              "type": 18
+            },
+            {
+              "binding": 1,
+              "name": "DiffuseTexture",
+              "type": 16
+            }
+          ]
+        },
+        {
+          "set": 1,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "ViewData",
+              "type": 13
+            }
+          ]
+        },
+        {
+          "set": 0,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "ViewData",
+              "type": 13
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "shaderDefine": "WIREFRAME",
+      "vertexLayouts": [
+        {
+          "name": "vPosition",
+          "type": 2
+        }
+      ],
+      "resourceLayouts": [
+        {
+          "set": 1,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "Sampler",
+              "type": 18
+            },
+            {
+              "binding": 1,
+              "name": "DiffuseTexture",
+              "type": 16
+            }
+          ]
+        },
+        {
+          "set": 1,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "ViewData",
+              "type": 13
+            }
+          ]
+        },
+        {
+          "set": 0,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "ViewData",
+              "type": 13
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

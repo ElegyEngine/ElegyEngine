@@ -1,0 +1,51 @@
+{
+  "name": "WindowST",
+  "parameters": [
+    {
+      "name": "ViewTexture",
+      "shaderName": "uViewTexture",
+      "type": 16
+    },
+    {
+      "name": "ViewSampler",
+      "shaderName": "uViewSampler",
+      "type": 18
+    }
+  ],
+  "shaderVariants": [
+    {
+      "shaderDefine": "DEFAULT",
+      "vertexLayouts": [
+        {
+          "name": "vPosition",
+          "type": 1
+        },
+        {
+          "name": "vUv",
+          "type": 1
+        }
+      ],
+      "resourceLayouts": [
+        {
+          "set": 0,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "ViewTexture",
+              "type": 16
+            },
+            {
+              "binding": 1,
+              "name": "ViewSampler",
+              "type": 18
+            }
+          ]
+        },
+        {
+          "set": 0,
+          "elements": []
+        }
+      ]
+    }
+  ]
+}
