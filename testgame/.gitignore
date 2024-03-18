@@ -12,3 +12,8 @@
 # Elegy documentation
 Elegy.Common.xml
 Elegy.Engine.xml
+Veldrid.xml
+
+# Generated shaders
+*/shaders/bin/
+*/shaders/generated/
