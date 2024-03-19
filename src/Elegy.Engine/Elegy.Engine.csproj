@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0031" />
     <PackageReference Include="Silk.NET.Core" Version="2.20.0" />
     <PackageReference Include="Silk.NET.Input.Common" Version="2.20.0" />
     <PackageReference Include="Silk.NET.Windowing.Common" Version="2.20.0" />
