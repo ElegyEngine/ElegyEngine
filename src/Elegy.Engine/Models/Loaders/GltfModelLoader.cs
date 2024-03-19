@@ -3,7 +3,7 @@
 
 using Elegy.Assets;
 
-namespace Elegy.Models.Loaders
+namespace Elegy.ModelLoaders
 {
 	/// <summary>
 	/// Built-in GLTF loader.
