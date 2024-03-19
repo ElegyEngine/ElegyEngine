@@ -44,8 +44,21 @@ namespace Elegy.RenderBackend
 				_ => ResourceKind.UniformBuffer,
 			};
 
-		public static VertexElementFormat ShaderTypeToVertexElementFormat( Assets.ShaderDataType type )
-			=> type switch
+		public static VertexElementFormat ShaderTypeToVertexElementFormat( string name, Assets.ShaderDataType type )
+		{
+			string nameLower = name.ToLower();
+			if ( nameLower.Contains( "normal" ) || nameLower.Contains( "tangent" ) )
+			{
+				return type switch
+				{
+					Assets.ShaderDataType.Vec2 => VertexElementFormat.SByte2_Norm,
+					Assets.ShaderDataType.Vec3 => VertexElementFormat.SByte4_Norm,
+					Assets.ShaderDataType.Vec4 => VertexElementFormat.SByte4_Norm,
+					_ => throw new NotSupportedException( "Normals and tangents can only do vec2/3/4" )
+				};
+			}
+
+			return type switch
 			{
 				Assets.ShaderDataType.Short => VertexElementFormat.Byte2,
 				Assets.ShaderDataType.Int => VertexElementFormat.Int1,
@@ -56,6 +69,7 @@ namespace Elegy.RenderBackend
 				Assets.ShaderDataType.Vec4Byte => VertexElementFormat.Byte4,
 				_ => VertexElementFormat.Int4
 			};
+		}
 
 		public static BlendAttachmentDescription ExtractBlendDescription( Assets.PipelineInfo info )
 			=> (info.AlphaTest || info.BlendMode == Assets.Blending.Opaque) switch
