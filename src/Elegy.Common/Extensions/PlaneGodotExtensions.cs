@@ -4,9 +4,9 @@
 // NOTE: The contents of this file are adapted from Godot Engine source code:
 // https://github.com/godotengine/godot/blob/master/modules/mono/glue/GodotSharp/GodotSharp/Core/Plane.cs
 
-using Elegy.Maths;
+using Elegy.Common.Maths;
 
-namespace Elegy.Extensions
+namespace Elegy.Common.Extensions
 {
 	/// <summary>
 	/// <see cref="Plane"/> extensions from Godot's own Plane class. Lots of useful gamedev-specific stuff there.

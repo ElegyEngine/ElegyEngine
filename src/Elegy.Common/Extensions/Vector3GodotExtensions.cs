@@ -4,12 +4,9 @@
 // NOTE: The contents of this file are adapted from Godot Engine source code:
 // https://github.com/godotengine/godot/blob/master/modules/mono/glue/GodotSharp/GodotSharp/Core/Vector3.cs
 
-using Elegy.Maths;
-using System;
-using System.Runtime.CompilerServices;
-using static Elegy.Maths.Vector3D;
+using Elegy.Common.Maths;
 
-namespace Elegy.Extensions
+namespace Elegy.Common.Extensions
 {
 	/// <summary>
 	/// <see cref="Vector3"/> extensions from Godot's own Vector3 class. Lots of useful gamedev-specific stuff there.

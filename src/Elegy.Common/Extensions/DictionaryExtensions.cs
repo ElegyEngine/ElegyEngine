@@ -1,9 +1,9 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Utilities;
+using Elegy.Common.Utilities;
 
-namespace Elegy.Extensions
+namespace Elegy.Common.Extensions
 {
 	/// <summary>
 	/// Dictionary extensions to help with keyvalue parsing in level files.

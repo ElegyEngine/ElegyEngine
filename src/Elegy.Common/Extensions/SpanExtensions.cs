@@ -3,7 +3,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace Elegy.Extensions
+namespace Elegy.Common.Extensions
 {
 	/// <summary>
 	/// Elegy-specific <see cref="Span{T}"/> extensions.

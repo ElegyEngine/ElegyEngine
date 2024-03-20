@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Elegy.Extensions
+namespace Elegy.Common.Extensions
 {
 	public static class Vector3Extensions
 	{
