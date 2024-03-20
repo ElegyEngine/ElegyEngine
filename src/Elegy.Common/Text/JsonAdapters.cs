@@ -1,11 +1,11 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Maths;
+using Elegy.Common.Maths;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Elegy.Text.JsonAdapters
+namespace Elegy.Common.Text.JsonAdapters
 {
 	internal class GodotVector4Converter : JsonConverter<Vector4>
 	{

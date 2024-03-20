@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Elegy.Text
+namespace Elegy.Common.Text
 {
 	/// <summary>
 	/// Lexicological parser, parses tokens out of a continuous piece of text.

@@ -1,11 +1,11 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Text.JsonAdapters;
+using Elegy.Common.Text.JsonAdapters;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Elegy.Text
+namespace Elegy.Common.Text
 {
 	/// <summary>
 	/// JSON reading and writing utilities.

@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Elegy.Utilities.Interfaces
+namespace Elegy.Common.Utilities.Interfaces
 {
 	/// <summary>
 	/// This type can be serialised into an array of bytes, and then

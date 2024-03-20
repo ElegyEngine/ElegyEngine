@@ -6,9 +6,9 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-using Elegy.Utilities.Interfaces;
+using Elegy.Common.Utilities.Interfaces;
 
-namespace Elegy.Utilities
+namespace Elegy.Common.Utilities
 {
 	/// <summary>
 	/// A byte buffer, implemented with an array that shrinks and grows as needed.

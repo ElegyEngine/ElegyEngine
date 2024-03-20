@@ -3,7 +3,7 @@
 
 using System.Globalization;
 
-namespace Elegy.Utilities
+namespace Elegy.Common.Utilities
 {
 	/// <summary>
 	/// Numeric parsing utilities.
