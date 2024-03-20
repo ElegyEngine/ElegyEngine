@@ -7,7 +7,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
-namespace Elegy.Maths
+namespace Elegy.Common.Maths
 {
 	/// <summary>
 	/// 2D axis-aligned bounding box using integers. Rect2I consists of a position, a size, and

@@ -4,7 +4,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
-namespace Elegy.Maths
+namespace Elegy.Common.Maths
 {
 	/// <summary>
 	/// Axis-aligned bounding box. Box3 consists of a position, a size, and

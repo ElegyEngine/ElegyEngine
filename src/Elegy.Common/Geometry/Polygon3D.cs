@@ -1,9 +1,9 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Maths;
+using Elegy.Common.Maths;
 
-namespace Elegy.Geometry
+namespace Elegy.Common.Geometry
 {
 	public struct Polygon3DSplitResult
 	{

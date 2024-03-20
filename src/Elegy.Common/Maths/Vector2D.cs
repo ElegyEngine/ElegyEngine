@@ -8,7 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Elegy.Maths
+namespace Elegy.Common.Maths
 {
 	/// <summary>
 	/// 2-element structure that can be used to represent positions in 2D space or any other pair of numeric values.

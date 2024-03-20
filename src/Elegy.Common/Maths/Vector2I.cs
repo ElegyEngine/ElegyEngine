@@ -7,7 +7,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
-namespace Elegy.Maths
+namespace Elegy.Common.Maths
 {
 	/// <summary>
 	/// 2-element structure that can be used to represent 2D grid coordinates or pairs of integers.

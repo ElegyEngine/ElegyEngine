@@ -4,7 +4,7 @@
 // NOTE: The contents of this file are adapted from Godot Engine source code:
 // https://github.com/godotengine/godot/blob/master/modules/mono/glue/GodotSharp/GodotSharp/Core/Vector4.cs
 
-namespace Elegy.Maths
+namespace Elegy.Common.Maths
 {
 	/// <summary>
 	/// Enumerated index values for the axes.

@@ -6,7 +6,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace Elegy.Maths
+namespace Elegy.Common.Maths
 {
 	public static class Utils
 	{
