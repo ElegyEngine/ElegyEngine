@@ -74,7 +74,7 @@ namespace Elegy.Engine.ModelLoaders
 						{	// TODO: fill in the data
 							case "POSITION": engineMesh.Positions = LoadPositions( vertexAccessor.Value ); break;
 							case "NORMAL": engineMesh.Normals = LoadNormals( vertexAccessor.Value ); break;
-							case "TANGENT": engineMesh.Normals = LoadTangents( vertexAccessor.Value ); break;
+							case "TANGENT": engineMesh.Tangents = LoadTangents( vertexAccessor.Value ); break;
 							case "TEXCOORD_0": engineMesh.Uv0 = LoadUvs( vertexAccessor.Value ); break;
 							case "TEXCOORD_1": engineMesh.Uv1 = LoadUvs( vertexAccessor.Value ); break;
 							case "TEXCOORD_2": engineMesh.Uv2 = LoadUvs( vertexAccessor.Value ); break;
