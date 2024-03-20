@@ -4,9 +4,9 @@
 namespace Elegy.Engine.API
 {
 	/// <summary>
-	/// IMaterial system.
+	/// Asset system.
 	/// </summary>
-	public static partial class Materials
+	public static partial class Assets
 	{
 		/// <summary>
 		/// Loads a material from the material library.
@@ -16,7 +16,7 @@ namespace Elegy.Engine.API
 		/// A valid <see cref="Material"/> instance always, missing material if not found.
 		/// </returns>
 		public static Material LoadMaterial( string materialName )
-			=> mMaterialSystem.LoadMaterial( materialName );
+			=> mAssetSystem.LoadMaterial( materialName );
 
 		/// <summary>
 		/// Unloads the <paramref name="material"/>. It is a reference, so it will
@@ -27,11 +27,11 @@ namespace Elegy.Engine.API
 		/// if the material is invalid or otherwise.
 		/// </returns>
 		public static bool UnloadMaterial( ref Material? material )
-			=> mMaterialSystem.UnloadMaterial( ref material );
+			=> mAssetSystem.UnloadMaterial( ref material );
 
 		/// <summary>
 		/// All the materials in the system.
 		/// </summary>
-		public static IEnumerable<Material> AllMaterials => mMaterialSystem.GetMaterialList();
+		public static IEnumerable<Material> AllMaterials => mAssetSystem.GetMaterialList();
 	}
 }

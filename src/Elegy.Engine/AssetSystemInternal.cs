@@ -9,7 +9,7 @@ namespace Elegy.Engine
 	/// <summary>
 	/// IMaterial system implementation.
 	/// </summary>
-	internal sealed class MaterialSystemInternal
+	internal sealed class AssetSystemInternal
 	{
 		class MaterialDefinitionPair
 		{
@@ -23,7 +23,7 @@ namespace Elegy.Engine
 			public Material? Material { get; set; } = null;
 		}
 
-		private TaggedLogger mLogger = new( "MaterialManager" );
+		private TaggedLogger mLogger = new( "AssetSystem" );
 
 		private Dictionary<string, MaterialDefinitionPair> mMaterialDefs = new();
 		private Dictionary<string, Texture2D> mTextures = new();
@@ -32,7 +32,7 @@ namespace Elegy.Engine
 		{
 			mLogger.Log( "Init" );
 
-			Materials.SetMaterialSystem( this );
+			Assets.SetAssetSystem( this );
 
 			var loadMaterialsForDirectory = ( string name, string directory ) =>
 			{

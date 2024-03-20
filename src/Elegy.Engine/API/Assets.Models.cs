@@ -6,7 +6,7 @@ using Elegy.Engine.Interfaces;
 
 namespace Elegy.Engine.API
 {
-	public static partial class Models
+	public static partial class Assets
 	{
 		public static Model? LoadModel( string path )
 		{

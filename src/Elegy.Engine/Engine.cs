@@ -107,10 +107,10 @@ namespace Elegy.Engine
 				}
 			}
 
-			mMaterialSystem = new();
-			if ( !mMaterialSystem.Init() )
+			mAssetSystem = new();
+			if ( !mAssetSystem.Init() )
 			{
-				return Shutdown( "Material system failure" );
+				return Shutdown( "Asset system failure" );
 			}
 
 			if ( !InitialiseWindowAndRenderer( withMainWindow ) )
@@ -290,9 +290,9 @@ namespace Elegy.Engine
 			mRenderFrontend?.Shutdown();
 			Render.SetRenderFrontend( null );
 
-			mMaterialSystem?.Shutdown();
-			mMaterialSystem = null;
-			Materials.SetMaterialSystem( null );
+			mAssetSystem?.Shutdown();
+			mAssetSystem = null;
+			Assets.SetAssetSystem( null );
 
 			mPluginSystem?.Shutdown();
 			mPluginSystem = null;
@@ -366,7 +366,7 @@ namespace Elegy.Engine
 		private ConsoleInternal? mConsole;
 		private FileSystemInternal? mFileSystem;
 		private PluginSystemInternal? mPluginSystem;
-		private MaterialSystemInternal? mMaterialSystem;
+		private AssetSystemInternal? mAssetSystem;
 
 		private IWindowPlatform? mWindowPlatform;
 		private IRenderFrontend? mRenderFrontend;
