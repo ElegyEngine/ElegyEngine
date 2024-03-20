@@ -35,14 +35,14 @@ namespace Elegy.Common.SpatialCollections
 			IsInBoundFn isInBoundMethod,
 			ShouldSubdivideFn shouldSubdivideMethod,
 			bool onlyFirstIntersection = false )
-			: base( rootBound, items, 3 )
+			: base( rootBound, items, 3,
+				isInBound: isInBoundMethod,
+				shouldSubdivide: shouldSubdivideMethod,
+				getChildVolume: STreeUtilities.GetChildVolumeOctree<TItem>(),
+				collectIntersections: onlyFirstIntersection
+				? STreeUtilities.CollectIntersectionsFirst( isInBoundMethod )
+				: STreeUtilities.CollectIntersectionsAll( isInBoundMethod ) )
 		{
-			IsInBound = isInBoundMethod;
-			ShouldSubdivide = shouldSubdivideMethod;
-			GetChildVolume = STreeUtilities.GetChildVolumeOctree<TItem>();
-			CollectIntersections = onlyFirstIntersection
-				? STreeUtilities.CollectIntersectionsOctreeFirst( IsInBound )
-				: STreeUtilities.CollectIntersectionsOctreeAll( IsInBound );
 		}
 
 		// TODO: maybe some raycasting or radius search functions specific to octrees!

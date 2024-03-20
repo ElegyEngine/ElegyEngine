@@ -7,7 +7,7 @@ namespace Elegy.Common.SpatialCollections
 	/// N-dimensional spatial tree (s-tree) that stores <typeparamref name="TItem"/>s inside a <typeparamref name="TBound"/>.
 	/// </summary>
 	/// <typeparam name="TBound">
-	/// For example: <seealso cref="Box3"/> or <seealso cref="Rect2"/>.
+	/// For example: <seealso cref="Maths.Box3"/> or <seealso cref="Maths.Rect2"/>.
 	/// </typeparam>
 	/// <typeparam name="TItem">
 	/// For example: <seealso cref="Vector3"/> or anything, really!
@@ -15,10 +15,15 @@ namespace Elegy.Common.SpatialCollections
 	public class STree<TBound, TItem> where TBound : struct
 	{
 		#region Private fields
+		/// <summary></summary>
 		protected int mDimensions;
+		/// <summary></summary>
 		protected TBound mBound;
+		/// <summary></summary>
 		protected List<TItem> mItems;
+		/// <summary></summary>
 		protected List<STreeNode<TBound, TItem>> mNodes = new();
+		/// <summary></summary>
 		protected List<STreeNode<TBound, TItem>> mLeaves = new();
 		#endregion
 
@@ -80,22 +85,22 @@ namespace Elegy.Common.SpatialCollections
 		/// <summary>
 		/// See <see cref="IsInBoundFn"/>.
 		/// </summary>
-		public IsInBoundFn IsInBound { get; set; }
+		public IsInBoundFn IsInBound { get; init; }
 
 		/// <summary>
 		/// See <see cref="ShouldSubdivideFn"/>.
 		/// </summary>
-		public ShouldSubdivideFn ShouldSubdivide { get; set; }
+		public ShouldSubdivideFn ShouldSubdivide { get; init; }
 
 		/// <summary>
 		/// See <see cref="GetChildVolumeFn"/>.
 		/// </summary>
-		public GetChildVolumeFn GetChildVolume { get; set; }
+		public GetChildVolumeFn GetChildVolume { get; init; }
 
 		/// <summary>
 		/// See <see cref="CollectIntersectionsFn"/>.
 		/// </summary>
-		public CollectIntersectionsFn CollectIntersections { get; set; }
+		public CollectIntersectionsFn CollectIntersections { get; init; }
 		#endregion
 
 		/// <summary>
@@ -104,11 +109,22 @@ namespace Elegy.Common.SpatialCollections
 		/// <param name="rootBound">The bounding volume of the root node.</param>
 		/// <param name="items"></param>
 		/// <param name="dimensions"></param>
-		public STree( TBound rootBound, IReadOnlyList<TItem> items, int dimensions )
+		/// <param name="isInBound"></param>
+		/// <param name="shouldSubdivide"></param>
+		/// <param name="getChildVolume"></param>
+		/// <param name="collectIntersections"></param>
+		public STree( TBound rootBound, IReadOnlyList<TItem> items, int dimensions,
+			IsInBoundFn isInBound, ShouldSubdivideFn shouldSubdivide,
+			GetChildVolumeFn getChildVolume, CollectIntersectionsFn collectIntersections )
 		{
 			mItems = items.ToList();
 			mBound = rootBound;
 			mDimensions = dimensions;
+
+			IsInBound = isInBound;
+			ShouldSubdivide = shouldSubdivide;
+			GetChildVolume = getChildVolume;
+			CollectIntersections = collectIntersections;
 		}
 
 		/// <summary>
