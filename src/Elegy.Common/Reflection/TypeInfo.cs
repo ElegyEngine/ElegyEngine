@@ -6,7 +6,7 @@
 
 using System.Reflection;
 
-namespace Elegy.Reflection
+namespace Elegy.Common.Reflection
 {
 	/// <summary>
 	/// Caches a bunch of metadata about a given datatype.

@@ -6,7 +6,7 @@
 using System;
 using System.Reflection;
 
-namespace Elegy.Reflection
+namespace Elegy.Common.Reflection
 {
 	/// <summary>
 	/// The global type cache.

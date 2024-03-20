@@ -3,7 +3,7 @@
 
 using System.Reflection;
 
-namespace Elegy.Reflection
+namespace Elegy.Common.Reflection
 {
 	/// <summary>
 	/// Utility to easily interact with C# properties.
