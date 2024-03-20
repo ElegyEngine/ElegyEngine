@@ -3,7 +3,7 @@
 
 using System.Text;
 
-namespace Elegy.Common.Utilities.Interfaces
+namespace Elegy.Common.Interfaces
 {
 	/// <summary>
 	/// String length options for <see cref="IByteBuffer"/>.

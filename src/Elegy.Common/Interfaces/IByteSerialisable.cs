@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Elegy.Common.Utilities.Interfaces
+namespace Elegy.Common.Interfaces
 {
 	/// <summary>
 	/// This type can be serialised into an array of bytes, and then
@@ -9,8 +9,10 @@ namespace Elegy.Common.Utilities.Interfaces
 	/// </summary>
 	public interface IByteSerialisable
 	{
+		/// <summary></summary>
 		public void Serialise( IByteBuffer buffer );
-	
+
+		/// <summary></summary>
 		public void Deserialise( IByteBuffer buffer );
 	}
 }
