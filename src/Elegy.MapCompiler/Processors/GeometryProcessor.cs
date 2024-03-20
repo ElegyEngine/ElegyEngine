@@ -1,10 +1,9 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Assets;
-using Elegy.Extensions;
+using Elegy.Common.Assets;
+using Elegy.Common.Extensions;
 using Elegy.MapCompiler.Assets;
-using Elegy.MapCompiler.Data;
 using Elegy.MapCompiler.Data.Processing;
 
 namespace Elegy.MapCompiler.Processors

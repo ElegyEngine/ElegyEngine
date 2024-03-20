@@ -22,7 +22,7 @@
 //		b) ray-tracing on the CPU
 // 4. Update visual mesh with lightmap texture names
 
-using Elegy.Assets;
+using Elegy.Common.Assets;
 using Elegy.MapCompiler.Assets;
 using Elegy.MapCompiler.ConsoleArguments;
 using Elegy.MapCompiler.Data.Processing;

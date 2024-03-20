@@ -91,7 +91,7 @@ namespace Elegy.MapCompiler.ConsoleArguments
 
 		public override object Parse( string value )
 		{
-			return Math.Clamp( Utilities.Parse.Float( value ), MinValue, MaxValue );
+			return Math.Clamp( Common.Utilities.Parse.Float( value ), MinValue, MaxValue );
 		}
 
 		public override string GetPossibleValues() => $"between {MinValue} and {MaxValue}";

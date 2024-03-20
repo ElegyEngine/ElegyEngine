@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.Common.Reflection;
 using Elegy.MapCompiler.Assets;
-using Elegy.Reflection;
 
 namespace Elegy.MapCompiler.ConsoleArguments
 {
