@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 global using Elegy;
-global using Elegy.Extensions;
+global using Elegy.Common.Extensions;
 global using System.Numerics;
 
-global using Console = Elegy.Console;
+global using Console = Elegy.Engine.API.Console;

@@ -1,10 +1,10 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy;
-using Elegy.Assets;
-using Elegy.Assets.ElegyMapData;
-using Elegy.Geometry;
+using Elegy.Engine;
+using Elegy.Common.Assets;
+using Elegy.Common.Assets.ElegyMapData;
+using Elegy.Common.Geometry;
 
 namespace TestGame.Assets
 {

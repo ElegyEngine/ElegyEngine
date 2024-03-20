@@ -1,7 +1,11 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Assets;
+using Elegy.Common.Assets;
+using Elegy.Engine;
+using Elegy.Engine.API;
+using Elegy.Engine.Interfaces;
+
 using Silk.NET.Input;
 
 namespace TestGame
