@@ -4,7 +4,7 @@
 using Silk.NET.Input;
 using Silk.NET.Windowing;
 
-namespace Elegy
+namespace Elegy.Engine.API
 {
 	/// <summary>
 	/// Engine core. Keeps track of time, windows and other platform things.

@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.ConsoleCommands;
+using Elegy.Engine.ConsoleCommands;
 
-namespace Elegy
+namespace Elegy.Engine.API
 {
 	public static partial class Console
 	{

@@ -9,9 +9,9 @@
 // 4. Engine directory
 // Addons would insert themselves between 1 and 2, essentially overriding the game directory.
 
-using Elegy.Assets;
+using Elegy.Common.Assets;
 
-namespace Elegy
+namespace Elegy.Engine.API
 {
 	/// <summary>
 	/// Elegy filesystem path flags.

@@ -3,7 +3,7 @@
 
 using Silk.NET.Input;
 
-namespace Elegy
+namespace Elegy.Engine.API
 {
 	/// <summary>
 	/// Simple access to input functions. Key presses, mouse coordinates etc.
