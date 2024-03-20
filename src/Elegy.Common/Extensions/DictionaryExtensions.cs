@@ -66,7 +66,7 @@ namespace Elegy.Common.Extensions
 		}
 
 		/// <summary>
-		/// Gets the value at <paramref name="key"/> as a <see cref="Vector2"/>, and if it doesn't exist, returns <paramref name="defaultValue"/>.
+		/// Gets the value at <paramref name="key"/> as a <see cref="Vector2"/>, and if it doesn't exist, returns <see cref="Vector2.Zero"/>.
 		/// </summary>
 		public static Vector2 GetVector2( this Dictionary<string, string> list, string key )
 		{
@@ -74,7 +74,7 @@ namespace Elegy.Common.Extensions
 		}
 
 		/// <summary>
-		/// Gets the value at <paramref name="key"/> as a <see cref="Vector3"/>, and if it doesn't exist, returns <paramref name="defaultValue"/>.
+		/// Gets the value at <paramref name="key"/> as a <see cref="Vector3"/>, and if it doesn't exist, returns <see cref="Vector3.Zero"/>.
 		/// </summary>
 		public static Vector3 GetVector3( this Dictionary<string, string> list, string key )
 		{
@@ -82,7 +82,7 @@ namespace Elegy.Common.Extensions
 		}
 
 		/// <summary>
-		/// Gets the value at <paramref name="key"/> as a <see cref="Vector4"/>, and if it doesn't exist, returns <paramref name="defaultValue"/>.
+		/// Gets the value at <paramref name="key"/> as a <see cref="Vector4"/>, and if it doesn't exist, returns <see cref="Vector4.Zero"/>.
 		/// </summary>
 		public static Vector4 GetVector4( this Dictionary<string, string> list, string key )
 		{

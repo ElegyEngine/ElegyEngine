@@ -6,12 +6,17 @@ using Elegy.Common.Maths;
 
 namespace Elegy.Common.Assets.BrushMapData
 {
+	/// <summary></summary>
 	public class Brush
 	{
+		/// <summary></summary>
 		public Vector3 Centre = Vector3.Zero;
+		/// <summary></summary>
 		public Box3 BoundingBox = new();
+		/// <summary></summary>
 		public List<Face> Faces = new();
 
+		/// <summary></summary>
 		public void IntersectPlanes()
 		{
 			// Radius is longestAxis * 2.5 because there is a chance the

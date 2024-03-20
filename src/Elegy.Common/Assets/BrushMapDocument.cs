@@ -8,8 +8,10 @@ using Elegy.Common.Utilities;
 
 namespace Elegy.Common.Assets
 {
+	/// <summary></summary>
 	public class BrushMapDocument
 	{
+		/// <summary></summary>
 		public void MergeInto( string parentClass, string mergedClass )
 		{
 			Entity? worldspawn = MapEntities.Find( e => e.ClassName == parentClass );
@@ -32,6 +34,7 @@ namespace Elegy.Common.Assets
 			}
 		}
 
+		/// <summary></summary>
 		public static Face ParseFace( Lexer lex )
 		{
 			// ( x1 y1 z1 ) ( x2 y2 z2 ) ( x3 y3 z3 ) texture_name [ ux uy uz offsetX ] [ vx vy vz offsetY ] rotation scaleX scaleY
@@ -109,6 +112,7 @@ namespace Elegy.Common.Assets
 			return face;
 		}
 
+		/// <summary></summary>
 		public static Brush ParseBrush( Lexer lex )
 		{
 			Brush brush = new();
@@ -162,6 +166,7 @@ namespace Elegy.Common.Assets
 			return brush;
 		}
 
+		/// <summary></summary>
 		public static Entity ParseEntity( Lexer lex )
 		{
 			Entity entity = new();
@@ -223,6 +228,7 @@ namespace Elegy.Common.Assets
 			return entity;
 		}
 
+		/// <summary></summary>
 		public static BrushMapDocument? FromValve220MapFile( string path )
 		{
 			BrushMapDocument map = new();
@@ -250,9 +256,13 @@ namespace Elegy.Common.Assets
 			return map;
 		}
 
+		/// <summary></summary>
 		public string Title = "unknown";
+		/// <summary></summary>
 		public string Description = "unknown";
+		/// <summary></summary>
 		public List<Entity> MapEntities = new();
+		/// <summary></summary>
 		public bool Valid = false;
 	}
 }

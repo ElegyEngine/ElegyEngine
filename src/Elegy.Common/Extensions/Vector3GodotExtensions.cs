@@ -16,7 +16,6 @@ namespace Elegy.Common.Extensions
 		/// <summary>
 		/// Returns the Nth component of the vector.
 		/// </summary>
-		/// <param name="v"></param>
 		/// <exception cref="IndexOutOfRangeException"></exception>
 		public static float At( this Vector3 v, int i )
 		{
@@ -41,6 +40,7 @@ namespace Elegy.Common.Extensions
 		/// <summary>
 		/// Returns the unsigned minimum angle to the given vector, in radians.
 		/// </summary>
+		/// <param name="v"></param>
 		/// <param name="to">The other vector to compare this vector to.</param>
 		/// <returns>The unsigned angle between the two vectors, in radians.</returns>
 		public static float AngleTo( this Vector3 v, Vector3 to )
@@ -434,7 +434,7 @@ namespace Elegy.Common.Extensions
 		///
 		/// This method also handles interpolating the lengths if the input vectors
 		/// have different lengths. For the special case of one or both input vectors
-		/// having zero length, this method behaves like <see cref="Lerp(Vector3, float)"/>.
+		/// having zero length, this method behaves like <see cref="Lerp(in Vector3, Vector3, float)"/>.
 		/// </summary>
 		/// <param name="v"></param>
 		/// <param name="to">The destination vector for interpolation.</param>

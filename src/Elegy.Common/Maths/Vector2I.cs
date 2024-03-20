@@ -356,8 +356,6 @@ namespace Elegy.Common.Maths
 		/// with the components of the given <see langword="int"/>.
 		/// This operation uses truncated division, which is often not desired
 		/// as it does not work well with negative numbers.
-		/// Consider using <see cref="Math.PosMod(int, int)"/> instead
-		/// if you want to handle negative numbers.
 		/// </summary>
 		/// <example>
 		/// <code>
@@ -379,8 +377,6 @@ namespace Elegy.Common.Maths
 		/// with the components of the given <see cref="Vector2I"/>.
 		/// This operation uses truncated division, which is often not desired
 		/// as it does not work well with negative numbers.
-		/// Consider using <see cref="Math.PosMod(int, int)"/> instead
-		/// if you want to handle negative numbers.
 		/// </summary>
 		/// <example>
 		/// <code>
@@ -511,8 +507,8 @@ namespace Elegy.Common.Maths
 		/// <summary>
 		/// Converts a <see cref="Vector2"/> to a <see cref="Vector2I"/> by truncating
 		/// components' fractional parts (rounding towards zero). For a different
-		/// behavior consider passing the result of <see cref="Vector2.Ceil"/>,
-		/// <see cref="Vector2.Floor"/> or <see cref="Vector2.Round"/> to this conversion operator instead.
+		/// behavior consider passing the result of <see cref="Vector2GodotExtensions.Ceil"/>
+		/// or <see cref="Vector2GodotExtensions.Round"/> to this conversion operator instead.
 		/// </summary>
 		/// <param name="value">The vector to convert.</param>
 		public static explicit operator Vector2I( Vector2 value )

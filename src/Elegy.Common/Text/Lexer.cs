@@ -11,15 +11,18 @@ namespace Elegy.Common.Text
 	public class Lexer
 	{
 		#region Constructors
+		/// <summary></summary>
 		public Lexer( string text, string delimiters = DelimitersSimple )
 		{
-			Load( text );
-			SetDelimiters( delimiters );
+			mText = text;
+			mDelimiters = delimiters;
 		}
 		#endregion
 
 		#region Constants
+		/// <summary></summary>
 		public const string DelimitersFull = "()[]{}.:,;=+-*/&@'?!#%";
+		/// <summary></summary>
 		public const string DelimitersSimple = "()[]{}.:,;";
 		#endregion
 

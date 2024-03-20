@@ -16,7 +16,6 @@ namespace Elegy.Common.Extensions
 		/// <summary>
 		/// Returns the Nth component of the vector.
 		/// </summary>
-		/// <param name="v"></param>
 		/// <exception cref="IndexOutOfRangeException"></exception>
 		public static float At( this Vector2 v, int i )
 		{

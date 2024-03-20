@@ -567,7 +567,7 @@ namespace Elegy.Common.Maths
 
 		/// <summary>
 		/// Returns <see langword="true"/> if this <see cref="Box3"/> is finite, by calling
-		/// <see cref="MathF.IsFinite(float)"/> on each component.
+		/// <see cref="float.IsFinite(float)"/> on each component.
 		/// </summary>
 		/// <returns>Whether this vector is finite or not.</returns>
 		public readonly bool IsFinite()
@@ -717,7 +717,7 @@ namespace Elegy.Common.Maths
 
 		/// <summary>
 		/// Returns <see langword="true"/> if this AABB and <paramref name="other"/> are approximately equal,
-		/// by running <see cref="Vector3.IsEqualApprox(Vector3)"/> on each component.
+		/// by running <see cref="Vector3GodotExtensions.IsEqualApprox(Vector3, Vector3)"/> on each component.
 		/// </summary>
 		/// <param name="other">The other AABB to compare.</param>
 		/// <returns>Whether or not the AABBs structures are approximately equal.</returns>

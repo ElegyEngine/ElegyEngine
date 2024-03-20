@@ -114,6 +114,7 @@ namespace Elegy.Common.Maths
 				 + (plane.D * value.W);
 		}
 
+		/// <summary></summary>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public double Dot( Vector4 with )
 			=> Dot( this, with );

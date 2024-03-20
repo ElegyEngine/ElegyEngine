@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace Elegy.Common.Maths
 {
+	/// <summary></summary>
 	public static class Utils
 	{
 		#region Linear

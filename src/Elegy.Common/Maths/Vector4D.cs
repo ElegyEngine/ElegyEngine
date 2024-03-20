@@ -433,7 +433,7 @@ namespace Elegy.Common.Maths
 		/// <value>Equivalent to <c>new Vector4D(1, 1, 1, 1)</c>.</value>
 		public static Vector4D One => new( 1.0, 1.0, 1.0, 1.0 );
 		/// <summary>
-		/// Infinity vector, a vector with all components set to <see cref="Math.Inf"/>.
+		/// Infinity vector, a vector with all components set to <see cref="double.PositiveInfinity"/>.
 		/// </summary>
 		/// <value>Equivalent to <c>new Vector4D(Math.Inf, Math.Inf, Math.Inf, Math.Inf)</c>.</value>
 		public static Vector4D Inf => new( double.PositiveInfinity, double.PositiveInfinity, double.PositiveInfinity, double.PositiveInfinity );
@@ -620,8 +620,6 @@ namespace Elegy.Common.Maths
 		/// with the components of the given <see cref="double"/>.
 		/// This operation uses truncated division, which is often not desired
 		/// as it does not work well with negative numbers.
-		/// Consider using <see cref="PosMod(double)"/> instead
-		/// if you want to handle negative numbers.
 		/// </summary>
 		/// <example>
 		/// <code>
@@ -645,8 +643,6 @@ namespace Elegy.Common.Maths
 		/// with the components of the given <see cref="Vector4D"/>.
 		/// This operation uses truncated division, which is often not desired
 		/// as it does not work well with negative numbers.
-		/// Consider using <see cref="PosMod(Vector4D)"/> instead
-		/// if you want to handle negative numbers.
 		/// </summary>
 		/// <example>
 		/// <code>

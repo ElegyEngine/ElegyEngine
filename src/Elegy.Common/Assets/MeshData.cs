@@ -10,20 +10,31 @@ namespace Elegy.Common.Assets.MeshData
 	/// </summary>
 	public struct Vertex
 	{
+		/// <summary></summary>
 		public Vertex()
 		{
 
 		}
 
+		/// <summary></summary>
 		public Vector3 Position { get; set; } = Vector3.Zero;
+		/// <summary></summary>
 		public Vector3 Normal { get; set; } = Vector3.UnitZ;
+		/// <summary></summary>
 		public Vector3 Tangent { get; set; } = Vector3.UnitX;
+		/// <summary></summary>
 		public Vector3 Bitangent { get; set; } = Vector3.UnitY;
+		/// <summary></summary>
 		public Vector2 Uv1 { get; set; } = Vector2.Zero;
+		/// <summary></summary>
 		public Vector2 Uv2 { get; set; } = Vector2.Zero;
+		/// <summary></summary>
 		public Vector4 Color1 { get; set; } = Vector4.One;
+		/// <summary></summary>
 		public Vector4 Color2 { get; set; } = Vector4.One;
+		/// <summary></summary>
 		public Vector4I BoneIndices { get; set; } = Vector4I.One;
+		/// <summary></summary>
 		public Vector4 BoneWeights { get; set; } = Vector4.One;
 	}
 
@@ -59,10 +70,13 @@ namespace Elegy.Common.Assets.MeshData
 	/// </summary>
 	public class BoneJoint
 	{
+		/// <summary></summary>
 		public string Name { get; set; } = string.Empty;
 
+		/// <summary></summary>
 		public string Parent { get; set; } = string.Empty;
 
+		/// <summary></summary>
 		public Matrix4x4 Transform { get; set; } = Matrix4x4.Identity;
 	}
 }

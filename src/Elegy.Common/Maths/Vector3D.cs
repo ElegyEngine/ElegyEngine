@@ -811,8 +811,6 @@ namespace Elegy.Common.Maths
 		/// with the components of the given <see cref="double"/>.
 		/// This operation uses truncated division, which is often not desired
 		/// as it does not work well with negative numbers.
-		/// Consider using <see cref="PosMod(double)"/> instead
-		/// if you want to handle negative numbers.
 		/// </summary>
 		/// <example>
 		/// <code>
@@ -835,8 +833,6 @@ namespace Elegy.Common.Maths
 		/// with the components of the given <see cref="Vector3D"/>.
 		/// This operation uses truncated division, which is often not desired
 		/// as it does not work well with negative numbers.
-		/// Consider using <see cref="PosMod(Vector3D)"/> instead
-		/// if you want to handle negative numbers.
 		/// </summary>
 		/// <example>
 		/// <code>

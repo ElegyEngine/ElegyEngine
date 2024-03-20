@@ -122,6 +122,7 @@ namespace Elegy.Common.Utilities
 		#endregion
 
 		#region Index stuff
+		/// <summary></summary>
 		public void SetIndexFlag( int elementIndex, bool value )
 		{
 			int flagIndex = elementIndex / FlagsPerElement;
@@ -137,6 +138,7 @@ namespace Elegy.Common.Utilities
 			}
 		}
 
+		/// <summary></summary>
 		public bool GetIndexFlag( int elementIndex )
 		{
 			int flagIndex = elementIndex / FlagsPerElement;
@@ -145,6 +147,7 @@ namespace Elegy.Common.Utilities
 			return (mFlagArray[flagIndex] & (1U << position)) != 0;
 		}
 
+		/// <summary></summary>
 		public int FindFreeIndex()
 		{
 			for ( int i = 0; i < mArray.Length / sizeof( ulong ); i++ )
@@ -172,6 +175,7 @@ namespace Elegy.Common.Utilities
 			return -1;
 		}
 
+		/// <summary></summary>
 		public bool HasFreeIndices()
 		{
 			for ( int i = 0; i < mArray.Length / sizeof( ulong ); i++ )
@@ -185,6 +189,7 @@ namespace Elegy.Common.Utilities
 			return false;
 		}
 
+		/// <summary></summary>
 		public bool HasFreeIndicesInRegion( int elementIndex )
 		{
 			int flagIndex = elementIndex / FlagsPerElement;

@@ -5,44 +5,58 @@ using Elegy.Common.Maths;
 
 namespace Elegy.Common.Geometry
 {
+	/// <summary></summary>
 	public struct Polygon3DSplitResult
 	{
+		/// <summary></summary>
 		public Polygon3DSplitResult()
 		{
 
 		}
 
+		/// <summary></summary>
 		public static bool operator true( Polygon3DSplitResult psr )
 		{
 			return psr.DidIntersect;
 		}
 
+		/// <summary></summary>
 		public static bool operator false( Polygon3DSplitResult psr )
 		{
 			return !psr.DidIntersect;
 		}
 
+		/// <summary></summary>
 		public bool DidIntersect = false;
+		/// <summary></summary>
 		public Polygon3D? Front = null;
+		/// <summary></summary>
 		public Polygon3D? Back = null;
+		/// <summary></summary>
 		public Polygon3D? CoplanarFront = null;
+		/// <summary></summary>
 		public Polygon3D? CoplanarBack = null;
 	}
 
-	// 3D polygon with at least 3 vertices
+	/// <summary>
+	/// 3D polygon with at least 3 vertices
+	/// </summary>
 	public struct Polygon3D
 	{
 		#region Constructors
+		/// <summary></summary>
 		public Polygon3D( List<Vector3D> points )
 		{
 			Points = points;
 		}
 
+		/// <summary></summary>
 		public Polygon3D( IEnumerable<Vector3D> points )
 		{
 			Points = points.ToList();
 		}
 
+		/// <summary></summary>
 		public Polygon3D( Vector3D a, Vector3D b, Vector3D c )
 		{
 			Points = new()
@@ -51,6 +65,7 @@ namespace Elegy.Common.Geometry
 			};
 		}
 
+		/// <summary></summary>
 		public Polygon3D( PlaneD plane, double radius )
 		{
 			Vector3D direction = plane.GetClosestAxis();
@@ -76,7 +91,9 @@ namespace Elegy.Common.Geometry
 		#endregion
 
 		#region Properties
+		/// <summary></summary>
 		public PlaneD Plane => PlaneD.CreateFromVertices( Points[0], Points[1], Points[2] );
+		/// <summary></summary>
 		public Vector3D Origin
 		{
 			get
@@ -88,6 +105,7 @@ namespace Elegy.Common.Geometry
 		}
 		#endregion
 
+		/// <summary></summary>
 		public bool IsValid( bool requirePlanar = false )
 		{
 			if ( Points.Count < 3 )
@@ -104,6 +122,7 @@ namespace Elegy.Common.Geometry
 			return true;
 		}
 
+		/// <summary></summary>
 		public void Shift( Vector3D shift )
 		{
 			for ( int i = 0; i < Points.Count; i++ )
@@ -112,11 +131,13 @@ namespace Elegy.Common.Geometry
 			}
 		}
 
+		/// <summary></summary>
 		public bool Split( PlaneD plane, out Polygon3D? back, out Polygon3D? front )
 		{
 			return Split( plane, out back, out front, out _, out _ );
 		}
 
+		/// <summary></summary>
 		public bool Split( PlaneD plane, out Polygon3D? back, out Polygon3D? front, out Polygon3D? coplanarBack, out Polygon3D? coplanarFront )
 		{
 			var result = Split( plane );
@@ -129,6 +150,7 @@ namespace Elegy.Common.Geometry
 			return result.DidIntersect;
 		}
 
+		/// <summary></summary>
 		public Polygon3DSplitResult Split( PlaneD plane )
 		{
 			Polygon3DSplitResult result = new();
@@ -230,6 +252,7 @@ namespace Elegy.Common.Geometry
 			return result;
 		}
 
+		/// <summary></summary>
 		public List<Vector3D> Points = new();
 	}
 }

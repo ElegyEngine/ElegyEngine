@@ -429,8 +429,6 @@ namespace Elegy.Common.Maths
 		/// with the components of the given <see langword="int"/>.
 		/// This operation uses truncated division, which is often not desired
 		/// as it does not work well with negative numbers.
-		/// Consider using <see cref="Mathf.PosMod(int, int)"/> instead
-		/// if you want to handle negative numbers.
 		/// </summary>
 		/// <example>
 		/// <code>
@@ -454,8 +452,6 @@ namespace Elegy.Common.Maths
 		/// with the components of the given <see cref="Vector4I"/>.
 		/// This operation uses truncated division, which is often not desired
 		/// as it does not work well with negative numbers.
-		/// Consider using <see cref="Mathf.PosMod(int, int)"/> instead
-		/// if you want to handle negative numbers.
 		/// </summary>
 		/// <example>
 		/// <code>
@@ -623,9 +619,7 @@ namespace Elegy.Common.Maths
 
 		/// <summary>
 		/// Converts a <see cref="Vector4"/> to a <see cref="Vector4I"/> by truncating
-		/// components' fractional parts (rounding towards zero). For a different
-		/// behavior consider passing the result of <see cref="Vector4.Ceiling"/>,
-		/// <see cref="Vector4.Floor"/> or <see cref="Vector4.Round"/> to this conversion operator instead.
+		/// components' fractional parts (rounding towards zero).
 		/// </summary>
 		/// <param name="value">The vector to convert.</param>
 		public static explicit operator Vector4I( Vector4 value )

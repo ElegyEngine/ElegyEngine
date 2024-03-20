@@ -12,9 +12,13 @@ namespace Elegy.Common.Maths
 	/// </summary>
 	public enum Axis
 	{
+		/// <summary></summary>
 		X,
+		/// <summary></summary>
 		Y,
+		/// <summary></summary>
 		Z,
+		/// <summary></summary>
 		W
 	}
 }

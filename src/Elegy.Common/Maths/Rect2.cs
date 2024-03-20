@@ -455,7 +455,7 @@ namespace Elegy.Common.Maths
 
 		/// <summary>
 		/// Returns <see langword="true"/> if this rect and <paramref name="other"/> are approximately equal,
-		/// by running <see cref="Vector2.IsEqualApprox(Vector2)"/> on each component.
+		/// by running <see cref="Vector2GodotExtensions.IsEqualApprox(Vector2, Vector2)"/> on each component.
 		/// </summary>
 		/// <param name="other">The other rect to compare.</param>
 		/// <returns>Whether or not the rects are approximately equal.</returns>

@@ -16,10 +16,11 @@ namespace Elegy.Common.Assets
 	/// </summary>
 	public class Model
 	{
+		/// <summary></summary>
 		public string Name { get; set; } = string.Empty;
-
+		/// <summary></summary>
 		public string FullPath { get; set; } = string.Empty;
-
+		/// <summary></summary>
 		public List<Mesh> Meshes { get; set; } = new();
 	}
 }

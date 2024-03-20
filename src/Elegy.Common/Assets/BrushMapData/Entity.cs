@@ -5,15 +5,22 @@ using Elegy.Common.Maths;
 
 namespace Elegy.Common.Assets.BrushMapData
 {
+	/// <summary></summary>
 	public class Entity
 	{
+		/// <summary></summary>
 		public Vector3 Centre = Vector3.Zero;
+		/// <summary></summary>
 		public Box3 BoundingBox = new();
+		/// <summary></summary>
 		public List<Brush> Brushes = new();
 
+		/// <summary></summary>
 		public string ClassName = string.Empty;
+		/// <summary></summary>
 		public Dictionary<string, string> Pairs = new();
 
+		/// <summary></summary>
 		public Vector3 GetBrushOrigin()
 		{
 			if ( ClassName == "worldspawn" )

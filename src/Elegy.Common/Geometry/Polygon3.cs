@@ -3,44 +3,58 @@
 
 namespace Elegy.Common.Geometry
 {
+	/// <summary></summary>
 	public struct Polygon3SplitResult
 	{
+		/// <summary></summary>
 		public Polygon3SplitResult()
 		{
 
 		}
 
+		/// <summary></summary>
 		public static bool operator true( Polygon3SplitResult psr )
 		{
 			return psr.DidIntersect;
 		}
 
+		/// <summary></summary>
 		public static bool operator false( Polygon3SplitResult psr )
 		{
 			return !psr.DidIntersect;
 		}
 
+		/// <summary></summary>
 		public bool DidIntersect = false;
+		/// <summary></summary>
 		public Polygon3? Front = null;
+		/// <summary></summary>
 		public Polygon3? Back = null;
+		/// <summary></summary>
 		public Polygon3? CoplanarFront = null;
+		/// <summary></summary>
 		public Polygon3? CoplanarBack = null;
 	}
 
-	// 3D polygon with at least 3 vertices
+	/// <summary>
+	/// 3D polygon with at least 3 vertices
+	/// </summary>
 	public struct Polygon3
 	{
 		#region Constructors
+		/// <summary></summary>
 		public Polygon3( List<Vector3> points )
 		{
 			Points = points;
 		}
 
+		/// <summary></summary>
 		public Polygon3( IEnumerable<Vector3> points )
 		{
 			Points = points.ToList();
 		}
 
+		/// <summary></summary>
 		public Polygon3( Vector3 a, Vector3 b, Vector3 c )
 		{
 			Points = new()
@@ -49,6 +63,7 @@ namespace Elegy.Common.Geometry
 			};
 		}
 
+		/// <summary></summary>
 		public Polygon3( Plane plane, float radius )
 		{
 			Vector3 direction = plane.GetClosestAxis();
@@ -74,7 +89,9 @@ namespace Elegy.Common.Geometry
 		#endregion
 
 		#region Properties
+		/// <summary></summary>
 		public Plane Plane => Plane.CreateFromVertices( Points[0], Points[1], Points[2] );
+		/// <summary></summary>
 		public Vector3 Origin
 		{
 			get
@@ -86,6 +103,7 @@ namespace Elegy.Common.Geometry
 		}
 		#endregion
 
+		/// <summary></summary>
 		public bool IsValid( bool requirePlanar = false )
 		{
 			if ( Points.Count < 3 )
@@ -102,6 +120,7 @@ namespace Elegy.Common.Geometry
 			return true;
 		}
 
+		/// <summary></summary>
 		public void Shift( Vector3 shift )
 		{
 			for ( int i = 0; i < Points.Count; i++ )
@@ -110,11 +129,13 @@ namespace Elegy.Common.Geometry
 			}
 		}
 
+		/// <summary></summary>
 		public bool Split( Plane plane, out Polygon3? back, out Polygon3? front )
 		{
 			return Split( plane, out back, out front, out _, out _ );
 		}
 
+		/// <summary></summary>
 		public bool Split( Plane plane, out Polygon3? back, out Polygon3? front, out Polygon3? coplanarBack, out Polygon3? coplanarFront )
 		{
 			var result = Split( plane );
@@ -127,6 +148,7 @@ namespace Elegy.Common.Geometry
 			return result.DidIntersect;
 		}
 
+		/// <summary></summary>
 		public Polygon3SplitResult Split( Plane plane )
 		{
 			Polygon3SplitResult result = new();
@@ -228,6 +250,7 @@ namespace Elegy.Common.Geometry
 			return result;
 		}
 
+		/// <summary></summary>
 		public List<Vector3> Points = new();
 	}
 }

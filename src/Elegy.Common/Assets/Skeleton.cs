@@ -10,8 +10,10 @@ namespace Elegy.Common.Assets
 	/// </summary>
 	public class Skeleton
 	{
+		/// <summary></summary>
 		public string Name { get; set; } = string.Empty;
 
+		/// <summary></summary>
 		public List<BoneJoint> Joints { get; set; } = new();
 	}
 }

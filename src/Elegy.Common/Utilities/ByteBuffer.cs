@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-using Elegy.Common.Utilities.Interfaces;
+using Elegy.Common.Interfaces;
 
 namespace Elegy.Common.Utilities
 {
