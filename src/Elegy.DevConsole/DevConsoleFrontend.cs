@@ -1,8 +1,10 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Utilities;
-using Elegy.Utilities.Interfaces;
+using Elegy.Common.Utilities;
+using Elegy.Common.Interfaces;
+using Elegy.Engine;
+using Elegy.Engine.Interfaces;
 using System.Text;
 
 namespace Elegy.DevConsole
@@ -126,7 +128,7 @@ namespace Elegy.DevConsole
 
 			mLogger.Verbose( $"Received data: {receivedCommand} (raw: '{Encoding.ASCII.GetString( data )}')" );
 
-			Console.Execute( receivedCommand );
+			Engine.API.Console.Execute( receivedCommand );
 		}
 
 		//private void LogEvent( Godot.Collections.Array? serviceResult )
