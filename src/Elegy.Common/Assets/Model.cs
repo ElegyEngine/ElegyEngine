@@ -1,9 +1,9 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Assets.MeshData;
+using Elegy.Common.Assets.MeshData;
 
-namespace Elegy.Assets
+namespace Elegy.Common.Assets
 {
 	// TODO: Okay, hear me out. What if we have a Mesh asset and a Skeleton asset,
 	// so that we can easily have shared Animation assets?
@@ -17,6 +17,8 @@ namespace Elegy.Assets
 	public class Model
 	{
 		public string Name { get; set; } = string.Empty;
+
+		public string FullPath { get; set; } = string.Empty;
 
 		public List<Mesh> Meshes { get; set; } = new();
 	}

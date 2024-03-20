@@ -1,9 +1,9 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Maths;
+using Elegy.Common.Maths;
 
-namespace Elegy.Assets.BrushMapData
+namespace Elegy.Common.Assets.BrushMapData
 {
 	public class Entity
 	{

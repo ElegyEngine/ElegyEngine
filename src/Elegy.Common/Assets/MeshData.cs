@@ -1,9 +1,9 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Maths;
+using Elegy.Common.Maths;
 
-namespace Elegy.Assets.MeshData
+namespace Elegy.Common.Assets.MeshData
 {
 	/// <summary>
 	/// All possible vertex data that can be stored in EMFs.

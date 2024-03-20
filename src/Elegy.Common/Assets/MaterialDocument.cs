@@ -1,10 +1,10 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Text;
+using Elegy.Common.Text;
 using System.Collections.Specialized;
 
-namespace Elegy.Assets
+namespace Elegy.Common.Assets
 {
 	/// <summary>
 	/// A material defined inside a material document.

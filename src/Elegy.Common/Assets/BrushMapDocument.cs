@@ -1,12 +1,12 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Assets.BrushMapData;
-using Elegy.Maths;
-using Elegy.Text;
-using Elegy.Utilities;
+using Elegy.Common.Assets.BrushMapData;
+using Elegy.Common.Maths;
+using Elegy.Common.Text;
+using Elegy.Common.Utilities;
 
-namespace Elegy.Assets
+namespace Elegy.Common.Assets
 {
 	public class BrushMapDocument
 	{

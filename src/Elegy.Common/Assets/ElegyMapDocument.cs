@@ -1,10 +1,10 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Assets.ElegyMapData;
-using Elegy.Text;
+using Elegy.Common.Assets.ElegyMapData;
+using Elegy.Common.Text;
 
-namespace Elegy.Assets
+namespace Elegy.Common.Assets
 {
 	/// <summary>
 	/// Standard Elegy level format.

@@ -1,9 +1,9 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Maths;
+using Elegy.Common.Maths;
 
-namespace Elegy.Assets.ElegyMapData
+namespace Elegy.Common.Assets.ElegyMapData
 {
 	/// <summary>
 	/// An ELF render surface is concrete render data that describes
