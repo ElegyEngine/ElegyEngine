@@ -1,9 +1,9 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Maths;
+using Elegy.Common.Maths;
 
-namespace Elegy.SpatialCollections
+namespace Elegy.Common.SpatialCollections
 {
 	/// <summary>
 	/// A quadtree. Dunno what you'd use it for, vegetation maybe.
