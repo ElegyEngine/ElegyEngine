@@ -9,6 +9,10 @@ namespace Elegy.GuiLauncher.Wpf
 	{
 		[STAThread]
 		public static void Main( string[] args )
-			=> EntryPoint.RunApplication( args, Eto.Platforms.Wpf );
+			=> EntryPoint.RunApplication( args, Eto.Platforms.Wpf, () =>
+			{
+				// Do some WPF-specific hackery here, I dunno
+				// Load a dark theme .xaml?
+			} );
 	}
 }

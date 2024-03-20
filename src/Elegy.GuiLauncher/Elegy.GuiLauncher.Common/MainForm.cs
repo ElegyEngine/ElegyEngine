@@ -7,6 +7,8 @@ using Silk.Eto;
 
 using SilkWindow = Silk.NET.Windowing.Window;
 using SilkInput = Silk.NET.Input.InputWindowExtensions;
+using Eto;
+using Eto.Drawing;
 
 namespace Elegy.GuiLauncher
 {
@@ -117,12 +119,14 @@ namespace Elegy.GuiLauncher
 		{
 			mEngine = engine;
 
+			Style = "dark";
 			Title = "My Eto Form";
 			MinimumSize = new( 1280, 960 );
 
 			mStatusLabel = new()
 			{
-				Text = "FPS:"
+				Text = "FPS:",
+				Style = "dark"
 			};
 
 			mSurface = new()
@@ -133,7 +137,8 @@ namespace Elegy.GuiLauncher
 			mTextArea = new()
 			{
 				Size = new( 1280, 120 ),
-				ReadOnly = true
+				ReadOnly = true,
+				Style = "dark"
 			};
 
 			mLogger = new( mTextArea );
@@ -145,7 +150,11 @@ namespace Elegy.GuiLauncher
 				{
 					mStatusLabel,
 					mSurface,
-					"Engine output:",
+					new Label()
+					{
+						Style = "dark",
+						Text = "Engine output:"
+					},
 					mTextArea
 				},
 				Size = new( -1, -1 )
@@ -153,6 +162,7 @@ namespace Elegy.GuiLauncher
 
 			ToolBar = new ToolBar
 			{
+				Style = "dark",
 				Items =
 				{
 					CreateButton( "Restart engine", (sender, e) =>
@@ -194,12 +204,14 @@ namespace Elegy.GuiLauncher
 			Plugins.RegisterPlugin( new FormApp() );
 
 			mLastTime = Core.Seconds;
-			mSurface.Draw += OnRender;
+			mSurface.Draw += OnRender; // Pretty important!
 		}
 
+		private const double mRefreshRate = 165.0; // TODO: obtain screen refresh rate, mine's 165 Hz so I put it here
 		private double mAverageFps = 60.0;
 		private double mLastTime = 0.0;
-		private double mVerticalSyncTimer = 1.0 / 120.0;
+		private double mVerticalSyncTimer = 1.0 / mRefreshRate;
+		private int mFramerateUpdateCounter = 5;
 		private void OnRender( object? sender, EventArgs e )
 		{
 			double deltaTime = Core.Seconds - mLastTime;
@@ -209,9 +221,10 @@ namespace Elegy.GuiLauncher
 			{
 				return;
 			}
+			mVerticalSyncTimer = 1.0 / mRefreshRate;
 
-			mVerticalSyncTimer = 1.0 / 60.0;
-			mEngine.Update( (float)deltaTime );
+			double frameStart = Core.Seconds;
+			mEngine.Update( 1.0f / (float)mRefreshRate );
 
 			if ( mRenderView.RenderSize.X > 0.0f )
 			{
@@ -225,15 +238,58 @@ namespace Elegy.GuiLauncher
 
 			mLastTime = Core.Seconds;
 
-			mAverageFps = mAverageFps * 0.9 + (1.0 / deltaTime) * 0.1;
-			mStatusLabel.Text = string.Format( "FPS: {0:F}", mAverageFps );
+			double fps = 1.0 / (mLastTime - frameStart);
+			if ( fps > mAverageFps )
+			{
+				mAverageFps = fps;
+			}
+			else
+			{
+				mAverageFps = mAverageFps * 0.99 + fps * 0.01;
+			}
+
+			if ( mFramerateUpdateCounter-- == 0 )
+			{
+				mStatusLabel.Text = string.Format( "FPS: {0:F}", mAverageFps );
+				mFramerateUpdateCounter = (int)mRefreshRate / 4;
+			}
 		}
 	}
 
 	public static class EntryPoint
 	{
-		public static void RunApplication( string[] args, string platform )
+		private static void SetBackgroundColor<THandler>( float brightness )
+			where THandler: class, Control.IHandler
 		{
+			Style.Add<THandler>( "dark", handler =>
+			{
+				handler.BackgroundColor = Color.FromGrayscale( brightness, 1.0f );
+			} );
+		}
+
+		private static void SetDarkTheme()
+		{
+			SetBackgroundColor<Control.IHandler>( 0.15f );
+			Style.Add<CommonControl.IHandler>( "dark", handler =>
+			{
+				handler.BackgroundColor = Color.FromGrayscale( 0.17f, 1.0f );
+			} );
+			Style.Add<TextControl.IHandler>( "dark", handler =>
+			{
+				handler.BackgroundColor = Color.FromGrayscale( 0.19f, 1.0f );
+				handler.TextColor = Color.FromGrayscale( 0.94f, 1.0f );
+			} );
+		}
+
+		public static void RunApplication( string[] args, string platform, Action also )
+		{
+			also();
+
+			//if ( platform == Platforms.Wpf )
+			//{
+			//	SetDarkTheme();
+			//}
+
 			Engine engine = new( args, null );
 
 			SilkWindow.Add( new EtoWindowPlatform() );
