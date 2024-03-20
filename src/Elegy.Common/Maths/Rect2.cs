@@ -352,6 +352,12 @@ namespace Elegy.Common.Maths
 		}
 
 		/// <summary>
+		/// Constructs a <see cref="Rect2"/> from two corners.
+		/// </summary>
+		public static Rect2 FromCorners( Vector2 a, Vector2 b )
+			=> new Rect2( position: (a + b) * 0.5f, size: (a - b).Abs() );
+
+		/// <summary>
 		/// Constructs a <see cref="Rect2"/> from a position and size.
 		/// </summary>
 		/// <param name="position">The position.</param>

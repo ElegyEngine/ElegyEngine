@@ -603,6 +603,12 @@ namespace Elegy.Common.Maths
 		}
 
 		/// <summary>
+		/// Constructs a <see cref="Box3"/> from two corners.
+		/// </summary>
+		public static Box3 FromCorners( Vector3 a, Vector3 b )
+			=> new Box3( position: (a + b) * 0.5f, size: (a - b).Abs() );
+
+		/// <summary>
 		/// Constructs an <see cref="Box3"/> from a position and size.
 		/// </summary>
 		/// <param name="position">The position.</param>
