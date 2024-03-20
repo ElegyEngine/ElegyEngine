@@ -9,11 +9,11 @@ namespace Elegy.Launcher2
 	{
 		static void PrintError( string message )
 		{
-			System.Console.BackgroundColor = ConsoleColor.Red;
-			System.Console.ForegroundColor = ConsoleColor.Black;
-			System.Console.WriteLine( message );
-			System.Console.BackgroundColor = ConsoleColor.Black;
-			System.Console.ForegroundColor = ConsoleColor.White;
+			Console.BackgroundColor = ConsoleColor.Red;
+			Console.ForegroundColor = ConsoleColor.Black;
+			Console.WriteLine( message );
+			Console.BackgroundColor = ConsoleColor.Black;
+			Console.ForegroundColor = ConsoleColor.White;
 		}
 
 		static IWindowPlatform? GetWindowPlatform()
@@ -35,9 +35,9 @@ namespace Elegy.Launcher2
 
 		static void Main( string[] args )
 		{
-			System.Console.Title = "Elegy.Launcher2";
+			Console.Title = "Elegy.Launcher2";
 
-			Engine engine = new( args, GetWindowPlatform() );
+			Engine.Engine engine = new( args, GetWindowPlatform() );
 
 			while ( !engine.Init( withMainWindow: true ) )
 			{
@@ -50,8 +50,8 @@ namespace Elegy.Launcher2
 					PrintError( $"Engine failed to initialise: '{engine.ShutdownReason}'" );
 				}
 
-				System.Console.WriteLine( "Press ESC to exit. Any other key will retry." );
-				if ( System.Console.ReadKey().Key == ConsoleKey.Escape )
+				Console.WriteLine( "Press ESC to exit. Any other key will retry." );
+				if ( Console.ReadKey().Key == ConsoleKey.Escape )
 				{
 					return;
 				}
