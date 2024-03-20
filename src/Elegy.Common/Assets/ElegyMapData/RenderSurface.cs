@@ -22,7 +22,7 @@ namespace Elegy.Common.Assets.ElegyMapData
 		/// </summary>
 		public List<Vector3> Positions { get; set; } = new();
 		/// <summary>
-		/// Normal buffer. Tangents and bitangents
+		/// Normals buffer. Tangents and bitangents
 		/// are built from normals and UVs.
 		/// </summary>
 		public List<Vector3> Normals { get; set; } = new();

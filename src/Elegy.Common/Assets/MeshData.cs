@@ -6,39 +6,6 @@ using Elegy.Common.Maths;
 namespace Elegy.Common.Assets.MeshData
 {
 	/// <summary>
-	/// All possible vertex data that can be stored in EMFs.
-	/// </summary>
-	public struct Vertex
-	{
-		/// <summary></summary>
-		public Vertex()
-		{
-
-		}
-
-		/// <summary></summary>
-		public Vector3 Position { get; set; } = Vector3.Zero;
-		/// <summary></summary>
-		public Vector3 Normal { get; set; } = Vector3.UnitZ;
-		/// <summary></summary>
-		public Vector3 Tangent { get; set; } = Vector3.UnitX;
-		/// <summary></summary>
-		public Vector3 Bitangent { get; set; } = Vector3.UnitY;
-		/// <summary></summary>
-		public Vector2 Uv1 { get; set; } = Vector2.Zero;
-		/// <summary></summary>
-		public Vector2 Uv2 { get; set; } = Vector2.Zero;
-		/// <summary></summary>
-		public Vector4 Color1 { get; set; } = Vector4.One;
-		/// <summary></summary>
-		public Vector4 Color2 { get; set; } = Vector4.One;
-		/// <summary></summary>
-		public Vector4I BoneIndices { get; set; } = Vector4I.One;
-		/// <summary></summary>
-		public Vector4 BoneWeights { get; set; } = Vector4.One;
-	}
-
-	/// <summary>
 	/// Represents a particular part of a model with a material assigned to it.
 	/// </summary>
 	public class Mesh
@@ -53,15 +20,36 @@ namespace Elegy.Common.Assets.MeshData
 		/// </summary>
 		public string MaterialName { get; set; } = string.Empty;
 
-		/// <summary>
-		/// Vertex data.
-		/// </summary>
-		public List<Vertex> Vertices { get; set; } = new();
-
-		/// <summary>
-		/// Vertex indices.
-		/// </summary>
-		public List<int> Indices { get; set; } = new();
+		/// <summary> Vertex positions. </summary>
+		public IList<Vector3> Positions { get; set; } = Array.Empty<Vector3>();
+		/// <summary> Vertex normals. </summary>
+		public IList<Vector3> Normals { get; set; } = Array.Empty<Vector3>();
+		/// <summary> Vertex tangents. </summary>
+		public IList<Vector3> Tangent { get; set; } = Array.Empty<Vector3>();
+		/// <summary> Vertex bitangents, usually derived from normal and tangent. </summary>
+		public IList<Vector3> Bitangent { get; set; } = Array.Empty<Vector3>();
+		/// <summary> Vertex texture coordinates, channel 0. </summary>
+		public IList<Vector2> Uv0 { get; set; } = Array.Empty<Vector2>();
+		/// <summary> Vertex texture coordinates, channel 1. </summary>
+		public IList<Vector2> Uv1 { get; set; } = Array.Empty<Vector2>();
+		/// <summary> Vertex texture coordinates, channel 2. </summary>
+		public IList<Vector2> Uv2 { get; set; } = Array.Empty<Vector2>();
+		/// <summary> Vertex texture coordinates, channel 3. </summary>
+		public IList<Vector2> Uv3 { get; set; } = Array.Empty<Vector2>();
+		/// <summary> Vertex colours, channel 0. </summary>
+		public IList<Vector4> Color0 { get; set; } = Array.Empty<Vector4>();
+		/// <summary> Vertex colours, channel 1. </summary>
+		public IList<Vector4> Color1 { get; set; } = Array.Empty<Vector4>();
+		/// <summary> Vertex colours, channel 2. </summary>
+		public IList<Vector4> Color2 { get; set; } = Array.Empty<Vector4>();
+		/// <summary> Vertex colours, channel 3. </summary>
+		public IList<Vector4> Color3 { get; set; } = Array.Empty<Vector4>();
+		/// <summary> Vertex bone indices. </summary>
+		public IList<Vector4B> BoneIndices { get; set; } = Array.Empty<Vector4B>();
+		/// <summary> Normalised vertex bone weights. </summary>
+		public IList<Vector4> BoneWeights { get; set; } = Array.Empty<Vector4>();
+		/// <summary> Vertex indices. </summary>
+		public IList<uint> Indices { get; set; } = Array.Empty<uint>();
 	}
 
 	/// <summary>
