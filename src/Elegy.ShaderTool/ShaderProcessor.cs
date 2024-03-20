@@ -1,9 +1,10 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.Common.Text;
+using Elegy.Common.Utilities;
 using Elegy.RenderBackend.Assets;
-using Elegy.Text;
-using Elegy.Utilities;
+
 using System.Diagnostics;
 using System.Text;
 
