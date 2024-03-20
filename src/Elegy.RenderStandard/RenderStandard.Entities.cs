@@ -1,11 +1,13 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Collections.Pooled;
+using Elegy.Common.Utilities;
+using Elegy.Engine.Interfaces;
+using Elegy.Engine.Interfaces.Rendering;
 using Elegy.RenderBackend.Extensions;
-using Elegy.Rendering;
 using Elegy.RenderStandard.Extensions;
-using Elegy.Utilities;
+
+using Collections.Pooled;
 using System.Numerics;
 using Veldrid;
 

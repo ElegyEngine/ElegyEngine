@@ -1,9 +1,13 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.Engine.API;
+using Elegy.Engine.Interfaces;
+using Elegy.Engine.Interfaces.Rendering;
+
 using Elegy.RenderBackend;
 using Elegy.RenderBackend.Extensions;
-using Elegy.Rendering;
+
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;

@@ -1,15 +1,17 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Collections.Pooled;
-using Elegy.Maths;
+using Elegy.Common.Maths;
+using Elegy.Engine.Interfaces;
 using Elegy.RenderBackend.Extensions;
 using Elegy.RenderStandard.Extensions;
+
 using Silk.NET.Windowing;
+using Collections.Pooled;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Veldrid;
-using IView = Elegy.Rendering.IView;
+using IView = Elegy.Engine.Interfaces.Rendering.IView;
 
 namespace Elegy.RenderStandard;
 

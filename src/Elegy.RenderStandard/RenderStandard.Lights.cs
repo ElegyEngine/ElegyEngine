@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Rendering;
-using Elegy.Utilities;
+using Elegy.Engine.Interfaces;
+using Elegy.Engine.Interfaces.Rendering;
 
 namespace Elegy.RenderStandard;
 

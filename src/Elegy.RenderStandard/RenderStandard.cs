@@ -1,7 +1,13 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+global using Console = Elegy.Engine.API.Console;
+
 using Veldrid;
+
+using Elegy.Engine;
+using Elegy.Engine.API;
+using Elegy.Engine.Interfaces;
 
 namespace Elegy.RenderStandard;
 

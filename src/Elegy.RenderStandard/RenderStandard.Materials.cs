@@ -1,9 +1,11 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Assets;
-using Elegy.RenderBackend.Templating;
-using Elegy.Rendering;
+using Elegy.Common.Assets;
+using Elegy.Engine.Interfaces;
+using Elegy.Engine.Interfaces.Rendering;
+using Elegy.RenderBackend.Assets;
+
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Veldrid;
