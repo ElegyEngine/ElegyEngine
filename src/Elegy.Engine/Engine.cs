@@ -1,14 +1,18 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Assets;
+using Elegy.Common.Assets;
+using Elegy.Engine.API;
+using Elegy.Engine.Interfaces;
+using Elegy.Engine.Platform;
 using Elegy.RenderBackend.Extensions;
+
 using Silk.NET.Windowing;
 using System.Diagnostics;
 
-using IView = Elegy.Rendering.IView;
+using IView = Elegy.Engine.Interfaces.Rendering.IView;
 
-namespace Elegy
+namespace Elegy.Engine
 {
 	/// <summary>
 	/// The engine. Launches and updates all subsystems.
@@ -249,11 +253,11 @@ namespace Elegy
 				mLogger.Log( $"'{path}' does not exist, creating a default one..." );
 
 				mEngineConfig = new();
-				Text.JsonHelpers.Write( mEngineConfig, path );
+				Common.Text.JsonHelpers.Write( mEngineConfig, path );
 				return true;
 			}
 
-			if ( !Text.JsonHelpers.LoadFrom( ref mEngineConfig, path ) )
+			if ( !Common.Text.JsonHelpers.LoadFrom( ref mEngineConfig, path ) )
 			{
 				mLogger.Error( $"'{path}' somehow failed to load" );
 				return false;

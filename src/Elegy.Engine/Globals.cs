@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 global using StringDictionary = System.Collections.Generic.Dictionary<string, string>;
+global using Console = Elegy.Engine.API.Console;
 
-global using Elegy.Extensions;
+global using Elegy.Common.Extensions;
 global using System.Reflection;

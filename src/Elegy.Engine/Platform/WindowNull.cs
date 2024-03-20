@@ -6,12 +6,12 @@ using Silk.NET.Core.Contexts;
 using Silk.NET.Maths;
 using Silk.NET.Windowing;
 
-namespace Elegy
+namespace Elegy.Engine.Platform
 {
 	/// <summary>
 	/// Dummy window class for headless instances.
 	/// </summary>
-	public class WindowNull : IWindow
+	internal class WindowNull : IWindow
 	{
 		public IWindowHost? Parent => null;
 
