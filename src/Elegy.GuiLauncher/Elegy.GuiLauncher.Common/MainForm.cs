@@ -1,14 +1,17 @@
 // SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Rendering;
-using Eto.Forms;
-using Silk.Eto;
+using Elegy.Engine;
+using Elegy.Engine.API;
+using Elegy.Engine.Interfaces;
+using Elegy.Engine.Interfaces.Rendering;
 
 using SilkWindow = Silk.NET.Windowing.Window;
 using SilkInput = Silk.NET.Input.InputWindowExtensions;
 using Eto;
+using Eto.Forms;
 using Eto.Drawing;
+using Silk.Eto;
 
 namespace Elegy.GuiLauncher
 {
@@ -98,7 +101,7 @@ namespace Elegy.GuiLauncher
 		private FormLogger mLogger;
 		private TextArea mTextArea;
 		private Label mStatusLabel;
-		private Engine mEngine;
+		private Engine.Engine mEngine;
 
 		private IView? mRenderView = null;
 
@@ -115,7 +118,7 @@ namespace Elegy.GuiLauncher
 			return command;
 		}
 
-		public MainForm( Engine engine )
+		public MainForm( Engine.Engine engine )
 		{
 			mEngine = engine;
 
@@ -290,7 +293,7 @@ namespace Elegy.GuiLauncher
 			//	SetDarkTheme();
 			//}
 
-			Engine engine = new( args, null );
+			Engine.Engine engine = new( args, null );
 
 			SilkWindow.Add( new EtoWindowPlatform() );
 			SilkInput.Add( new EtoInputPlatform() );
