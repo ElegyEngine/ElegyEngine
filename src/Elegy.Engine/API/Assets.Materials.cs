@@ -35,5 +35,10 @@ namespace Elegy.Engine.API
 		/// All the materials in the system.
 		/// </summary>
 		public static IEnumerable<Material> AllMaterials => mAssetSystem.GetMaterialList();
+
+		/// <summary>
+		/// The "missing texture" texture.
+		/// </summary>
+		public static Texture MissingTexture => mAssetSystem.MissingTexture;
 	}
 }

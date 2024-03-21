@@ -81,6 +81,12 @@ namespace Elegy.Engine
 
 			loadMaterialsForDirectory( $"This game", FileSystem.CurrentGamePath );
 
+			return CreateMissingTexture();
+		}
+
+		private bool CreateMissingTexture()
+		{
+			MissingTexture = Texture.FromData( 16, 16, Texture.GenerateMissingTexturePattern() );
 			return true;
 		}
 
@@ -102,21 +108,7 @@ namespace Elegy.Engine
 		}
 
 		private Material LoadMaterial( MaterialDefinition materialDef )
-		{
-			Texture2D? texture = LoadTexture( materialDef.DiffuseMap );
-			if ( texture is null )
-			{
-				return new()
-				{
-					ResourceName = "Default"
-				};
-			}
-
-			return new()
-			{
-				ResourceName = materialDef.Name
-			};
-		}
+			=> new( materialDef );
 
 		// Texture extensions have some type of priority here
 		// First it checks if there's a KTX (which is the best all-rounder IMO), then TGA, DDS etc.
@@ -126,30 +118,9 @@ namespace Elegy.Engine
 			".ktx", ".tga", ".dds", ".png", ".jpg", ".jpeg", ".webp", ".bmp"
 		};
 
-		private Texture2D? LoadTexture( string? texturePath )
+		private Texture LoadTexture( string? texturePath )
 		{
-			if ( texturePath is null )
-			{
-				return null;
-			}
-
-			if ( Path.HasExtension( texturePath ) )
-			{
-				return Texture2D.CreateFromImageFile( texturePath );
-			}
-
-			foreach ( var textureExtension in TextureExtensions )
-			{
-				string? fullTexturePath = FileSystem.PathTo( $"{texturePath}{textureExtension}" );
-				if ( fullTexturePath is null )
-				{
-					continue;
-				}
-
-				return Texture2D.CreateFromImageFile( fullTexturePath );
-			}
-
-			return null;
+			return MissingTexture;
 		}
 
 		public bool UnloadMaterial( ref Material? material )
