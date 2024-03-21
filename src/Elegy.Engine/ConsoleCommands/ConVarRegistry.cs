@@ -96,7 +96,7 @@ namespace Elegy.Engine.ConsoleCommands
 
 		public void UnregisterAll()
 		{
-			Commands.ForEach( cmd => Console.UnregisterCommand( cmd ) );
+			Commands.ForEach( Console.UnregisterCommand );
 		}
 	}
 }
