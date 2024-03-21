@@ -21,7 +21,7 @@
     <Company>Elegy Engine Organisation</Company>
     <Copyright>Copyright © 2022-present Elegy Engine contributors</Copyright>
     <RepositoryType>git</RepositoryType>
-    <RootNamespace>Elegy</RootNamespace>
+    <RootNamespace>Elegy.Engine</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
