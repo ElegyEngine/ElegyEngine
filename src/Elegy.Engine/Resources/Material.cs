@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Assets;
+using Elegy.Engine.API;
 using Elegy.Engine.Interfaces.Rendering;
 
 namespace Elegy.Engine.Resources
@@ -11,10 +12,20 @@ namespace Elegy.Engine.Resources
 	/// </summary>
 	public class Material
 	{
-		public string ResourceName { get; set; } = string.Empty;
+		/// <summary></summary>
+		public Material( MaterialDefinition data )
+		{
+			Data = data;
+			RenderMaterial = Render.Instance.CreateMaterial( this );
+		}
 
-		public MaterialDefinition Data { get; set; }
+		/// <summary></summary>
+		public string Name => Data.Name;
 
-		public IMaterial? RenderMaterial { get; set; } = null;
+		/// <summary></summary>
+		public MaterialDefinition Data { get; }
+
+		/// <summary></summary>
+		public IMaterial? RenderMaterial { get; } = null;
 	}
 }
