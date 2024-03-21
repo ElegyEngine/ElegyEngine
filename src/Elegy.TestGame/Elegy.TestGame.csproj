@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BepuPhysics" Version="2.5.0-beta.22" />
+    <PackageReference Include="DotRecast.Detour" Version="2024.1.3" />
+    <PackageReference Include="fennecs" Version="0.2.0-beta" />
+    <PackageReference Include="MountainGoap" Version="0.14.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Elegy.Engine\Elegy.Engine.csproj" />
   </ItemGroup>
 
