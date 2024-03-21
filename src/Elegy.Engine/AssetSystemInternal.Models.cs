@@ -13,7 +13,31 @@ namespace Elegy.Engine
 
 		public Model? LoadModel( string path )
 		{
-			return null;
+			string? fullPath = FileSystem.PathTo( path, PathFlags.File );
+			if ( fullPath is null )
+			{
+				mLogger.Error( $"LoadModel: Can't find model '{path}'" );
+				return null;
+			}
+
+			string extension = Path.GetExtension( path ) ?? "";
+			IModelLoader? modelLoader = FindModelLoader( [extension] );
+			if ( modelLoader is null )
+			{
+				mLogger.Error( $"LoadModel: Unsupported format '{extension}'" );
+				return null;
+			}
+
+			Model? model = modelLoader.LoadModel( fullPath );
+			if ( model is null )
+			{
+				mLogger.Error( $"LoadModel: Cannot load model '{path}'\nFull path: {fullPath}" );
+				return null;
+			}
+
+			model.Name = path;
+			mModels[path] = model;
+			return model;
 		}
 
 		public IModelLoader? FindModelLoader( string[] extensions )
