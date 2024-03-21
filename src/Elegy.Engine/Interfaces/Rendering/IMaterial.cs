@@ -31,5 +31,7 @@ namespace Elegy.Engine.Interfaces.Rendering
 		void SetParameter( int id, Matrix4x4 value );
 		/// <summary></summary>
 		void SetBufferParameter<T>( int id, T bufferValue ) where T : unmanaged;
+		/// <summary></summary>
+		void SetTexture( int id, ITexture value );
 	}
 }

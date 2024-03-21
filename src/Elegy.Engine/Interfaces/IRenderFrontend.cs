@@ -15,34 +15,40 @@ namespace Elegy.Engine.Interfaces
 	public interface IRenderFrontend : IPlugin
 	{
 		/// <summary></summary>
-		IEntity CreateEntity( bool animated );
+		IEntity? CreateEntity( bool animated );
 		
 		/// <summary></summary>
 		bool FreeEntity( IEntity entity );
 
 		/// <summary></summary>
-		ILight CreateLight();
+		ILight? CreateLight();
 
 		/// <summary></summary>
 		bool FreeLight( ILight light );
 
 		/// <summary></summary>
-		IMaterial CreateMaterial( Material material );
+		IMaterial? CreateMaterial( Material material );
 		
 		/// <summary></summary>
 		bool FreeMaterial( IMaterial material );
 
 		/// <summary></summary>
-		IMesh CreateMesh( Model modelData );
+		ITexture? CreateTexture( int width, int height, int depth, Span<byte> data );
+
+		/// <summary></summary>
+		bool FreeTexture( ITexture texture );
+
+		/// <summary></summary>
+		IMesh? CreateMesh( Model modelData );
 
 		/// <summary></summary>
 		bool FreeMesh( IMesh mesh );
 
 		/// <summary></summary>
-		IView CreateView( IWindow window );
+		IView? CreateView( IWindow window );
 
 		/// <summary></summary>
-		IView CreateView( Texture renderTarget );
+		IView? CreateView( Texture renderTarget );
 
 		/// <summary></summary>
 		IView? GetView( IWindow window );
