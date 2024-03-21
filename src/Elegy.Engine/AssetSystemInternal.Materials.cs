@@ -3,6 +3,7 @@
 
 using Elegy.Common.Assets;
 using Elegy.Engine.API;
+using Elegy.Engine.Assets;
 
 namespace Elegy.Engine
 {
