@@ -1,12 +1,14 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.Engine.Assets;
+
 namespace Elegy.Engine.API
 {
-	/// <summary>
-	/// Asset system.
-	/// </summary>
-	public static partial class Assets
+    /// <summary>
+    /// Asset system.
+    /// </summary>
+    public static partial class Assets
 	{
 		/// <summary>
 		/// Loads a material from the material library.
