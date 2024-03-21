@@ -51,20 +51,4 @@ namespace Elegy.Common.Assets.MeshData
 		/// <summary> Vertex indices. </summary>
 		public IList<uint> Indices { get; set; } = Array.Empty<uint>();
 	}
-
-	/// <summary>
-	/// Represents a joint between 2 bones.
-	/// It is basically a transformation matrix with a name.
-	/// </summary>
-	public class BoneJoint
-	{
-		/// <summary></summary>
-		public string Name { get; set; } = string.Empty;
-
-		/// <summary></summary>
-		public string Parent { get; set; } = string.Empty;
-
-		/// <summary></summary>
-		public Matrix4x4 Transform { get; set; } = Matrix4x4.Identity;
-	}
 }
