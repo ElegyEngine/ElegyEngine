@@ -7,18 +7,15 @@ Methods can be console commands so long as they satisfy some basic requirements:
 * Returns void or bool
 * If it has parametres, they must be any of [int, float, double, bool, string], or string[]
   and these parametres may not have any modifiers: in, out, ref etc.
-* Must be static (private/internal/public is fine)
+* Can be static, can be non-static too (private/internal/public is fine)
 
-public static void Example( string a, int b, float c ) { ... } <- good
+public void Example( string a, int b, float c ) { ... } <- good
 public int Example( in string a, DateTime b, out float c ) { ... } <- bad
-
-Nonstatic methods may be supported sooner or later, as they'd help reduce nasty singletons in game code.
-They could be bound to plugins, e.g. an IGame implementation would get scanned for commands like these.
 */
 
 /*
 From an inner workings POV, this is what's going on in the console system and here:
-1) Scan all static methods in every class
+1) Scan all methods in every class
 2) If they have a ConsoleCommand attribute, try creating a ConsoleCommand for them
 3) Create helpers particularly for that ConsoleCommand's argument parsing
 4) Create autocomplete suggestions, validation etc. with the attached attributes,
