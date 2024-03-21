@@ -3,7 +3,7 @@
 
 using Elegy.Common.Assets;
 using Elegy.Engine.API;
-using Elegy.Engine.Assets;
+using Elegy.Engine.Resources;
 
 namespace Elegy.Engine
 {
@@ -25,7 +25,9 @@ namespace Elegy.Engine
 		}
 
 		private Dictionary<string, MaterialDefinitionPair> mMaterialDefs = new();
-		private Dictionary<string, Texture2D> mTextures = new();
+		private Dictionary<string, Texture> mTextures = new();
+
+		public Texture MissingTexture { get; private set; }
 
 		private bool InitMaterials()
 		{
@@ -82,7 +84,7 @@ namespace Elegy.Engine
 			return true;
 		}
 
-		public Material LoadMaterial( string materialName )
+		public Material? LoadMaterial( string materialName )
 		{
 			if ( mMaterialDefs.ContainsKey( materialName ) )
 			{
@@ -96,11 +98,7 @@ namespace Elegy.Engine
 			}
 
 			mLogger.Warning( $"Material '{materialName}' doesn't exist" );
-
-			return new()
-			{
-				ResourceName = materialName
-			};
+			return null;
 		}
 
 		private Material LoadMaterial( MaterialDefinition materialDef )
@@ -161,12 +159,12 @@ namespace Elegy.Engine
 				return false;
 			}
 
-			if ( !mMaterialDefs.ContainsKey( material.ResourceName ) )
+			if ( !mMaterialDefs.ContainsKey( material.Name ) )
 			{
 				return false;
 			}
 
-			mMaterialDefs[material.ResourceName].Material = null;
+			mMaterialDefs[material.Name].Material = null;
 			material = null;
 
 			return true;

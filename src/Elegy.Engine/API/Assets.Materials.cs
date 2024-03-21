@@ -1,14 +1,14 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Engine.Assets;
+using Elegy.Engine.Resources;
 
 namespace Elegy.Engine.API
 {
-    /// <summary>
-    /// Asset system.
-    /// </summary>
-    public static partial class Assets
+	/// <summary>
+	/// Asset system.
+	/// </summary>
+	public static partial class Assets
 	{
 		/// <summary>
 		/// Loads a material from the material library.
@@ -17,7 +17,7 @@ namespace Elegy.Engine.API
 		/// <returns>
 		/// A valid <see cref="Material"/> instance always, missing material if not found.
 		/// </returns>
-		public static Material LoadMaterial( string materialName )
+		public static Material? LoadMaterial( string materialName )
 			=> mAssetSystem.LoadMaterial( materialName );
 
 		/// <summary>

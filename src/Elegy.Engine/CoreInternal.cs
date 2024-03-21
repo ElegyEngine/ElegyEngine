@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Engine.Platform;
+using Elegy.Engine.Dummies;
 using Silk.NET.Input;
 using Silk.NET.Windowing;
 using System.Diagnostics;
