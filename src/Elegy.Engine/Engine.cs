@@ -4,7 +4,7 @@
 using Elegy.Common.Assets;
 using Elegy.Engine.API;
 using Elegy.Engine.Interfaces;
-using Elegy.Engine.Platform;
+using Elegy.Engine.Dummies;
 using Elegy.RenderBackend.Extensions;
 
 using Silk.NET.Windowing;
@@ -107,15 +107,15 @@ namespace Elegy.Engine
 				}
 			}
 
+			if ( !InitialiseWindowAndRenderer( withMainWindow ) )
+			{
+				return Shutdown( "Render system failure" );
+			}
+
 			mAssetSystem = new();
 			if ( !mAssetSystem.Init() )
 			{
 				return Shutdown( "Asset system failure" );
-			}
-
-			if ( !InitialiseWindowAndRenderer( withMainWindow ) )
-			{
-				return Shutdown( "Render system failure" );
 			}
 
 			mLogger.Log( "Successfully initialised all systems" );
@@ -196,7 +196,10 @@ namespace Elegy.Engine
 		{
 			if ( Core.IsHeadless )
 			{
-				// TODO: use dummy render frontend
+				mRenderFrontend = new RenderNull();
+				Render.SetRenderFrontend( mRenderFrontend );
+
+				return true;
 			}
 
 			string renderFrontendPath = FileSystem.CurrentConfig.RenderFrontend;
@@ -287,12 +290,12 @@ namespace Elegy.Engine
 				mLogger.Error( $"Shutting down, reason: {why}" );
 			}
 
-			mRenderFrontend?.Shutdown();
-			Render.SetRenderFrontend( null );
-
 			mAssetSystem?.Shutdown();
 			mAssetSystem = null;
 			Assets.SetAssetSystem( null );
+
+			mRenderFrontend?.Shutdown();
+			Render.SetRenderFrontend( null );
 
 			mPluginSystem?.Shutdown();
 			mPluginSystem = null;

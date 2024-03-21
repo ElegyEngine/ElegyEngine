@@ -6,7 +6,7 @@ using Silk.NET.Core.Contexts;
 using Silk.NET.Maths;
 using Silk.NET.Windowing;
 
-namespace Elegy.Engine.Platform
+namespace Elegy.Engine.Dummies
 {
 	/// <summary>
 	/// Dummy window class for headless instances.

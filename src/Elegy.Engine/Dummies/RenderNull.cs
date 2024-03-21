@@ -1,0 +1,44 @@
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
+// SPDX-License-Identifier: MIT
+
+using Elegy.Common.Assets;
+using Elegy.Engine.Interfaces;
+using Elegy.Engine.Interfaces.Rendering;
+using Elegy.Engine.Resources;
+using Silk.NET.Windowing;
+
+namespace Elegy.Engine.Dummies
+{
+	internal class RenderNull : IRenderFrontend
+	{
+		public string Name => "Dummy renderer";
+		public string Error => string.Empty;
+		public bool Initialised => true;
+
+		public void BeginFrame() { }
+
+		public IEntity? CreateEntity( bool animated ) => null;
+		public ILight? CreateLight() => null;
+		public IMaterial? CreateMaterial( Material material ) => null;
+		public IMesh? CreateMesh( Model modelData ) => null;
+		public ITexture? CreateTexture( int width, int height, int depth, Span<byte> data ) => null;
+		public Interfaces.Rendering.IView? CreateView( IWindow window ) => null;
+		public Interfaces.Rendering.IView? CreateView( Texture renderTarget ) => null;
+		public Interfaces.Rendering.IView? GetView( IWindow window ) => null;
+
+		public void EndFrame() { }
+
+		public bool FreeEntity( IEntity entity ) => true;
+		public bool FreeLight( ILight light ) => true;
+		public bool FreeMaterial( IMaterial material ) => true;
+		public bool FreeMesh( IMesh mesh ) => true;
+		public bool FreeTexture( ITexture texture ) => true;
+		public bool FreeView( Interfaces.Rendering.IView view ) => true;
+
+		public bool Init() => true;
+		public void Shutdown() { }
+
+		public void PresentView( in Interfaces.Rendering.IView view ) { }
+		public void RenderView( in Interfaces.Rendering.IView view ) { }
+	}
+}
