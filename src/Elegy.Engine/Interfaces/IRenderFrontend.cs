@@ -3,8 +3,8 @@
 
 using Elegy.Common.Assets;
 using Elegy.Engine.Interfaces.Rendering;
+using Elegy.Engine.Resources;
 
-using Veldrid;
 using IWindow = Silk.NET.Windowing.IWindow;
 
 namespace Elegy.Engine.Interfaces
@@ -14,84 +14,52 @@ namespace Elegy.Engine.Interfaces
 	/// </summary>
 	public interface IRenderFrontend : IPlugin
 	{
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary></summary>
 		IEntity CreateEntity( bool animated );
 		
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary></summary>
 		bool FreeEntity( IEntity entity );
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary></summary>
 		ILight CreateLight();
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary></summary>
 		bool FreeLight( ILight light );
 
-		/// <summary>
-		/// 
-		/// </summary>
-		IMaterial CreateMaterial( MaterialDefinition materialDefinition );
+		/// <summary></summary>
+		IMaterial CreateMaterial( Material material );
 		
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary></summary>
 		bool FreeMaterial( IMaterial material );
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary></summary>
 		IMesh CreateMesh( Model modelData );
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary></summary>
 		bool FreeMesh( IMesh mesh );
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary></summary>
 		IView CreateView( IWindow window );
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary></summary>
 		IView CreateView( Texture renderTarget );
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary></summary>
 		IView? GetView( IWindow window );
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary></summary>
 		bool FreeView( IView view );
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary></summary>
 		void BeginFrame();
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary></summary>
 		void EndFrame();
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary></summary>
 		void RenderView( in IView view );
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary></summary>
 		void PresentView( in IView view );
 	}
 }
