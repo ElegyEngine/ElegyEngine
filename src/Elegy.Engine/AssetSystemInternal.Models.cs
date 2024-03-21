@@ -22,9 +22,14 @@ namespace Elegy.Engine
 			{
 				for ( int i = 0; i < extensions.Length; i++ )
 				{
-					modelLoader.CanLoad( extensions[i] );
+					if ( modelLoader.CanLoad( extensions[i] ) )
+					{
+						return modelLoader;
+					}
 				}
 			}
+
+			return null;
 		}
 
 		public IReadOnlyCollection<Model> GetModelList()
