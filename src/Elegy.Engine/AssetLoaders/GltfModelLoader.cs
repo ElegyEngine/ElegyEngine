@@ -3,6 +3,7 @@
 
 using Elegy.Common.Assets;
 using Elegy.Common.Maths;
+using Elegy.Common.Utilities;
 using Elegy.Engine.Interfaces;
 
 using EngineMesh = Elegy.Common.Assets.MeshData.Mesh;
@@ -10,7 +11,6 @@ using EngineMesh = Elegy.Common.Assets.MeshData.Mesh;
 using SharpGLTF.Scenes;
 using SharpGLTF.Schema2;
 using System.Numerics;
-using Elegy.Common.Utilities;
 
 namespace Elegy.Engine.AssetLoaders
 {
@@ -72,7 +72,7 @@ namespace Elegy.Engine.AssetLoaders
 						mLogger.Log( $"    * Vertex input {vertexAccessor.Key}" );
 
 						switch ( vertexAccessor.Key )
-						{	// TODO: fill in the data
+						{
 							case "POSITION": engineMesh.Positions = LoadPositions( vertexAccessor.Value ); break;
 							case "NORMAL": engineMesh.Normals = LoadNormals( vertexAccessor.Value ); break;
 							case "TANGENT": engineMesh.Tangents = LoadTangents( vertexAccessor.Value ); break;
