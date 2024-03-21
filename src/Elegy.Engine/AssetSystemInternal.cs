@@ -3,6 +3,7 @@
 
 using Elegy.Engine.API;
 using Elegy.Engine.Interfaces;
+using System.Linq;
 
 namespace Elegy.Engine
 {
@@ -26,28 +27,48 @@ namespace Elegy.Engine
 			return InitMaterials();
 		}
 
+		private void AddLoader<TLoader>( List<TLoader> loaders, TLoader loader )
+			where TLoader: IAssetLoader
+		{
+			if ( loaders.Contains( loader ) )
+			{
+				mLogger.Error( $"Tried loading an already registered plugin {loader.Name}" );
+				return;
+			}
+
+			loaders.Add( loader );
+		}
+
+		private void RemoveLoader<TLoader>( List<TLoader> loaders, TLoader loader )
+			where TLoader: IAssetLoader
+		{
+			if ( !loaders.Remove( loader ) )
+			{
+				mLogger.Error( $"Tried unloading non-registered plugin {loader.Name}" );
+			}
+		}
+
 		public void OnPluginLoaded( IPlugin plugin )
 		{
-			if ( plugin is IModelLoader modelLoaderPlugin )
+			if ( plugin is IModelLoader modelLoader )
 			{
-				if ( mModelLoaders.Contains( modelLoaderPlugin ) )
-				{
-					mLogger.Error( $"Tried loading an already registered plugin {plugin.Name}" );
-					return;
-				}
-
-				mModelLoaders.Add( modelLoaderPlugin );
+				AddLoader( mModelLoaders, modelLoader );
+			}
+			else if ( plugin is ITextureLoader textureLoader )
+			{
+				AddLoader( mTextureLoaders, textureLoader );
 			}
 		}
 
 		public void OnPluginUnloaded( IPlugin plugin )
 		{
-			if ( plugin is IModelLoader modelLoaderPlugin )
+			if ( plugin is IModelLoader modelLoader )
 			{
-				if ( !mModelLoaders.Remove( modelLoaderPlugin ) )
-				{
-					mLogger.Error( $"Tried unloading non-registered plugin {plugin.Name}" );
-				}
+				RemoveLoader( mModelLoaders, modelLoader );
+			}
+			else if ( plugin is ITextureLoader textureLoader )
+			{
+				RemoveLoader( mTextureLoaders, textureLoader );
 			}
 		}
 
