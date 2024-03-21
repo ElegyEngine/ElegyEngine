@@ -12,25 +12,26 @@ using SharpGLTF.Schema2;
 using System.Numerics;
 using Elegy.Common.Utilities;
 
-namespace Elegy.Engine.ModelLoaders
+namespace Elegy.Engine.AssetLoaders
 {
 	/// <summary>
 	/// Built-in GLTF loader.
 	/// </summary>
-	public class GltfModelLoader : IModelLoader
+	public class GltfModelLoader : BaseAssetLoader, IModelLoader
 	{
 		private TaggedLogger mLogger = new( "GltfLoader" );
 
 		/// <inheritdoc/>
-		public bool CanLoad( string path )
-		{
-			if ( !path.EndsWith( ".gltf" ) && !path.EndsWith( ".glb" ) )
-			{
-				return false;
-			}
+		public override string Name => "GltfModelLoader";
 
-			return true;
-		}
+		/// <inheritdoc/>
+		public override bool CanLoad( string extension )
+			=> extension switch
+			{
+				".gltf" => true,
+				".glb" => true,
+				_ => false
+			};
 
 		/// <inheritdoc/>
 		public Model? LoadModel( string path )

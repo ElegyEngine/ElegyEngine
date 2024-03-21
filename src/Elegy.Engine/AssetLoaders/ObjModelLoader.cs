@@ -4,23 +4,19 @@
 using Elegy.Common.Assets;
 using Elegy.Engine.Interfaces;
 
-namespace Elegy.Engine.ModelLoaders
+namespace Elegy.Engine.AssetLoaders
 {
 	/// <summary>
 	/// Built-in OBJ loader.
 	/// </summary>
-	public class ObjModelLoader : IModelLoader
+	public class ObjModelLoader : BaseAssetLoader, IModelLoader
 	{
 		/// <inheritdoc/>
-		public bool CanLoad( string path )
-		{
-			if ( !path.EndsWith( ".obj" ) )
-			{
-				return false;
-			}
+		public override string Name => "ObjModelLoader";
 
-			return true;
-		}
+		/// <inheritdoc/>
+		public override bool CanLoad( string path )
+			=> path == ".obj";
 
 		/// <inheritdoc/>
 		public Model? LoadModel( string path )
