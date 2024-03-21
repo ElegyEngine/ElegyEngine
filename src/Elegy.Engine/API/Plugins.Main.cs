@@ -39,6 +39,12 @@ namespace Elegy.Engine.API
 		public static bool RegisterPlugin( IPlugin plugin )
 			=> mPluginSystem.RegisterPlugin( plugin );
 
+		/// <summary>
+		/// Registers a plugin collector.
+		/// </summary>
+		public static void RegisterPluginCollector( IPluginCollector collector )
+			=> mPluginSystem.RegisterPluginCollector( collector );
+
 		/// <returns>All plugins except IApplication-based ones.</returns>
 		public static IReadOnlyCollection<IPlugin> GenericPlugins => mPluginSystem.GenericPlugins;
 

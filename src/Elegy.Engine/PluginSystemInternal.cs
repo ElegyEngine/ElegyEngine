@@ -194,7 +194,17 @@ namespace Elegy.Engine
 				mGenericPlugins.Add( metadataPath ?? plugin.Name, plugin );
 			}
 
+			foreach ( var collector in mPluginCollectors )
+			{
+				collector.OnPluginLoaded( plugin );
+			}
+
 			return true;
+		}
+
+		public void RegisterPluginCollector( IPluginCollector collector )
+		{
+			mPluginCollectors.Add( collector );
 		}
 
 		public IPlugin? LoadPlugin( string path )
@@ -229,6 +239,11 @@ namespace Elegy.Engine
 			{
 				if ( pluginPair.Value == plugin )
 				{
+					foreach ( var collector in mPluginCollectors )
+					{
+						collector.OnPluginUnloaded( plugin );
+					}
+
 					mGenericPlugins.Remove( mGenericPlugins.Keys.ElementAt( i ) );
 					return true;
 				}
@@ -246,6 +261,11 @@ namespace Elegy.Engine
 			{
 				if ( plugin.Value == app )
 				{
+					foreach ( var collector in mPluginCollectors )
+					{
+						collector.OnPluginUnloaded( app );
+					}
+
 					mApplicationPlugins.Remove( mApplicationPlugins.Keys.ElementAt( i ) );
 					return true;
 				}
@@ -338,6 +358,7 @@ namespace Elegy.Engine
 		private Dictionary<string, IApplication> mApplicationPlugins = new();
 		private Dictionary<string, IPlugin> mGenericPlugins = new();
 		private List<PluginLibrary> mPluginLibraries = new();
+		private List<IPluginCollector> mPluginCollectors = new();
 
 		private PluginLoadContext mLoadContext = new();
 
