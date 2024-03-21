@@ -14,6 +14,7 @@ namespace Elegy.Engine
 		private TaggedLogger mLogger = new( "AssetSystem" );
 
 		private List<IModelLoader> mModelLoaders = new();
+		private List<ITextureLoader> mTextureLoaders = new();
 
 		public bool Init()
 		{

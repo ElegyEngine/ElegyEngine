@@ -3,7 +3,9 @@
 
 using Elegy.Common.Assets;
 using Elegy.Engine.API;
+using Elegy.Engine.Interfaces;
 using Elegy.Engine.Resources;
+using System.IO;
 
 namespace Elegy.Engine
 {
@@ -97,7 +99,7 @@ namespace Elegy.Engine
 				var pair = mMaterialDefs[materialName];
 				if ( pair.Material is null )
 				{
-					pair.Material = LoadMaterial( pair.Def );
+					pair.Material = new( pair.Def );
 				}
 
 				return pair.Material;
@@ -107,20 +109,47 @@ namespace Elegy.Engine
 			return null;
 		}
 
-		private Material LoadMaterial( MaterialDefinition materialDef )
-			=> new( materialDef );
-
-		// Texture extensions have some type of priority here
-		// First it checks if there's a KTX (which is the best all-rounder IMO), then TGA, DDS etc.
-		// Later we'll replace these with texture loading plugins (for e.g. sprite support)
-		private static readonly string[] TextureExtensions =
+		public Texture LoadTexture( string texturePath )
 		{
-			".ktx", ".tga", ".dds", ".png", ".jpg", ".jpeg", ".webp", ".bmp"
-		};
+			string? fullPath = FileSystem.PathTo( texturePath, PathFlags.File );
+			if ( fullPath is null )
+			{
+				mLogger.Error( $"LoadTexture: Can't find texture '{texturePath}'" );
+				return MissingTexture;
+			}
 
-		private Texture LoadTexture( string? texturePath )
-		{
+			string extension = Path.GetExtension( texturePath ) ?? "";
+			ITextureLoader? textureLoader = FindTextureLoader( [extension] );
+			if ( textureLoader is null )
+			{
+				mLogger.Error( $"LoadTexture: Unsupported format '{extension}'" );
+				return MissingTexture;
+			}
+
+			if ( textureLoader.LoadTexture( fullPath, out int width, out int height, out int depth, out Span<byte> bytes ) )
+			{
+				mTextures[texturePath] = Texture.FromData( width, height, bytes );
+				return mTextures[texturePath];
+			}
+
+			mLogger.Error( $"LoadTexture: Couldn't load texture '{texturePath}'" );
 			return MissingTexture;
+		}
+
+		public ITextureLoader? FindTextureLoader( string[] extensions )
+		{
+			foreach ( var textureLoader in mTextureLoaders )
+			{
+				foreach ( var extension in extensions )
+				{
+					if ( textureLoader.CanLoad( extension ) )
+					{
+						return textureLoader;
+					}
+				}
+			}
+
+			return null;
 		}
 
 		public bool UnloadMaterial( ref Material? material )

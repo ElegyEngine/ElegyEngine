@@ -32,6 +32,18 @@ namespace Elegy.Engine.API
 			=> mAssetSystem.UnloadMaterial( ref material );
 
 		/// <summary>
+		/// Loads and returns a <see cref="Texture"/>.
+		/// </summary>
+		public static Texture? LoadTexture( string texturePath )
+			=> mAssetSystem.LoadTexture( texturePath );
+
+		/// <summary>
+		/// Finds an appropriate <see cref="ITextureLoader"/> according to one of the <paramref name="extensions"/>.
+		/// </summary>
+		public static ITextureLoader? FindTextureLoader( params string[] extensions )
+			=> mAssetSystem.FindTextureLoader( extensions );
+
+		/// <summary>
 		/// All the materials in the system.
 		/// </summary>
 		public static IEnumerable<Material> AllMaterials => mAssetSystem.GetMaterialList();
