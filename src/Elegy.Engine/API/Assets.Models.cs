@@ -9,15 +9,12 @@ namespace Elegy.Engine.API
 	public static partial class Assets
 	{
 		public static Model? LoadModel( string path )
-		{
-			throw new NotImplementedException();
-		}
+			=> mAssetSystem.LoadModel( path );
 
 		public static IModelLoader? FindModelLoader( params string[] extensions )
-		{
-			throw new NotImplementedException();
-		}
+			=> mAssetSystem.FindModelLoader( extensions );
 
-		public static IReadOnlyList<Model> AllModels { get; }
+		public static IReadOnlyCollection<Model> AllModels
+			=> mAssetSystem.GetModelList();
 	}
 }

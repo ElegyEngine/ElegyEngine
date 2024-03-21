@@ -7,7 +7,7 @@ using Elegy.Engine.API;
 namespace Elegy.Engine
 {
 	/// <summary>
-	/// IMaterial system implementation.
+	/// Material system implementation.
 	/// </summary>
 	internal partial class AssetSystemInternal
 	{
