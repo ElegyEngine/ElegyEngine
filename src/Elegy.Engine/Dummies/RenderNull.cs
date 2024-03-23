@@ -21,7 +21,7 @@ namespace Elegy.Engine.Dummies
 		public ILight? CreateLight() => null;
 		public IMaterial? CreateMaterial( Material material ) => null;
 		public IMesh? CreateMesh( Model modelData ) => null;
-		public ITexture? CreateTexture( int width, int height, int depth, Span<byte> data ) => null;
+		public ITexture? CreateTexture( TextureMetadata metadata, Span<byte> data ) => null;
 		public Interfaces.Rendering.IView? CreateView( IWindow window ) => null;
 		public Interfaces.Rendering.IView? CreateView( Texture renderTarget ) => null;
 		public Interfaces.Rendering.IView? GetView( IWindow window ) => null;

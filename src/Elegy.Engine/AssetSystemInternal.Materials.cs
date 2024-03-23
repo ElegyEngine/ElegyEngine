@@ -88,7 +88,15 @@ namespace Elegy.Engine
 
 		private bool CreateMissingTexture()
 		{
-			MissingTexture = Texture.FromData( 16, 16, Texture.GenerateMissingTexturePattern() );
+			MissingTexture = Texture.FromData( new TextureMetadata()
+			{
+				Width = 16,
+				Height = 16,
+				Depth = 0,
+				Components = 4,
+				BytesPerPixel = 1
+			},
+			Texture.GenerateMissingTexturePattern() );
 			return true;
 		}
 
@@ -126,14 +134,15 @@ namespace Elegy.Engine
 				return MissingTexture;
 			}
 
-			if ( textureLoader.LoadTexture( fullPath, out int width, out int height, out int depth, out Span<byte> bytes ) )
+			(TextureMetadata? textureMetadata, byte[]? data) = textureLoader.LoadTexture( fullPath, false );
+			if ( data is null )
 			{
-				mTextures[texturePath] = Texture.FromData( width, height, bytes );
-				return mTextures[texturePath];
+				mLogger.Error( $"LoadTexture: Couldn't load data for texture '{texturePath}'" );
+				return MissingTexture;
 			}
 
-			mLogger.Error( $"LoadTexture: Couldn't load texture '{texturePath}'" );
-			return MissingTexture;
+			mTextures[texturePath] = Texture.FromData( textureMetadata, data );
+			return mTextures[texturePath];
 		}
 
 		public ITextureLoader? FindTextureLoader( string[] extensions )

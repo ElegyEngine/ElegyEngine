@@ -1,6 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.Common.Assets;
 using Elegy.Engine.API;
 using Elegy.Engine.Interfaces.Rendering;
 
@@ -10,12 +11,11 @@ namespace Elegy.Engine.Resources
 	public class Texture
 	{
 		/// <summary></summary>
-		public static Texture FromData( int width, int height, Span<byte> bytes )
+		public static Texture FromData( TextureMetadata metadata, Span<byte> bytes )
 			=> new()
 			{
-				Width = width,
-				Height = height,
-				RenderTexture = Render.Instance.CreateTexture( width, height, 1, bytes )
+				Metadata = metadata,
+				RenderTexture = Render.Instance.CreateTexture( metadata, bytes )
 			};
 
 		/// <summary></summary>
@@ -52,9 +52,7 @@ namespace Elegy.Engine.Resources
 		}
 
 		/// <summary></summary>
-		public int Width { get; init; }
-		/// <summary></summary>
-		public int Height { get; init; }
+		public TextureMetadata Metadata { get; init; }
 
 		/// <summary></summary>
 		public ITexture? RenderTexture { get; init; } = null;

@@ -1,6 +1,8 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.Common.Assets;
+
 namespace Elegy.Engine.Interfaces
 {
 	/// <summary>
@@ -12,11 +14,7 @@ namespace Elegy.Engine.Interfaces
 		/// Loads a texture from the given <paramref name="path"/>.
 		/// </summary>
 		/// <param name="path">Full path to an image.</param>
-		/// <param name="width">Output width in pixels.</param>
-		/// <param name="height">Output height in pixels.</param>
-		/// <param name="depth">If it's a 3D texture, how many layers.</param>
-		/// <param name="bytes">The output pixel bytes.</param>
-		/// <returns><see langword="true"/> upon success, <see langword="false"/> otherwise.</returns>
-		bool LoadTexture( string path, out int width, out int height, out int depth, out Span<byte> bytes );
+		/// <param name="withoutData">If true, only load the metadata.</param>
+		(TextureMetadata?, byte[]?) LoadTexture( string path, bool withoutData );
 	}
 }

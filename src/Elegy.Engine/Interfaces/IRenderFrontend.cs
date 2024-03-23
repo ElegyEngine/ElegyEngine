@@ -33,7 +33,7 @@ namespace Elegy.Engine.Interfaces
 		bool FreeMaterial( IMaterial material );
 
 		/// <summary></summary>
-		ITexture? CreateTexture( int width, int height, int depth, Span<byte> data );
+		ITexture? CreateTexture( TextureMetadata metadata, Span<byte> data );
 
 		/// <summary></summary>
 		bool FreeTexture( ITexture texture );
