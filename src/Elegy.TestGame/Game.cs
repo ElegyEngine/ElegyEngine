@@ -7,6 +7,7 @@ using Elegy.Engine.API;
 using Elegy.Engine.Interfaces;
 
 using Silk.NET.Input;
+using TestGame.Client;
 
 namespace TestGame
 {
@@ -44,7 +45,7 @@ namespace TestGame
 
 			mMenu.OnNewGame = ( string mapName ) =>
 			{
-				StartGame( mapName );
+				StartGame( /*mapName*/ );
 				mMenu.Visible = false;
 			};
 
@@ -67,8 +68,7 @@ namespace TestGame
 		public void Shutdown()
 		{
 			mLogger.Log( "Shutdown" );
-			
-			mEntities.Clear();
+
 			mClient = null;
 		}
 
@@ -105,7 +105,6 @@ namespace TestGame
 
 			if ( mGameIsLoaded )
 			{
-				mEntities.ForEach( entity => entity.Think() );
 				mClient.Update();
 				mClient.UpdateController();
 			}
@@ -114,81 +113,23 @@ namespace TestGame
 		}
 
 		[ConsoleCommand( "map" )]
-		public void StartGame( string mapFile )
+		public void StartGame()
 		{
 			if ( mGameIsLoaded )
 			{
 				LeaveGame();
 			}
 
-			if ( !Path.HasExtension( mapFile ) )
-			{
-				mapFile += ".elf";
-			}
-
-			if ( Path.GetExtension( mapFile ) != ".elf" )
-			{
-				Console.Error( "Game.StartGame", $"Cannot load 'maps/{mapFile}', it's not an Elegy Level File (.elf)" );
-				return;
-			}
-
-			mLogger.Log( $"Starting 'maps/{mapFile}'..." );
-			string? mapPath = FileSystem.PathTo( $"maps/{mapFile}", PathFlags.File );
-			if ( mapPath is null )
-			{
-				Console.Error( "Game.StartGame", $"Cannot load 'maps/{mapFile}', it doesn't exist" );
-				return;
-			}
-
-			mMap = ElegyMapDocument.LoadFromFile( mapPath );
-			if ( mMap is null )
-			{
-				Console.Error( "Game.StartGame", $"Failed to load 'maps/{mapFile}'" );
-				return;
-			}
-
-			mEntities = new();
-			
-			for ( int entityId = 0; entityId < mMap.Entities.Count; entityId++ )
-			{
-				var mapEntity = mMap.Entities[entityId];
-				// TODO: MapEntity attribute that glues the classname to the class
-				string className = mapEntity.Attributes["classname"];
-				Entities.Entity? entity = className switch
-				{
-					"info_player_start"	=> CreateEntity<Entities.InfoPlayerStart>(),
-					//"light"				=> CreateEntity<Entities.Light>(),
-					//"light_environment"	=> CreateEntity<Entities.LightEnvironment>(),
-					//"func_detail"		=> CreateEntity<Entities.FuncDetail>(),
-					"func_breakable"	=> CreateEntity<Entities.FuncBreakable>(),
-					//"func_rotating"		=> CreateEntity<Entities.FuncRotating>(),
-					//"func_water"		=> CreateEntity<Entities.FuncWater>(),
-					//"prop_test"			=> CreateEntity<Entities.PropTest>(),
-					_					=> null
-				};
-
-				if ( entity is null )
-				{
-					Console.Log( "Game.StartGame", $"{Console.Yellow}Unknown map entity class {Console.White}'{className}'", ConsoleMessageType.Developer );
-					continue;
-				}
-
-				// This is a brush entity
-				if ( mapEntity.RenderMeshId != -1 )
-				{
-					entity.AddBrushModel( mMap, entityId );
-				}
-
-				// Actually KeyValue should be called BEFORE Spawn, but oh well
-				entity.KeyValue( mapEntity.Attributes );
-			}
-
-			mEntities.ForEach( entity => entity.PostSpawn() );
-
 			mClient = new()
 			{
-				Controller = FindEntity<Entities.InfoPlayerStart>()?.SpawnPlayer( this ) ?? CreateEntity<Entities.Player>()
+				Controller = new BasicController()
 			};
+
+			mShowcaseModel = Assets.LoadModel( "models/test.gltf" );
+			if ( mShowcaseModel is null )
+			{
+				mLogger.Error( "Cannot load 'models/test.gltf'" );
+			}
 
 			mLogger.Success( "Map successfully loaded, enjoy" );
 			mGameIsLoaded = true;
@@ -207,10 +148,7 @@ namespace TestGame
 
 			mLogger.Log( "Leaving the game..." );
 
-			mMap = null;
 			mClient = null;
-			mEntities.ForEach( entity => entity.Destroy() );
-			mEntities.Clear();
 
 			mGameIsLoaded = false;
 			mMenu.Visible = true;
@@ -251,11 +189,9 @@ namespace TestGame
 		}
 
 		#endregion
-
-		private Client.Client? mClient;
-		private Client.MainMenu mMenu = new();
-		private List<Entities.Entity> mEntities = new();
-		private ElegyMapDocument? mMap;
+		private GameClient? mClient;
+		private MainMenu mMenu = new();
+		private Model? mShowcaseModel = null;
 		
 		private bool mGameIsLoaded = false;
 		private bool mEscapeWasHeld = false;
