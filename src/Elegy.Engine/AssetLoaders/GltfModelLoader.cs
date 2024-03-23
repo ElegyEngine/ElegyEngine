@@ -90,6 +90,7 @@ namespace Elegy.Engine.AssetLoaders
 					}
 
 					engineMesh.Indices = LoadIndices( primitive.IndexAccessor );
+					engineMesh.MaterialName = primitive.Material.Name;
 
 					engineMeshes.Add( engineMesh );
 				}
