@@ -16,11 +16,14 @@ For level designers who use TrenchBroom, a [game config](config/trenchbroom) is 
 # Building
 
 ### Prerequisites
-* .NET 8
-* Vulkan SDK 1.3.224 or newer. You need:
+* .NET 8 ([link](https://dotnet.microsoft.com/en-us/download))
+* Vulkan SDK 1.3.224 or newer. Related to it you'll need:
 	* `glslang`
-	* a GPU that supports `GL_EXT_fragment_shader_barycentric` (find your GPU [here](https://vulkan.gpuinfo.org/listdevicescoverage.php?extension=VK_NV_fragment_shader_barycentric&platform=all))
-* PowerShell 7
+		* Comes with Vulkan SDK
+		* Just make sure it's in your `PATH` variable
+		* i.e. you can just call `glslang` from the commandline
+	* a GPU that supports `VK_KHR_fragment_shader_barycentric` (find out if yours [supports it here](https://vulkan.gpuinfo.org/listdevicescoverage.php?extension=VK_KHR_fragment_shader_barycentric&platform=all))
+* PowerShell 7 ([link](https://github.com/PowerShell/PowerShell))
 
 ### Building the code
 If you're brave enough to touch this code, you can get started with simply running `build/setup_firsttime.ps1`.
