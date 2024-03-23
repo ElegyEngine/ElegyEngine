@@ -23,6 +23,7 @@ namespace Elegy.Engine.Resources
 		{
 			const int Stride = 16 * 4;
 
+			// Based on: https://github.com/Admer456/learnin-nvrhi/blob/master/src/Texture.cpp#L119
 			byte[] textureBytes = new byte[16 * 16 * 4];
 			for ( int y = 0; y < 16; y++ )
 			{
