@@ -14,58 +14,58 @@ namespace Elegy.Engine.Interfaces
 	/// </summary>
 	public interface IRenderFrontend : IPlugin
 	{
-		/// <summary></summary>
+		/// <summary>Creates a render entity.</summary>
 		IEntity? CreateEntity( bool animated );
 		
-		/// <summary></summary>
+		/// <summary>Frees a render entity.</summary>
 		bool FreeEntity( IEntity entity );
 
-		/// <summary></summary>
+		/// <summary>Creates a render light.</summary>
 		ILight? CreateLight();
 
-		/// <summary></summary>
+		/// <summary>Frees a render light.</summary>
 		bool FreeLight( ILight light );
 
-		/// <summary></summary>
+		/// <summary>Creates a render material.</summary>
 		IMaterial? CreateMaterial( Material material );
 		
-		/// <summary></summary>
+		/// <summary>Frees a render material.</summary>
 		bool FreeMaterial( IMaterial material );
 
-		/// <summary></summary>
+		/// <summary>Creates a render texture.</summary>
 		ITexture? CreateTexture( TextureMetadata metadata, Span<byte> data );
 
-		/// <summary></summary>
+		/// <summary>Frees a render texture.</summary>
 		bool FreeTexture( ITexture texture );
 
-		/// <summary></summary>
+		/// <summary>Creates a render mesh.</summary>
 		IMesh? CreateMesh( Model modelData );
 
-		/// <summary></summary>
+		/// <summary>Frees a render mesh.</summary>
 		bool FreeMesh( IMesh mesh );
 
-		/// <summary></summary>
+		/// <summary>Creates a render view from a window.</summary>
 		IView? CreateView( IWindow window );
 
-		/// <summary></summary>
+		/// <summary>Creates a render view from a render target texture.</summary>
 		IView? CreateView( Texture renderTarget );
 
-		/// <summary></summary>
+		/// <summary>Gets the window's view, if any.</summary>
 		IView? GetView( IWindow window );
 
-		/// <summary></summary>
+		/// <summary>Frees a view.</summary>
 		bool FreeView( IView view );
 
-		/// <summary></summary>
+		/// <summary>Starts the frame timers, clears stuff etc.</summary>
 		void BeginFrame();
 
-		/// <summary></summary>
+		/// <summary>Finishes the frame, timers etc.</summary>
 		void EndFrame();
 
-		/// <summary></summary>
+		/// <summary>Executes all draw commands for a view.</summary>
 		void RenderView( in IView view );
 
-		/// <summary></summary>
+		/// <summary>Presents the view to its window.</summary>
 		void PresentView( in IView view );
 	}
 }
