@@ -162,33 +162,6 @@ namespace TestGame
 			mUserWantsToExit = true;
 		}
 
-		#region Move elsewhere
-
-		// TODO: manage entities elsewhere
-		// PROPER ENTITY SYSTEM REQUIRED
-		public T CreateEntity<T>() where T : Entities.Entity, new()
-		{
-			T entity = new();
-			entity.Spawn();
-			mEntities.Add( entity );
-
-			return entity;
-		}
-
-		public T? FindEntity<T>() where T : Entities.Entity
-		{
-			foreach ( var entity in mEntities )
-			{
-				if ( entity is T )
-				{
-					return entity as T;
-				}
-			}
-
-			return null;
-		}
-
-		#endregion
 		private GameClient? mClient;
 		private MainMenu mMenu = new();
 		private Model? mShowcaseModel = null;
