@@ -110,8 +110,8 @@ namespace Elegy.Engine.AssetLoaders
 		private IList<Vector3> LoadNormals( Accessor value )
 			=> value.AsVector3Array();
 
-		private IList<Vector3> LoadTangents( Accessor value )
-			=> value.AsVector3Array();
+		private IList<Vector4> LoadTangents( Accessor value )
+			=> value.AsVector4Array();
 
 		private IList<Vector2> LoadUvs( Accessor value )
 			=> value.AsVector2Array();

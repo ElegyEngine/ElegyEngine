@@ -25,7 +25,7 @@ namespace Elegy.Common.Assets.MeshData
 		/// <summary> Vertex normals. </summary>
 		public IList<Vector3> Normals { get; set; } = Array.Empty<Vector3>();
 		/// <summary> Vertex tangents. </summary>
-		public IList<Vector3> Tangents { get; set; } = Array.Empty<Vector3>();
+		public IList<Vector4> Tangents { get; set; } = Array.Empty<Vector4>();
 		/// <summary> Vertex texture coordinates, channel 0. </summary>
 		public IList<Vector2> Uv0 { get; set; } = Array.Empty<Vector2>();
 		/// <summary> Vertex texture coordinates, channel 1. </summary>
