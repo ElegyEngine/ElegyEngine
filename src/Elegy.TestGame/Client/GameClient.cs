@@ -8,9 +8,9 @@ using Silk.NET.Input;
 
 namespace TestGame.Client
 {
-	public class Client
+	public class GameClient
 	{
-		public Client()
+		public GameClient()
 		{
 			GrabMouse();
 		}
