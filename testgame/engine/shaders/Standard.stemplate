@@ -37,7 +37,7 @@
         },
         {
           "name": "vNormal",
-          "type": 2
+          "type": 10
         },
         {
           "name": "vUv",
@@ -91,7 +91,7 @@
         },
         {
           "name": "vNormal",
-          "type": 2
+          "type": 10
         },
         {
           "name": "vUv",
