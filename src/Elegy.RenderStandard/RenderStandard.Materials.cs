@@ -77,6 +77,56 @@ internal struct Vector4Byte
 	public byte W;
 }
 
+// This is a bit of a stub
+public class RenderTexture : ITexture
+{
+	private GraphicsDevice mDevice;
+
+	public RenderTexture( GraphicsDevice device, in TextureMetadata data )
+	{
+		mDevice = device;
+		DeviceTexture = device.ResourceFactory.CreateTexture( new()
+		{
+			Width = Math.Max( 1, data.Width ),
+			Height = Math.Max( 1, data.Height ),
+			Depth = Math.Max( 1, data.Depth ),
+
+			ArrayLayers = 1,
+			MipLevels = 1,
+
+			// TODO: TextureMetadata.Compression and others
+			Format = PixelFormat.B8_G8_R8_A8_UNorm,
+			SampleCount = TextureSampleCount.Count16,
+			Type = data.Is1D switch
+			{
+				true => TextureType.Texture1D,
+				false => data.Is2D switch
+				{
+					true => TextureType.Texture2D,
+					false => TextureType.Texture3D
+				}
+			},
+			Usage = TextureUsage.Sampled
+		} );
+	}
+
+	public int Width => (int)DeviceTexture.Width;
+	public int Height => (int)DeviceTexture.Height;
+	public int Depth => (int)DeviceTexture.Depth;
+
+	public Texture DeviceTexture { get; set; }
+
+	public Span<byte> ReadPixels()
+	{
+		return Array.Empty<byte>();
+	}
+
+	public void UpdatePixels( Span<byte> newPixels )
+	{
+		mDevice.UpdateTexture( DeviceTexture, newPixels, 0, 0, 0, DeviceTexture.Width, DeviceTexture.Height, DeviceTexture.Depth, 0, 0 );
+	}
+}
+
 public class RenderMaterialParameter
 {
 	public RenderMaterialParameter( DeviceBuffer buffer )
@@ -239,6 +289,11 @@ public class RenderMaterial : IMaterial
 		}
 	}
 
+	public void SetTexture( int id, ITexture value )
+	{
+		throw new NotImplementedException();
+	}
+
 	private bool ValidateIntention( int id, params ShaderDataType[] types )
 	{
 		if ( id >= Parameters.Count )
@@ -259,14 +314,24 @@ public class RenderMaterial : IMaterial
 
 public partial class RenderStandard : IRenderFrontend
 {
-	public IMaterial CreateMaterial( MaterialDefinition materialDefinition )
+	public IMaterial? CreateMaterial( Engine.Resources.Material material )
 	{
-		throw new NotImplementedException();
+		return null;
 	}
 
 
 	public bool FreeMaterial( IMaterial material )
 	{
-		throw new NotImplementedException();
+		return true;
+	}
+
+	public ITexture? CreateTexture( TextureMetadata metadata, Span<byte> data )
+	{
+		return null;
+	}
+
+	public bool FreeTexture( ITexture texture )
+	{
+		return true;
 	}
 }
