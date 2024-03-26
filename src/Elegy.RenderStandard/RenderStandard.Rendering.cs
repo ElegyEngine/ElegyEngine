@@ -41,7 +41,7 @@ public partial class RenderStandard : IRenderFrontend
 			new ResourceLayoutElementDescription( "ViewSampler", ResourceKind.Sampler, ShaderStages.Fragment ) );
 
 		mWindowPipeline = Factory.CreateGraphicsPipeline<WindowVertex>(
-			shaderPath: GetShaderPath( "shaders/core/window" ),
+			shaderPath: GetShaderPath( "shaders/bin/Window.DEFAULT" ),
 			preset: RasterPreset.NoDepthTwoSided,
 			outputDescription: new OutputDescription()
 			{
@@ -54,7 +54,7 @@ public partial class RenderStandard : IRenderFrontend
 			}, resourceLayouts: mWindowLayout );
 
 		mTrianglePipeline = Factory.CreateGraphicsPipeline<WindowVertex>(
-			shaderPath: GetShaderPath( "shaders/core/debug" ),
+			shaderPath: GetShaderPath( "shaders/bin/Debug.DEFAULT" ),
 			preset: RasterPreset.NoDepthTwoSided,
 			outputDescription: new OutputDescription()
 			{
