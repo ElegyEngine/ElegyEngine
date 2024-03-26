@@ -11,7 +11,10 @@ using Collections.Pooled;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Veldrid;
+
+using ITexture = Elegy.Engine.Interfaces.Rendering.ITexture;
 using IView = Elegy.Engine.Interfaces.Rendering.IView;
+using System.Diagnostics;
 
 namespace Elegy.RenderStandard;
 
@@ -32,29 +35,30 @@ public class RenderView : IView
 			.CreateBufferForStruct<CameraData>( BufferUsage.UniformBuffer );
 	}
 
-	public RenderView( GraphicsDevice device, Texture renderTarget, ResourceLayout windowLayout, Sampler windowSampler )
+	public RenderView( GraphicsDevice device, ITexture renderTarget, ResourceLayout windowLayout, Sampler windowSampler )
 		: this( device )
 	{
-		TargetTexture = renderTarget;
+		Debug.Assert( renderTarget is RenderTexture );
+		TargetTexture = (renderTarget as RenderTexture).DeviceTexture;
 
 		ViewTexture = device.ResourceFactory.CreateTexture( TextureDescription.Texture2D(
-			width: renderTarget.Width,
-			height: renderTarget.Height,
+			width: (uint)renderTarget.Width,
+			height: (uint)renderTarget.Height,
 			mipLevels: 1,
 			arrayLayers: 1,
 			format: PixelFormat.B8_G8_R8_A8_UNorm,
 			usage: TextureUsage.RenderTarget | TextureUsage.Sampled ) );
 
 		DepthTexture = device.ResourceFactory.CreateTexture( TextureDescription.Texture2D(
-			width: renderTarget.Width,
-			height: renderTarget.Height,
+			width: (uint)renderTarget.Width,
+			height: (uint)renderTarget.Height,
 			mipLevels: 1,
 			arrayLayers: 1,
 			format: PixelFormat.D32_Float_S8_UInt,
 			usage: TextureUsage.DepthStencil ) );
 
-		Framebuffer = device.ResourceFactory.CreateFramebuffer( new( null, renderTarget ) );
-		RenderSize = new( (int)renderTarget.Width, (int)renderTarget.Height );
+		Framebuffer = device.ResourceFactory.CreateFramebuffer( new( null, TargetTexture ) );
+		RenderSize = new( renderTarget.Width, renderTarget.Height );
 
 		WindowSet = device.ResourceFactory.CreateSet( windowLayout, ViewTexture, windowSampler );
 	}
@@ -182,8 +186,8 @@ public partial class RenderStandard : IRenderFrontend
 	public IView CreateView( IWindow window )
 		=> mViews.AddAndGet( new( mDevice, window, mWindowLayout, mWindowSampler ) );
 
-	public IView CreateView( Texture renderTarget )
-		=> mViews.AddAndGet( new( mDevice, renderTarget, mWindowLayout, mWindowSampler ) );
+	public IView CreateView( Engine.Resources.Texture renderTarget )
+		=> mViews.AddAndGet( new( mDevice, renderTarget.RenderTexture, mWindowLayout, mWindowSampler ) );
 
 	public IView? GetView( IWindow window )
 	{
