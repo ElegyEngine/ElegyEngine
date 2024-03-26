@@ -1,0 +1,20 @@
+{
+  "name": "DebugST",
+  "parameters": [],
+  "shaderVariants": [
+    {
+      "shaderDefine": "DEFAULT",
+      "vertexLayouts": [
+        {
+          "name": "vPosition",
+          "type": 1
+        },
+        {
+          "name": "vUv",
+          "type": 1
+        }
+      ],
+      "resourceLayouts": []
+    }
+  ]
+}
