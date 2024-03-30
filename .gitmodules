@@ -4,3 +4,6 @@
 [submodule "extern/Silk.Eto"]
 	path = extern/Silk.Eto
 	url = https://github.com/Admer456/Silk.Eto.git
+[submodule "extern/fennecs"]
+	path = extern/fennecs
+	url = https://github.com/Admer456/fennecs.git
