@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <FileVersion></FileVersion>
+    <AssemblyVersion></AssemblyVersion>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>0.1.0-dev.3</Version>
+    <ProjectName>Elegy</ProjectName>
+    <Description>Elegy Engine core (currently for Godot 4.0)</Description>
+    <RepositoryUrl>https://github.com/ElegyEngine/ElegyEngine</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>godot;game engine;</PackageTags>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Authors>Admer456</Authors>
+    <Company>Elegy Engine Organisation</Company>
+    <Copyright>Copyright © 2022-present Elegy Engine contributors</Copyright>
+    <RepositoryType>git</RepositoryType>
+    <RootNamespace>Elegy.Engine</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0031" />
+    <PackageReference Include="Silk.NET.Core" Version="2.20.0" />
+    <PackageReference Include="Silk.NET.Input.Common" Version="2.20.0" />
+    <PackageReference Include="Silk.NET.Windowing.Common" Version="2.20.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Elegy.Common\Elegy.Common.csproj" />
+    <ProjectReference Include="..\Elegy.RenderBackend\Elegy.RenderBackend.csproj" />
+  </ItemGroup>
+
+</Project>

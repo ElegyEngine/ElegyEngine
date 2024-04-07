@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Eto.Forms" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\extern\Silk.Eto\src\Silk.Eto\Silk.Eto.csproj" />
+    <ProjectReference Include="..\..\..\Core\Elegy.Engine\Elegy.Engine.csproj" />
+  </ItemGroup>
+
+</Project>
