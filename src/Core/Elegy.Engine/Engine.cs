@@ -30,7 +30,9 @@ namespace Elegy.Engine
 		private static TaggedLogger mLogger = new( "Engine" );
 
 		private static bool mHasShutdown = false;
-		private static EngineConfig mEngineConfig;
+		private static LaunchConfig mLaunchConfig;
+
+		private static EngineConfig EngineConfig => mLaunchConfig.Engine.Value;
 
 		/// <summary>
 		/// Version string to be displayed when the engine starts up.
@@ -102,9 +104,9 @@ namespace Elegy.Engine
 
 			IsHeadless = Console.Arguments.GetBool( "headless" );
 
-			if ( mEngineConfig.ConfigName != null )
+			if ( EngineConfig.ConfigName != null )
 			{
-				mLogger.Developer( $"Engine config: '{mEngineConfig.ConfigName}'" );
+				mLogger.Developer( $"Engine configuration: '{EngineConfig.ConfigName}'" );
 			}
 
 			foreach ( IPlugin plugin in Plugins.GenericPlugins )
@@ -127,9 +129,9 @@ namespace Elegy.Engine
 		{
 			string path = config.EngineConfigName ?? "engineConfig.json";
 
-			if ( config.EngineConfigName is null && config.Engine is not null )
+			mLaunchConfig = config;
+			if ( config.EngineConfigName is null && config.Engine.HasValue )
 			{
-				mEngineConfig = config.Engine.Value;
 				return true;
 			}
 
@@ -137,16 +139,19 @@ namespace Elegy.Engine
 			{
 				mLogger.Log( $"'{path}' does not exist, creating a default one..." );
 
-				mEngineConfig = new();
-				Common.Text.JsonHelpers.Write( mEngineConfig, path );
+				mLaunchConfig.Engine = new();
+				Common.Text.JsonHelpers.Write( EngineConfig, path );
 				return true;
 			}
 
-			if ( !Common.Text.JsonHelpers.LoadFrom( ref mEngineConfig, path ) )
+			EngineConfig engineConfig = new();
+			if ( !Common.Text.JsonHelpers.LoadFrom( ref engineConfig, path ) )
 			{
 				mLogger.Error( $"'{path}' somehow failed to load" );
 				return false;
 			}
+
+			mLaunchConfig.Engine = engineConfig;
 
 			return true;
 		}
