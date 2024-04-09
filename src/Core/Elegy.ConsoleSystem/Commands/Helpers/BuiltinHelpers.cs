@@ -3,7 +3,7 @@
 
 using System.Globalization;
 
-namespace Elegy.Engine.ConsoleCommands.Helpers
+namespace Elegy.ConsoleSystem.Commands.Helpers
 {
 	/// <summary>
 	/// Console argument helper for floating-point arguments.

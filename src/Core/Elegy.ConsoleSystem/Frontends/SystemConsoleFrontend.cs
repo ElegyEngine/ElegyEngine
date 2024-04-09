@@ -1,9 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Engine.Interfaces;
-
-namespace Elegy.Engine.ConsoleFrontends
+namespace Elegy.ConsoleSystem.Frontends
 {
 	internal class SystemConsoleFrontend : IConsoleFrontend
 	{

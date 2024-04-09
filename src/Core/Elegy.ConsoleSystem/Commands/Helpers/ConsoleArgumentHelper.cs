@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Elegy.Engine.ConsoleCommands.Helpers
+namespace Elegy.ConsoleSystem.Commands.Helpers
 {
 	/// <summary>
 	/// Marks a class to be used by <see cref="HelperManager"/> to help with console parsing.

@@ -1,14 +1,12 @@
 // SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Engine.Interfaces;
-
-namespace Elegy.Engine.ConsoleCommands
+namespace Elegy.ConsoleSystem.Commands
 {
 	/// <summary>
 	/// Provides utilities for static ConVars and ConCommands.
 	/// </summary>
-	internal class ConVarRegistry
+	public class ConVarRegistry
 	{
 		private const BindingFlags BaseBindingFlags =
 					BindingFlags.DeclaredOnly |
@@ -23,7 +21,7 @@ namespace Elegy.Engine.ConsoleCommands
 
 		public List<ConsoleCommand> Commands { get; } = new();
 
-		public ConVarRegistry( Assembly? assembly = null, IPlugin? instance = null )
+		public ConVarRegistry( Assembly? assembly = null, object? instance = null )
 		{
 			if ( assembly is not null )
 			{
@@ -96,7 +94,7 @@ namespace Elegy.Engine.ConsoleCommands
 
 		public void UnregisterAll()
 		{
-			Commands.ForEach( Console.UnregisterCommand );
+			Commands.ForEach( cmd => Console.UnregisterCommand( cmd ) );
 		}
 	}
 }

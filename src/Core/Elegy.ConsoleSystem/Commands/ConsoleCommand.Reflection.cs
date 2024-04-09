@@ -22,11 +22,10 @@ From an inner workings POV, this is what's going on in the console system and he
    or if that is not available, by inspecting the method
 */
 
-using Elegy.Engine.ConsoleCommands.Helpers;
-using Elegy.Engine.Interfaces;
+using Elegy.ConsoleSystem.Commands.Helpers;
 using System.Text;
 
-namespace Elegy.Engine.ConsoleCommands
+namespace Elegy.ConsoleSystem.Commands
 {
 	/// <summary>
 	/// Console command.
@@ -83,7 +82,7 @@ namespace Elegy.Engine.ConsoleCommands
 		}
 
 		// The method can be of any signature, we gotta ensure that the string arguments passed in are all tidy
-		private static CommandMethod GetOrCreateCommand( Dictionary<string, ConsoleParameter> dictionary, MethodInfo method, IPlugin? instance = null )
+		private static CommandMethod GetOrCreateCommand( Dictionary<string, ConsoleParameter> dictionary, MethodInfo method, object? instance = null )
 		{
 			var parametres = method.GetParameters();
 			bool hasSimpleParams = parametres.Length == 1 && parametres[0].ParameterType == typeof( string[] );
@@ -118,7 +117,7 @@ namespace Elegy.Engine.ConsoleCommands
 		/// must be primitives (<see cref="int"/>, <see cref="float"/> etc.) or <see cref="string"/>.
 		/// If <paramref name="instance"/> is not provided, <paramref name="method"/> must be static.
 		/// </summary>
-		public static ConsoleCommand? FromMethod( MethodInfo method, ConsoleCommandAttribute attribute, IPlugin? instance = null )
+		public static ConsoleCommand? FromMethod( MethodInfo method, ConsoleCommandAttribute attribute, object? instance = null )
 		{
 			bool isOkay = true;
 

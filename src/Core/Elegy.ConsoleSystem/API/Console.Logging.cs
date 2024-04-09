@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Elegy.Engine.API
+namespace Elegy.ConsoleSystem.API
 {
 	/// <summary>
 	/// Elegy console interface.
@@ -14,19 +14,19 @@ namespace Elegy.Engine.API
 		/// Logs a message into the console, with a newline at the end.
 		/// </summary>
 		public static void Log( string message = "", ConsoleMessageType type = ConsoleMessageType.Info )
-			=> mConsole.Log( $"{message}\n", type );
+			=> LogInternal( $"{message}\n", type );
 
 		/// <summary>
 		/// Logs a message into the console without a newline.
 		/// </summary>
 		public static void LogInline( string message = ""  )
-			=> mConsole.Log( message, ConsoleMessageType.Info );
+			=> LogInternal( message, ConsoleMessageType.Info );
 
 		/// <summary>
 		/// Inserts a newline into the console.
 		/// </summary>
 		public static void Newline( ConsoleMessageType type = ConsoleMessageType.Info )
-			=> mConsole.Log( "\n", type );
+			=> LogInternal( "\n", type );
 
 		/// <summary>
 		/// Prints a success message.

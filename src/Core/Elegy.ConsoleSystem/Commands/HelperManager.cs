@@ -1,16 +1,16 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Engine.ConsoleCommands.Helpers;
+using Elegy.ConsoleSystem.Commands.Helpers;
 
-namespace Elegy.Engine.ConsoleCommands
+namespace Elegy.ConsoleSystem.Commands
 {
 	/// <summary>
 	/// Manages instances of <see cref="IConsoleArgumentHelper"/>.
 	/// </summary>
-	internal static class HelperManager
+	public static class HelperManager
 	{
-		private static TaggedLogger mLogger = new( "Cons..HelperManager" );
+		private static TaggedLogger mLogger = new( "CvarHelper" );
 
 		private static Dictionary<Assembly, List<IConsoleArgumentHelper>> mHelpersByAssembly { get; } = new();
 

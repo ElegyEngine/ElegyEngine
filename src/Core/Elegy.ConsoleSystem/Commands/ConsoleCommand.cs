@@ -12,7 +12,7 @@ public static ConsoleCommand cmdMap = new( "map", ( args ) => RunMap( args[0] ) 
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
-namespace Elegy.Engine.ConsoleCommands
+namespace Elegy.ConsoleSystem.Commands
 {
 	/// <summary>
 	/// Console command.

@@ -1,7 +1,9 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Elegy.Engine.Interfaces
+using Elegy.Common.Interfaces;
+
+namespace Elegy.ConsoleSystem.Frontends
 {
 	/// <summary>
 	/// Console frontend interface. Console frontends are essentially
