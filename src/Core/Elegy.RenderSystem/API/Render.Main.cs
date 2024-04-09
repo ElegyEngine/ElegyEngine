@@ -1,12 +1,16 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.RenderSystem.Interfaces;
 using Silk.NET.Windowing;
+using IView = Elegy.RenderSystem.Interfaces.Rendering.IView;
 
 namespace Elegy.RenderSystem.API
 {
 	public static partial class Render
 	{
+		public static IRenderFrontend Instance => mFrontend;
+
 		/// <summary>
 		/// Renders everything for a given window.
 		/// </summary>
