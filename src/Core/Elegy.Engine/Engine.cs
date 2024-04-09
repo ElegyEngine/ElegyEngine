@@ -38,6 +38,11 @@ namespace Elegy.Engine
 		public static string? ShutdownReason { get; private set; } = null;
 
 		/// <summary>
+		/// Is the engine running?
+		/// </summary>
+		public static bool IsRunning => !mHasShutdown;
+
+		/// <summary>
 		/// Is the engine running in headless/dedicated server mode?
 		/// </summary>
 		public static bool IsHeadless { get; private set; } = false;
