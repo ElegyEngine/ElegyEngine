@@ -3,7 +3,7 @@
 
 using Elegy.Common.Assets;
 
-namespace Elegy.Engine.Interfaces
+namespace Elegy.AssetSystem.Interfaces
 {
 	/// <summary>
 	/// Texture loader interface.

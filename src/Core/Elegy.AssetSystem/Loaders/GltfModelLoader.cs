@@ -1,10 +1,11 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.AssetSystem.Interfaces;
 using Elegy.Common.Assets;
 using Elegy.Common.Maths;
 using Elegy.Common.Utilities;
-using Elegy.Engine.Interfaces;
+using Elegy.ConsoleSystem;
 
 using EngineMesh = Elegy.Common.Assets.MeshData.Mesh;
 
@@ -12,7 +13,7 @@ using SharpGLTF.Scenes;
 using SharpGLTF.Schema2;
 using System.Numerics;
 
-namespace Elegy.Engine.AssetLoaders
+namespace Elegy.AssetSystem.Loaders
 {
 	/// <summary>
 	/// Built-in GLTF loader.

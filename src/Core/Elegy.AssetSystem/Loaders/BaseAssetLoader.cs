@@ -1,13 +1,12 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Common.Assets;
-using Elegy.Engine.Interfaces;
+using Elegy.AssetSystem.Interfaces;
 
-namespace Elegy.Engine.AssetLoaders
+namespace Elegy.AssetSystem.Loaders
 {
 	/// <summary>
-	/// Base model loader, makes implementing the <see cref="IPlugin"/> interface quicker.
+	/// Base model loader, makes implementing the <see cref="IAssetLoader"/> interface quicker.
 	/// </summary>
 	public abstract class BaseAssetLoader : IAssetLoader
 	{

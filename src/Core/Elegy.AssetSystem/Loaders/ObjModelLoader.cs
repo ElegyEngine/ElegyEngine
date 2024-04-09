@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Assets;
-using Elegy.Engine.Interfaces;
+using Elegy.AssetSystem.Interfaces;
 
-namespace Elegy.Engine.AssetLoaders
+namespace Elegy.AssetSystem.Loaders
 {
 	/// <summary>
 	/// Built-in OBJ loader.

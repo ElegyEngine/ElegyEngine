@@ -6,4 +6,16 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="SharpGLTF.Core" Version="1.0.0-alpha0031" />
+    <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0031" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Elegy.Common\Elegy.Common.csproj" />
+    <ProjectReference Include="..\Elegy.ConsoleSystem\Elegy.ConsoleSystem.csproj" />
+    <ProjectReference Include="..\Elegy.FileSystem\Elegy.FileSystem.csproj" />
+    <ProjectReference Include="..\Elegy.PluginSystem\Elegy.PluginSystem.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -2,21 +2,18 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Assets;
-using Elegy.Engine.API;
-using Elegy.Engine.Interfaces.Rendering;
+using Elegy.AssetSystem.Interfaces.Rendering;
 
-namespace Elegy.Engine.Resources
+namespace Elegy.AssetSystem.Resources
 {
 	/// <summary></summary>
 	public class Texture
 	{
 		/// <summary></summary>
-		public static Texture FromData( TextureMetadata metadata, Span<byte> bytes )
-			=> new()
-			{
-				Metadata = metadata,
-				RenderTexture = Render.Instance.CreateTexture( metadata, bytes )
-			};
+		public Texture( TextureMetadata metadata )
+		{
+			Metadata = metadata;
+		}
 
 		/// <summary></summary>
 		public static byte[] GenerateMissingTexturePattern()

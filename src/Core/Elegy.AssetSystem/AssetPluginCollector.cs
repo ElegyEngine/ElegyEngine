@@ -1,34 +1,18 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Engine.API;
-using Elegy.Engine.Interfaces;
-using System.Linq;
+using Elegy.AssetSystem.Interfaces;
+using Elegy.Common.Interfaces;
+using Elegy.ConsoleSystem;
 
-namespace Elegy.Engine
+namespace Elegy.AssetSystem
 {
-	/// <summary>
-	/// Asset system implementation.
-	/// </summary>
-	internal partial class AssetSystemInternal : IPluginCollector
+	internal class AssetPluginCollector : IPluginCollector
 	{
 		private TaggedLogger mLogger = new( "AssetSystem" );
 
-		private List<IModelLoader> mModelLoaders = new();
-		private List<ITextureLoader> mTextureLoaders = new();
-
-		public bool Init()
-		{
-			mLogger.Log( "Init" );
-
-			Assets.SetAssetSystem( this );
-			Plugins.RegisterPluginCollector( this );
-
-			return InitMaterials();
-		}
-
 		private void AddLoader<TLoader>( List<TLoader> loaders, TLoader loader )
-			where TLoader: IAssetLoader
+			where TLoader : IAssetLoader
 		{
 			if ( loaders.Contains( loader ) )
 			{
@@ -40,7 +24,7 @@ namespace Elegy.Engine
 		}
 
 		private void RemoveLoader<TLoader>( List<TLoader> loaders, TLoader loader )
-			where TLoader: IAssetLoader
+			where TLoader : IAssetLoader
 		{
 			if ( !loaders.Remove( loader ) )
 			{
@@ -52,11 +36,11 @@ namespace Elegy.Engine
 		{
 			if ( plugin is IModelLoader modelLoader )
 			{
-				AddLoader( mModelLoaders, modelLoader );
+				AddLoader( API.Assets.mModelLoaders, modelLoader );
 			}
 			else if ( plugin is ITextureLoader textureLoader )
 			{
-				AddLoader( mTextureLoaders, textureLoader );
+				AddLoader( API.Assets.mTextureLoaders, textureLoader );
 			}
 		}
 
@@ -64,18 +48,12 @@ namespace Elegy.Engine
 		{
 			if ( plugin is IModelLoader modelLoader )
 			{
-				RemoveLoader( mModelLoaders, modelLoader );
+				RemoveLoader( API.Assets.mModelLoaders, modelLoader );
 			}
 			else if ( plugin is ITextureLoader textureLoader )
 			{
-				RemoveLoader( mTextureLoaders, textureLoader );
+				RemoveLoader( API.Assets.mTextureLoaders, textureLoader );
 			}
-		}
-
-		public void Shutdown()
-		{
-			mTextures.Clear();
-			mMaterialDefs.Clear();
 		}
 	}
 }

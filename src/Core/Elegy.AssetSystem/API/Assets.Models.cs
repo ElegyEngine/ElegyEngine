@@ -2,18 +2,19 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Assets;
-using Elegy.Engine.API;
-using Elegy.Engine.Interfaces;
+using Elegy.AssetSystem.Interfaces;
+using Elegy.FileSystem.API;
 
-namespace Elegy.Engine
+namespace Elegy.AssetSystem.API
 {
-	internal partial class AssetSystemInternal
+	public static partial class Assets
 	{
-		private Dictionary<string, Model> mModels;
-
-		public Model? LoadModel( string path )
+		/// <summary>
+		/// Loads a model from the path.
+		/// </summary>
+		public static Model? LoadModel( string path )
 		{
-			string? fullPath = FileSystem.PathTo( path, PathFlags.File );
+			string? fullPath = Files.PathTo( path, PathFlags.File );
 			if ( fullPath is null )
 			{
 				mLogger.Error( $"LoadModel: Can't find model '{path}'" );
@@ -40,7 +41,10 @@ namespace Elegy.Engine
 			return model;
 		}
 
-		public IModelLoader? FindModelLoader( string[] extensions )
+		/// <summary>
+		/// Finds an appropriate <see cref="IModelLoader"/> according to one of the <paramref name="extensions"/>.
+		/// </summary>
+		public static IModelLoader? FindModelLoader( params string[] extensions )
 		{
 			foreach ( var modelLoader in mModelLoaders )
 			{
@@ -56,7 +60,9 @@ namespace Elegy.Engine
 			return null;
 		}
 
-		public IReadOnlyCollection<Model> GetModelList()
-			=> mModels.Values;
+		/// <summary>
+		/// A collection of all loaded models.
+		/// </summary>
+		public static IReadOnlyCollection<Model> AllModels => mModels.Values;
 	}
 }

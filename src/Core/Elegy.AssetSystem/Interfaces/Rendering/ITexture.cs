@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Elegy.Engine.Interfaces.Rendering
+namespace Elegy.AssetSystem.Interfaces.Rendering
 {
 	/// <summary></summary>
 	public interface ITexture
