@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Elegy.Common\Elegy.Common.csproj" />
+    <ProjectReference Include="..\Elegy.ConsoleSystem\Elegy.ConsoleSystem.csproj" />
+  </ItemGroup>
+
 </Project>
