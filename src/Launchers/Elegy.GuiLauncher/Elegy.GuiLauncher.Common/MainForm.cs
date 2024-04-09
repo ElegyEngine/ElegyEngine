@@ -1,10 +1,14 @@
 // SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Engine;
-using Elegy.Engine.API;
-using Elegy.Engine.Interfaces;
-using Elegy.Engine.Interfaces.Rendering;
+using Elegy.Common.Assets;
+using Elegy.Common.Interfaces;
+using Elegy.ConsoleSystem;
+using Elegy.ConsoleSystem.Frontends;
+using Elegy.Engine.Bootstrap;
+using Elegy.RenderSystem.API;
+using Elegy.RenderSystem.Interfaces.Rendering;
+using Elegy.PluginSystem.API;
 
 using SilkWindow = Silk.NET.Windowing.Window;
 using SilkInput = Silk.NET.Input.InputWindowExtensions;
@@ -12,9 +16,12 @@ using Eto;
 using Eto.Forms;
 using Eto.Drawing;
 using Silk.Eto;
+using System.Diagnostics;
 
 namespace Elegy.GuiLauncher
 {
+	using Engine = Engine.Engine;
+
 	internal class FormLogger : IConsoleFrontend
 	{
 		private TextArea mText;
@@ -101,9 +108,12 @@ namespace Elegy.GuiLauncher
 		private FormLogger mLogger;
 		private TextArea mTextArea;
 		private Label mStatusLabel;
-		private Engine.Engine mEngine;
+		private LaunchConfig mLaunchConfig;
 
 		private IView? mRenderView = null;
+
+		private Stopwatch mStopwatch;
+		private double GetSeconds() => (double)mStopwatch.ElapsedTicks / Stopwatch.Frequency;
 
 		private Command CreateButton( string name, EventHandler<EventArgs> action )
 		{
@@ -118,9 +128,9 @@ namespace Elegy.GuiLauncher
 			return command;
 		}
 
-		public MainForm( Engine.Engine engine )
+		public MainForm( string[] args )
 		{
-			mEngine = engine;
+			mStopwatch = Stopwatch.StartNew();
 
 			Style = "dark";
 			Title = "My Eto Form";
@@ -146,6 +156,13 @@ namespace Elegy.GuiLauncher
 
 			mLogger = new( mTextArea );
 
+			mLaunchConfig = new()
+			{
+				Args = args,
+				ConsoleFrontends = [mLogger],
+				WithMainWindow = false
+			};
+
 			Content = new StackLayout
 			{
 				Padding = 5,
@@ -170,13 +187,13 @@ namespace Elegy.GuiLauncher
 				{
 					CreateButton( "Restart engine", (sender, e) =>
 					{
-						if ( !mEngine.Init( false, mLogger ) )
+						if ( !Engine.Init( mLaunchConfig ) )
 						{
-							MessageBox.Show( mEngine.ShutdownReason );
+							MessageBox.Show( Engine.ShutdownReason );
 							return;
 						}
 
-						Core.AddWindow( mSurface );
+						PlatformSystem.API.Platform.AddWindow( mSurface );
 						mRenderView = Render.Instance.CreateView( mSurface );
 
 						Plugins.RegisterPlugin( new FormApp() );
@@ -194,19 +211,19 @@ namespace Elegy.GuiLauncher
 
 		private void OnLoad( object? sender, EventArgs e )
 		{
-			if ( !mEngine.Init( false, mLogger ) )
+			if ( !Engine.Init( mLaunchConfig ) )
 			{
-				MessageBox.Show( mEngine.ShutdownReason );
+				MessageBox.Show( Engine.ShutdownReason );
 				return;
 			}
 
-			Core.AddWindow( mSurface );
+			PlatformSystem.API.Platform.AddWindow( mSurface );
 			mRenderView = Render.Instance.CreateView( mSurface );
 
 			// Just to give the engine something to do
 			Plugins.RegisterPlugin( new FormApp() );
 
-			mLastTime = Core.Seconds;
+			mLastTime = GetSeconds();
 			mSurface.Draw += OnRender; // Pretty important!
 		}
 
@@ -217,7 +234,7 @@ namespace Elegy.GuiLauncher
 		private int mFramerateUpdateCounter = 5;
 		private void OnRender( object? sender, EventArgs e )
 		{
-			double deltaTime = Core.Seconds - mLastTime;
+			double deltaTime = GetSeconds() - mLastTime;
 
 			mVerticalSyncTimer -= deltaTime;
 			if ( mVerticalSyncTimer > 0.0 )
@@ -226,12 +243,12 @@ namespace Elegy.GuiLauncher
 			}
 			mVerticalSyncTimer = 1.0 / mRefreshRate;
 
-			double frameStart = Core.Seconds;
-			mEngine.Update( 1.0f / (float)mRefreshRate );
+			double frameStart = GetSeconds();
+			Engine.Update( 1.0f / (float)mRefreshRate );
 
 			if ( mRenderView.RenderSize.X > 0.0f )
 			{
-				mEngine.RenderFrame( mRenderView );
+				Render.RenderFrame( mRenderView );
 			}
 			else
 			{
@@ -239,7 +256,7 @@ namespace Elegy.GuiLauncher
 				mRenderView.RenderSize = new( mSurface.RenderWidth, mSurface.RenderHeight );
 			}
 
-			mLastTime = Core.Seconds;
+			mLastTime = GetSeconds();
 
 			double fps = 1.0 / (mLastTime - frameStart);
 			if ( fps > mAverageFps )
@@ -284,6 +301,8 @@ namespace Elegy.GuiLauncher
 			} );
 		}
 
+		[ElegyMain]
+		[WithAllGameSystems]
 		public static void RunApplication( string[] args, string platform, Action also )
 		{
 			also();
@@ -293,13 +312,11 @@ namespace Elegy.GuiLauncher
 			//	SetDarkTheme();
 			//}
 
-			Engine.Engine engine = new( args, null );
-
 			SilkWindow.Add( new EtoWindowPlatform() );
 			SilkInput.Add( new EtoInputPlatform() );
 
 			new Application( platform )
-				.Run( new MainForm( engine ) );
+				.Run( new MainForm( args ) );
 		}
 	}
 }
