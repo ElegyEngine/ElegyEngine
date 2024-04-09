@@ -148,7 +148,7 @@ namespace Elegy.Engine
 		/// </summary>
 		/// <param name="why">The reason of shutdown. If left empty, it is a normal shutdown, else an error.</param>
 		/// <returns></returns>
-		private static bool Shutdown( string why = "" )
+		public static bool Shutdown( string why = "" )
 		{
 			if ( mHasShutdown )
 			{
