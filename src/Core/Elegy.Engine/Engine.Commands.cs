@@ -3,7 +3,7 @@
 
 namespace Elegy.Engine;
 
-public partial class Engine
+public static partial class Engine
 {
 	[ConsoleCommand( "test" )]
 	internal static bool Command_Test( int a, int b = 20 )
@@ -37,7 +37,7 @@ public partial class Engine
 	}
 
 	[ConsoleCommand( "test_nonstatic" )]
-	internal void Command_NonStatic()
+	internal static void Command_NonStatic()
 	{
 
 	}
