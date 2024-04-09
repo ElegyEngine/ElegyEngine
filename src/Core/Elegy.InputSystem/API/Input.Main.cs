@@ -1,19 +1,17 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.PlatformSystem.API;
 using Silk.NET.Input;
 
-namespace Elegy.Engine.API
+namespace Elegy.InputSystem.API
 {
-	/// <summary>
-	/// Simple access to input functions. Key presses, mouse coordinates etc.
-	/// </summary>
 	public static partial class Input
 	{
 		/// <summary>
 		/// Gets the current input state. It can change between windows.
 		/// </summary>
-		public static IInputContext State => Core.GetCurrentInputContext();
+		public static IInputContext State => Platform.GetCurrentInputContext();
 
 		/// <summary>
 		/// Gets the current keyboard.
