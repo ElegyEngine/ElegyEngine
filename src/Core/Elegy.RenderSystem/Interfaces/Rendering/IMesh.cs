@@ -2,9 +2,8 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Assets;
-using Elegy.Common.Interfaces;
 
-namespace Elegy.Engine.Interfaces.Rendering
+namespace Elegy.RenderSystem.Interfaces.Rendering
 {
 	/// <summary>
 	/// RenderFrame mesh.

@@ -1,13 +1,15 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.AssetSystem.Resources;
+using Elegy.AssetSystem.Interfaces.Rendering;
 using Elegy.Common.Assets;
-using Elegy.Engine.Interfaces.Rendering;
-using Elegy.Engine.Resources;
+using Elegy.Common.Interfaces;
+using Elegy.RenderSystem.Interfaces.Rendering;
 
 using IWindow = Silk.NET.Windowing.IWindow;
 
-namespace Elegy.Engine.Interfaces
+namespace Elegy.RenderSystem.Interfaces
 {
 	/// <summary>
 	/// Renderer frontend plugin. Implements rendering techniques for a particular graphical style.

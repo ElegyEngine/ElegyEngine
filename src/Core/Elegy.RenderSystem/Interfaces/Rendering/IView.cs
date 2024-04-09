@@ -7,7 +7,7 @@ using Silk.NET.Windowing;
 using System.Numerics;
 using Veldrid;
 
-namespace Elegy.Engine.Interfaces.Rendering
+namespace Elegy.RenderSystem.Interfaces.Rendering
 {
 	// TODO: IView extensions so we can, like,
 	// set Projection and Transform nicely

@@ -3,7 +3,7 @@
 
 using System.Numerics;
 
-namespace Elegy.Engine.Interfaces.Rendering
+namespace Elegy.RenderSystem.Interfaces.Rendering
 {
 	/// <summary>
 	/// 
