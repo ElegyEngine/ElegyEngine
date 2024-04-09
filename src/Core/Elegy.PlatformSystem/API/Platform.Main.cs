@@ -1,36 +1,19 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Engine.Dummies;
+using Elegy.Common.Assets;
 using Silk.NET.Input;
 using Silk.NET.Windowing;
-using System.Diagnostics;
 
-namespace Elegy.Engine
+namespace Elegy.PlatformSystem.API
 {
-	internal class CoreInternal
+	public static partial class Platform
 	{
-		private Stopwatch mStopwatch;
-		private IWindowPlatform? mWindowPlatform;
-		private List<IWindow> mWindows = [];
-		private List<IInputContext> mInputContexts = [];
-		private IWindow mFocusWindow;
-		private IInputContext mFocusInputContext;
-
-		private readonly IWindow mDummyWindow = new WindowNull();
-		private readonly IInputContext mDummyInput = new InputContextNull();
-
-		internal CoreInternal( Stopwatch sw, IWindowPlatform? windowPlatform )
-		{
-			mFocusWindow = mDummyWindow;
-			mFocusInputContext = mDummyInput;
-
-			mWindowPlatform = windowPlatform;
-			mStopwatch = sw;
-			sw.Restart();
-		}
-
-		public bool AddWindow( IWindow window )
+		/// <summary>
+		/// Associates the <paramref name="window"/> with the engine, and
+		/// returns <c>false</c> if it's already associated.
+		/// </summary>
+		public static bool AddWindow( IWindow window )
 		{
 			if ( mWindows.Contains( window ) )
 			{
@@ -73,12 +56,19 @@ namespace Elegy.Engine
 			return true;
 		}
 
-		public bool HasWindow( IWindow window )
+		/// <summary>
+		/// Returns whether the <paramref name="window"/> is associated with the engine.
+		/// </summary>
+		public static bool HasWindow( IWindow window )
 		{
 			return mWindows.Contains( window );
 		}
 
-		public bool RemoveWindow( IWindow window )
+		/// <summary>
+		/// Disassociates a window from the engine, and returns
+		/// <c>false</c> if it's not found in the first place.
+		/// </summary>
+		public static bool RemoveWindow( IWindow window )
 		{
 			for ( int i = 0; i < mWindows.Count; i++ )
 			{
@@ -101,7 +91,10 @@ namespace Elegy.Engine
 			return false;
 		}
 
-		public IWindow? CreateWindow( in WindowOptions options )
+		/// <summary>
+		/// Creates a window, or returns <c>null</c> in case there's no window platform (dedicated server etc.)
+		/// </summary>
+		public static IWindow? CreateWindow( in WindowOptions options )
 		{
 			if ( mWindowPlatform is null )
 			{
@@ -114,20 +107,21 @@ namespace Elegy.Engine
 			return window;
 		}
 
-		public IWindow GetCurrentWindow()
+		/// <summary>
+		/// Returns the window that is currently in focus, or <c>null</c> if there are no windows.
+		/// </summary>
+		/// <returns></returns>
+		public static IWindow GetCurrentWindow()
 		{
 			return mFocusWindow;
 		}
 
-		public IInputContext GetCurrentInputContext()
+		/// <summary>
+		/// Returns the currently focused window's input context, or <c>null</c> if there are no windows.
+		/// </summary>
+		public static IInputContext GetCurrentInputContext()
 		{
 			return mFocusInputContext;
 		}
-
-		public long GetTicks() => mStopwatch.ElapsedTicks;
-
-		public double GetSeconds() => (double)mStopwatch.ElapsedTicks / Stopwatch.Frequency;
-
-		public bool IsHeadless { get; internal set; } = false;
 	}
 }

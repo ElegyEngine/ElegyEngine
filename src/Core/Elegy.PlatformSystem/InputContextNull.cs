@@ -3,7 +3,7 @@
 
 using Silk.NET.Input;
 
-namespace Elegy.Engine.Dummies
+namespace Elegy.PlatformSystem
 {
 	/// <summary>
 	/// Dummy input context for headless applications. E.g. dedicated servers.
