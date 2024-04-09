@@ -1,9 +1,10 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Engine.Interfaces;
+using Elegy.Common.Interfaces;
+using System.Reflection;
 
-namespace Elegy.Engine
+namespace Elegy.PluginSystem
 {
 	internal class PluginLibrary
 	{

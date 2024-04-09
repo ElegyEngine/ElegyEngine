@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Assets;
+using Elegy.Common.Extensions;
 using Elegy.Common.Utilities;
 
-namespace Elegy.Engine
+namespace Elegy.PluginSystem
 {
 	internal class PluginLibraryMetadata
 	{
