@@ -31,7 +31,6 @@ namespace Elegy.Engine
 
 		private static bool mHasShutdown = false;
 		private static EngineConfig mEngineConfig;
-		private static IReadOnlyCollection<IApplication> Applications => Plugins.Applications;
 
 		/// <summary>
 		/// Version string to be displayed when the engine starts up.
@@ -179,28 +178,6 @@ namespace Elegy.Engine
 
 			mHasShutdown = true;
 			return false;
-		}
-
-		/// <summary>
-		/// Updates the engine subsystems.
-		/// </summary>
-		/// <param name="delta">Delta time since last frame.</param>
-		public static void Update( float delta )
-		{
-			Console.Update( delta );
-
-			foreach ( var app in Applications )
-			{
-				if ( !app.RunFrame( delta ) )
-				{
-					Plugins.UnloadApplication( app );
-				}
-			}
-
-			if ( Applications.Count == 0 )
-			{
-				Shutdown( "" );
-			}
 		}
 	}
 }
