@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\extern\Silk.Eto\src\Silk.Eto\Silk.Eto.csproj" />
     <ProjectReference Include="..\..\..\Core\Elegy.Engine\Elegy.Engine.csproj" />
+    <ProjectReference Include="..\..\..\Core\Elegy.RenderSystem\Elegy.RenderSystem.csproj" />
   </ItemGroup>
 
 </Project>
