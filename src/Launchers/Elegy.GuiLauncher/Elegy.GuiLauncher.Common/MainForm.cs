@@ -254,6 +254,11 @@ namespace Elegy.GuiLauncher
 		private int mFramerateUpdateCounter = 5;
 		private void OnRender( object? sender, EventArgs e )
 		{
+			if ( !EngineSystem.IsRunning )
+			{
+				return;
+			}
+
 			double deltaTime = GetSeconds() - mLastTime;
 
 			mVerticalSyncTimer -= deltaTime;
