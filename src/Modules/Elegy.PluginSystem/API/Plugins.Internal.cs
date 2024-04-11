@@ -21,7 +21,7 @@ namespace Elegy.PluginSystem.API
 		private static List<PluginLibrary> mPluginLibraries = new();
 		private static List<IPluginCollector> mPluginCollectors = new();
 
-		private static PluginLoadContext mLoadContext = new();
+		private static PluginLoadContext? mLoadContext = null;
 
 		private static string EngineVersionString => $"v{mEngineMajorVersion}.{mEngineMinorVersion}";
 		private static int mEngineMajorVersion;

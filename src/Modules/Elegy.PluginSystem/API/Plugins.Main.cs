@@ -150,7 +150,31 @@ namespace Elegy.PluginSystem.API
 		/// </summary>
 		public static void RegisterPluginCollector( IPluginCollector collector )
 		{
+			if ( mPluginCollectors.Contains( collector ) )
+			{
+				mLogger.Warning( $"Tried adding an already registered collector '{collector.GetType().Name}'" );
+				return;
+			}
+
 			mPluginCollectors.Add( collector );
+		}
+
+		/// <summary>
+		/// Registers a plugin collector.
+		/// </summary>
+		public static bool UnregisterPluginCollector<TCollector>() where TCollector : IPluginCollector
+		{
+			for ( int i = 0; i < mPluginCollectors.Count; i++ )
+			{
+				if ( mPluginCollectors[i].GetType() == typeof( TCollector ) )
+				{
+					mPluginCollectors.RemoveAt( i );
+					return true;
+				}
+			}
+
+			mLogger.Warning( $"Tried removing a non-registered collector '{typeof( TCollector ).Name}'" );
+			return false;
 		}
 
 		/// <summary>
@@ -159,6 +183,14 @@ namespace Elegy.PluginSystem.API
 		public static void RegisterDependency( string name, Assembly assembly )
 		{
 			mLoadContext.RegisterDependency( name, assembly );
+		}
+
+		/// <summary>
+		/// Unregisters a dependency.
+		/// </summary>
+		public static bool UnregisterDependency( string name )
+		{
+			return mLoadContext.UnregisterDependency( name );
 		}
 
 		/// <returns>All plugins except IApplication-based ones.</returns>

@@ -12,18 +12,22 @@ namespace Elegy.PluginSystem.API
 {
 	public static partial class Plugins
 	{
-		public static bool Init( in LaunchConfig config )
+		public static bool Init( LaunchConfig config )
 		{
 			mLogger.Log( "Init" );
 
 			mEnginePath = config.Engine.EngineFolder;
 			mEnginePlugins = config.Engine.EnginePlugins;
 
+			mLoadContext = new();
+
 			return true;
 		}
 
 		public static bool PostInit()
 		{
+			mLogger.Log( "PostInit" );
+
 			// The game etc. will be loaded additionally, when
 			// mounted by the file system.
 			{
@@ -145,6 +149,7 @@ namespace Elegy.PluginSystem.API
 				}
 			}
 			mGenericPlugins.Clear();
+			mPluginCollectors.Clear();
 			mConsoleRegistries.Clear();
 
 			ConsoleSystem.Commands.HelperManager.UnregisterAllHelpers();

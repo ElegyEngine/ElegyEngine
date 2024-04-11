@@ -33,6 +33,19 @@ namespace Elegy.PluginSystem
 			mDependencies.Add( (name, assembly) );
 		}
 
+		public bool UnregisterDependency( string name )
+		{
+			int index = mDependencies.FindIndex( pair => pair.Item1 == name );
+			if ( index == -1 )
+			{
+				Console.Warning( "DllLoader", $"Tried unregistering a non-existing dependency '{name}.dll'" );
+				return false;
+			}
+
+			mDependencies.RemoveAt( index );
+			return true;
+		}
+
 		protected override Assembly? Load( AssemblyName assemblyName )
 		{
 			Console.Log( "DllLoader", $"'{assemblyName.Name}.dll'", ConsoleMessageType.Verbose );
