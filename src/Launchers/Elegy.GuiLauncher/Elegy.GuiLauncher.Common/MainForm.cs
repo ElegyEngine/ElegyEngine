@@ -5,23 +5,25 @@ using Elegy.Common.Assets;
 using Elegy.Common.Interfaces;
 using Elegy.ConsoleSystem;
 using Elegy.ConsoleSystem.Frontends;
-using Elegy.Engine.Bootstrap;
+using Elegy.Framework;
 using Elegy.RenderSystem.API;
 using Elegy.RenderSystem.Interfaces.Rendering;
 using Elegy.PluginSystem.API;
 
-using SilkWindow = Silk.NET.Windowing.Window;
-using SilkInput = Silk.NET.Input.InputWindowExtensions;
 using Eto;
 using Eto.Forms;
 using Eto.Drawing;
 using Silk.Eto;
 using System.Diagnostics;
 
+using ElegyApplication = Elegy.AppTemplate.Application;
+using ElegyConsole = Elegy.ConsoleSystem.API.Console;
+
+using SilkWindow = Silk.NET.Windowing.Window;
+using SilkInput = Silk.NET.Input.InputWindowExtensions;
+
 namespace Elegy.GuiLauncher
 {
-	using Engine = Engine.Engine;
-
 	internal class FormLogger : IConsoleFrontend
 	{
 		private TextArea mText;
@@ -187,9 +189,14 @@ namespace Elegy.GuiLauncher
 				{
 					CreateButton( "Restart engine", (sender, e) =>
 					{
-						if ( !Engine.Init( mLaunchConfig ) )
+						if ( EngineSystem.IsRunning )
 						{
-							MessageBox.Show( Engine.ShutdownReason );
+							EngineSystem.Shutdown( "" );
+						}
+
+						if ( !ElegyApplication.Init( mLaunchConfig, null ) )
+						{
+							MessageBox.Show( EngineSystem.ShutdownReason ?? "unknown error" );
 							return;
 						}
 
@@ -201,7 +208,10 @@ namespace Elegy.GuiLauncher
 
 					CreateButton( "Shutdown engine", (sender, e) =>
 					{
-						
+						if ( EngineSystem.IsRunning )
+						{
+							EngineSystem.Shutdown( "" );
+						}
 					} )
 				}
 			};
@@ -211,14 +221,18 @@ namespace Elegy.GuiLauncher
 
 		private void OnLoad( object? sender, EventArgs e )
 		{
-			if ( !Engine.Init( mLaunchConfig ) )
+			PlatformSystem.API.Platform.AddWindow( mSurface );
+
+			if ( !ElegyApplication.Init( mLaunchConfig, null ) )
 			{
-				MessageBox.Show( Engine.ShutdownReason );
+				MessageBox.Show( EngineSystem.ShutdownReason ?? "unknown error" );
 				return;
 			}
 
-			PlatformSystem.API.Platform.AddWindow( mSurface );
-			mRenderView = Render.Instance.CreateView( mSurface );
+			// Register any convars here
+			ElegyConsole.InitAssemblyConvars( typeof( MainForm ).Assembly );
+
+			mRenderView = Render.Instance.GetView( mSurface );
 
 			// Just to give the engine something to do
 			Plugins.RegisterPlugin( new FormApp() );
@@ -244,7 +258,7 @@ namespace Elegy.GuiLauncher
 			mVerticalSyncTimer = 1.0 / mRefreshRate;
 
 			double frameStart = GetSeconds();
-			Engine.Update( 1.0f / (float)mRefreshRate );
+			ElegyApplication.Update( 1.0f / (float)mRefreshRate );
 
 			if ( mRenderView.RenderSize.X > 0.0f )
 			{
@@ -301,8 +315,6 @@ namespace Elegy.GuiLauncher
 			} );
 		}
 
-		[ElegyMain]
-		[WithAllGameSystems]
 		public static void RunApplication( string[] args, string platform, Action also )
 		{
 			also();
