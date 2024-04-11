@@ -8,7 +8,6 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\extern\Silk.Eto\src\Silk.Eto.Wpf\Silk.Eto.Wpf.csproj" />
-    <ProjectReference Include="..\..\..\Core\Elegy.Engine\Elegy.Engine.csproj" />
     <ProjectReference Include="..\Elegy.GuiLauncher.Common\Elegy.GuiLauncher.Common.csproj" />
   </ItemGroup>
 
