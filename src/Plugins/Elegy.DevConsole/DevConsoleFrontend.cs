@@ -58,7 +58,9 @@ namespace Elegy.DevConsole
 
 		public bool Init()
 		{
-			
+			// Everything's fine for now :thumbsup:
+			return true;
+
 			// In the future, in order to support logging from multiple engine instances, we might wanna have the ability to choose
 			// different ports. E.g. a port range from 23005 to 23015. Also, remote logging possibilities???
 			//if ( mConnection.CreateHostBound( bindAddress: "127.0.0.1", bindPort: 23005, maxPeers: 4, maxChannels: 1 ) != Godot.Error.Ok )
