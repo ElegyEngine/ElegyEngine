@@ -284,8 +284,12 @@ namespace Elegy.GuiLauncher
 
 			if ( mFramerateUpdateCounter-- == 0 )
 			{
-				mStatusLabel.Text = string.Format( "FPS: {0:F}", mAverageFps );
-				mFramerateUpdateCounter = (int)mRefreshRate / 4;
+				var memoryInfo = GC.GetGCMemoryInfo();
+				mStatusLabel.Text = string.Format( "Memory: {0,3} MB used, {1,3} MB reserved - FPS: {2:F}",
+					memoryInfo.HeapSizeBytes / 1024 / 1024,
+					memoryInfo.TotalCommittedBytes / 1024 / 1024,
+					mAverageFps );
+				mFramerateUpdateCounter = (int)mRefreshRate / 2;
 			}
 		}
 	}
