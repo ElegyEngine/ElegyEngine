@@ -12,7 +12,7 @@ namespace Elegy.ConsoleSystem.API
 	{
 		public static bool Init( in LaunchConfig launchConfig )
 		{
-			mTimer = Stopwatch.StartNew();
+			mTimer.Restart();
 
 			InitialiseArguments( launchConfig.Args );
 
@@ -68,7 +68,8 @@ namespace Elegy.ConsoleSystem.API
 			mFrontends.Clear();
 			mArguments.Clear();
 
-			mEngineConvarRegistry.UnregisterAll();
+			mEngineConvarRegistry?.UnregisterAll();
+			mEngineConvarRegistry = null;
 		}
 	}
 }

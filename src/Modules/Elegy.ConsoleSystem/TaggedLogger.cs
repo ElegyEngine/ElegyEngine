@@ -36,10 +36,32 @@ namespace Elegy.ConsoleSystem
 			=> Console.Log( Tag, message );
 
 		/// <summary>
+		/// See <see cref="Log(string)"/>.
+		/// </summary>
+		public void LogIf( bool condition, string message )
+		{
+			if ( condition )
+			{
+				Log( message );
+			}
+		}
+
+		/// <summary>
 		/// See <see cref="Console.Warning(string)"/>.
 		/// </summary>
 		public void Warning( string message )
 			=> Console.Warning( Tag, message );
+
+		/// <summary>
+		/// See <see cref="Warning(string)"/>.
+		/// </summary>
+		public void WarningIf( bool condition, string message )
+		{
+			if ( condition )
+			{
+				Warning( message );
+			}
+		}
 
 		/// <summary>
 		/// See <see cref="Console.Error(string)"/>.

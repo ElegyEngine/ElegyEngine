@@ -10,8 +10,8 @@ namespace Elegy.ConsoleSystem.API
 	public static partial class Console
 	{
 		private static TaggedLogger mLogger = new( "Console" );
-		private static ConVarRegistry mEngineConvarRegistry;
-		private static Stopwatch mTimer;
+		private static ConVarRegistry? mEngineConvarRegistry = null;
+		private static Stopwatch mTimer = Stopwatch.StartNew();
 		private static List<IConsoleFrontend> mFrontends = new();
 		private static Dictionary<string, string> mArguments = new();
 		private static Dictionary<string, ConsoleCommand> mCommands = new();
@@ -19,6 +19,11 @@ namespace Elegy.ConsoleSystem.API
 
 		internal static void LogInternal( string message, ConsoleMessageType type = ConsoleMessageType.Info )
 		{
+			if ( type == ConsoleMessageType.Fatal )
+			{
+				Debugger.Break();
+			}
+
 			if ( type == ConsoleMessageType.Developer && !Developer )
 			{
 				return;
