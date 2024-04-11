@@ -15,7 +15,7 @@
     <Description>Elegy Engine shared library</Description>
     <Copyright>Copyright © 2022-present Elegy Engine contributors</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/ElegyEngine/ElegyCommon</RepositoryUrl>
+    <RepositoryUrl>https://github.com/ElegyEngine/ElegyEngine</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <AnalysisLevel>6.0</AnalysisLevel>
