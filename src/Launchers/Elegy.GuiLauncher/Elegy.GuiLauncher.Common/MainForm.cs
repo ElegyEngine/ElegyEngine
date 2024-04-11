@@ -213,6 +213,11 @@ namespace Elegy.GuiLauncher
 						{
 							EngineSystem.Shutdown( "" );
 						}
+					} ),
+
+					CreateButton( "Free some memory", (sender, e) =>
+					{
+						GC.Collect( GC.MaxGeneration, GCCollectionMode.Aggressive );
 					} )
 				}
 			};
