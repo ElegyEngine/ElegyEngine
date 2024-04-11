@@ -161,6 +161,7 @@ namespace Elegy.GuiLauncher
 			mLaunchConfig = new()
 			{
 				Args = args,
+				EngineConfigName = "engineGuiConfig.json",
 				ConsoleFrontends = [mLogger],
 				WithMainWindow = false
 			};
