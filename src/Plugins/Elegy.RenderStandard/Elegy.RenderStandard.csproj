@@ -12,7 +12,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Elegy.Engine\Elegy.Engine.csproj" />
+    <ProjectReference Include="..\..\Core\Elegy.Common\Elegy.Common.csproj" />
+    <ProjectReference Include="..\..\Core\Elegy.Framework\Elegy.Framework.csproj" />
+    <ProjectReference Include="..\..\Core\Elegy.RenderBackend\Elegy.RenderBackend.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.AssetSystem\Elegy.AssetSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.ConsoleSystem\Elegy.ConsoleSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.FileSystem\Elegy.FileSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.PlatformSystem\Elegy.PlatformSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.PluginSystem\Elegy.PluginSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.RenderSystem\Elegy.RenderSystem.csproj" />
   </ItemGroup>
 
 </Project>
