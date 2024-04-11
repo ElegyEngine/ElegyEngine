@@ -1,10 +1,12 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.AssetSystem.API;
 using Elegy.Common.Assets;
-using Elegy.Engine;
-using Elegy.Engine.API;
-using Elegy.Engine.Interfaces;
+using Elegy.Common.Interfaces;
+using Elegy.ConsoleSystem;
+using Elegy.InputSystem.API;
+using Elegy.FileSystem.API;
 
 using Silk.NET.Input;
 using TestGame.Client;
@@ -29,7 +31,7 @@ namespace TestGame
 			mLogger.Log( "Init" );
 			Initialised = true;
 
-			ApplicationConfig gameConfig = FileSystem.CurrentConfig;
+			ApplicationConfig gameConfig = Files.CurrentConfig;
 
 			mLogger.Log( $" Name:      {gameConfig.Title}" );
 			mLogger.Log( $" Developer: {gameConfig.Developer}" );
