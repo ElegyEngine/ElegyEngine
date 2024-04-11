@@ -11,6 +11,8 @@ namespace Elegy.FileSystem.API
 		{
 			mLogger.Log( "Init" );
 
+			mEngineConfig = config.Engine;
+
 			if ( !Mount( mEngineConfig.EngineFolder, mountOthers: false, isBase: false, isEngine: true ) )
 			{
 				mLogger.Error( $"Failed to mount '{mEngineConfig.EngineFolder}'" );
@@ -28,6 +30,8 @@ namespace Elegy.FileSystem.API
 
 		public static void Shutdown()
 		{
+			mLogger.Log( "Shutdown" );
+
 			mOtherGamePaths.Clear();
 			mOtherGameConfigs.Clear();
 		}
