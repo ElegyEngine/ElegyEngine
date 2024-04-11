@@ -31,6 +31,7 @@ namespace Elegy.InputSystem.API
 		public static void Shutdown()
 		{
 			mLogger.Log( "Shutdown" );
+			Plugins.UnregisterDependency( "Elegy.InputSystem" );
 		}
 	}
 }
