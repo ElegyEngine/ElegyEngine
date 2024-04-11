@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Maths;
-using Elegy.Engine.Interfaces;
+using Elegy.RenderSystem.Interfaces;
 using Elegy.RenderBackend.Extensions;
 using Elegy.RenderStandard.Extensions;
 
@@ -12,8 +12,8 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using Veldrid;
 
-using ITexture = Elegy.Engine.Interfaces.Rendering.ITexture;
-using IView = Elegy.Engine.Interfaces.Rendering.IView;
+using ITexture = Elegy.AssetSystem.Interfaces.Rendering.ITexture;
+using IView = Elegy.RenderSystem.Interfaces.Rendering.IView;
 using System.Diagnostics;
 
 namespace Elegy.RenderStandard;
@@ -186,7 +186,7 @@ public partial class RenderStandard : IRenderFrontend
 	public IView CreateView( IWindow window )
 		=> mViews.AddAndGet( new( mDevice, window, mWindowLayout, mWindowSampler ) );
 
-	public IView CreateView( Engine.Resources.Texture renderTarget )
+	public IView CreateView( AssetSystem.Resources.Texture renderTarget )
 		=> mViews.AddAndGet( new( mDevice, renderTarget.RenderTexture, mWindowLayout, mWindowSampler ) );
 
 	public IView? GetView( IWindow window )

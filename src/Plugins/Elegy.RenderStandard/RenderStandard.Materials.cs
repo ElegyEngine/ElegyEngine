@@ -2,8 +2,10 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Assets;
-using Elegy.Engine.Interfaces;
-using Elegy.Engine.Interfaces.Rendering;
+using Elegy.AssetSystem.Interfaces;
+using Elegy.AssetSystem.Interfaces.Rendering;
+using Elegy.RenderSystem.Interfaces;
+using Elegy.RenderSystem.Interfaces.Rendering;
 using Elegy.RenderBackend.Assets;
 
 using System.Numerics;
@@ -314,7 +316,7 @@ public class RenderMaterial : IMaterial
 
 public partial class RenderStandard : IRenderFrontend
 {
-	public IMaterial? CreateMaterial( Engine.Resources.Material material )
+	public IMaterial? CreateMaterial( AssetSystem.Resources.Material material )
 	{
 		return null;
 	}

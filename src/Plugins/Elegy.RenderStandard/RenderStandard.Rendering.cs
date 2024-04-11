@@ -1,9 +1,11 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Engine.API;
-using Elegy.Engine.Interfaces;
-using Elegy.Engine.Interfaces.Rendering;
+using Elegy.AssetSystem.Interfaces;
+using Elegy.AssetSystem.Interfaces.Rendering;
+using Elegy.FileSystem.API;
+using Elegy.RenderSystem.Interfaces;
+using Elegy.RenderSystem.Interfaces.Rendering;
 
 using Elegy.RenderBackend;
 using Elegy.RenderBackend.Extensions;
@@ -112,7 +114,7 @@ public partial class RenderStandard : IRenderFrontend
 	// This is a hack! Find a way to do this more properly later on
 	private static string GetShaderPath( string shaderPath, bool compute = false )
 	{
-		string? path = FileSystem.PathTo( $"{shaderPath}.{(compute ? "cs" : "ps")}.spv", PathFlags.File );
+		string? path = Files.PathTo( $"{shaderPath}.{(compute ? "cs" : "ps")}.spv", PathFlags.File );
 
 		if ( path is null )
 		{
@@ -127,19 +129,23 @@ public partial class RenderStandard : IRenderFrontend
 	double mGpuTime = 0.0;
 	double mPresentTime = 0.0;
 
+	Stopwatch mStopwatch = new();
+
+	private double GetSeconds() => (double)mStopwatch.ElapsedTicks / Stopwatch.Frequency;
+
 	public void BeginFrame()
 	{
-		mCpuTime = Core.Seconds;
+		mCpuTime = GetSeconds();
 	}
 
 	public void EndFrame()
 	{
-		mCpuTime = Core.Seconds - mCpuTime;
-		mGpuTime = Core.Seconds;
+		mCpuTime = GetSeconds() - mCpuTime;
+		mGpuTime = GetSeconds();
 
 		mDevice.WaitForIdle();
 
-		mGpuTime = Core.Seconds - mGpuTime;
+		mGpuTime = GetSeconds() - mGpuTime;
 	}
 
 	public void RenderView( in IView view )
@@ -182,9 +188,9 @@ public partial class RenderStandard : IRenderFrontend
 	{
 		Debug.Assert( view.TargetSwapchain is not null );
 
-		mPresentTime = Core.Seconds;
+		mPresentTime = GetSeconds();
 		mDevice.SwapBuffers( view.TargetSwapchain );
-		mPresentTime = Core.Seconds - mPresentTime;
+		mPresentTime = GetSeconds() - mPresentTime;
 
 		//mLogger.Log( "New frame" );
 		//mLogger.Log( $"CPU: {mCpuTime * 1000.0 * 1000.0} us" );

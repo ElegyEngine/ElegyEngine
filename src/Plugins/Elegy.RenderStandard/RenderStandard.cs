@@ -1,13 +1,12 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-global using Console = Elegy.Engine.API.Console;
+global using Console = Elegy.ConsoleSystem.API.Console;
 
 using Veldrid;
 
-using Elegy.Engine;
-using Elegy.Engine.API;
-using Elegy.Engine.Interfaces;
+using Elegy.ConsoleSystem;
+using Elegy.RenderSystem.Interfaces;
 
 namespace Elegy.RenderStandard;
 
@@ -31,8 +30,10 @@ public partial class RenderStandard : IRenderFrontend
 	public bool Init()
 	{
 		mLogger.Log( "Init" );
+		mStopwatch.Restart();
 
-		if ( Core.IsHeadless )
+		// TODO: detect headless mode somehow
+		if ( false /*Core.IsHeadless*/ )
 		{
 			mLogger.Error( "The engine is running in headless mode, meaning graphics cannot work!" );
 			return false;
