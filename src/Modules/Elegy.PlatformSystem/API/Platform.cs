@@ -17,7 +17,8 @@ namespace Elegy.PlatformSystem.API
 		{
 			mWindowPlatform = null;
 
-			Plugins.RegisterDependency( "Elegy.PluginSystem", typeof( Platform ).Assembly );
+			mLogger.Log( "Init" );
+			Plugins.RegisterDependency( "Elegy.PlatformSystem", typeof( Platform ).Assembly );
 
 			return true;
 		}
@@ -29,7 +30,8 @@ namespace Elegy.PlatformSystem.API
 
 		public static void Shutdown()
 		{
-
+			mLogger.Log( "Shutdown" );
+			Plugins.UnregisterDependency( "Elegy.PlatformSystem" );
 		}
 	}
 }

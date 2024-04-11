@@ -1,7 +1,6 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Common.Assets;
 using Silk.NET.Input;
 using Silk.NET.Windowing;
 
@@ -80,7 +79,7 @@ namespace Elegy.PlatformSystem.API
 
 					if ( mFocusWindow == window )
 					{
-						mFocusWindow = mDummyWindow;
+						mFocusWindow = null;
 						mFocusInputContext = mDummyInput;
 					}
 
@@ -111,7 +110,7 @@ namespace Elegy.PlatformSystem.API
 		/// Returns the window that is currently in focus, or <c>null</c> if there are no windows.
 		/// </summary>
 		/// <returns></returns>
-		public static IWindow GetCurrentWindow()
+		public static IWindow? GetCurrentWindow()
 		{
 			return mFocusWindow;
 		}
