@@ -6,19 +6,13 @@ using Elegy.Common.Interfaces;
 namespace Elegy.Common.Assets
 {
 	/// <summary></summary>
-	public struct LaunchConfig
+	public class LaunchConfig
 	{
-		/// <summary></summary>
-		public LaunchConfig()
-		{
-
-		}
-
 		/// <summary>Path to engine configuration. Overrides <see cref="Engine"/>.</summary>
 		public string? EngineConfigName { get; set; } = null;
 
 		/// <summary>Engine configuration. By default will load 'engineConfig.json'.</summary>
-		public EngineConfig? Engine { get; set; } = null;
+		public EngineConfig Engine { get; set; } = new();
 
 		/// <summary>Commandline arguments.</summary>
 		public string[] Args { get; set; } = Array.Empty<string>();
