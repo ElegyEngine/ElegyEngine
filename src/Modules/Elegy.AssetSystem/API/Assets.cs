@@ -11,8 +11,10 @@ namespace Elegy.AssetSystem.API
 	{
 		public static bool Init( in LaunchConfig config )
 		{
-			Plugins.RegisterPluginCollector( new AssetPluginCollector() );
+			mLogger.Log( "Init" );
+
 			Plugins.RegisterDependency( "Elegy.AssetSystem", typeof( Assets ).Assembly );
+			Plugins.RegisterPluginCollector( new AssetPluginCollector() );
 
 			return InitMaterials();
 		}
@@ -25,6 +27,11 @@ namespace Elegy.AssetSystem.API
 
 		public static void Shutdown()
 		{
+			mLogger.Log( "Shutdown" );
+
+			Plugins.UnregisterPluginCollector<AssetPluginCollector>();
+			Plugins.UnregisterDependency( "Elegy.AssetSystem" );
+
 			mTextures.Clear();
 			mMaterialDefs.Clear();
 		}
