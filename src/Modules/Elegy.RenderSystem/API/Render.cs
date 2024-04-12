@@ -11,6 +11,7 @@ namespace Elegy.RenderSystem.API
 		public static bool Init( in LaunchConfig config )
 		{
 			mLogger.Log( "Init" );
+			Plugins.RegisterDependency( "Elegy.RenderBackend", typeof( RenderBackend.Utils ).Assembly );
 			Plugins.RegisterDependency( "Elegy.RenderSystem", typeof( Render ).Assembly );
 			Plugins.RegisterPluginCollector( new RenderPluginCollector() );
 
@@ -22,6 +23,7 @@ namespace Elegy.RenderSystem.API
 			mLogger.Log( "Shutdown" );
 			Plugins.UnregisterPluginCollector<RenderPluginCollector>();
 			Plugins.UnregisterDependency( "Elegy.RenderSystem" );
+			Plugins.UnregisterDependency( "Elegy.RenderBackend" );
 		}
 	}
 }
