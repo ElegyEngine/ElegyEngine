@@ -20,7 +20,7 @@ namespace Elegy.RenderSystem.Interfaces.Rendering
 		/// <summary>
 		/// Reference to an <see cref="IMesh"/>.
 		/// </summary>
-		int MeshId { get; set; }
+		IMesh Mesh { get; set; }
 
 		/// <summary>
 		/// Animation data.

@@ -29,8 +29,8 @@ public class RenderEntity : IEntity
 	}
 
 	public int Mask { get; set; }
-	public int MeshId { get; set; }
-	
+	public IMesh Mesh { get; set; }
+
 	public Matrix4x4 Transform
 	{
 		get => mTransform;
