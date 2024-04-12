@@ -5,8 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>Elegy.Common</RootNamespace>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Version>0.1.0-dev.3</Version>
