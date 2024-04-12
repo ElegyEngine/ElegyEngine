@@ -105,39 +105,40 @@ namespace Elegy.AssetSystem.Loaders
 			};
 		}
 
-		private IList<Vector3> LoadPositions( Accessor value )
-			=> value.AsVector3Array();
+		private Vector3[] LoadPositions( Accessor value )
+			=> value.AsVector3Array().ToArray();
 
-		private IList<Vector3> LoadNormals( Accessor value )
-			=> value.AsVector3Array();
+		private Vector3[] LoadNormals( Accessor value )
+			=> value.AsVector3Array().ToArray();
 
-		private IList<Vector4> LoadTangents( Accessor value )
-			=> value.AsVector4Array();
+		private Vector4[] LoadTangents( Accessor value )
+			=> value.AsVector4Array().ToArray();
 
-		private IList<Vector2> LoadUvs( Accessor value )
-			=> value.AsVector2Array();
+		private Vector2[] LoadUvs( Accessor value )
+			=> value.AsVector2Array().ToArray();
 
-		private IList<Vector4> LoadColours( Accessor value )
-			=> value.AsColorArray( 1.0f );
+		private Vector4B[] LoadColours( Accessor value )
+			=> EngineMesh.Transform( value.AsColorArray( 1.0f ),
+				transform: ( vertex ) => new Vector4B( (byte)vertex.X, (byte)vertex.Y, (byte)vertex.Z, byte.MaxValue ) );
 
-		private IList<Vector4B> LoadJoints( Accessor value )
+		private Vector4B[] LoadJoints( Accessor value )
 		{
 			mLogger.Log( $"      * Joints: {value.Encoding}, {value.Dimensions}, {value.Format}" );
 
-			List<Vector4B> list = new( value.Count );
+			Vector4B[] list = new Vector4B[value.Count];
 			ByteBuffer byteBuffer = new( value.SourceBufferView.Content.Array );
 			for ( int i = 0; i < value.Count; i++ )
 			{
-				list.Add( byteBuffer.Read<Vector4B>() );
+				list[i] = byteBuffer.Read<Vector4B>();
 			}
 
 			return list;
 		}
 
-		private IList<Vector4> LoadWeights( Accessor value )
-			=> value.AsVector4Array();
+		private Vector4[] LoadWeights( Accessor value )
+			=> value.AsVector4Array().ToArray();
 
-		private IList<uint> LoadIndices( Accessor value )
-			=> value.AsIndicesArray();
+		private uint[] LoadIndices( Accessor value )
+			=> value.AsIndicesArray().ToArray();
 	}
 }
