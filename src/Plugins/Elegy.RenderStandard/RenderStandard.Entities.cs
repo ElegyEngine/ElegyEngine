@@ -70,5 +70,4 @@ public partial class RenderStandard : IRenderFrontend
 			entity.TransformBuffer.Dispose();
 			entity.BoneTransformBuffer?.Dispose();
 		} );
-
 }
