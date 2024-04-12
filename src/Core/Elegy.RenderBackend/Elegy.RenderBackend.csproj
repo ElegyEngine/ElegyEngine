@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\extern\Elegy.Veldrid\src\Veldrid\Veldrid.csproj" />
+    <ProjectReference Include="..\Elegy.Common\Elegy.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
