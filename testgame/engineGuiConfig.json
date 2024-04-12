@@ -1,0 +1,9 @@
+{
+  "configName": "Default",
+  "engineFolder": "engine",
+  "baseFolder": "game",
+  "enginePlugins": [
+    "plugins/RenderStandard",
+    "plugins/DevConsole"
+  ]
+}

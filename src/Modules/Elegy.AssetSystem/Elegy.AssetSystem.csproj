@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>0.1.0-dev.10</Version>
+    <Description>Elegy Engine asset system module</Description>
+    <RepositoryUrl>https://github.com/ElegyEngine/ElegyEngine</RepositoryUrl>
+    <PackageReadmeFile>../MODULES_README.md</PackageReadmeFile>
+    <Authors>Admer456</Authors>
+    <Company>Elegy Engine Organisation</Company>
+    <Copyright>Copyright © 2022-present Elegy Engine contributors</Copyright>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpGLTF.Core" Version="1.0.0-alpha0031" />
+    <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0031" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Elegy.Common\Elegy.Common.csproj" />
+    <ProjectReference Include="..\Elegy.ConsoleSystem\Elegy.ConsoleSystem.csproj" />
+    <ProjectReference Include="..\Elegy.FileSystem\Elegy.FileSystem.csproj" />
+    <ProjectReference Include="..\Elegy.PluginSystem\Elegy.PluginSystem.csproj" />
+  </ItemGroup>
+
+</Project>

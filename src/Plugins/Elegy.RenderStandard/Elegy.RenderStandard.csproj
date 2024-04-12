@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Collections.Pooled" Version="2.0.0-preview.27" />
+    <PackageReference Include="Silk.NET.Windowing.Extensions.Veldrid" Version="2.20.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Elegy.Common\Elegy.Common.csproj" />
+    <ProjectReference Include="..\..\Core\Elegy.Framework\Elegy.Framework.csproj" />
+    <ProjectReference Include="..\..\Core\Elegy.RenderBackend\Elegy.RenderBackend.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.AssetSystem\Elegy.AssetSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.ConsoleSystem\Elegy.ConsoleSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.FileSystem\Elegy.FileSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.PlatformSystem\Elegy.PlatformSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.PluginSystem\Elegy.PluginSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.RenderSystem\Elegy.RenderSystem.csproj" />
+  </ItemGroup>
+
+</Project>

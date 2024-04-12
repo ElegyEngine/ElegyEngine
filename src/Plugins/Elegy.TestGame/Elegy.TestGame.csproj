@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>TestGame</RootNamespace>
+    <AssemblyName>Game</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepuPhysics" Version="2.5.0-beta.22" />
+    <PackageReference Include="DotRecast.Detour" Version="2024.1.3" />
+    <PackageReference Include="fennecs" Version="0.2.0-beta" />
+    <PackageReference Include="MountainGoap" Version="0.14.0" />
+    <PackageReference Include="Silk.NET.Input.Common" Version="2.20.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Elegy.Common\Elegy.Common.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.AssetSystem\Elegy.AssetSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.ConsoleSystem\Elegy.ConsoleSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.FileSystem\Elegy.FileSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.InputSystem\Elegy.InputSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.PluginSystem\Elegy.PluginSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.RenderSystem\Elegy.RenderSystem.csproj" />
+  </ItemGroup>
+
+</Project>

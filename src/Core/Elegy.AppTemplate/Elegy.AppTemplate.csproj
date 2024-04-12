@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Silk.NET.Input.Common" Version="2.20.0" />
+    <PackageReference Include="Silk.NET.Windowing.Common" Version="2.20.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Modules\Elegy.ConsoleSystem\Elegy.ConsoleSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.FileSystem\Elegy.FileSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.InputSystem\Elegy.InputSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.PlatformSystem\Elegy.PlatformSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.PluginSystem\Elegy.PluginSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.RenderSystem\Elegy.RenderSystem.csproj" />
+    <ProjectReference Include="..\Elegy.Common\Elegy.Common.csproj" />
+    <ProjectReference Include="..\Elegy.Framework\Elegy.Framework.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Generators\Elegy.Framework.Generator\Elegy.Framework.Generator.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+  </ItemGroup>
+</Project>
