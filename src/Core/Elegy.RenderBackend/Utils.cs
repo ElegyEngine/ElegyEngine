@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.RenderBackend.Assets;
-using System;
+
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Veldrid;
@@ -12,69 +12,69 @@ namespace Elegy.RenderBackend
 	public static class Utils
 	{
 		#region Type conversion
-		public static string ShaderTypeToGlslString( Assets.ShaderDataType type )
+		public static string ShaderTypeToGlslString( ShaderDataType type )
 			=> type switch
 			{
-				Assets.ShaderDataType.Byte => "bool",
-				Assets.ShaderDataType.Short => "short",
-				Assets.ShaderDataType.Int => "int",
-				Assets.ShaderDataType.Float => "float",
-				Assets.ShaderDataType.Vec2 => "vec2",
-				Assets.ShaderDataType.Vec3 => "vec3",
-				Assets.ShaderDataType.Vec4 => "vec4",
-				Assets.ShaderDataType.Vec2Byte => "vec2",
-				Assets.ShaderDataType.Vec3Byte => "vec3",
-				Assets.ShaderDataType.Vec4Byte => "vec4",
-				Assets.ShaderDataType.Mat22 => "mat2",
-				Assets.ShaderDataType.Mat33 => "mat3",
-				Assets.ShaderDataType.Mat44 => "mat4",
-				Assets.ShaderDataType.Texture1D => "texture1D",
-				Assets.ShaderDataType.Texture2D => "texture2D",
-				Assets.ShaderDataType.Texture3D => "texture3D",
-				Assets.ShaderDataType.Sampler => "sampler",
+				ShaderDataType.Byte => "bool",
+				ShaderDataType.Short => "short",
+				ShaderDataType.Int => "int",
+				ShaderDataType.Float => "float",
+				ShaderDataType.Vec2 => "vec2",
+				ShaderDataType.Vec3 => "vec3",
+				ShaderDataType.Vec4 => "vec4",
+				ShaderDataType.Vec2Byte => "vec2",
+				ShaderDataType.Vec3Byte => "vec3",
+				ShaderDataType.Vec4Byte => "vec4",
+				ShaderDataType.Mat22 => "mat2",
+				ShaderDataType.Mat33 => "mat3",
+				ShaderDataType.Mat44 => "mat4",
+				ShaderDataType.Texture1D => "texture1D",
+				ShaderDataType.Texture2D => "texture2D",
+				ShaderDataType.Texture3D => "texture3D",
+				ShaderDataType.Sampler => "sampler",
 				_ => string.Empty
 			};
 
-		public static ResourceKind TypeToResourceKind( Assets.ShaderDataType type )
+		public static ResourceKind TypeToResourceKind( ShaderDataType type )
 			=> type switch
 			{
-				Assets.ShaderDataType.Sampler => ResourceKind.Sampler,
-				Assets.ShaderDataType.BufferRW => ResourceKind.StructuredBufferReadWrite,
-				Assets.ShaderDataType.Texture1D => ResourceKind.TextureReadOnly,
-				Assets.ShaderDataType.Texture2D => ResourceKind.TextureReadOnly,
-				Assets.ShaderDataType.Texture3D => ResourceKind.TextureReadOnly,
+				ShaderDataType.Sampler => ResourceKind.Sampler,
+				ShaderDataType.BufferRW => ResourceKind.StructuredBufferReadWrite,
+				ShaderDataType.Texture1D => ResourceKind.TextureReadOnly,
+				ShaderDataType.Texture2D => ResourceKind.TextureReadOnly,
+				ShaderDataType.Texture3D => ResourceKind.TextureReadOnly,
 				_ => ResourceKind.UniformBuffer,
 			};
 
-		public static VertexElementFormat ShaderTypeToVertexElementFormat( string name, Assets.ShaderDataType type )
+		public static VertexElementFormat ShaderTypeToVertexElementFormat( string name, ShaderDataType type )
 		{
 			string nameLower = name.ToLower();
 			if ( nameLower.Contains( "normal" ) || nameLower.Contains( "tangent" ) )
 			{
 				return type switch
 				{
-					Assets.ShaderDataType.Vec2 => VertexElementFormat.SByte2_Norm,
-					Assets.ShaderDataType.Vec3 => VertexElementFormat.SByte4_Norm,
-					Assets.ShaderDataType.Vec4 => VertexElementFormat.SByte4_Norm,
+					ShaderDataType.Vec2 => VertexElementFormat.SByte2_Norm,
+					ShaderDataType.Vec3 => VertexElementFormat.SByte4_Norm,
+					ShaderDataType.Vec4 => VertexElementFormat.SByte4_Norm,
 					_ => throw new NotSupportedException( "Normals and tangents can only do vec2/3/4" )
 				};
 			}
 
 			return type switch
 			{
-				Assets.ShaderDataType.Short => VertexElementFormat.Byte2,
-				Assets.ShaderDataType.Int => VertexElementFormat.Int1,
-				Assets.ShaderDataType.Vec2 => VertexElementFormat.Float2,
-				Assets.ShaderDataType.Vec2Byte => VertexElementFormat.Byte2,
-				Assets.ShaderDataType.Vec3 => VertexElementFormat.Float3,
-				Assets.ShaderDataType.Vec4 => VertexElementFormat.Float4,
-				Assets.ShaderDataType.Vec4Byte => VertexElementFormat.Byte4,
+				ShaderDataType.Short => VertexElementFormat.Byte2,
+				ShaderDataType.Int => VertexElementFormat.Int1,
+				ShaderDataType.Vec2 => VertexElementFormat.Float2,
+				ShaderDataType.Vec2Byte => VertexElementFormat.Byte2,
+				ShaderDataType.Vec3 => VertexElementFormat.Float3,
+				ShaderDataType.Vec4 => VertexElementFormat.Float4,
+				ShaderDataType.Vec4Byte => VertexElementFormat.Byte4,
 				_ => VertexElementFormat.Int4
 			};
 		}
 
-		public static BlendAttachmentDescription ExtractBlendDescription( Assets.PipelineInfo info )
-			=> (info.AlphaTest || info.BlendMode == Assets.Blending.Opaque) switch
+		public static BlendAttachmentDescription ExtractBlendDescription( PipelineInfo info )
+			=> (info.AlphaTest || info.BlendMode == Blending.Opaque) switch
 			{
 				// src*1 + dst*0 = src
 				true => BlendAttachmentDescription.Disabled,
@@ -82,13 +82,13 @@ namespace Elegy.RenderBackend
 				false => info.BlendMode switch
 				{
 					// src*alpha + dst*(1-alpha) = lerp(src, dst, alpha)
-					Assets.Blending.Transparent => BlendAttachmentDescription.AlphaBlend,
+					Blending.Transparent => BlendAttachmentDescription.AlphaBlend,
 
 					// src*1 + dst*1 = src + dst
-					Assets.Blending.Additive => BlendAttachmentDescription.AdditiveBlend,
+					Blending.Additive => BlendAttachmentDescription.AdditiveBlend,
 
 					// src*0 + dst*src = src*dst
-					Assets.Blending.Multiply => new()
+					Blending.Multiply => new()
 					{
 						BlendEnabled = true,
 						SourceColorFactor = BlendFactor.Zero,
@@ -101,7 +101,7 @@ namespace Elegy.RenderBackend
 					},
 
 					// src*dst + dst*src = 2(src*dst)
-					Assets.Blending.MiddleGray => new()
+					Blending.MiddleGray => new()
 					{
 						BlendEnabled = true,
 						SourceColorFactor = BlendFactor.DestinationColor,
@@ -117,7 +117,7 @@ namespace Elegy.RenderBackend
 				}
 			};
 
-		public static BlendStateDescription ExtractBlendState( Assets.MaterialTemplate materialTemplate )
+		public static BlendStateDescription ExtractBlendState( MaterialTemplate materialTemplate )
 			=> new()
 			{
 				// TODO: might wanna expose this to material params,
@@ -126,12 +126,12 @@ namespace Elegy.RenderBackend
 				AttachmentStates = [ ExtractBlendDescription( materialTemplate.PipelineInfo ) ]
 			};
 
-		public static VertexLayoutDescription[] ExtractVertexLayouts( Assets.ShaderTemplateEntry variant )
+		public static VertexLayoutDescription[] ExtractVertexLayouts( ShaderTemplateEntry variant )
 		{
 			VertexLayoutDescription[] vertexLayouts = new VertexLayoutDescription[variant.VertexLayouts.Count];
 			for ( int i = 0; i < variant.VertexLayouts.Count; i++ )
 			{
-				Assets.VertexLayoutEntry entry = variant.VertexLayouts[i];
+				VertexLayoutEntry entry = variant.VertexLayouts[i];
 
 				vertexLayouts[i] = new()
 				{
@@ -149,7 +149,7 @@ namespace Elegy.RenderBackend
 			return vertexLayouts;
 		}
 
-		public static RasterizerStateDescription ExtractRasterizerState( Assets.MaterialTemplate materialTemplate )
+		public static RasterizerStateDescription ExtractRasterizerState( MaterialTemplate materialTemplate )
 			=> new()
 			{
 				FrontFace = FrontFace.CounterClockwise,
@@ -159,10 +159,10 @@ namespace Elegy.RenderBackend
 				DepthClipEnabled = true // TODO: depth testing in the material template errr maybe?
 			};
 
-		public static DepthStencilStateDescription ExtractDepthStencilState( Assets.MaterialTemplate materialTemplate )
+		public static DepthStencilStateDescription ExtractDepthStencilState( MaterialTemplate materialTemplate )
 			=> materialTemplate.PipelineInfo.BlendMode switch
 			{
-				Assets.Blending.Opaque => DepthStencilStateDescription.DepthOnlyLessEqual,
+				Blending.Opaque => DepthStencilStateDescription.DepthOnlyLessEqual,
 				_ => DepthStencilStateDescription.DepthOnlyLessEqualRead
 			};
 		#endregion
@@ -230,7 +230,7 @@ namespace Elegy.RenderBackend
 			return File.ReadAllBytes( path );
 		}
 
-		public static string PathToShaderVariant( Assets.ShaderTemplate template, Assets.ShaderTemplateEntry entry )
+		public static string PathToShaderVariant( ShaderTemplate template, ShaderTemplateEntry entry )
 		{
 			return $"{template.Name}_{entry.ShaderDefine}";
 		}
@@ -240,15 +240,15 @@ namespace Elegy.RenderBackend
 		{
 			string lowerName = name.ToLower();
 
-			if ( name.Contains( "normal" ) || name.Contains( "tangent" ) )
+			if ( lowerName.Contains( "normal" ) || lowerName.Contains( "tangent" ) )
 			{
 				return VertexElementSemantic.Normal;
 			}
-			else if ( name.Contains( "uv" ) || name.Contains( "tex" ) )
+			else if ( lowerName.Contains( "uv" ) || lowerName.Contains( "tex" ) )
 			{
 				return VertexElementSemantic.TextureCoordinate;
 			}
-			else if ( name.Contains( "col" ) )
+			else if ( lowerName.Contains( "col" ) )
 			{
 				return VertexElementSemantic.Color;
 			}
@@ -311,6 +311,42 @@ namespace Elegy.RenderBackend
 					$"Unsupported format of vertex element '{propertyInfo.DeclaringType?.Name ?? "unknown"}.{propertyInfo.Name}'" )
 			};
 		}
+
+		public static VertexLayoutDescription GenerateStandardVertexLayoutElement( VertexSemantic semantic )
+			=> new()
+			{
+				Stride = semantic switch
+				{
+					VertexSemantic.Position => 3 * sizeof( float ),
+					VertexSemantic.Normal => 4 * sizeof( byte ),
+					VertexSemantic.Tangent => 4 * sizeof( byte ),
+					VertexSemantic.Uv => 2 * sizeof( float ),
+					VertexSemantic.Colour => 4 * sizeof( byte ),
+					VertexSemantic.BoneWeight => 4 * sizeof( byte ),
+					VertexSemantic.BoneIndex => 4 * sizeof( byte ),
+					_ => throw new ArgumentException()
+				},
+
+				Elements =
+				[
+					new VertexElementDescription()
+					{
+						Name = semantic.ToString(),
+						Offset = 0,
+						Format = semantic switch
+						{
+							VertexSemantic.Position => VertexElementFormat.Float3,
+							VertexSemantic.Normal => VertexElementFormat.Byte4,
+							VertexSemantic.Tangent => VertexElementFormat.Byte4,
+							VertexSemantic.Uv => VertexElementFormat.Float2,
+							VertexSemantic.Colour => VertexElementFormat.Byte4,
+							VertexSemantic.BoneWeight => VertexElementFormat.Byte4,
+							VertexSemantic.BoneIndex => VertexElementFormat.Byte4,
+							_ => throw new ArgumentException()
+						}
+					}
+				]
+			};
 
 		public static VertexLayoutDescription[] GenerateVertexLayoutFor<TVertex>() where TVertex : struct
 		{
