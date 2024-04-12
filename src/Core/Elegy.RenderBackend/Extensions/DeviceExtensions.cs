@@ -24,6 +24,12 @@ namespace Elegy.RenderBackend.Extensions
 			device.UpdateBuffer( buffer, 0, ref obj );
 			return buffer;
 		}
+
+		public static DeviceBuffer CreateBufferFromSpan<T>( this GraphicsDevice device, BufferUsage usage, ReadOnlySpan<T> span )
+			where T: unmanaged
+		{
+			var buffer = device.ResourceFactory.CreateBufferForSpan( usage, span );
+			device.UpdateBuffer( buffer, 0, span );
 			return buffer;
 		}
 	}
