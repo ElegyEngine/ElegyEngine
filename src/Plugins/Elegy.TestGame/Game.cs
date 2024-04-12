@@ -7,9 +7,15 @@ using Elegy.Common.Interfaces;
 using Elegy.ConsoleSystem;
 using Elegy.InputSystem.API;
 using Elegy.FileSystem.API;
+using Elegy.RenderSystem.API;
 
 using Silk.NET.Input;
 using TestGame.Client;
+
+using IRenderView = Elegy.RenderSystem.Interfaces.Rendering.IView;
+using IRenderEntity = Elegy.RenderSystem.Interfaces.Rendering.IEntity;
+using Elegy.PlatformSystem.API;
+using Elegy.Common.Maths;
 
 namespace TestGame
 {
@@ -63,6 +69,8 @@ namespace TestGame
 			};
 
 			mMenu.Init();
+
+			StartGame();
 
 			return true;
 		}
@@ -132,6 +140,15 @@ namespace TestGame
 			{
 				mLogger.Error( "Cannot load 'models/test.gltf'" );
 			}
+			else
+			{
+				mShowcaseEntity = Render.Instance.CreateEntity( false );
+				mShowcaseEntity.Mesh = Render.Instance.CreateMesh( mShowcaseModel );
+			}
+
+			mRenderView = Render.Instance.GetView( Platform.GetCurrentWindow() );
+			mRenderView.Projection = Matrix4x4.CreatePerspectiveFieldOfView( MathF.PI / 4.0f, 16.0f / 9.0f, 0.01f, 4096.0f );
+			mRenderView.Transform = Matrix4x4.CreateLookAt( new( 10.0f, 20.0f, 10.0f ), Vector3.Zero, Vector3.UnitZ );
 
 			mLogger.Success( "Map successfully loaded, enjoy" );
 			mGameIsLoaded = true;
@@ -167,6 +184,8 @@ namespace TestGame
 		private GameClient? mClient;
 		private MainMenu mMenu = new();
 		private Model? mShowcaseModel = null;
+		private IRenderEntity? mShowcaseEntity = null;
+		private IRenderView? mRenderView = null;
 		
 		private bool mGameIsLoaded = false;
 		private bool mEscapeWasHeld = false;
