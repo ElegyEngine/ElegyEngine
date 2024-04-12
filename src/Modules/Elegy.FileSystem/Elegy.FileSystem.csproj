@@ -4,6 +4,18 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>0.1.0-dev.10</Version>
+    <Description>Elegy Engine virtual filesystem module</Description>
+    <RepositoryUrl>https://github.com/ElegyEngine/ElegyEngine</RepositoryUrl>
+    <PackageReadmeFile>../MODULES_README.md</PackageReadmeFile>
+    <Authors>Admer456</Authors>
+    <Company>Elegy Engine Organisation</Company>
+    <Copyright>Copyright © 2022-present Elegy Engine contributors</Copyright>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
