@@ -11,7 +11,8 @@ Check out [Elegy.TestGame](src/Elegy.TestGame) for an example game module, as we
 
 For level designers who use TrenchBroom, a [game config](config/trenchbroom) is provided. Other level editors are likely unsupported but could work depending on how well they do Quake 3.
 
-*Note: early WiP, check back in Q3 2024!*
+*Note: early WiP, check back in Q4 2024!*  
+*Right now the engine is not usable for gamedev of any kind.*
 
 # Building
 
@@ -26,20 +27,14 @@ For level designers who use TrenchBroom, a [game config](config/trenchbroom) is 
 * PowerShell 7 ([link](https://github.com/PowerShell/PowerShell))
 
 ### Building the code
-If you're brave enough to touch this code, you can get started with simply running `build/setup_firsttime.ps1`.
+If you're brave enough to touch this code, you can get started with simply running `build/setup_firsttime.ps1`.  
+It will create all the projects, compile the shaders and copy everything needed into `testgame/`.
 
-Should you do it manually:
-* you can build all projects from `src/Elegy.sln`, you'll specifically need:
-	* Elegy.Engine
-	* Elegy.RenderStandard
-	* Elegy.DevConsole
-	* Elegy.TestGame
-	* Elegy.ShaderTool (Release config)
-* compiled modules can than then be copied into `testgame/` via `build/copy_dlls.ps1`.
-* shaders can then be built with `build/build_shaders.ps1`
+**For debugging** it's a good idea to create a debug profile for `Elegy.Launcher2` whose working directory points to `testgame/`. Also every time you build one of the projects in `Plugins/` you will need to copy them using `build/copy_dlls.ps1`.
 
-Optional notes:
+Other notes:
 * if you decide to make NuGet packages, you may find some of the other scripts in `build/` useful, just make sure to adjust the paths
+* building & testing your game/plugin code will be more streamlined in the future
 
 # Licence
 
