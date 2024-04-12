@@ -165,6 +165,7 @@ namespace Elegy.RenderBackend
 			};
 		#endregion
 
+		#region Size stuff
 		public static uint GetStrideForVertexFormat( VertexElementFormat format )
 			=> format switch
 			{
@@ -220,6 +221,7 @@ namespace Elegy.RenderBackend
 
 			return bytes + (bytes % 16);
 		}
+		#endregion
 
 		public static byte[] LoadShaderBytes( string path )
 		{
@@ -231,6 +233,7 @@ namespace Elegy.RenderBackend
 			return $"{template.Name}_{entry.ShaderDefine}";
 		}
 
+		#region Extraction
 		public static VertexElementSemantic GetVertexElementSemantic( string name )
 		{
 			string lowerName = name.ToLower();
@@ -300,5 +303,6 @@ namespace Elegy.RenderBackend
 				}
 			];
 		}
+		#endregion
 	}
 }
