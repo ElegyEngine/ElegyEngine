@@ -48,5 +48,20 @@ namespace Elegy.Common.Assets.MeshData
 		public Vector4[] BoneWeights { get; set; } = Array.Empty<Vector4>();
 		/// <summary> Vertex indices. </summary>
 		public uint[] Indices { get; set; } = Array.Empty<uint>();
+
+		/// <summary> Transforms a sequence of vertex data into another format, e.g. float3 into byte4. </summary>
+		public static TDestination[] Transform<TSource, TDestination>( IList<TSource> source, Func<TSource, TDestination> transform )
+			where TSource: unmanaged
+			where TDestination: unmanaged
+		{
+			// Say no to LINQ !!!
+			TDestination[] result = new TDestination[source.Count];
+			for ( int i = 0; i < source.Count; i++ )
+			{
+				result[i] = transform( source[i] );
+			}
+
+			return result;
+		}
 	}
 }
