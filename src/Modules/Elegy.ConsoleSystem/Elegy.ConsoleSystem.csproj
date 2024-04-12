@@ -11,12 +11,19 @@
     <Version>0.1.0-dev.10</Version>
     <Description>Elegy Engine console system module</Description>
     <RepositoryUrl>https://github.com/ElegyEngine/ElegyEngine</RepositoryUrl>
-    <PackageReadmeFile>../MODULES_README.md</PackageReadmeFile>
+    <PackageReadmeFile>MODULES_README.md</PackageReadmeFile>
     <Authors>Admer456</Authors>
     <Company>Elegy Engine Organisation</Company>
     <Copyright>Copyright © 2022-present Elegy Engine contributors</Copyright>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../MODULES_README.md">
+      <Pack>True</Pack>
+      <PackagePath>/</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Elegy.Common\Elegy.Common.csproj" />
