@@ -9,7 +9,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>0.1.0-dev.3</Version>
+    <Version>0.1.0-dev.10</Version>
     <Company>Elegy Engine Organisation</Company>
     <Authors>Admer456</Authors>
     <Description>Elegy Engine shared library</Description>
