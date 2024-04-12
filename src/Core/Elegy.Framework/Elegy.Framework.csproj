@@ -10,8 +10,8 @@
     <FileVersion></FileVersion>
     <AssemblyVersion></AssemblyVersion>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>0.1.0-dev.3</Version>
     <ProjectName>Elegy.Framework</ProjectName>
+    <Version>0.1.0-dev.10</Version>
     <Description>Elegy Engine framework</Description>
     <RepositoryUrl>https://github.com/ElegyEngine/ElegyEngine</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
