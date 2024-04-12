@@ -1,6 +1,8 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.RenderBackend.Assets;
+using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Veldrid;
@@ -252,6 +254,38 @@ namespace Elegy.RenderBackend
 			}
 
 			return VertexElementSemantic.Position;
+		}
+
+		public static VertexSemantic GetVertexSemantic( string name )
+		{
+			string lowerName = name.ToLower();
+
+			if ( lowerName.Contains( "normal" ) )
+			{
+				return VertexSemantic.Normal;
+			}
+			else if ( lowerName.Contains( "tangent" ) )
+			{
+				return VertexSemantic.Tangent;
+			}
+			else if ( lowerName.Contains( "uv" ) || lowerName.Contains( "tex" ) )
+			{
+				return VertexSemantic.Uv;
+			}
+			else if ( lowerName.Contains( "col" ) )
+			{
+				return VertexSemantic.Colour;
+			}
+			else if ( lowerName.Contains( "weight" ) )
+			{
+				return VertexSemantic.BoneWeight;
+			}
+			else if ( lowerName.Contains( "index" ) || lowerName.Contains( "indices" ) )
+			{
+				return VertexSemantic.BoneIndex;
+			}
+
+			return VertexSemantic.Position;
 		}
 
 		public static VertexElementSemantic GetVertexElementSemantic( PropertyInfo propertyInfo )
