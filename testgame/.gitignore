@@ -10,9 +10,9 @@
 *.deps.json
 
 # Elegy documentation
-Elegy.Common.xml
-Elegy.Engine.xml
+Elegy*.xml
 Veldrid.xml
+
 
 # Generated shaders
 */shaders/bin/
