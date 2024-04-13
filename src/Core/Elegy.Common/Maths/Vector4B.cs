@@ -297,6 +297,17 @@ namespace Elegy.Common.Maths
 		}
 
 		/// <summary>
+		/// Constructs a new <see cref="Vector4B"/> from the given <see cref="Vector4"/>.
+		/// </summary>
+		public Vector4B( Vector4 v )
+		{
+			X = (byte)v.X;
+			Y = (byte)v.Y;
+			Z = (byte)v.Z;
+			W = (byte)v.W;
+		}
+
+		/// <summary>
 		/// Adds each component of the <see cref="Vector4B"/>
 		/// with the components of the given <see cref="Vector4B"/>.
 		/// </summary>
