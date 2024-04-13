@@ -44,6 +44,9 @@ namespace Elegy.Common.Assets
 		/// <summary> Type of texture compression, if any. </summary>
 		public TextureCompression Compression { get; init; } = TextureCompression.None;
 
+		/// <summary> Is this an SRGB texture? </summary>
+		public bool Srgb { get; init; } = true;
+
 		/// <summary> Is this a 1D texture? </summary>
 		public bool Is1D => Height == 0 && Depth == 0;
 
