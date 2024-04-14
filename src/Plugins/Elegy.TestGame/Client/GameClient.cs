@@ -11,7 +11,6 @@ namespace TestGame.Client
 	{
 		public GameClient()
 		{
-			GrabMouse();
 		}
 
 		public void Update()
