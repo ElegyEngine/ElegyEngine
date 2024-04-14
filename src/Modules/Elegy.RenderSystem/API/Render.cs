@@ -22,6 +22,7 @@ namespace Elegy.RenderSystem.API
 		public static void Shutdown()
 		{
 			mLogger.Log( "Shutdown" );
+
 			Plugins.UnregisterPluginCollector<RenderPluginCollector>();
 			Plugins.UnregisterDependency( "Elegy.RenderSystem" );
 			Plugins.UnregisterDependency( "Elegy.RenderBackend" );
