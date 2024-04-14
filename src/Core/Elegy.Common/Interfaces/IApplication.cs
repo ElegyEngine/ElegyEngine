@@ -12,7 +12,7 @@ namespace Elegy.Common.Interfaces
 	public interface IApplication : IPlugin
 	{
 		/// <summary>
-		/// Start up game/app systems after all plugins have loaded.
+		/// Start up game/app systems after all plugins and systems have loaded.
 		/// </summary>
 		/// <returns></returns>
 		bool Start();
