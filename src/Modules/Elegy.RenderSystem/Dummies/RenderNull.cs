@@ -21,7 +21,7 @@ namespace Elegy.RenderSystem.Dummies
 
 		public IEntity? CreateEntity( bool animated ) => null;
 		public ILight? CreateLight() => null;
-		public IMaterial? CreateMaterial( Material material ) => null;
+		public IMaterial? CreateMaterial( MaterialDefinition materialDefinition ) => null;
 		public IMesh? CreateMesh( Model modelData ) => null;
 		public ITexture? CreateTexture( TextureMetadata metadata, Span<byte> data ) => null;
 		public Interfaces.Rendering.IView? CreateView( IWindow window ) => null;
