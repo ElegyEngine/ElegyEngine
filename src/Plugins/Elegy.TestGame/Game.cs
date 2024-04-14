@@ -135,10 +135,10 @@ namespace TestGame
 				Controller = new BasicController()
 			};
 
-			mShowcaseModel = Assets.LoadModel( "models/test.gltf" );
+			mShowcaseModel = Assets.LoadModel( "models/test.glb" );
 			if ( mShowcaseModel is null )
 			{
-				mLogger.Error( "Cannot load 'models/test.gltf'" );
+				mLogger.Error( "Cannot load 'models/test.glb'" );
 			}
 			else
 			{
