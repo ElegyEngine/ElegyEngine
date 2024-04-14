@@ -83,6 +83,7 @@ public partial class RenderStandard : IRenderFrontend
 
 	public void Shutdown()
 	{
+		mLogger.Log( "Shutdown" );
 		Initialised = false;
 	}
 }
