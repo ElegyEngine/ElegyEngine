@@ -21,6 +21,12 @@ namespace Elegy.AssetSystem.API
 			return InitMaterials();
 		}
 
+		public static bool PostInit()
+		{
+			// The missing texture can be created once the renderer is initialised, so yeah
+			return CreateMissingTexture();
+		}
+
 		public static void SetRenderFactories( Func<MaterialDefinition, IMaterial?> materialFactory, Func<TextureMetadata, byte[], ITexture?> textureFactory )
 		{
 			mRenderMaterialFactory = materialFactory;

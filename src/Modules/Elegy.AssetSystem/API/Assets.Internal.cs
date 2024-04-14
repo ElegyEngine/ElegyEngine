@@ -33,10 +33,10 @@ namespace Elegy.AssetSystem.API
 		private static Dictionary<string, Texture> mTextures = new();
 		private static Dictionary<string, Model> mModels;
 
-		private static Texture mMissingTexture { get; set; }
+		internal static Texture mMissingTexture;
 
-		private static Func<MaterialDefinition, IMaterial>? mRenderMaterialFactory = null;
-		private static Func<TextureMetadata, byte[], ITexture>? mRenderTextureFactory = null;
+		private static Func<MaterialDefinition, IMaterial?>? mRenderMaterialFactory = null;
+		private static Func<TextureMetadata, byte[], ITexture?>? mRenderTextureFactory = null;
 
 		private static IEnumerable<Material> GetMaterialList()
 		{
@@ -103,7 +103,7 @@ namespace Elegy.AssetSystem.API
 
 			loadMaterialsForDirectory( $"This game", Files.CurrentGamePath );
 
-			return CreateMissingTexture();
+			return true;
 		}
 
 		private static bool CreateMissingTexture()
