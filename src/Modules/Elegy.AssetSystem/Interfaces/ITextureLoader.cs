@@ -15,6 +15,7 @@ namespace Elegy.AssetSystem.Interfaces
 		/// </summary>
 		/// <param name="path">Full path to an image.</param>
 		/// <param name="withoutData">If true, only load the metadata.</param>
-		(TextureMetadata?, byte[]?) LoadTexture( string path, bool withoutData );
+		/// <param name="hintSrgb">If true, mark the texture as an SRGB one.</param>
+		(TextureMetadata?, byte[]?) LoadTexture( string path, bool withoutData, bool hintSrgb );
 	}
 }
