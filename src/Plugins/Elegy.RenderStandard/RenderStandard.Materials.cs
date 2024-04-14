@@ -99,11 +99,46 @@ public class RenderTexture : ITexture
 			Depth = Math.Max( 1, data.Depth ),
 
 			ArrayLayers = 1,
+			// TODO: mipmapping
 			MipLevels = 1,
 
-			// TODO: TextureMetadata.Compression and others
-			Format = PixelFormat.B8_G8_R8_A8_UNorm,
-			SampleCount = TextureSampleCount.Count16,
+			// TODO: Make this more complete and rigorous
+			Format = data.Compression switch
+			{
+				TextureCompression.Dxt1 => (data.Components, data.Srgb) switch
+				{
+					( 3, false ) => PixelFormat.BC1_Rgb_UNorm,
+					( 3, true ) => PixelFormat.BC1_Rgb_UNorm_SRgb,
+					( 4, false ) => PixelFormat.BC1_Rgba_UNorm,
+					( 4, true ) => PixelFormat.BC1_Rgba_UNorm_SRgb,
+					_ => throw new NotSupportedException()
+				},
+
+				TextureCompression.Dxt5 => data.Srgb switch
+				{
+					true => PixelFormat.BC3_UNorm_SRgb,
+					false => PixelFormat.BC3_UNorm
+				},
+
+				TextureCompression.None => (data.BytesPerPixel, data.Components, data.Srgb, data.Float) switch
+				{
+					( 1, 4, false, false ) => PixelFormat.B8_G8_R8_A8_UNorm,
+					( 1, 4, true, false ) => PixelFormat.B8_G8_R8_A8_UNorm_SRgb,
+
+					( 4, 1, false, true ) => PixelFormat.R32_Float,
+					( 4, 2, false, true ) => PixelFormat.R32_G32_Float,
+					( 4, 4, false, true ) => PixelFormat.R32_G32_B32_A32_Float,
+
+					( 4, 1, false, false ) => PixelFormat.R32_UInt,
+					( 4, 2, false, false ) => PixelFormat.R32_G32_UInt,
+					( 4, 4, false, false ) => PixelFormat.R32_G32_B32_A32_UInt,
+					_ => throw new NotSupportedException()
+				},
+
+				_ => throw new NotImplementedException()
+			},
+
+			SampleCount = TextureSampleCount.Count1,
 			Type = data.Is1D switch
 			{
 				true => TextureType.Texture1D,
