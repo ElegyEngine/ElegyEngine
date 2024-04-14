@@ -14,30 +14,23 @@ using ModelMesh = Elegy.Common.Assets.MeshData.Mesh;
 
 namespace Elegy.RenderStandard;
 
-public class RenderSubmesh
-{
-	public RenderSubmesh( RenderMaterial material, DeviceBuffer buffer )
-	{
-
-	}
-
-	public RenderMaterial Material;
-	public DeviceBuffer MeshBuffer;
-}
-
 public class RenderMesh : IMesh
 {
+	private RenderStandard mHost;
 	private GraphicsDevice mDevice;
-	private List<RenderSubmesh> mSubmeshes = new();
+	private List<ArrayMesh> mSubmeshes = new();
+	private List<RenderMaterial> mMaterials = new();
 
-	public RenderMesh( GraphicsDevice device, Model modelData )
+	public RenderMesh( RenderStandard host, GraphicsDevice device, Model modelData )
 	{
+		mHost = host;
 		mDevice = device;
 		Data = modelData;
 
 		foreach ( var modelMesh in modelData.Meshes )
 		{
-			
+			mSubmeshes.Add( new ArrayMesh( mDevice, modelMesh ) );
+			mMaterials.Add( mHost.GetMaterial( modelMesh.MaterialName ) );
 		}
 	}
 
@@ -47,17 +40,22 @@ public class RenderMesh : IMesh
 	{
 		Clear();
 
-
+		foreach ( var modelMesh in Data.Meshes )
+		{
+			mSubmeshes.Add( new ArrayMesh( mDevice, modelMesh ) );
+			mMaterials.Add( mHost.GetMaterial( modelMesh.MaterialName ) );
+		}
 	}
 
 	public void Clear()
 	{
 		foreach ( var submesh in mSubmeshes )
 		{
-			submesh.MeshBuffer.Dispose();
+			submesh.Dispose();
 		}
 
 		mSubmeshes.Clear();
+		mMaterials.Clear();
 	}
 }
 
@@ -66,7 +64,7 @@ public partial class RenderStandard : IRenderFrontend
 	private PooledSet<RenderMesh> mMeshSet = new( 1024 );
 
 	public IMesh CreateMesh( Model modelData )
-		=> mMeshSet.AddAndGet( new RenderMesh( mDevice, modelData ) );
+		=> mMeshSet.AddAndGet( new RenderMesh( this, mDevice, modelData ) );
 
 	public bool FreeMesh( IMesh mesh )
 		=> mMeshSet.RemoveAndThen( (RenderMesh)mesh, ( mesh ) =>
