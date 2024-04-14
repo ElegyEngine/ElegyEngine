@@ -1,0 +1,13 @@
+{
+	"files.associations": {
+		"*.json": "jsonc",
+		"set": "cpp",
+		"locale": "c",
+		"thread": "c",
+		"xlocale": "c",
+		"xlocmes": "c",
+		"xlocmon": "c",
+		"xlocnum": "c",
+		"xloctime": "c"
+	}
+}
