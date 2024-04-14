@@ -7,6 +7,7 @@ using Veldrid;
 
 using Elegy.ConsoleSystem;
 using Elegy.RenderSystem.Interfaces;
+using Elegy.AssetSystem.API;
 
 namespace Elegy.RenderStandard;
 

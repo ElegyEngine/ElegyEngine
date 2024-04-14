@@ -2,17 +2,22 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Assets;
+using Elegy.Common.Maths;
+using Elegy.AssetSystem.API;
 using Elegy.AssetSystem.Interfaces;
 using Elegy.AssetSystem.Interfaces.Rendering;
 using Elegy.RenderSystem.Interfaces;
 using Elegy.RenderSystem.Interfaces.Rendering;
 using Elegy.RenderBackend.Assets;
 
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Veldrid;
 
 using ShaderDataType = Elegy.RenderBackend.Assets.ShaderDataType;
+using Collections.Pooled;
+
 
 namespace Elegy.RenderStandard;
 
