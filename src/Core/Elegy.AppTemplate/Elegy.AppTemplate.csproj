@@ -24,5 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Generators\Elegy.Framework.Generator\Elegy.Framework.Generator.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\Elegy.RenderBackend\Elegy.RenderBackend.csproj" />
   </ItemGroup>
 </Project>
