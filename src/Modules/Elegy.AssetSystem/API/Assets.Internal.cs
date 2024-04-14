@@ -63,7 +63,7 @@ namespace Elegy.AssetSystem.API
 					return false;
 				}
 
-				var materialDocumentPaths = Files.GetEntries( path, "*.shader", PathFlags.File, true );
+				var materialDocumentPaths = Files.GetEntries( path, "*.shader", PathFlags.File, recursive: true );
 				if ( materialDocumentPaths is null || materialDocumentPaths.Length == 0 )
 				{
 					mLogger.Error( $"{name}'s materials directory is empty!" );
