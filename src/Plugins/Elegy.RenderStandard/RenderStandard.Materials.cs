@@ -21,7 +21,7 @@ using Collections.Pooled;
 
 namespace Elegy.RenderStandard;
 
-[StructLayout(LayoutKind.Sequential)]
+[StructLayout( LayoutKind.Sequential )]
 internal struct Vector2Byte
 {
 	public Vector2Byte( byte x, byte y )
