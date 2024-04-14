@@ -63,16 +63,13 @@ namespace Elegy.AssetSystem.API
 			return true;
 		}
 
-		/// <summary>
-		/// Loads and returns a <see cref="Texture"/>.
-		/// </summary>
-		public static Texture? LoadTexture( string texturePath )
+		private static (TextureMetadata? textureMetadata, byte[]? data) LoadTextureInternal( string texturePath, bool withoutData, bool hintSrgb )
 		{
 			string? fullPath = Files.PathTo( texturePath, PathFlags.File );
 			if ( fullPath is null )
 			{
 				mLogger.Error( $"LoadTexture: Can't find texture '{texturePath}'" );
-				return MissingTexture;
+				return (null, null);
 			}
 
 			string extension = Path.GetExtension( texturePath ) ?? "";
@@ -80,19 +77,47 @@ namespace Elegy.AssetSystem.API
 			if ( textureLoader is null )
 			{
 				mLogger.Error( $"LoadTexture: Unsupported format '{extension}'" );
-				return MissingTexture;
+				return (null, null);
 			}
 
-			(TextureMetadata? textureMetadata, byte[]? data) = textureLoader.LoadTexture( fullPath, false );
+			(TextureMetadata? textureMetadata, byte[]? data) = textureLoader.LoadTexture( fullPath, withoutData, hintSrgb );
 			if ( data is null )
 			{
 				mLogger.Error( $"LoadTexture: Couldn't load data for texture '{texturePath}'" );
-				return MissingTexture;
+				return (null, null);
+			}
+
+			return (textureMetadata, data);
+		}
+
+		/// <summary>
+		/// Loads and returns a <see cref="Texture"/>.
+		/// Caches the result so it can be easily retrieved if the same texture
+		/// is referenced by multiple materials.
+		/// </summary>
+		public static Texture? LoadTexture( string texturePath, bool hintSrgb = false )
+		{
+			if ( mTextures.ContainsKey( texturePath ) )
+			{
+				return mTextures[texturePath];
+			}
+
+			(TextureMetadata? textureMetadata, byte[]? data) = LoadTextureInternal( texturePath, withoutData: false, hintSrgb );
+			if ( textureMetadata is null || data is null )
+			{
+				return MissingTexture; 
 			}
 
 			mTextures[texturePath] = CreateTexture( textureMetadata, data );
 			return mTextures[texturePath];
 		}
+
+		/// <summary>
+		/// Loads and returns a <see cref="TextureMetadata"/>.
+		/// This result is not cached, unlike <see cref="LoadTexture"/>.
+		/// </summary>
+		public static TextureMetadata? GetTextureMetadata( string texturePath )
+			=> LoadTextureInternal( texturePath, withoutData: true, hintSrgb: false ).textureMetadata;
 
 		/// <summary>
 		/// Finds an appropriate <see cref="ITextureLoader"/> according to one of the <paramref name="extensions"/>.
