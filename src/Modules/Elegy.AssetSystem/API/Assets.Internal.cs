@@ -32,7 +32,7 @@ namespace Elegy.AssetSystem.API
 		private static List<MaterialDocument> mMaterialDocuments = new();
 		private static Dictionary<string, MaterialDefinitionPair> mMaterialDefs = new();
 		private static Dictionary<string, Texture> mTextures = new();
-		private static Dictionary<string, Model> mModels;
+		private static Dictionary<string, Model> mModels = new();
 
 		internal static Texture mMissingTexture;
 
