@@ -29,7 +29,7 @@ namespace Elegy.RenderSystem.Interfaces
 		bool FreeLight( ILight light );
 
 		/// <summary>Creates a render material.</summary>
-		IMaterial? CreateMaterial( Material material );
+		IMaterial? CreateMaterial( MaterialDefinition materialDefinition );
 		
 		/// <summary>Frees a render material.</summary>
 		bool FreeMaterial( IMaterial material );
