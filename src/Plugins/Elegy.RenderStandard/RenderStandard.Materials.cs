@@ -18,6 +18,8 @@ using Veldrid;
 using ShaderDataType = Elegy.RenderBackend.Assets.ShaderDataType;
 using Collections.Pooled;
 
+using Material = Elegy.AssetSystem.Resources.Material;
+using Elegy.RenderStandard.Extensions;
 
 namespace Elegy.RenderStandard;
 
@@ -60,36 +62,11 @@ internal struct Vector3Byte
 	public byte Z;
 }
 
-[StructLayout( LayoutKind.Sequential )]
-internal struct Vector4Byte
-{
-	public Vector4Byte( byte x, byte y, byte z, byte w )
-	{
-		X = x;
-		Y = y;
-		Z = z;
-		W = w;
-	}
-
-	public static implicit operator Vector4Byte( Vector4 v )
-		=> new(
-			(byte)(v.X * 255.0f),
-			(byte)(v.Y * 255.0f),
-			(byte)(v.Z * 255.0f),
-			(byte)(v.W * 255.0f) );
-
-	public byte X;
-	public byte Y;
-	public byte Z;
-	public byte W;
-}
-
-// This is a bit of a stub
-public class RenderTexture : ITexture
+public class RenderTexture : ITexture, IDisposable
 {
 	private GraphicsDevice mDevice;
 
-	public RenderTexture( GraphicsDevice device, in TextureMetadata data )
+	public RenderTexture( GraphicsDevice device, in TextureMetadata data, in Span<byte> bytes )
 	{
 		mDevice = device;
 		DeviceTexture = device.ResourceFactory.CreateTexture( new()
@@ -150,6 +127,8 @@ public class RenderTexture : ITexture
 			},
 			Usage = TextureUsage.Sampled
 		} );
+
+		UpdatePixels( bytes );
 	}
 
 	public int Width => (int)DeviceTexture.Width;
@@ -166,6 +145,11 @@ public class RenderTexture : ITexture
 	public void UpdatePixels( Span<byte> newPixels )
 	{
 		mDevice.UpdateTexture( DeviceTexture, newPixels, 0, 0, 0, DeviceTexture.Width, DeviceTexture.Height, DeviceTexture.Depth, 0, 0 );
+	}
+
+	public void Dispose()
+	{
+		DeviceTexture.Dispose();
 	}
 }
 
@@ -187,9 +171,7 @@ public class RenderMaterialParameter
 	}
 
 	public void SetValue( GraphicsDevice device, float value )
-	{
-		device.UpdateBuffer( Buffer, 0, value );
-	}
+		=> device.UpdateBuffer( Buffer, 0, value );
 
 	public void SetValue( GraphicsDevice device, bool value )
 		=> SetValue( device, value ? 1 : 0 );
@@ -217,7 +199,7 @@ public class RenderMaterialParameter
 		switch ( Type )
 		{
 			case ShaderDataType.Vec4: device.UpdateBuffer( Buffer, 0, value ); break;
-			case ShaderDataType.Vec4Byte: device.UpdateBuffer<Vector4Byte>( Buffer, 0, value ); break;
+			case ShaderDataType.Vec4Byte: device.UpdateBuffer( Buffer, 0, new Vector4B( value ) ); break;
 		}
 	}
 
@@ -226,7 +208,7 @@ public class RenderMaterialParameter
 		device.UpdateBuffer( Buffer, 0, value );
 	}
 
-	public void SetBufferValue<T>( GraphicsDevice device, T bufferValue ) where T: unmanaged
+	public void SetBufferValue<T>( GraphicsDevice device, T bufferValue ) where T : unmanaged
 	{
 		device.UpdateBuffer( Buffer, 0, bufferValue );
 	}
@@ -240,14 +222,15 @@ public class RenderMaterialParameter
 
 public class RenderMaterial : IMaterial
 {
-	public RenderMaterial( GraphicsDevice device, MaterialTemplate materialTemplate )
+	public RenderMaterial( GraphicsDevice device, MaterialDefinition materialDefinition )
 	{
 		mDevice = device;
-		
+		MaterialDefinition = materialDefinition;
 	}
 
 	private GraphicsDevice mDevice;
 	public List<RenderMaterialParameter> Parameters { get; set; } = new();
+	public MaterialDefinition MaterialDefinition { get; private set; }
 
 	public string[] GetParameterNames()
 	{
@@ -323,7 +306,7 @@ public class RenderMaterial : IMaterial
 		}
 	}
 
-	public void SetBufferParameter<T>( int id, T bufferValue ) where T: unmanaged
+	public void SetBufferParameter<T>( int id, T bufferValue ) where T : unmanaged
 	{
 		if ( ValidateIntention( id, ShaderDataType.Buffer, ShaderDataType.BufferRW ) )
 		{
@@ -356,24 +339,32 @@ public class RenderMaterial : IMaterial
 
 public partial class RenderStandard : IRenderFrontend
 {
-	public IMaterial? CreateMaterial( AssetSystem.Resources.Material material )
-	{
-		return null;
-	}
+	// TODO: dynamic capacity configuration
+	PooledSet<RenderMaterial> mMaterialSet = new( 8192 );
+	PooledSet<RenderTexture> mTextureSet = new( 16384 );
 
+	public IMaterial? CreateMaterial( MaterialDefinition materialDefinition )
+		=> mMaterialSet.AddAndGet( new( mDevice, materialDefinition ) );
+
+	public RenderMaterial GetMaterial( string name )
+	{
+		var material = Assets.LoadMaterial( name );
+
+		Debug.Assert( material is not null );
+		Debug.Assert( material.RenderMaterial is not null );
+
+		return (RenderMaterial)material.RenderMaterial;
+	}
 
 	public bool FreeMaterial( IMaterial material )
-	{
-		return true;
-	}
+		=> mMaterialSet.Remove( (RenderMaterial)material );
 
 	public ITexture? CreateTexture( TextureMetadata metadata, Span<byte> data )
-	{
-		return null;
-	}
+		=> mTextureSet.AddAndGet( new( mDevice, metadata, data ) );
 
 	public bool FreeTexture( ITexture texture )
-	{
-		return true;
-	}
+		=> mTextureSet.RemoveAndThen( (RenderTexture)texture, ( texture ) =>
+		{
+			texture.Dispose();
+		} );
 }
