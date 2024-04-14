@@ -15,6 +15,10 @@ namespace Elegy.RenderSystem.API
 		internal static void SetFrontend( IRenderFrontend frontend )
 		{
 			mFrontend = frontend;
+
+			Assets.SetRenderFactories(
+				Instance.CreateMaterial,
+				( textureInfo, data ) => Instance.CreateTexture( textureInfo, data.AsSpan() ) );
 		}
 	}
 }

@@ -19,7 +19,7 @@ namespace Elegy.AssetSystem.API
 			return InitMaterials();
 		}
 
-		public static void SetRenderFactories( Func<MaterialDefinition, IMaterial> materialFactory, Func<TextureMetadata, byte[], ITexture> textureFactory )
+		public static void SetRenderFactories( Func<MaterialDefinition, IMaterial?> materialFactory, Func<TextureMetadata, byte[], ITexture?> textureFactory )
 		{
 			mRenderMaterialFactory = materialFactory;
 			mRenderTextureFactory = textureFactory;
@@ -28,6 +28,9 @@ namespace Elegy.AssetSystem.API
 		public static void Shutdown()
 		{
 			mLogger.Log( "Shutdown" );
+
+			mRenderMaterialFactory = null;
+			mRenderTextureFactory = null;
 
 			Plugins.UnregisterPluginCollector<AssetPluginCollector>();
 			Plugins.UnregisterDependency( "Elegy.AssetSystem" );
