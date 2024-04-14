@@ -208,6 +208,13 @@ namespace Elegy.AppTemplate
 				return false;
 			}
 
+			if ( !Plugins.StartApps() )
+			{
+				mLogger.Error( "Failed to start app(s)" );
+				EngineSystem.Shutdown();
+				return false;
+			}
+
 			mLogger.Success( string.Format( "Startup time: {0:F}s elapsed", (double)startupTimer.ElapsedTicks / Stopwatch.Frequency ) );
 
 			return true;

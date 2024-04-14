@@ -102,7 +102,12 @@ namespace Elegy.PluginSystem.API
 				return false;
 			}
 
-			failedPlugins.Clear();
+			return true;
+		}
+
+		public static bool StartApps()
+		{
+			List<string> failedPlugins = new();
 			foreach ( var app in mApplicationPlugins )
 			{
 				if ( !app.Value.Start() )
