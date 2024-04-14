@@ -29,6 +29,7 @@ namespace Elegy.AssetSystem.API
 		internal static List<IModelLoader> mModelLoaders = new();
 		internal static List<ITextureLoader> mTextureLoaders = new();
 
+		private static List<MaterialDocument> mMaterialDocuments = new();
 		private static Dictionary<string, MaterialDefinitionPair> mMaterialDefs = new();
 		private static Dictionary<string, Texture> mTextures = new();
 		private static Dictionary<string, Model> mModels;
@@ -78,14 +79,18 @@ namespace Elegy.AssetSystem.API
 						continue;
 					}
 
+					mMaterialDocuments.Add( document );
+
 					foreach ( var materialDef in document.Materials )
 					{
 						// This way materials will be overridden
 						mMaterialDefs[materialDef.Name] = new( materialDef, null );
 					}
 
-					mLogger.Success( $"Parsed {document.Materials.Count} materials in '{materialDocumentPath}'" );
+					mLogger.Developer( $"Parsed {document.Materials.Count} materials in '{materialDocumentPath}'" );
 				}
+
+				mLogger.Success( $"Parsed {mMaterialDefs.Count} materials!" );
 
 				return true;
 			};
