@@ -16,6 +16,8 @@ namespace Elegy.AssetSystem.API
 			Plugins.RegisterDependency( "Elegy.AssetSystem", typeof( Assets ).Assembly );
 			Plugins.RegisterPluginCollector( new AssetPluginCollector() );
 
+			Plugins.RegisterPlugin( new PngImageLoader() );
+
 			return InitMaterials();
 		}
 

@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="SafeStbImageSharp" Version="2.22.4" />
     <PackageReference Include="SharpGLTF.Core" Version="1.0.0-alpha0031" />
     <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0031" />
   </ItemGroup>
