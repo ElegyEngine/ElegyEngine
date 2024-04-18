@@ -16,6 +16,8 @@ namespace Elegy.RenderBackend.Assets
 	{
 		public string Name { get; set; } = string.Empty;
 
+		public bool PostprocessHint { get; set; } = false;
+
 		public List<MaterialParameter> Parameters { get; set; } = new();
 
 		public List<ShaderTemplateEntry> ShaderVariants { get; set; } = new();
