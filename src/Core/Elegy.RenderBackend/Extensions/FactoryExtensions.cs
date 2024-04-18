@@ -99,6 +99,10 @@ namespace Elegy.RenderBackend.Extensions
 
 		public static Pipeline CreatePipeline( this ResourceFactory factory, MaterialTemplate materialTemplate, ShaderTemplateEntry shaderTemplateEntry,
 			Shader vertexShader, Shader pixelShader, ResourceLayout[] layouts, Framebuffer outputFramebuffer )
+			=> factory.CreatePipeline( materialTemplate, shaderTemplateEntry, vertexShader, pixelShader, layouts, outputFramebuffer.OutputDescription );
+
+		public static Pipeline CreatePipeline( this ResourceFactory factory, MaterialTemplate materialTemplate, ShaderTemplateEntry shaderTemplateEntry,
+			Shader vertexShader, Shader pixelShader, ResourceLayout[] layouts, in OutputDescription outputFramebufferDesc )
 		{
 			GraphicsPipelineDescription pipelineDesc = new()
 			{
@@ -116,7 +120,7 @@ namespace Elegy.RenderBackend.Extensions
 				DepthStencilState = Utils.ExtractDepthStencilState( materialTemplate ),
 
 				ResourceLayouts = layouts,
-				Outputs = outputFramebuffer.OutputDescription
+				Outputs = outputFramebufferDesc
 			};
 
 			return factory.CreateGraphicsPipeline( pipelineDesc );
