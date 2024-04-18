@@ -156,6 +156,34 @@ namespace Elegy.RenderBackend
 			return compatible;
 		}
 
+		public DeviceBuffer? GetBuffer( VertexSemantic semantic, int channel )
+			=> semantic switch
+			{
+				VertexSemantic.Position => PositionBuffer,
+				VertexSemantic.Normal => NormalBuffer,
+				VertexSemantic.Tangent => TangentBuffer,
+				VertexSemantic.Uv => channel switch
+				{
+					0 => Uv0Buffer,
+					1 => Uv1Buffer,
+					2 => Uv2Buffer,
+					3 => Uv3Buffer,
+					_ => throw new NotSupportedException()
+				},
+				VertexSemantic.Colour => channel switch
+				{
+					0 => Color0Buffer,
+					1 => Color1Buffer,
+					2 => Color2Buffer,
+					3 => Color3Buffer,
+					_ => throw new NotSupportedException()
+				},
+				VertexSemantic.BoneWeight => BoneWeightBuffer,
+				VertexSemantic.BoneIndex => BoneIndexBuffer,
+
+				_ => throw new NotSupportedException()
+			};
+
 		/// <summary> Frees all device buffers. </summary>
 		public void Dispose()
 		{
