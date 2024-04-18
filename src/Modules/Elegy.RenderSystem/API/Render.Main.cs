@@ -1,9 +1,12 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.Common.Assets;
 using Elegy.PlatformSystem.API;
 using Elegy.RenderSystem.Interfaces;
 using Silk.NET.Windowing;
+using TerraFX.Interop.Vulkan;
+using Veldrid;
 using IView = Elegy.RenderSystem.Interfaces.Rendering.IView;
 
 namespace Elegy.RenderSystem.API
@@ -75,6 +78,45 @@ namespace Elegy.RenderSystem.API
 			}
 
 			return renderView;
+		}
+		
+		public static GraphicsDevice? CreateGraphicsDevice()
+		{
+			GraphicsDevice? device = null;
+
+			try
+			{
+				device = GraphicsDevice.CreateVulkan( new()
+				{
+#if DEBUG
+					Debug = true,
+#endif
+					ResourceBindingModel = ResourceBindingModel.Improved,
+					SyncToVerticalBlank = true,
+
+					SwapchainSrgbFormat = false,
+					SwapchainDepthFormat = null,
+
+					//PreferDepthRangeZeroToOne = true,
+					//PreferStandardClipSpaceYDirection = true,
+
+					// We are gonna create swapchains manually for IViews
+					HasMainSwapchain = false
+				},
+				new VulkanDeviceOptions()
+				{
+					// Nothing in here for now, though we may want
+					// Vulkan 1.3 dynamic state extensions at some point
+				} );
+
+			}
+			catch ( Exception ex )
+			{
+				mLogger.Fatal( "Error while creating graphics device" );
+				mLogger.Error( $"Exception message: {ex.Message}" );
+			}
+
+			return device;
 		}
 	}
 }
