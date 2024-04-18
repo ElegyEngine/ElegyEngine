@@ -186,6 +186,7 @@ namespace Elegy.Bootstrap.Generator
 
 			if ( data.WithPluginSystem ) validatePostInit( "plugin system", "PluginSystem", "Plugins" );
 			if ( data.WithPluginSystem ) validatePostInit( "asset system", "AssetSystem", "Assets" );
+			if ( data.WithPluginSystem ) validatePostInit( "render system", "RenderSystem", "Render" );
 
 			return sb.ToString();
 		}

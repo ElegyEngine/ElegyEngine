@@ -19,6 +19,11 @@ namespace Elegy.RenderSystem.API
 			return true;
 		}
 
+		public static bool PostInit()
+		{
+			return LoadMaterialTemplates();
+		}
+
 		public static void Shutdown()
 		{
 			mLogger.Log( "Shutdown" );
