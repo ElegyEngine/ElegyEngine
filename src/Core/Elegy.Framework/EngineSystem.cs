@@ -111,23 +111,25 @@ namespace Elegy.Framework
 
 		private static bool LoadOrCreateEngineConfig( in LaunchConfig config )
 		{
-			string path = config.EngineConfigName ?? "engineConfig.json";
-
 			mLaunchConfig = config;
-
-			if ( !File.Exists( path ) )
+			if ( config.EngineConfigName is null )
 			{
-				mLogger.Log( $"'{path}' does not exist, creating a default one..." );
+				return true;
+			}
+
+			if ( !File.Exists( config.EngineConfigName ) )
+			{
+				mLogger.Log( $"'{config.EngineConfigName}' does not exist, creating a default one..." );
 
 				mLaunchConfig.Engine = new();
-				Common.Text.JsonHelpers.Write( EngineConfig, path );
+				Common.Text.JsonHelpers.Write( EngineConfig, config.EngineConfigName );
 				return true;
 			}
 
 			EngineConfig engineConfig = new();
-			if ( !Common.Text.JsonHelpers.LoadFrom( ref engineConfig, path ) )
+			if ( !Common.Text.JsonHelpers.LoadFrom( ref engineConfig, config.EngineConfigName ) )
 			{
-				mLogger.Error( $"'{path}' somehow failed to load" );
+				mLogger.Error( $"'{config.EngineConfigName}' somehow failed to load" );
 				return false;
 			}
 
