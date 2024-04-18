@@ -3,11 +3,11 @@
 
 global using Console = Elegy.ConsoleSystem.API.Console;
 
-using Veldrid;
-
 using Elegy.ConsoleSystem;
 using Elegy.RenderSystem.Interfaces;
-using Elegy.AssetSystem.API;
+using Elegy.RenderSystem.API;
+
+using Veldrid;
 
 namespace Elegy.RenderStandard;
 
@@ -40,37 +40,13 @@ public partial class RenderStandard : IRenderFrontend
 			return false;
 		}
 
-		try
+		GraphicsDevice? device = Render.CreateGraphicsDevice();
+		if ( device is null )
 		{
-			mDevice = GraphicsDevice.CreateVulkan( new()
-			{
-#if DEBUG
-				Debug = true,
-#endif
-				ResourceBindingModel = ResourceBindingModel.Improved,
-				SyncToVerticalBlank = true,
-
-				SwapchainSrgbFormat = false,
-				SwapchainDepthFormat = null,
-
-				//PreferDepthRangeZeroToOne = true,
-				//PreferStandardClipSpaceYDirection = true,
-
-				// We are gonna create swapchains manually for IViews
-				HasMainSwapchain = false
-			},
-			new VulkanDeviceOptions()
-			{
-				// Nothing in here for now, though we may want
-				// Vulkan 1.3 dynamic state extensions at some point
-			} );
-
-		}
-		catch ( Exception ex )
-		{
-			mLogger.Error( $"Error while creating graphics device\nException message: {ex.Message}" );
 			return false;
 		}
+
+		mDevice = device;
 
 		mRenderCommands = Factory.CreateCommandList();
 		mBufferCommands = Factory.CreateCommandList();
