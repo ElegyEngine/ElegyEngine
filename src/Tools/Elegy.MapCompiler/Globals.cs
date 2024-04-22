@@ -3,6 +3,7 @@
 
 global using Elegy.Common.Extensions;
 global using Elegy.Common.Utilities;
+global using Console = Elegy.ConsoleSystem.API.Console;
 global using System;
 
 global using Plane = System.Numerics.Plane;

@@ -41,7 +41,7 @@ namespace Elegy.MapCompiler.Data.Processing
 		{
 			for ( int i = 0; i < Faces.Count; i++ )
 			{
-				if ( Faces[i].Material.Flags.HasFlag( flags ) )
+				if ( Faces[i].Material.Data.ToolFlags.HasFlag( flags ) )
 				{
 					return true;
 				}

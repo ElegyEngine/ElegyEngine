@@ -48,8 +48,8 @@ namespace Elegy.MapCompiler.ConsoleArguments
 			}
 			catch ( Exception )
 			{
-				Console.WriteLine( $"Parameter '{argumentObject.Name}' has invalid value '{value}'" );
-				Console.WriteLine( $"This parameter can only be {argumentObject.GetPossibleValues()}" );
+				Console.Error( "Elegy.MapCompiler", $"Parameter '{argumentObject.Name}' has invalid value '{value}'" );
+				Console.Error( "Elegy.MapCompiler", $"This parameter can only be {argumentObject.GetPossibleValues()}" );
 				return true;
 			}
 
@@ -60,8 +60,8 @@ namespace Elegy.MapCompiler.ConsoleArguments
 			}
 			catch ( Exception ex )
 			{
-				Console.WriteLine( $"Internal error: failed to set parameter '{argumentObject.Name}'" );
-				Console.WriteLine( $"Message: {ex.Message}" );
+				Console.Error( "Elegy.MapCompiler", $"Internal error: failed to set parameter '{argumentObject.Name}'" );
+				Console.Error( "Elegy.MapCompiler", $"Message: {ex.Message}" );
 			}
 
 			return true;
@@ -82,7 +82,7 @@ namespace Elegy.MapCompiler.ConsoleArguments
 
 				if ( !ProcessSingleArgument( argumentName, argumentValue, parameters ) )
 				{
-					Console.WriteLine( $"Unknown parameter '{argumentName}' with value '{argumentValue}'" );
+					Console.Error( "Elegy.MapCompiler", $"Unknown parameter '{argumentName}' with value '{argumentValue}'" );
 				}
 			}
 		}

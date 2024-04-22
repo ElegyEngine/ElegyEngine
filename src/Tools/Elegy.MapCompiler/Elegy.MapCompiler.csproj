@@ -9,6 +9,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Elegy.Common\Elegy.Common.csproj" />
+    <ProjectReference Include="..\..\Core\Elegy.Framework\Elegy.Framework.csproj" />
+    <ProjectReference Include="..\..\Generators\Elegy.Framework.Generator\Elegy.Framework.Generator.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\..\Modules\Elegy.AssetSystem\Elegy.AssetSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.RenderSystem\Elegy.RenderSystem.csproj" />
   </ItemGroup>
 
 </Project>
