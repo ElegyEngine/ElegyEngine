@@ -81,7 +81,7 @@ namespace Elegy.AssetSystem.API
 			}
 
 			(TextureMetadata? textureMetadata, byte[]? data) = textureLoader.LoadTexture( fullPath, withoutData, hintSrgb );
-			if ( data is null )
+			if ( data is null && !withoutData )
 			{
 				mLogger.Error( $"LoadTexture: Couldn't load data for texture '{texturePath}'" );
 				return (null, null);
