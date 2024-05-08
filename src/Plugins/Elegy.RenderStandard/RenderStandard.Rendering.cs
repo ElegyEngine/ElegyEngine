@@ -34,8 +34,21 @@ public partial class RenderStandard : IRenderFrontend
 		public Vector2 Uv { get; set; }
 	}
 
-	private void InitialiseCorePipelines()
+	public bool CreateCorePipelines()
 	{
+		bool allOkay = true;
+		foreach ( var template in Render.MaterialTemplates )
+		{
+			if ( !template.CompileResources( mDevice, GetOutputForShaderVariant, HardcodedLayoutIds, FindShaderBinaryPath ) )
+			{
+				mLogger.Error( $"Failed to compile pipeline for material template '{template.Data.Name}'" );
+				allOkay = false;
+			}
+		}
+
+		NearestSampler = Factory.CreateSampler( SamplerDescription.Point );
+		LinearSampler = Factory.CreateSampler( SamplerDescription.Linear );
+
 		mWindowSampler = Factory.CreateSampler( SamplerDescription.Linear );
 
 		mWindowLayout = Factory.CreateLayout(
@@ -55,20 +68,14 @@ public partial class RenderStandard : IRenderFrontend
 				],
 			}, resourceLayouts: mWindowLayout );
 
-		mTrianglePipeline = Factory.CreateGraphicsPipeline<WindowVertex>(
-			shaderPath: GetShaderPath( "shaders/bin/Debug.DEFAULT" ),
-			preset: RasterPreset.NoDepthTwoSided,
-			outputDescription: new OutputDescription()
-			{
-				SampleCount = TextureSampleCount.Count1,
-				DepthAttachment = new( PixelFormat.D32_Float_S8_UInt ),
-				ColorAttachments =
-				[
-					new( PixelFormat.B8_G8_R8_A8_UNorm )
-				],
-			});
+		mPerEntityLayout = Factory.CreateLayout(
+			new ResourceLayoutElementDescription( "uView", ResourceKind.UniformBuffer, ShaderStages.Vertex | ShaderStages.Fragment ) );
+
+		mPerViewLayout = Factory.CreateLayout( 
+			new ResourceLayoutElementDescription( "uEntity", ResourceKind.UniformBuffer, ShaderStages.Vertex | ShaderStages.Fragment ) );
 
 		InitialiseDebugMeshes();
+		return allOkay;
 	}
 
 	private static readonly List<WindowVertex> FullquadVertices = new()

@@ -19,6 +19,8 @@ namespace Elegy.RenderSystem.Dummies
 
 		public void BeginFrame() { }
 
+		public bool CreateCorePipelines() => true;
+
 		public IEntity? CreateEntity( bool animated ) => null;
 		public ILight? CreateLight() => null;
 		public IMaterial? CreateMaterial( MaterialDefinition materialDefinition ) => null;

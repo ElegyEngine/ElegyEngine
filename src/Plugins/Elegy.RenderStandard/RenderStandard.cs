@@ -51,8 +51,6 @@ public partial class RenderStandard : IRenderFrontend
 		mRenderCommands = Factory.CreateCommandList();
 		mBufferCommands = Factory.CreateCommandList();
 
-		InitialiseCorePipelines();
-
 		Initialised = true;
 		return true;
 	}

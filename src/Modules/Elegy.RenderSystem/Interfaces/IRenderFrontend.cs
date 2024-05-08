@@ -16,6 +16,9 @@ namespace Elegy.RenderSystem.Interfaces
 	/// </summary>
 	public interface IRenderFrontend : IPlugin
 	{
+		/// <summary>Creates and fills pipelines.</summary>
+		bool CreateCorePipelines();
+
 		/// <summary>Creates a render entity.</summary>
 		IEntity? CreateEntity( bool animated );
 		
