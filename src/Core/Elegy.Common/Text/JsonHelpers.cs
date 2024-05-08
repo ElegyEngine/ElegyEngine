@@ -12,7 +12,7 @@ namespace Elegy.Common.Text
 	/// </summary>
 	public static class JsonHelpers
 	{
-		private readonly static JsonSerializerOptions Options = new()
+		private static JsonSerializerOptions CreateDefault() => new()
 		{
 			AllowTrailingCommas = true,
 			NumberHandling =
@@ -31,6 +31,28 @@ namespace Elegy.Common.Text
 				new GodotRect2Converter()
 			}
 		};
+
+		/// <summary>
+		/// The default JSON serialisation options.
+		/// </summary>
+		public readonly static JsonSerializerOptions Options = CreateDefault();
+
+		/// <summary>
+		/// Creates a <see cref="JsonSerializerOptions"/> which has the basic
+		/// properties of <see cref="Options"/>, but the converters of <paramref name="options"/>.
+		/// </summary>
+		public static JsonSerializerOptions Create( JsonSerializerOptions options )
+		{
+			options.AllowTrailingCommas = true;
+			options.NumberHandling =
+				JsonNumberHandling.AllowNamedFloatingPointLiterals |
+				JsonNumberHandling.AllowReadingFromString;
+			options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+			options.ReadCommentHandling = JsonCommentHandling.Skip;
+			options.WriteIndented = true;
+
+			return options;
+		}
 
 		/// <summary>
 		/// Reads JSON data from <paramref name="path"/> and stores it into
@@ -57,6 +79,30 @@ namespace Elegy.Common.Text
 		}
 
 		/// <summary>
+		/// Reads JSON data from <paramref name="path"/> and stores it into
+		/// <paramref name="outObject"/>. Uses custom options also.
+		/// </summary>
+		/// <returns><c>true</c> on success, <c>false</c> if the file cannot be found.</returns>
+		public static bool LoadFrom<T>( ref T outObject, string path, JsonSerializerOptions options ) where T : struct
+		{
+			try
+			{
+				ReadOnlySpan<byte> jsonContent = File.ReadAllBytes( path );
+				outObject = JsonSerializer.Deserialize<T>( jsonContent, options );
+			}
+			catch ( DirectoryNotFoundException )
+			{
+				return false;
+			}
+			catch ( FileNotFoundException )
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		/// <summary>
 		/// Reads JSON data from <paramref name="path"/> and returns it as a/an <typeparamref name="T"/>.
 		/// </summary>
 		/// <returns><c>true</c> on success, <c>false</c> if the file cannot be found.</returns>
@@ -66,6 +112,28 @@ namespace Elegy.Common.Text
 			{
 				ReadOnlySpan<byte> jsonContent = File.ReadAllBytes( path );
 				return JsonSerializer.Deserialize<T>( jsonContent, Options );
+			}
+			catch ( DirectoryNotFoundException )
+			{
+				return null;
+			}
+			catch ( FileNotFoundException )
+			{
+				return null;
+			}
+		}
+
+		/// <summary>
+		/// Reads JSON data from <paramref name="path"/> and returns it as a/an <typeparamref name="T"/>.
+		/// Also uses custom JSON serialisation options.
+		/// </summary>
+		/// <returns><c>true</c> on success, <c>false</c> if the file cannot be found.</returns>
+		public static T? LoadFrom<T>( string path, JsonSerializerOptions options ) where T : class
+		{
+			try
+			{
+				ReadOnlySpan<byte> jsonContent = File.ReadAllBytes( path );
+				return JsonSerializer.Deserialize<T>( jsonContent, options );
 			}
 			catch ( DirectoryNotFoundException )
 			{
