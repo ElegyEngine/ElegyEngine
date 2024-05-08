@@ -3,11 +3,11 @@
 
 using Elegy.Common.Assets;
 
-namespace Elegy.Tests;
+namespace Elegy.Common.Tests.Assets;
 
-public class MaterialDocumentTests
+public static class MaterialDocumentTests
 {
-	private void SimpleMaterialCheck( MaterialDefinition def, string materialName, string templateName, string diffuseMap )
+	private static void SimpleMaterialCheck( MaterialDefinition def, string materialName, string templateName, string diffuseMap )
 	{
 		Assert.Equal( materialName, def.Name );
 		Assert.Equal( templateName, def.TemplateName );
@@ -15,7 +15,7 @@ public class MaterialDocumentTests
 	}
 
 	[Fact]
-	public void BasicMaterialTest()
+	public static void BasicMaterialTest()
 	{
 		string materialString =
 			"""
@@ -37,7 +37,7 @@ public class MaterialDocumentTests
 	}
 
 	[Fact]
-	public void ToolMaterialTest()
+	public static void ToolMaterialTest()
 	{
 		string materialString =
 			"""
@@ -71,7 +71,7 @@ public class MaterialDocumentTests
 	}
 
 	[Fact]
-	public void MultipleToolMaterialTest()
+	public static void MultipleToolMaterialTest()
 	{
 		string materialString =
 			"""
