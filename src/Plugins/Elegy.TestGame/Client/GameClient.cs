@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.Common.Maths;
 using Elegy.InputSystem.API;
-using Elegy.PlatformSystem.API;
 using Silk.NET.Input;
 
 namespace TestGame.Client
@@ -15,9 +15,8 @@ namespace TestGame.Client
 
 		public void Update()
 		{
-			//Basis basis = new Basis( Quaternion.FromEuler( mAngles * new Vector3( 0.0f, 1.0f, 0.0f ) ) );
-			Vector3 viewForward = Vector3.UnitY; // -basis.Z;
-			Vector3 viewRight = Vector3.UnitX; //basis.X;
+			Coords.DirectionsFromDegrees( mAngles, out var viewForward, out var viewUp );
+			Vector3 viewRight = viewForward.Cross( viewUp );
 
 			mMovementDirection = Vector3.Zero;
 
@@ -47,27 +46,37 @@ namespace TestGame.Client
 				mMovementDirection -= Vector3.UnitZ;
 			}
 
+			mMousePositionDelta = Input.Mouse.Position - mOldMousePosition;
 			mMousePositionDeltaSmooth = mMousePositionDeltaSmooth.Lerp( mMousePositionDelta, 0.99f );
 			//mMousePositionDeltaSmooth = mMousePositionDelta;
 
-			mAngles.Y -= mMousePositionDeltaSmooth.X * 0.001f;
-			mAngles.X -= mMousePositionDeltaSmooth.Y * 0.001f;
-
 			mCommands.MovementDirection = mMovementDirection;
-			mCommands.ViewAngles = mAngles;
 			mCommands.ActionStates = GrabActionStates();
 
+			if ( mCommands.ActionStates.HasFlag( ClientActions.SecondaryAttack ) )
+			{
+				mAngles.Y += mMousePositionDeltaSmooth.X * 0.06f;
+				mAngles.X -= mMousePositionDeltaSmooth.Y * 0.06f;
+			}
+			mCommands.ViewAngles = mAngles;
+	
 			var state = Controller.GenerateControllerState();
 			mPresentation.Position = state.Position;
 			mPresentation.Angles = mAngles;
 			mPresentation.Update();
 
 			mMousePositionDelta = Vector2.Zero;
+			mOldMousePosition = Input.Mouse.Position;
 		}
 
 		public void UpdateController()
 		{
 			Controller.HandleClientInput( Commands );
+		}
+
+		public void UpdateMovement( float deltaTime )
+		{
+			((BasicController)Controller).Update( deltaTime );
 		}
 
 		public void GrabMouse()
@@ -100,12 +109,13 @@ namespace TestGame.Client
 			if ( Input.Keyboard.IsKeyPressed( Key.F ) )
 				actionStates |= ClientActions.Flashlight;
 
+			if ( Input.Keyboard.IsKeyPressed( Key.Y ) )
+				actionStates |= ClientActions.LeanLeft;
+			if ( Input.Keyboard.IsKeyPressed( Key.C ) )
+				actionStates |= ClientActions.LeanRight;
+
 			if ( Input.Keyboard.IsKeyPressed( Key.AltLeft ) )
 			{
-				if ( Input.Keyboard.IsKeyPressed( Key.A ) )
-					actionStates |= ClientActions.LeanLeft;
-				if ( Input.Keyboard.IsKeyPressed( Key.D ) )
-					actionStates |= ClientActions.LeanRight;
 				if ( Input.Keyboard.IsKeyPressed( Key.W ) )
 					actionStates |= ClientActions.LeanForward;
 			}
@@ -127,6 +137,7 @@ namespace TestGame.Client
 
 		Presentation mPresentation = new();
 
+		private Vector2 mOldMousePosition = Vector2.Zero;
 		private Vector2 mMousePositionDelta = Vector2.Zero;
 		private Vector2 mMousePositionDeltaSmooth = Vector2.Zero;
 

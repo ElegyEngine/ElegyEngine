@@ -96,6 +96,7 @@ namespace TestGame
 				CursorMode.Normal : CursorMode.Hidden;
 		}
 
+		float roll = 0.0f;
 		public bool RunFrame( float delta )
 		{
 			// Quick little toggle quickly cobbled together,
@@ -117,9 +118,53 @@ namespace TestGame
 			{
 				mClient.Update();
 				mClient.UpdateController();
+				mClient.UpdateMovement( delta );
+
+				if ( mRenderView is not null )
+				{
+					var state = mClient.Controller.GenerateControllerState();
+					if ( mClient.Commands.ActionStates.HasFlag( ClientActions.LeanLeft ) )
+					{
+						roll += delta * 15.0f;
+					}
+					if ( mClient.Commands.ActionStates.HasFlag( ClientActions.LeanRight ) )
+					{
+						roll -= delta * 15.0f;
+					}
+					state.Angles.Z = roll;
+
+					Coords.DirectionsFromDegrees( state.Angles, out var forward, out var up );
+					mRenderView.Transform = Coords.CreateViewMatrix( state.Position, forward, up );
+
+					Console.Log( $"XYZ:      {state.Position.X:F1} {state.Position.Y:F1} {state.Position.Z:F1}" );
+					Console.Log( $"PitchYaw: {state.Angles.X:F1}° {state.Angles.Y:F1}°" );
+					Console.Log( $"Forward:  {forward.X:F1} {forward.Y:F1} {forward.Z:F1}" );
+					Console.Log( $"Up:       {up.X:F1} {up.Y:F1} {up.Z:F1}" );
+				}
 			}
 
 			return !mUserWantsToExit;
+		}
+
+		private bool SpawnModel( string path, Vector3 position )
+		{
+			var model = Assets.LoadModel( path );
+			if ( model is null )
+			{
+				mLogger.Error( $"Cannot load '{path}'" );
+				return false;
+			}
+
+			var entity = Render.Instance.CreateEntity( false );
+			var renderMesh = Render.Instance.CreateMesh( model );
+			if ( renderMesh is null )
+			{
+				mLogger.Error( $"Could not create rendermesh for '{path}'" );
+				return false;
+			}
+
+			entity.Mesh = renderMesh;
+			return true;
 		}
 
 		[ConsoleCommand( "map" )]
@@ -135,20 +180,12 @@ namespace TestGame
 				Controller = new BasicController()
 			};
 
-			mShowcaseModel = Assets.LoadModel( "models/test.glb" );
-			if ( mShowcaseModel is null )
-			{
-				mLogger.Error( "Cannot load 'models/test.glb'" );
-			}
-			else
-			{
-				mShowcaseEntity = Render.Instance.CreateEntity( false );
-				mShowcaseEntity.Mesh = Render.Instance.CreateMesh( mShowcaseModel );
-			}
+			SpawnModel( "models/oricube.glb", Vector3.Zero );
+			SpawnModel( "models/terrain.glb", Vector3.Zero );
 
 			mRenderView = Render.Instance.GetView( Platform.GetCurrentWindow() );
-			mRenderView.Projection = Matrix4x4.CreatePerspectiveFieldOfView( MathF.PI / 4.0f, 16.0f / 9.0f, 0.01f, 4096.0f );
-			mRenderView.Transform = Matrix4x4.CreateLookAt( new( 10.0f, 20.0f, 10.0f ), Vector3.Zero, Vector3.UnitZ );
+			mRenderView.Projection = Coords.CreatePerspectiveMatrix( MathF.PI / 2.0f, 16.0f / 9.0f, 0.01f, 4096.0f );
+			mRenderView.Transform = Matrix4x4.CreateLookAt( new( 1.5f, 3.0f, 1.5f ), Vector3.Zero, Vector3.UnitZ );
 
 			mLogger.Success( "Map successfully loaded, enjoy" );
 			mGameIsLoaded = true;
@@ -183,10 +220,8 @@ namespace TestGame
 
 		private GameClient? mClient;
 		private MainMenu mMenu = new();
-		private Model? mShowcaseModel = null;
-		private IRenderEntity? mShowcaseEntity = null;
 		private IRenderView? mRenderView = null;
-		
+
 		private bool mGameIsLoaded = false;
 		private bool mEscapeWasHeld = false;
 		private bool mUserWantsToExit = false;
