@@ -21,7 +21,12 @@ namespace Elegy.RenderSystem.API
 
 		public static bool PostInit()
 		{
-			return LoadMaterialTemplates();
+			if ( !LoadMaterialTemplates() )
+			{
+				return false;
+			}
+
+			return Instance.CreateCorePipelines();
 		}
 
 		public static void Shutdown()
