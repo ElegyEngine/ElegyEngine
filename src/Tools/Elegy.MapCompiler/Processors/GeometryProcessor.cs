@@ -43,7 +43,7 @@ namespace Elegy.MapCompiler.Processors
 				{
 					foreach ( var face in brush.Faces )
 					{
-						if ( face.Material.HasFlag( flags ) )
+						if ( face.Material.Data.ToolFlags.HasFlag( flags ) )
 						{
 							brush.Faces.Remove( face );
 						}

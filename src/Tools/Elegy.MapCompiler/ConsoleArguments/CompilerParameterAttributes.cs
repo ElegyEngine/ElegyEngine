@@ -20,6 +20,22 @@ namespace Elegy.MapCompiler.ConsoleArguments
 		public abstract string GetPossibleValues();
 	}
 
+	public class BoolParamAttribute : CompilerParamAttribute
+	{
+		public BoolParamAttribute( string name )
+			: base( name )
+		{
+		}
+
+		public override object Parse( string value )
+		{
+			return value == "1" || value.Equals("true", StringComparison.CurrentCultureIgnoreCase);
+		}
+
+		public override string GetPossibleValues() => "true or false";
+	
+	}
+
 	public class PathParamAttribute : CompilerParamAttribute
 	{
 		public bool IsFile { get; private set; }

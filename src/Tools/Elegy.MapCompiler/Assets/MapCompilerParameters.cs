@@ -13,10 +13,10 @@ namespace Elegy.MapCompiler.Assets
 		[PathParam( "-out" )]
 		public string OutputPath { get; set; } = string.Empty;
 
-		[PathParam( "-gamedirectory" )]
-		public string GameDirectory { get; set; } = string.Empty;
+		[PathParam( "-root" )]
+		public string RootPath { get; set; } = string.Empty;
 
-		[FloatParam( "-debugfreeze", minValue: 0.0f, maxValue: 60.0f )]
-		public float DebugFreeze { get; set; } = 0.0f;
+		[BoolParam("-debugfreeze")]
+		public bool DebugFreeze { get; set; } = false;
 	}
 }

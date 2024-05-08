@@ -30,7 +30,7 @@ namespace Elegy.Common.Assets.BrushMapData
 		public Vector3 Centre => (PlaneDefinition[0] + PlaneDefinition[1] + PlaneDefinition[2]) / 3.0f;
 
 		/// <summary></summary>
-		public Vector2 CalculateUV( Vector3 point, int imageWidth, int imageHeight )
+		public Vector2 CalculateUV( Vector3 point, uint imageWidth, uint imageHeight )
 		{
 			Vector3 axisU = ProjectionUVS[0].ToVector3() * (1.0f / Scale.X);
 			Vector3 axisV = ProjectionUVS[1].ToVector3() * (1.0f / Scale.Y);

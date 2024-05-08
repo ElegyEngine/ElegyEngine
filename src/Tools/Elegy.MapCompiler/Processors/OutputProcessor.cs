@@ -32,7 +32,7 @@ namespace Elegy.MapCompiler.Processors
 			{
 				foreach ( var face in brush.Faces )
 				{
-					if ( face.Material.HasFlag( ToolMaterialFlag.NoDraw ) )
+					if ( face.Material.Data.ToolFlags.HasFlag( ToolMaterialFlag.NoDraw ) )
 					{
 						continue;
 					}
@@ -168,11 +168,7 @@ namespace Elegy.MapCompiler.Processors
 
 		public void WriteToFile( string fileName )
 		{
-			Console.WriteLine( "[OutputProcessor] Writing to:" );
-			Console.WriteLine( $"    '{fileName}'" );
 			mOutput.WriteToFile( fileName );
-			Console.WriteLine( "[OutputProcessor] Success" );
-			return;
 		}
 	}
 }
