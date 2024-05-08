@@ -103,6 +103,7 @@ namespace Elegy.RenderSystem.API
 					// We are gonna create swapchains manually for IViews
 					HasMainSwapchain = false
 				},
+
 				new VulkanDeviceOptions()
 				{
 					// Nothing in here for now, though we may want

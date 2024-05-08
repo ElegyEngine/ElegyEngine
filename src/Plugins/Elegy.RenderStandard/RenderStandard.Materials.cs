@@ -109,6 +109,7 @@ public class RenderTexture : ITexture, IDisposable
 					( 4, 1, false, false ) => PixelFormat.R32_UInt,
 					( 4, 2, false, false ) => PixelFormat.R32_G32_UInt,
 					( 4, 4, false, false ) => PixelFormat.R32_G32_B32_A32_UInt,
+
 					_ => throw new NotSupportedException()
 				},
 

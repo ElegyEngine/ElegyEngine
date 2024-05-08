@@ -6,15 +6,15 @@ using Elegy.RenderSystem.Interfaces;
 using Elegy.RenderBackend.Extensions;
 using Elegy.RenderStandard.Extensions;
 
-using Silk.NET.Windowing;
 using Collections.Pooled;
+using Silk.NET.Windowing;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Veldrid;
 
 using ITexture = Elegy.AssetSystem.Interfaces.Rendering.ITexture;
 using IView = Elegy.RenderSystem.Interfaces.Rendering.IView;
-using System.Diagnostics;
 
 namespace Elegy.RenderStandard;
 

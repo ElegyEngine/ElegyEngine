@@ -202,7 +202,6 @@ namespace Elegy.Common.Maths
 			return from + Math.Clamp( delta, absDifference - Math.PI, absDifference ) * (difference >= 0.0 ? 1.0 : -1.0);
 		}
 
-
 		#endregion
 
 		#region Cubic
