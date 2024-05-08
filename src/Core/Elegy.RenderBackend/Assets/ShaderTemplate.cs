@@ -10,11 +10,15 @@ namespace Elegy.RenderBackend.Assets
 		public string ShaderName { get; set; } = string.Empty;
 
 		public ShaderDataType Type { get; set; } = ShaderDataType.Float;
+
+		public int ResourceSetId { get; set; } = 0;
 	}
 
 	public class ShaderTemplate
 	{
 		public string Name { get; set; } = string.Empty;
+
+		public string ShaderBinaryBasePath { get; set; } = string.Empty;
 
 		public bool PostprocessHint { get; set; } = false;
 

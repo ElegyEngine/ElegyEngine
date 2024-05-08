@@ -55,6 +55,7 @@ namespace Elegy.RenderBackend.Templating
 		{
 			Data = data;
 			ShaderTemplate = shaderTemplate;
+			// ShaderVariants is filled in in CompileResources
 		}
 
 		public Assets.MaterialTemplate Data { get; }
