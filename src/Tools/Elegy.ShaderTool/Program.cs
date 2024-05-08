@@ -7,7 +7,7 @@ namespace Elegy.ShaderTool
 {
 	public class Program
 	{
-		private static string ShaderDirectory { get; set; } = string.Empty;
+		internal static string ShaderDirectory { get; set; } = string.Empty;
 
 		private static bool ForceRecompile { get; set; } = false;
 
@@ -19,6 +19,7 @@ namespace Elegy.ShaderTool
 				return;
 			}
 
+			ShaderDirectory = Path.TrimEndingDirectorySeparator( ShaderDirectory );
 			string[] shaderFiles = Directory.GetFileSystemEntries( ShaderDirectory, "*.glsl", SearchOption.AllDirectories );
 			if ( shaderFiles.Length == 0 )
 			{

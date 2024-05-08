@@ -148,7 +148,8 @@ namespace Elegy.ShaderTool
 		{
 			ShaderTemplate shaderTemplate = new()
 			{
-				Name = TemplateName
+				Name = TemplateName,
+				ShaderBinaryBasePath = Path.ChangeExtension( Path.GetRelativePath( Program.ShaderDirectory, FilePath ), null )
 			};
 
 			shaderTemplate.Parameters.EnsureCapacity( MaterialParameters.Count + MaterialParameterBuffers.Count );
@@ -158,7 +159,8 @@ namespace Elegy.ShaderTool
 				{
 					Name = param.MaterialName,
 					ShaderName = param.ShaderName,
-					Type = param.Type
+					Type = param.Type,
+					ResourceSetId = param.SetId
 				} );
 			}
 			foreach ( var param in MaterialParameterBuffers )
@@ -167,7 +169,8 @@ namespace Elegy.ShaderTool
 				{
 					Name = param.MaterialName,
 					ShaderName = param.ShaderName,
-					Type = ShaderDataType.Buffer
+					Type = ShaderDataType.Buffer,
+					ResourceSetId = param.SetId
 				} );
 			}
 
@@ -225,6 +228,7 @@ namespace Elegy.ShaderTool
 					Set = setId,
 					Elements = MaterialParameters
 						.Where( param => IsVisibleTo( variant, param.VariantMask ) )
+						.Where( param => param.SetId == setId )
 						.Select( param => new ResourceLayoutElementEntry()
 						{
 							Name = param.MaterialName,
@@ -235,6 +239,7 @@ namespace Elegy.ShaderTool
 			}
 
 			// Argh not a fan of this copy-pasting
+			uniqueSets.Clear();
 			foreach ( var param in MaterialParameterBuffers )
 			{
 				if ( IsVisibleTo( variant, param.VariantMask ) )
@@ -253,6 +258,7 @@ namespace Elegy.ShaderTool
 					Set = setId,
 					Elements = MaterialParameterBuffers
 						.Where( param => IsVisibleTo( variant, param.VariantMask ) )
+						.Where( param => param.SetId == setId )
 						.Select( param => new ResourceLayoutElementEntry()
 						{
 							Name = param.MaterialName,
@@ -261,6 +267,8 @@ namespace Elegy.ShaderTool
 						} ).ToList()
 				} );
 			}
+
+			result.Sort( ( x, y ) => x.Set.CompareTo( y.Set ) );
 
 			return result;
 		}

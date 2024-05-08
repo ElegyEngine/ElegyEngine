@@ -156,7 +156,8 @@ namespace Elegy.RenderBackend
 				ScissorTestEnabled = false,
 				CullMode = materialTemplate.PipelineInfo.FaceCulling,
 				FillMode = PolygonFillMode.Solid,
-				DepthClipEnabled = true // TODO: depth testing in the material template errr maybe?
+				// TODO: depth testing in the material template errr maybe?
+				DepthClipEnabled = materialTemplate.PipelineInfo.BlendMode == Blending.Opaque
 			};
 
 		public static DepthStencilStateDescription ExtractDepthStencilState( MaterialTemplate materialTemplate )
@@ -232,7 +233,7 @@ namespace Elegy.RenderBackend
 
 		public static string PathToShaderVariant( ShaderTemplate template, ShaderTemplateEntry entry )
 		{
-			return $"{template.Name}_{entry.ShaderDefine}";
+			return $"shaders/bin/{template.ShaderBinaryBasePath}.{entry.ShaderDefine}";
 		}
 
 		#region Extraction

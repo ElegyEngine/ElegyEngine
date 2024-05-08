@@ -17,11 +17,11 @@ namespace Elegy.RenderBackend.Extensions
 			return buffer;
 		}
 
-		public static DeviceBuffer CreateBufferFromStruct<T>( this GraphicsDevice device, BufferUsage usage, ref T obj )
+		public static DeviceBuffer CreateBufferFromStruct<T>( this GraphicsDevice device, BufferUsage usage, in T obj )
 			where T: unmanaged
 		{
 			var buffer = device.ResourceFactory.CreateBufferForStruct<T>( usage );
-			device.UpdateBuffer( buffer, 0, ref obj );
+			device.UpdateBuffer( buffer, 0, obj );
 			return buffer;
 		}
 
