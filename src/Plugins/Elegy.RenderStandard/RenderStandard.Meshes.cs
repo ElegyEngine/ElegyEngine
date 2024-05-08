@@ -36,6 +36,9 @@ public class RenderMesh : IMesh
 
 	public Model Data { get; set; }
 
+	public IReadOnlyList<ArrayMesh> Submeshes => mSubmeshes;
+	public IReadOnlyList<RenderMaterial> Materials => mMaterials;
+
 	public void RegenerateBuffers()
 	{
 		Clear();

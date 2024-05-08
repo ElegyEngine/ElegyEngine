@@ -1,14 +1,12 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.AssetSystem.Interfaces;
-using Elegy.AssetSystem.Interfaces.Rendering;
 using Elegy.FileSystem.API;
-using Elegy.RenderSystem.Interfaces;
-using Elegy.RenderSystem.Interfaces.Rendering;
-
 using Elegy.RenderBackend;
 using Elegy.RenderBackend.Extensions;
+using Elegy.RenderSystem.API;
+using Elegy.RenderSystem.Interfaces;
+using Elegy.RenderSystem.Interfaces.Rendering;
 
 using System.Diagnostics;
 using System.Numerics;
@@ -19,19 +17,77 @@ namespace Elegy.RenderStandard;
 
 public partial class RenderStandard : IRenderFrontend
 {
-	private RenderPipeline mTrianglePipeline;
-	private ResourceLayout mTriangleLayout;
-	
 	// Render view+depth into a window view framebufer
 	private RenderPipeline mWindowPipeline;
 	private ResourceLayout mWindowLayout;
 	private Sampler mWindowSampler;
+
+	private static readonly int[] HardcodedLayoutIds = [ 0, 1 ];
+	private ResourceLayout mPerViewLayout;
+	private ResourceLayout mPerEntityLayout;
+
+	internal static Sampler NearestSampler { get; private set; }
+	internal static Sampler LinearSampler { get; private set; }
+
+	private static readonly OutputDescription OutputDescNormal = new()
+	{
+		SampleCount = TextureSampleCount.Count1,
+		DepthAttachment = new( PixelFormat.D32_Float_S8_UInt ),
+		ColorAttachments =
+		[
+			new( PixelFormat.B8_G8_R8_A8_UNorm )
+		]
+	};
+
+	private static readonly OutputDescription OutputDescDepthOnly = new()
+	{
+		SampleCount = TextureSampleCount.Count1,
+		DepthAttachment = new( PixelFormat.D32_Float_S8_UInt ),
+		ColorAttachments = null
+	};
+
+	private static readonly OutputDescription OutputDescBackbuffer = new()
+	{
+		SampleCount = TextureSampleCount.Count1,
+		DepthAttachment = null,
+		ColorAttachments =
+		[
+			new( PixelFormat.B8_G8_R8_A8_UNorm )
+		]
+	};
 
 	[StructLayout(LayoutKind.Sequential)]
 	private struct WindowVertex
 	{
 		public Vector2 Position { get; set; }
 		public Vector2 Uv { get; set; }
+	}
+
+	private static OutputDescription GetOutputForShaderVariant( RenderBackend.Assets.ShaderTemplateEntry entry, bool postprocessHint )
+	{
+		if ( entry.ShaderDefine.ToLower().Contains( "depth" ) )
+		{
+			return OutputDescDepthOnly;
+		}
+
+		return postprocessHint ? OutputDescBackbuffer : OutputDescNormal;
+	}
+
+	private static string? FindShaderBinaryPath( string path )
+	{
+		string? result = Files.PathTo( $"{path}.ps.spv", PathFlags.File );
+		if ( result is not null )
+		{
+			return result.Replace( ".ps.spv", null );
+		}
+
+		result = Files.PathTo( $"{path}.cs.spv", PathFlags.File );
+		if ( result is not null )
+		{
+			return result.Replace( ".cs.spv", null );
+		}
+
+		return null;
 	}
 
 	public bool CreateCorePipelines()
@@ -92,30 +148,13 @@ public partial class RenderStandard : IRenderFrontend
 		0, 2, 3
 	};
 
-	private static readonly List<WindowVertex> TriangleVertices = new()
-	{
-		new() { Position = new( -0.5f, -0.5f ), Uv = new( 0.0f, 0.0f ) },
-			new() { Position = new( 0.0f, 0.5f ), Uv = new( 0.5f, 1.0f ) },
-			new() { Position = new( 0.5f, -0.5f ), Uv = new( 1.0f, 0.0f ) }
-	};
-
-	private static readonly List<uint> TriangleIndices = new()
-	{
-		0, 1, 2
-	};
-
 	private DeviceBuffer mFullquadVertexBuffer;
 	private DeviceBuffer mFullquadIndexBuffer;
-	private DeviceBuffer mTriangleVertexBuffer;
-	private DeviceBuffer mTriangleIndexBuffer;
 
 	private void InitialiseDebugMeshes()
 	{
 		mFullquadVertexBuffer = Device.CreateBufferFromList( BufferUsage.VertexBuffer, FullquadVertices );
 		mFullquadIndexBuffer = Device.CreateBufferFromList( BufferUsage.IndexBuffer, FullquadIndices );
-
-		mTriangleVertexBuffer = Device.CreateBufferFromList( BufferUsage.VertexBuffer, TriangleVertices );
-		mTriangleIndexBuffer = Device.CreateBufferFromList( BufferUsage.IndexBuffer, TriangleIndices );
 	}
 
 	// This is a hack! Find a way to do this more properly later on
@@ -155,37 +194,105 @@ public partial class RenderStandard : IRenderFrontend
 		mGpuTime = GetSeconds() - mGpuTime;
 	}
 
-	public void RenderView( in IView view )
+	public void RenderSingleEntity( RenderEntity entity, RenderView view )
 	{
-		RenderView? rview = view as RenderView;
-		Debug.Assert( rview is not null );
+		RenderMesh mesh = (RenderMesh)entity.Mesh;
+		for ( int i = 0; i < mesh.Submeshes.Count; i++ )
+		{
+			// TODO: sort render ents by material
+			var submesh = mesh.Submeshes[i];
+			var submaterial = mesh.Materials[i];
+			// TODO: I don't want to query a dictionary at runtime for this,
+			// figure out a faster way to access the stuff
+			var shaderVariant = submaterial.Template.ShaderVariants["GENERAL"];
 
-		mRenderCommands.Begin();
+			mRenderCommands.SetPipeline( shaderVariant.Pipeline );
 
-		// Render a triangle into a framebuffer
-		mRenderCommands.SetFramebuffer( rview.RenderFramebuffer );
+			// We have a few hardcoded resource set IDs
+			// 0 is always per-frame/per-view data (all about the camera basically)
+			// 1 is always per-entity data (entity transform matrix, bone matrices etc.)
+			mRenderCommands.SetGraphicsResourceSet( 0, view.PerViewSet );
+			mRenderCommands.SetGraphicsResourceSet( 1, entity.PerEntitySet );
+
+			// Set shader parametres used by this shader variant
+			// E.g. variant A might not use certain buffers so it omits an entire resource set,
+			// while variant B might have them in a different order. Anything can happen after
+			// the first few hardcoded sets 0 and 1
+			var shaderVariantSets = submaterial.ResourceSets["GENERAL"];
+			for ( int resourceSetId = 0; resourceSetId < shaderVariantSets.Length; resourceSetId++ )
+			{
+				mRenderCommands.SetGraphicsResourceSet(
+					// Maintain correct slot
+					(uint)shaderVariant.ResourceMappings[resourceSetId].SetId,
+					// Each shader variant provides its own copy of resource sets
+					// It's a bit wasteful but was simpler to implement
+					shaderVariantSets[resourceSetId] );
+			}
+
+			// Send vertex buffers used by this shader variant
+			// I wonder if this would get any faster using 'unsafe' or Span<T>, but
+			// frankly this is not yet at a stage where it's worth profiling much
+			for ( int vertexAttributeId = 0; vertexAttributeId < shaderVariant.VertexAttributes.Length; vertexAttributeId++ )
+			{
+				var vertexAttribute = shaderVariant.VertexAttributes[vertexAttributeId];
+				var buffer = submesh.GetBuffer( vertexAttribute.Semantic, vertexAttribute.Channel );
+
+				Debug.Assert( buffer is not null, $"The '{vertexAttribute.Semantic}' buffer is MISSING" );
+
+				mRenderCommands.SetVertexBuffer(
+					(uint)vertexAttributeId,
+					buffer );
+			}
+
+			// AT LAST, render the damn thing
+			mRenderCommands.SetIndexBuffer( submesh.IndexBuffer, IndexFormat.UInt32 );
+			mRenderCommands.DrawIndexed( submesh.NumIndices );
+		}
+	}
+
+	public void SetRenderView( in RenderView view )
+	{
+		view.UpdateBuffers( mDevice );
+
+		mRenderCommands.SetFramebuffer( view.RenderFramebuffer );
 		mRenderCommands.ClearColorTarget( 0, new( 0.01f, 0.05f, 0.06f, 1.0f ) );
-		mRenderCommands.ClearDepthStencil( 0.0f );
-		mRenderCommands.SetViewport( 0, new( 0.0f, 0.0f, rview.RenderSize.X, rview.RenderSize.Y, 0.0f, 1.0f ) );
+		mRenderCommands.ClearDepthStencil( 1.0f );
+		mRenderCommands.SetViewport( 0, new( 0.0f, 0.0f, view.RenderSize.X, view.RenderSize.Y, 0.0f, 1.0f ) );
+	}
 
-		mRenderCommands.SetPipeline( mTrianglePipeline.Pipeline );
-		mRenderCommands.SetVertexBuffer( 0, mTriangleVertexBuffer );
-		mRenderCommands.SetIndexBuffer( mTriangleIndexBuffer, IndexFormat.UInt32 );
-
-		mRenderCommands.DrawIndexed( 3 );
-
-		// A triangle has been drawn into a framebuffer
-		// Now render that framebuffer onto the window
-		mRenderCommands.SetFramebuffer( rview.Framebuffer );
+	public void RenderViewIntoBackbuffer( in RenderView view )
+	{
+		mRenderCommands.SetFramebuffer( view.Framebuffer );
 		mRenderCommands.ClearColorTarget( 0, new( 0.02f, 0.10f, 0.12f, 1.0f ) );
-		mRenderCommands.SetViewport( 0, new( 0.0f, 0.0f, rview.RenderSize.X, rview.RenderSize.Y, 0.0f, 1.0f ) );
-		
+		mRenderCommands.SetViewport( 0, new( 0.0f, 0.0f, view.RenderSize.X, view.RenderSize.Y, 0.0f, 1.0f ) );
+
 		mRenderCommands.SetPipeline( mWindowPipeline.Pipeline );
-		mRenderCommands.SetGraphicsResourceSet( 0, rview.WindowSet );
+		mRenderCommands.SetGraphicsResourceSet( 0, view.WindowSet );
 		mRenderCommands.SetVertexBuffer( 0, mFullquadVertexBuffer );
 		mRenderCommands.SetIndexBuffer( mFullquadIndexBuffer, IndexFormat.UInt32 );
 
 		mRenderCommands.DrawIndexed( 6 );
+	}
+
+	public void RenderView( in IView view )
+	{
+		Debug.Assert( view is RenderView );
+		RenderView rview = (RenderView)view;
+
+		mRenderCommands.Begin();
+
+		// Render the viewed scene into a framebuffer
+		SetRenderView( rview );
+
+		// TODO: a lot of stuff
+		foreach ( var renderEntity in mEntitySet )
+		{
+			RenderSingleEntity( renderEntity, rview );
+		}
+
+		// Stuff has been drawn into a framebuffer
+		// Now render that framebuffer onto the window
+		RenderViewIntoBackbuffer( rview );
 
 		mRenderCommands.End();
 		Device.SubmitCommands( mRenderCommands );

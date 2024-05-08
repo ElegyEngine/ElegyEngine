@@ -29,17 +29,20 @@ public class RenderView : IView
 
 	private CameraData mCameraData;
 
-	private RenderView( GraphicsDevice device )
+	private RenderView( GraphicsDevice device, ResourceLayout perViewLayout )
 	{
 		CameraBuffer = device.ResourceFactory
 			.CreateBufferForStruct<CameraData>( BufferUsage.UniformBuffer );
+
+		PerViewSet = device.ResourceFactory.CreateSet( perViewLayout, CameraBuffer );
 	}
 
-	public RenderView( GraphicsDevice device, ITexture renderTarget, ResourceLayout windowLayout, Sampler windowSampler )
-		: this( device )
+	public RenderView( GraphicsDevice device, ITexture renderTarget,
+		ResourceLayout perViewLayout, ResourceLayout windowLayout, Sampler windowSampler )
+		: this( device, perViewLayout )
 	{
 		Debug.Assert( renderTarget is RenderTexture );
-		TargetTexture = (renderTarget as RenderTexture).DeviceTexture;
+		TargetTexture = ((RenderTexture)renderTarget).DeviceTexture;
 
 		ViewTexture = device.ResourceFactory.CreateTexture( TextureDescription.Texture2D(
 			width: (uint)renderTarget.Width,
@@ -63,8 +66,8 @@ public class RenderView : IView
 		WindowSet = device.ResourceFactory.CreateSet( windowLayout, ViewTexture, windowSampler );
 	}
 
-	public RenderView( GraphicsDevice device, IWindow window, ResourceLayout windowLayout, Sampler windowSampler )
-		: this( device )
+	public RenderView( GraphicsDevice device, IWindow window, ResourceLayout perViewLayout, ResourceLayout windowLayout, Sampler windowSampler )
+		: this( device, perViewLayout )
 	{
 		Window = window;
 		TargetSwapchain = RenderBackend.WindowSurfaceHelper.CreateSwapchain( device, window );
@@ -176,7 +179,16 @@ public class RenderView : IView
 	}
 
 	public bool TransformOrProjectionChanged { get; set; } = false;
-	public DeviceBuffer CameraBuffer { get; set; }
+	public DeviceBuffer CameraBuffer { get; private set; }
+	public ResourceSet PerViewSet { get; private set; }
+
+	public void UpdateBuffers( GraphicsDevice device )
+	{
+		if ( TransformOrProjectionChanged )
+		{
+			device.UpdateBuffer( CameraBuffer, 0, mCameraData );
+		}
+	}
 }
 
 public partial class RenderStandard : IRenderFrontend
@@ -184,10 +196,10 @@ public partial class RenderStandard : IRenderFrontend
 	PooledSet<RenderView> mViews = new( capacity: 32 );
 
 	public IView CreateView( IWindow window )
-		=> mViews.AddAndGet( new( mDevice, window, mWindowLayout, mWindowSampler ) );
+		=> mViews.AddAndGet( new( mDevice, window, mPerViewLayout, mWindowLayout, mWindowSampler ) );
 
 	public IView CreateView( AssetSystem.Resources.Texture renderTarget )
-		=> mViews.AddAndGet( new( mDevice, renderTarget.RenderTexture, mWindowLayout, mWindowSampler ) );
+		=> mViews.AddAndGet( new( mDevice, renderTarget.RenderTexture, mPerViewLayout, mWindowLayout, mWindowSampler ) );
 
 	public IView? GetView( IWindow window )
 	{
@@ -205,6 +217,12 @@ public partial class RenderStandard : IRenderFrontend
 	public bool FreeView( IView view )
 		=> mViews.RemoveAndThen( (RenderView)view, ( view ) =>
 		{
+			view.PerViewSet.Dispose();
+			view.WindowSet.Dispose();
+			view.RenderFramebuffer.Dispose();
+
+			view.ViewTexture.Dispose();
+			view.DepthTexture.Dispose();
 			view.CameraBuffer.Dispose();
 		} );
 }
