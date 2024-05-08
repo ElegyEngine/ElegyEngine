@@ -80,7 +80,7 @@ namespace Elegy.RenderSystem.API
 			return renderView;
 		}
 		
-		public static GraphicsDevice? CreateGraphicsDevice()
+		public static GraphicsDevice? CreateGraphicsDevice( string[] extraInstanceExtensions, string[] extraDeviceExtensions )
 		{
 			GraphicsDevice? device = null;
 
@@ -108,6 +108,8 @@ namespace Elegy.RenderSystem.API
 				{
 					// Nothing in here for now, though we may want
 					// Vulkan 1.3 dynamic state extensions at some point
+					InstanceExtensions = extraInstanceExtensions,
+					DeviceExtensions = extraDeviceExtensions
 				} );
 
 			}
