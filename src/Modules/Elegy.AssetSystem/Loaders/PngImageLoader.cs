@@ -41,11 +41,11 @@ namespace Elegy.AssetSystem.Loaders
 					Width = (uint)info.Value.Width,
 					Height = (uint)info.Value.Height,
 					Depth = 0, // Is always a 2D texture
-					BytesPerPixel = (uint)info.Value.BitsPerChannel / 4,
+					BytesPerPixel = (uint)info.Value.BitsPerChannel / 8,
 					Components = info.Value.ColorComponents switch
 					{
 						StbImageSharp.ColorComponents.GreyAlpha => 2U,
-						StbImageSharp.ColorComponents.RedGreenBlue => 3U,
+						StbImageSharp.ColorComponents.RedGreenBlue => 4U,
 						StbImageSharp.ColorComponents.RedGreenBlueAlpha => 4U,
 						_ => 1U
 					},
@@ -56,7 +56,13 @@ namespace Elegy.AssetSystem.Loaders
 
 				if ( !withoutData )
 				{
-					data = StbImageSharp.Decoding.PngDecoder.Decode( stream ).Data;
+					// Modern GAPIs do not support RGB; only R, RG and RGBA.
+					StbImageSharp.ColorComponents? requiredComponents =
+						info.Value.ColorComponents == StbImageSharp.ColorComponents.RedGreenBlue
+						? StbImageSharp.ColorComponents.RedGreenBlueAlpha
+						: null;
+
+					data = StbImageSharp.Decoding.PngDecoder.Decode( stream, requiredComponents ).Data;
 				}
 			}
 
