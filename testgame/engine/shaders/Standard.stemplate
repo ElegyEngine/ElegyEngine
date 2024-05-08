@@ -1,30 +1,43 @@
 {
   "name": "StandardST",
+  "shaderBinaryBasePath": "Standard",
+  "postprocessHint": false,
   "parameters": [
     {
       "name": "Sampler",
       "shaderName": "uSampler",
-      "type": 18
+      "type": 18,
+      "resourceSetId": 2
     },
     {
-      "name": "DiffuseTexture",
+      "name": "DiffuseMap",
       "shaderName": "uDiffuseTexture",
-      "type": 16
+      "type": 16,
+      "resourceSetId": 2
     },
     {
-      "name": "Sampler",
+      "name": "LightmapSampler",
       "shaderName": "uLightmapSampler",
-      "type": 18
+      "type": 18,
+      "resourceSetId": 3
     },
     {
-      "name": "LightmapTexture",
+      "name": "LightmapMap",
       "shaderName": "uLightmapTexture",
-      "type": 16
+      "type": 16,
+      "resourceSetId": 3
     },
     {
       "name": "ViewData",
       "shaderName": "uView",
-      "type": 13
+      "type": 13,
+      "resourceSetId": 0
+    },
+    {
+      "name": "EntityData",
+      "shaderName": "uEntity",
+      "type": 13,
+      "resourceSetId": 1
     }
   ],
   "shaderVariants": [
@@ -46,7 +59,27 @@
       ],
       "resourceLayouts": [
         {
+          "set": 0,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "ViewData",
+              "type": 13
+            }
+          ]
+        },
+        {
           "set": 1,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "EntityData",
+              "type": 13
+            }
+          ]
+        },
+        {
+          "set": 2,
           "elements": [
             {
               "binding": 0,
@@ -55,28 +88,8 @@
             },
             {
               "binding": 1,
-              "name": "DiffuseTexture",
+              "name": "DiffuseMap",
               "type": 16
-            }
-          ]
-        },
-        {
-          "set": 1,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "ViewData",
-              "type": 13
-            }
-          ]
-        },
-        {
-          "set": 0,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "ViewData",
-              "type": 13
             }
           ]
         }
@@ -104,82 +117,52 @@
       ],
       "resourceLayouts": [
         {
-          "set": 1,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "Sampler",
-              "type": 18
-            },
-            {
-              "binding": 1,
-              "name": "DiffuseTexture",
-              "type": 16
-            },
-            {
-              "binding": 0,
-              "name": "Sampler",
-              "type": 18
-            },
-            {
-              "binding": 1,
-              "name": "LightmapTexture",
-              "type": 16
-            }
-          ]
-        },
-        {
-          "set": 2,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "Sampler",
-              "type": 18
-            },
-            {
-              "binding": 1,
-              "name": "DiffuseTexture",
-              "type": 16
-            },
-            {
-              "binding": 0,
-              "name": "Sampler",
-              "type": 18
-            },
-            {
-              "binding": 1,
-              "name": "LightmapTexture",
-              "type": 16
-            }
-          ]
-        },
-        {
-          "set": 1,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "ViewData",
-              "type": 13
-            }
-          ]
-        },
-        {
-          "set": 2,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "ViewData",
-              "type": 13
-            }
-          ]
-        },
-        {
           "set": 0,
           "elements": [
             {
               "binding": 0,
               "name": "ViewData",
               "type": 13
+            }
+          ]
+        },
+        {
+          "set": 1,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "EntityData",
+              "type": 13
+            }
+          ]
+        },
+        {
+          "set": 2,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "Sampler",
+              "type": 18
+            },
+            {
+              "binding": 1,
+              "name": "DiffuseMap",
+              "type": 16
+            }
+          ]
+        },
+        {
+          "set": 3,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "LightmapSampler",
+              "type": 18
+            },
+            {
+              "binding": 1,
+              "name": "LightmapMap",
+              "type": 16
             }
           ]
         }
@@ -195,7 +178,27 @@
       ],
       "resourceLayouts": [
         {
+          "set": 0,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "ViewData",
+              "type": 13
+            }
+          ]
+        },
+        {
           "set": 1,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "EntityData",
+              "type": 13
+            }
+          ]
+        },
+        {
+          "set": 2,
           "elements": [
             {
               "binding": 0,
@@ -204,28 +207,8 @@
             },
             {
               "binding": 1,
-              "name": "DiffuseTexture",
+              "name": "DiffuseMap",
               "type": 16
-            }
-          ]
-        },
-        {
-          "set": 1,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "ViewData",
-              "type": 13
-            }
-          ]
-        },
-        {
-          "set": 0,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "ViewData",
-              "type": 13
             }
           ]
         }
@@ -241,7 +224,27 @@
       ],
       "resourceLayouts": [
         {
+          "set": 0,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "ViewData",
+              "type": 13
+            }
+          ]
+        },
+        {
           "set": 1,
+          "elements": [
+            {
+              "binding": 0,
+              "name": "EntityData",
+              "type": 13
+            }
+          ]
+        },
+        {
+          "set": 2,
           "elements": [
             {
               "binding": 0,
@@ -250,28 +253,8 @@
             },
             {
               "binding": 1,
-              "name": "DiffuseTexture",
+              "name": "DiffuseMap",
               "type": 16
-            }
-          ]
-        },
-        {
-          "set": 1,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "ViewData",
-              "type": 13
-            }
-          ]
-        },
-        {
-          "set": 0,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "ViewData",
-              "type": 13
             }
           ]
         }

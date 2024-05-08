@@ -1,5 +1,7 @@
 {
   "name": "DebugST",
+  "shaderBinaryBasePath": "Debug",
+  "postprocessHint": false,
   "parameters": [],
   "shaderVariants": [
     {

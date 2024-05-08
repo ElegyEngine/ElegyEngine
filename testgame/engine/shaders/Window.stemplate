@@ -1,15 +1,19 @@
 {
   "name": "WindowST",
+  "shaderBinaryBasePath": "Window",
+  "postprocessHint": false,
   "parameters": [
     {
       "name": "ViewTexture",
       "shaderName": "uViewTexture",
-      "type": 16
+      "type": 16,
+      "resourceSetId": 0
     },
     {
       "name": "ViewSampler",
       "shaderName": "uViewSampler",
-      "type": 18
+      "type": 18,
+      "resourceSetId": 0
     }
   ],
   "shaderVariants": [
@@ -40,10 +44,6 @@
               "type": 18
             }
           ]
-        },
-        {
-          "set": 0,
-          "elements": []
         }
       ]
     }
