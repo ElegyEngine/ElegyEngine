@@ -40,7 +40,7 @@ public partial class RenderStandard : IRenderFrontend
 			return false;
 		}
 
-		GraphicsDevice? device = Render.CreateGraphicsDevice();
+		GraphicsDevice? device = Render.CreateGraphicsDevice( [], ["VK_KHR_fragment_shader_barycentric"] );
 		if ( device is null )
 		{
 			return false;
