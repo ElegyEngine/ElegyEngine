@@ -50,6 +50,7 @@ namespace Elegy.RenderBackend
 
 		public ArrayMesh( GraphicsDevice device, Mesh meshData )
 		{
+			NumIndices = (uint)meshData.Indices.Length;
 			PositionBuffer = device.CreateBufferFromSpan<Vector3>( BufferUsage.VertexBuffer, meshData.Positions );
 			IndexBuffer = device.CreateBufferFromSpan<uint>( BufferUsage.IndexBuffer, meshData.Indices );
 
@@ -216,6 +217,8 @@ namespace Elegy.RenderBackend
 			BoneWeightBuffer = null;
 		}
 
+		/// <summary> Number of indices. Determining it from <see cref="IndexBuffer"/> is not reliable. </summary>
+		public uint NumIndices;
 		/// <summary> Vertex index buffer. </summary>
 		public DeviceBuffer IndexBuffer;
 		/// <summary> Position buffer. </summary>
