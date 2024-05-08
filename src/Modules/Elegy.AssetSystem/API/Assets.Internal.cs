@@ -115,13 +115,14 @@ namespace Elegy.AssetSystem.API
 		{
 			mMissingTexture = CreateTexture( new()
 				{
-					Width = 16,
-					Height = 16,
+					Width = 32,
+					Height = 32,
 					Depth = 0,
 					Components = 4,
-					BytesPerPixel = 1
+					BytesPerPixel = 1,
+					Srgb = false
 				},
-				Texture.GenerateMissingTexturePattern() );
+				Texture.GenerateMissingTexturePattern( 32, 32 ) );
 
 			return true;
 		}
