@@ -1,10 +1,10 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Common.Extensions;
 using Elegy.Common.Text;
 using Elegy.FileSystem.API;
 using Elegy.RenderBackend.Templating;
+using System.Text.Json;
 
 using ShaderTemplate = Elegy.RenderBackend.Assets.ShaderTemplate;
 
@@ -12,8 +12,10 @@ namespace Elegy.RenderSystem.API
 {
 	public static partial class Render
 	{
-		const string MaterialTemplatesDirectory = "materials/mtemplates";
+		const string MaterialTemplatesDirectory = "materials/templates";
 		const string ShaderTemplatesDirectory = "shaders";
+
+		private static JsonSerializerOptions JsonOptions => RenderBackend.Text.MaterialTemplateJsonOptions.Instance;
 
 		static Dictionary<string, ShaderTemplate> mShaderTemplates = new();
 		static Dictionary<string, MaterialTemplate> mMaterialTemplates = new();
@@ -56,7 +58,7 @@ namespace Elegy.RenderSystem.API
 			int numFailedShaderTemplates = 0;
 			foreach ( var entry in entries )
 			{
-				ShaderTemplate? template = JsonHelpers.LoadFrom<ShaderTemplate>( entry );
+				ShaderTemplate? template = JsonHelpers.LoadFrom<ShaderTemplate>( entry, JsonOptions );
 				if ( template is null )
 				{
 					mLogger.Warning( $"Can't load shader template '{entry}'" );
@@ -79,19 +81,28 @@ namespace Elegy.RenderSystem.API
 			int numFailedMaterialTemplates = 0;
 			foreach ( var entry in entries )
 			{
-				var template = JsonHelpers.LoadFrom<RenderBackend.Assets.MaterialTemplate>( entry );
+				var template = JsonHelpers.LoadFrom<RenderBackend.Assets.MaterialTemplate>( entry, JsonOptions );
 				if ( template is null )
 				{
 					mLogger.Warning( $"Can't load material template '{entry}'" );
 					numFailedMaterialTemplates++;
 					continue;
 				}
+
+				if ( !mShaderTemplates.ContainsKey( template.ShaderTemplate ) )
+				{
+					mLogger.Warning( $"Can't load material template '{entry}', it's trying to use a non-existing shader template '{template.ShaderTemplate}'" );
+					numFailedMaterialTemplates++;
+					continue;
+				}
+
+				mMaterialTemplates[template.Name] = new( template, mShaderTemplates[template.ShaderTemplate] );
 			}
 
-			mLogger.WarningIf( numFailedShaderTemplates == 0,
+			mLogger.WarningIf( numFailedShaderTemplates != 0,
 				$"Failed to load {numFailedShaderTemplates} shader templates" );
 
-			mLogger.WarningIf( numFailedMaterialTemplates == 0,
+			mLogger.WarningIf( numFailedMaterialTemplates != 0,
 				$"Failed to load {numFailedMaterialTemplates} material templates" );
 
 			return numFailedShaderTemplates == 0 && numFailedMaterialTemplates == 0;
