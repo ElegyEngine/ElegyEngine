@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Text;
-using System.Collections.Specialized;
+using StringDictionary = System.Collections.Generic.Dictionary<string, string>;
 
 namespace Elegy.Common.Assets
 {
@@ -52,7 +52,7 @@ namespace Elegy.Common.Assets
 		/// <summary>
 		/// Diffuse map.
 		/// </summary>
-		public string? DiffuseMap => GetParameterString( "map" );
+		public string? DiffuseMap => GetParameterString( "DiffuseMap" );
 	}
 
 	/// <summary>
@@ -78,6 +78,11 @@ namespace Elegy.Common.Assets
 				else if ( Enum.IsDefined( typeof( ToolMaterialFlag ), token ) )
 				{
 					flags |= Enum.Parse<ToolMaterialFlag>( token );
+				}
+				// Q3 map editor hack: interpret 'map' as Elegy's 'DiffuseMap'
+				else if ( token == "map" )
+				{
+					parameters.Add( "DiffuseMap", lex.TokensBeforeNewline() );
 				}
 				else
 				{
@@ -114,9 +119,12 @@ namespace Elegy.Common.Assets
 				}
 				else if ( isMaterialTemplate || token == "compilerParams" )
 				{
-					materialDefinition.TemplateName = isMaterialTemplate ? lex.Next() : "ToolMaterial";
+					if ( isMaterialTemplate )
+					{
+						materialDefinition.TemplateName = lex.Next();
+					}
+
 					var toolFlags = materialDefinition.ToolFlags;
-					
 					ParseMaterialParameters(
 						lex,
 						isMaterialTemplate
