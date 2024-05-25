@@ -55,6 +55,8 @@ namespace Elegy.RenderBackend.Assets
 		public int Set { get; set; } = 0;
 
 		public List<ResourceLayoutElementEntry> Elements { get; set; } = new();
+
+		public MaterialParameterLevel Level { get; set; } = MaterialParameterLevel.Builtin;
 	}
 
 	public class ShaderTemplateEntry

@@ -12,6 +12,8 @@ namespace Elegy.RenderBackend.Assets
 		public ShaderDataType Type { get; set; } = ShaderDataType.Float;
 
 		public int ResourceSetId { get; set; } = 0;
+
+		public MaterialParameterLevel Level { get; set; } = MaterialParameterLevel.Builtin;
 	}
 
 	public class ShaderTemplate

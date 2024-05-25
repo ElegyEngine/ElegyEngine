@@ -19,6 +19,7 @@ namespace Elegy.ShaderTool
 		public string ShaderName { get; set; } = string.Empty;
 		public string MaterialName { get; set; } = string.Empty;
 		public string[] VariantMask { get; set; } = Array.Empty<string>();
+		public MaterialParameterLevel Level { get; set; } = MaterialParameterLevel.Builtin;
 	}
 
 	public class GlslMaterialParameterBuffer
@@ -29,6 +30,7 @@ namespace Elegy.ShaderTool
 		public string MaterialName { get; set; } = string.Empty;
 		public string[] VariantMask { get; set; } = Array.Empty<string>();
 		public string StructContents { get; set; } = string.Empty;
+		public MaterialParameterLevel Level { get; set; } = MaterialParameterLevel.Builtin;
 	}
 
 	public class GlslInput
@@ -160,7 +162,8 @@ namespace Elegy.ShaderTool
 					Name = param.MaterialName,
 					ShaderName = param.ShaderName,
 					Type = param.Type,
-					ResourceSetId = param.SetId
+					ResourceSetId = param.SetId,
+					Level = param.Level
 				} );
 			}
 			foreach ( var param in MaterialParameterBuffers )
@@ -170,7 +173,8 @@ namespace Elegy.ShaderTool
 					Name = param.MaterialName,
 					ShaderName = param.ShaderName,
 					Type = ShaderDataType.Buffer,
-					ResourceSetId = param.SetId
+					ResourceSetId = param.SetId,
+					Level = param.Level
 				} );
 			}
 
@@ -206,6 +210,24 @@ namespace Elegy.ShaderTool
 			return result;
 		}
 
+		private MaterialParameterLevel DetermineMaterialParameterLevel( string variant, int setId )
+		{
+			var list = MaterialParameters
+				.Where( param => IsVisibleTo( variant, param.VariantMask ) && param.SetId == setId );
+
+			MaterialParameterLevel level = list.First().Level;
+			foreach ( var item in list )
+			{
+				if ( level > item.Level )
+				{
+					Console.WriteLine( $"WARNING: Mixed material parameter levels: {item.MaterialName} (set {item.SetId} binding {item.BindingId}), choosing the next biggest one" );
+					level = item.Level;
+				}
+			}
+
+			return level;
+		}
+
 		private List<ResourceLayoutEntry> ExtractResourceLayoutData( string variant )
 		{
 			List<ResourceLayoutEntry> result = new();
@@ -223,18 +245,20 @@ namespace Elegy.ShaderTool
 
 			foreach ( var setId in uniqueSets )
 			{
-				result.Add( new()
-				{
-					Set = setId,
-					Elements = MaterialParameters
-						.Where( param => IsVisibleTo( variant, param.VariantMask ) )
-						.Where( param => param.SetId == setId )
+				var elements = MaterialParameters
+						.Where( param => IsVisibleTo( variant, param.VariantMask ) && param.SetId == setId )
 						.Select( param => new ResourceLayoutElementEntry()
 						{
 							Name = param.MaterialName,
 							Binding = param.BindingId,
 							Type = param.Type
-						} ).ToList()
+						} ).ToList();
+
+				result.Add( new()
+				{
+					Set = setId,
+					Elements = elements,
+					Level = DetermineMaterialParameterLevel( variant, setId )
 				} );
 			}
 
@@ -453,6 +477,18 @@ namespace Elegy.ShaderTool
 			return variants.ToArray();
 		}
 
+		private MaterialParameterLevel ParseMaterialParameterLevel( string token )
+		{
+			return token.ToLower() switch
+			{
+				"builtin" => MaterialParameterLevel.Builtin,
+				"data" => MaterialParameterLevel.Data,
+				"global" => MaterialParameterLevel.Global,
+				"instance" => MaterialParameterLevel.Instance,
+				_ => throw new Exception( $"Unknown value '{token}'" )
+			};
+		}
+
 		private ShaderDataType ParseShaderDataType( string token )
 		{
 			return token.ToLower() switch
@@ -545,6 +581,8 @@ namespace Elegy.ShaderTool
 			string materialName = lexer.Next();
 			Expect( lexer, "," );
 			string[] variantMask = ParseVariantMask( lexer );
+			Expect( lexer, "," );
+			MaterialParameterLevel materialParameterLevel = ParseMaterialParameterLevel( lexer.Next() );
 			Expect( lexer, ")" );
 			lexer.Expect( ";", true );
 			return new()
@@ -554,7 +592,8 @@ namespace Elegy.ShaderTool
 				Type = shaderDataType,
 				ShaderName = shaderName,
 				MaterialName = materialName,
-				VariantMask = variantMask
+				VariantMask = variantMask,
+				Level = materialParameterLevel
 			};
 		}
 
@@ -571,6 +610,8 @@ namespace Elegy.ShaderTool
 			Expect( lexer, "," );
 			string[] variantMask = ParseVariantMask( lexer );
 			Expect( lexer, "," );
+			MaterialParameterLevel materialParameterLevel = ParseMaterialParameterLevel( lexer.Next() );
+			Expect( lexer, "," );
 			string structContents = lexer.PeekUntil( ")", skipPeeked: true, skipWhatToo: false );
 			Expect( lexer, ")" );
 			lexer.Expect( ";", true );
@@ -581,7 +622,8 @@ namespace Elegy.ShaderTool
 				ShaderName = shaderName,
 				MaterialName = materialName,
 				VariantMask = variantMask,
-				StructContents = structContents
+				StructContents = structContents,
+				Level = materialParameterLevel
 			};
 		}
 
