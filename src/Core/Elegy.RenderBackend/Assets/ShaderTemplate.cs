@@ -3,6 +3,15 @@
 
 namespace Elegy.RenderBackend.Assets
 {
+	public class GlobalParameter
+	{
+		public string Name { get; set; } = string.Empty;
+
+		public ShaderDataType Type { get; set; } = ShaderDataType.Float;
+
+		public int ResourceBindingId { get; set; } = 0;
+	}
+
 	public class MaterialParameter
 	{
 		public string Name { get; set; } = string.Empty;
