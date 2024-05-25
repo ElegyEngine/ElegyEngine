@@ -26,6 +26,14 @@ namespace Elegy.RenderBackend.Assets
 		Sampler
 	}
 
+	public enum MaterialParameterLevel
+	{
+		Builtin,
+		Data,
+		Global,
+		Instance
+	}
+
 	public class VertexLayoutEntry
 	{
 		public string Name { get; set; } = string.Empty;
