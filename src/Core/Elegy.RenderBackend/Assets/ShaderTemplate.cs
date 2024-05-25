@@ -13,6 +13,8 @@ namespace Elegy.RenderBackend.Assets
 
 		public int ResourceSetId { get; set; } = 0;
 
+		public int ResourceBindingId { get; set; } = 0;
+
 		public MaterialParameterLevel Level { get; set; } = MaterialParameterLevel.Builtin;
 	}
 

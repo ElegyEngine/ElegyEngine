@@ -163,6 +163,7 @@ namespace Elegy.ShaderTool
 					ShaderName = param.ShaderName,
 					Type = param.Type,
 					ResourceSetId = param.SetId,
+					ResourceBindingId = param.BindingId,
 					Level = param.Level
 				} );
 			}
@@ -174,6 +175,7 @@ namespace Elegy.ShaderTool
 					ShaderName = param.ShaderName,
 					Type = ShaderDataType.Buffer,
 					ResourceSetId = param.SetId,
+					ResourceBindingId = param.BindingId,
 					Level = param.Level
 				} );
 			}
