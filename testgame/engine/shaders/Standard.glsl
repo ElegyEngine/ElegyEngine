@@ -7,20 +7,20 @@ ShaderTemplate( StandardST );
 ShaderVariants( GENERAL, LIGHTMAP, DEPTH, WIREFRAME );
 
 // Shader parametres
-MaterialParameterBuffer( 0, 0, uView, ViewData, ALL,
+MaterialParameterBuffer( 0, 0, uView, ViewData, ALL, BUILTIN,
 	// Per-frame data
 	mat4 ViewMatrix;
 	mat4 ProjMatrix;
 );
-MaterialParameterBuffer( 1, 0, uEntity, EntityData, ALL,
+MaterialParameterBuffer( 1, 0, uEntity, EntityData, ALL, BUILTIN,
 	// Per-entity data
 	mat4 EntityMatrix;
 );
 // Per-material data
-MaterialParameter( 2, 0, sampler, uSampler, Sampler, ALL );
-MaterialParameter( 2, 1, texture2D, uDiffuseTexture, DiffuseMap, ALL );
-MaterialParameter( 3, 0, sampler, uLightmapSampler, LightmapSampler, LIGHTMAP );
-MaterialParameter( 3, 1, texture2D, uLightmapTexture, LightmapMap, LIGHTMAP );
+MaterialParameter( 2, 0, sampler, uSampler, Sampler, ALL, DATA );
+MaterialParameter( 2, 1, texture2D, uDiffuseTexture, DiffuseMap, ALL, DATA );
+MaterialParameter( 3, 0, sampler, uLightmapSampler, LightmapSampler, LIGHTMAP, INSTANCE );
+MaterialParameter( 3, 1, texture2D, uLightmapTexture, LightmapMap, LIGHTMAP, INSTANCE );
 
 // Vertex shader inputs (from device)
 VertexInput( 0, vec3, vPosition, ALL );

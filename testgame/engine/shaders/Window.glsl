@@ -4,8 +4,8 @@
 ShaderTemplate( WindowST );
 ShaderVariants( DEFAULT );
 // Shader parametres
-MaterialParameter( 0, 0, texture2D, uViewTexture, ViewTexture, DEFAULT );
-MaterialParameter( 0, 1, sampler, uViewSampler, ViewSampler, DEFAULT );
+MaterialParameter( 0, 0, texture2D, uViewTexture, ViewTexture, DEFAULT, BUILTIN );
+MaterialParameter( 0, 1, sampler, uViewSampler, ViewSampler, DEFAULT, BUILTIN );
 // Vertex shader inputs (from device)
 VertexInput( 0, vec2, vPosition, DEFAULT );
 VertexInput( 1, vec2, vUv, DEFAULT );
