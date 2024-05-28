@@ -95,7 +95,7 @@ namespace Elegy.ShaderTool
 				// Different set IDs are fine, but different binding IDs are not
 				// You might have a situation where your global parameter consists of 2 or more resources,
 				// at binding slots 0, 1, 2 etc. The order must be the same so it's consistent between
-				// shader templates and whatnot.
+				// shader templates and whatnot, so their resource sets can be reloaded.
 				if ( existingParam.ResourceBindingId != parameter.ResourceBindingId )
 				{
 					Error( "Differing global param. binding IDs:" );
