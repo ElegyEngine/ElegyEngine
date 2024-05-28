@@ -12,6 +12,7 @@ namespace Elegy.RenderSystem.API
 		public static bool Init( in LaunchConfig config )
 		{
 			mLogger.Log( "Init" );
+
 			Plugins.RegisterDependency( "Elegy.RenderBackend", typeof( RenderBackend.Utils ).Assembly );
 			Plugins.RegisterDependency( "Elegy.RenderSystem", typeof( Render ).Assembly );
 			Plugins.RegisterPluginCollector( new RenderPluginCollector() );
@@ -26,7 +27,23 @@ namespace Elegy.RenderSystem.API
 				return false;
 			}
 
-			return Instance.CreateCorePipelines();
+			Assets.SetRenderFactories(
+				CreateMaterial,
+				( textureInfo, data ) => CreateTexture( textureInfo, data.AsSpan() ) );
+
+			if ( RenderStyle is null )
+			{
+				mLogger.Error( "No render style loaded, dunno how to render things without that" );
+				return false;
+			}
+
+			if ( !InitialiseGraphics() )
+			{
+				mLogger.Error( "Failed to initialise graphics, can't render anything without that" );
+				return false;
+			}
+
+			return RenderStyle.CreateCorePipelines();
 		}
 
 		public static void Shutdown()
