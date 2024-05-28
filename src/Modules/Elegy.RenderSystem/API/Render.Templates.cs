@@ -4,6 +4,7 @@
 using Elegy.Common.Text;
 using Elegy.FileSystem.API;
 using Elegy.RenderBackend.Templating;
+using Elegy.RenderSystem.Resources;
 using System.Text.Json;
 
 using ShaderTemplate = Elegy.RenderBackend.Assets.ShaderTemplate;
@@ -118,6 +119,11 @@ namespace Elegy.RenderSystem.API
 		public static MaterialTemplate GetMaterialTemplate( string name )
 		{
 			return mMaterialTemplates[name];
+		}
+
+		public static MaterialParameter? GetGlobalMaterialParameter( string name )
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
