@@ -6,7 +6,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace Elegy.Common.Maths
 {
