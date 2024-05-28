@@ -21,20 +21,28 @@ namespace Elegy.RenderBackend.Templating
 
 	public class ShaderVariant
 	{
-		public ShaderVariant( MaterialTemplate parent, ResourceLayout[] layouts,
+		public ShaderVariant( MaterialTemplate parent, ShaderTemplateEntry data, ResourceLayout[] layouts,
 			Shader vertexShader, Shader pixelShader, Pipeline pipeline,
-			VariantVertexAttribute[] attributes, VariantResourceMapping[] mappings )
+			VariantVertexAttribute[] attributes, VariantResourceMapping[] mappings,
+			VariantResourceMapping[] perInstanceMappings, VariantResourceMapping[] globalMappings )
 		{
+			Data = data;
 			Template = parent;
 			Layouts = layouts;
 			VertexShader = vertexShader;
 			PixelShader = pixelShader;
 			Pipeline = pipeline;
 			VertexAttributes = attributes;
-			ResourceMappings = mappings;
+			ResourceMappingsGlobal = globalMappings;
+			ResourceMappingsPerMaterial = mappings;
+			ResourceMappingsPerInstance = perInstanceMappings;
 		}
 
-		public VariantResourceMapping[] ResourceMappings { get; }
+		public VariantResourceMapping[] ResourceMappingsGlobal { get; }
+
+		public VariantResourceMapping[] ResourceMappingsPerMaterial { get; }
+
+		public VariantResourceMapping[] ResourceMappingsPerInstance { get; }
 
 		public VariantVertexAttribute[] VertexAttributes { get; }
 
@@ -47,6 +55,8 @@ namespace Elegy.RenderBackend.Templating
 		public Shader PixelShader { get; }
 
 		public Pipeline Pipeline { get; }
+
+		public ShaderTemplateEntry Data { get; }
 	}
 
 	public class MaterialTemplate
@@ -72,7 +82,6 @@ namespace Elegy.RenderBackend.Templating
 
 		public bool CompileResources( GraphicsDevice gd,
 			Func<ShaderTemplateEntry, bool, OutputDescription> outputDescriptionFunc,
-			int[] skippedSetIds,
 			Func<string, string?>? pathTo = null )
 		{
 			ResourceFactory factory = gd.ResourceFactory;
@@ -106,16 +115,27 @@ namespace Elegy.RenderBackend.Templating
 				}
 
 				// 3. Create resource mapping table
-				List<VariantResourceMapping> mappings = new( variant.ResourceLayouts.Count );
+				List<VariantResourceMapping> globalMappings = new( variant.ResourceLayouts.Count );
+				List<VariantResourceMapping> perMaterialMappings = new( variant.ResourceLayouts.Count );
+				List<VariantResourceMapping> perInstanceMappings = new( variant.ResourceLayouts.Count );
 				for ( int i = 0; i < variant.ResourceLayouts.Count; i++ )
 				{
 					var layout = variant.ResourceLayouts[i];
-					if ( skippedSetIds.Contains( layout.Set ) )
+					// Builtin params are set manually while rendering
+					// Instance params have resource sets generated elsewhere
+					if ( layout.Level == MaterialParameterLevel.Builtin )
 					{
 						continue;
 					}
 
-					mappings.Add( new()
+					var mappingList = layout.Level switch
+					{
+						MaterialParameterLevel.Data => perMaterialMappings,
+						MaterialParameterLevel.Global => globalMappings,
+						MaterialParameterLevel.Instance => perInstanceMappings
+					};
+
+					mappingList.Add( new()
 					{
 						LayoutId = i,
 						SetId = layout.Set
@@ -127,6 +147,7 @@ namespace Elegy.RenderBackend.Templating
 				if ( pathTo is not null )
 				{
 					shaderBasePath = pathTo( shaderBasePath );
+					// TODO: validate this elsewhere or put the path itself into 'variant'
 					if ( shaderBasePath is null )
 					{
 						throw new FileNotFoundException();
@@ -139,7 +160,9 @@ namespace Elegy.RenderBackend.Templating
 				Pipeline pipeline = factory.CreatePipeline( Data, variant, vertexShader, pixelShader, layouts,
 					outputDescriptionFunc( variant, ShaderTemplate.PostprocessHint ) );
 
-				ShaderVariants.Add( variant.ShaderDefine, new( this, layouts, vertexShader, pixelShader, pipeline, attributes, mappings.ToArray() ) );
+				ShaderVariants.Add( variant.ShaderDefine,
+					new( this, variant, layouts, vertexShader, pixelShader, pipeline, attributes,
+						perMaterialMappings.ToArray(), perInstanceMappings.ToArray(), globalMappings.ToArray() ) );
 			}
 
 			return true;
