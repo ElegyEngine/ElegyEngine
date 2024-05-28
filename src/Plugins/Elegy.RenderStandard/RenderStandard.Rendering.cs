@@ -202,8 +202,6 @@ public partial class RenderStandard : IRenderFrontend
 			// TODO: sort render ents by material
 			var submesh = mesh.Submeshes[i];
 			var submaterial = mesh.Materials[i];
-			// TODO: I don't want to query a dictionary at runtime for this,
-			// figure out a faster way to access the stuff
 			var shaderVariant = submaterial.Template.ShaderVariants["GENERAL"];
 
 			mRenderCommands.SetPipeline( shaderVariant.Pipeline );
@@ -223,11 +221,24 @@ public partial class RenderStandard : IRenderFrontend
 			{
 				mRenderCommands.SetGraphicsResourceSet(
 					// Maintain correct slot
-					(uint)shaderVariant.ResourceMappings[resourceSetId].SetId,
+					(uint)shaderVariant.ResourceMappingsPerMaterial[resourceSetId].SetId,
 					// Each shader variant provides its own copy of resource sets
 					// It's a bit wasteful but was simpler to implement
 					shaderVariantSets[resourceSetId] );
 			}
+
+			/*
+			// Same story as above, just on an instance level
+			var parameterPool = entity.PerInstanceParameterPools[i];
+			var instanceSets = parameterPool.ResourceVariants["GENERAL"];
+			for ( int resourceSetId = 0; resourceSetId < instanceSets.Length; resourceSetId++ )
+			{
+				mRenderCommands.SetGraphicsResourceSet(
+					(uint)shaderVariant.ResourceMappingsPerInstance[resourceSetId].SetId,
+					instanceSets[resourceSetId]
+				);
+			}
+			*/
 
 			// Send vertex buffers used by this shader variant
 			// I wonder if this would get any faster using 'unsafe' or Span<T>, but
