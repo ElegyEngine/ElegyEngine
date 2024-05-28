@@ -4,6 +4,7 @@
 using Elegy.AssetSystem.API;
 using Elegy.AssetSystem.Interfaces.Rendering;
 using Elegy.Common.Assets;
+using Elegy.Common.Extensions;
 using Elegy.Common.Maths;
 using Elegy.ConsoleSystem;
 using Elegy.RenderSystem.API;
@@ -19,7 +20,6 @@ using Veldrid;
 
 using ShaderDataType = Elegy.RenderBackend.Assets.ShaderDataType;
 using Collections.Pooled;
-using Elegy.Common.Extensions;
 
 namespace Elegy.RenderStandard;
 
