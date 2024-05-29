@@ -97,11 +97,11 @@ namespace Elegy.RenderBackend.Extensions
 			return mFactory.CreateShader( pixelShaderDesc );
 		}
 
-		public static Pipeline CreatePipeline( this ResourceFactory factory, MaterialTemplate materialTemplate, ShaderTemplateEntry shaderTemplateEntry,
+		public static Pipeline CreatePipeline( this ResourceFactory factory, MaterialTemplate materialTemplate, ShaderVariantEntry shaderTemplateEntry,
 			Shader vertexShader, Shader pixelShader, ResourceLayout[] layouts, Framebuffer outputFramebuffer )
 			=> factory.CreatePipeline( materialTemplate, shaderTemplateEntry, vertexShader, pixelShader, layouts, outputFramebuffer.OutputDescription );
 
-		public static Pipeline CreatePipeline( this ResourceFactory factory, MaterialTemplate materialTemplate, ShaderTemplateEntry shaderTemplateEntry,
+		public static Pipeline CreatePipeline( this ResourceFactory factory, MaterialTemplate materialTemplate, ShaderVariantEntry shaderTemplateEntry,
 			Shader vertexShader, Shader pixelShader, ResourceLayout[] layouts, in OutputDescription outputFramebufferDesc )
 		{
 			GraphicsPipelineDescription pipelineDesc = new()

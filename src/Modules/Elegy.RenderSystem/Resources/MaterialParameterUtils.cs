@@ -7,74 +7,52 @@ using Elegy.Common.Maths;
 using Elegy.Common.Utilities;
 using Elegy.RenderBackend.Assets;
 using Elegy.RenderBackend.Extensions;
-using Elegy.RenderBackend.Templating;
 using Elegy.RenderSystem.API;
 using System.Diagnostics;
 using System.Numerics;
-using System.Runtime.InteropServices;
 using Veldrid;
 
 namespace Elegy.RenderSystem.Resources
 {
 	public static class MaterialParameterUtils
 	{
-		public static ResourceSet[] GenerateResourceSetsForVariant( GraphicsDevice device, ShaderVariant variant,
-			RenderBackend.Assets.ShaderTemplateEntry item, MaterialParameterLevel level, List<MaterialParameter> parameters )
+		public static ResourceSet GenerateResourceSet( GraphicsDevice device, ResourceLayout layout, List<MaterialParameter> parameters )
 		{
-			// This loop generates a ResourceSet
-			int setId = 0;
-			List<ResourceSetDescription> resourceSetDescriptions = new( item.ResourceLayouts.Count );
-			for ( int i = 0; i < item.ResourceLayouts.Count; i++ )
+			// This loop generates the elements for a ResourceSet
+			BindableResource[] bindableResources = new BindableResource[parameters.Count];
+			for ( int i = 0; i < parameters.Count; i++ )
 			{
-				if ( item.ResourceLayouts[i].Level != level )
-				{
-					continue;
-				}
+				MaterialParameter parameter = parameters[i];
 
-				// This loop generates the elements for a ResourceSet
-				BindableResource[] bindableResources = new BindableResource[item.ResourceLayouts[i].Elements.Count];
-				ResourceLayout layout = variant.Layouts[i];
-				for ( int e = 0; e < item.ResourceLayouts[i].Elements.Count; e++ )
+				BindableResource bindableResource = parameter.Type switch
 				{
-					var elements = item.ResourceLayouts[i].Elements;
-					var element = elements[e];
-					int index = elements.FindIndex( p => p.Name == element.Name );
-					Debug.Assert( index >= 0 );
+					ShaderDataType.Texture1D or
+					ShaderDataType.Texture2D or
+					ShaderDataType.Texture3D => parameter.Texture,
 
-					if ( element.Type.IsTexture() )
-					{
-						bindableResources[e] = parameters[index].Texture;
-					}
-					else if ( element.Type == ShaderDataType.Sampler )
-					{
-						bindableResources[e] = parameters[index].Sampler;
-					}
-					else
-					{
-						bindableResources[e] = parameters[index].Buffer;
-					}
-				}
+					ShaderDataType.Sampler => parameter.Sampler,
 
-				resourceSetDescriptions.Add( new()
-				{
-					Layout = variant.Layouts[i],
-					BoundResources = bindableResources
-				} );
+					_ => parameter.Buffer
+				};
+
+				bindableResources[i] = bindableResource;
 			}
 
-			return resourceSetDescriptions
-				.Select( rsd => device.ResourceFactory.CreateResourceSet( rsd ) )
-				.ToArray();
+			return device.ResourceFactory.CreateResourceSet( new()
+			{
+				Layout = layout,
+				BoundResources = bindableResources
+			} );
 		}
 
-		public static DeviceBuffer CreateBufferForMaterialParameter( GraphicsDevice device, RenderBackend.Assets.MaterialParameter parameter, string? value )
+		public static DeviceBuffer CreateBufferForMaterialParameter( GraphicsDevice device, ShaderDataType type, string? value )
 		{
 			if ( value is null )
 			{
-				return GetDefaultMaterialParameterBuffer( device, parameter.Type );
+				return GetDefaultMaterialParameterBuffer( device, type );
 			}
 
-			return parameter.Type switch
+			return type switch
 			{
 				ShaderDataType.Byte => device.CreateBufferFromStruct( BufferUsage.UniformBuffer, (byte)Parse.Int( value ) ),
 				ShaderDataType.Short => device.CreateBufferFromStruct( BufferUsage.UniformBuffer, (short)Parse.Int( value ) ),
@@ -143,7 +121,7 @@ namespace Elegy.RenderSystem.Resources
 			};
 		}
 
-		public static Texture CreateTextureForMaterialParameter( GraphicsDevice device, RenderBackend.Assets.MaterialParameter parameter, string? value )
+		public static Texture CreateTextureForMaterialParameter( GraphicsDevice device, string? value )
 		{
 			if ( value is null )
 			{
@@ -159,6 +137,19 @@ namespace Elegy.RenderSystem.Resources
 
 			Debug.Assert( texture.RenderTexture is not null );
 			return ((RenderTexture)texture.RenderTexture).DeviceTexture;
+		}
+
+		public static MaterialParameter CreateMaterialParameter( GraphicsDevice device, string name, ShaderDataType type, string? value )
+		{
+			return type.IsTexture() switch
+			{
+				true => new( name, type, CreateTextureForMaterialParameter( device, value ) ),
+				false => (type == ShaderDataType.Sampler) switch
+				{
+					true => new( name, GetSamplerByName( value ) ),
+					false => new( name, type, CreateBufferForMaterialParameter( device, type, value ) )
+				}
+			};
 		}
 
 		public static Texture GetMissingTexture()

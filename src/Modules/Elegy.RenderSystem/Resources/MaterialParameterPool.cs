@@ -5,7 +5,6 @@ using Elegy.AssetSystem.Interfaces.Rendering;
 using Elegy.Common.Assets;
 using Elegy.Common.Extensions;
 using Elegy.ConsoleSystem;
-using Elegy.RenderBackend.Extensions;
 using Elegy.RenderBackend.Templating;
 using Elegy.RenderSystem.API;
 
@@ -16,17 +15,12 @@ using ShaderDataType = Elegy.RenderBackend.Assets.ShaderDataType;
 using MaterialParameterLevel = Elegy.RenderBackend.Assets.MaterialParameterLevel;
 using Utils = Elegy.RenderSystem.Resources.MaterialParameterUtils;
 
-// TODO: regenerate resource sets when changing textures and samplers
-// That will allow for toggling between pixelated thingies, anisotropic settings,
-// and reloading textures while developing. It's gonna be a potentially costly operation,
-// so none of that should be used during actual gameplay
-
 namespace Elegy.RenderSystem.Resources
 {
 	public struct ResourceSetVariant
 	{
 		public ShaderVariant ShaderVariant { get; init; }
-		public ResourceSet[] ResourceSets { get; init; }
+		public int[] ResourceSetIds { get; init; }
 	}
 
 	public class MaterialParameterPool
@@ -43,32 +37,21 @@ namespace Elegy.RenderSystem.Resources
 
 			ParameterLevel = MaterialParameterLevel.Global;
 			// I arbitrarily chose 4 here, it's not common that there'll be more than that per material template
-			Parameters.EnsureCapacity( 4 );
+			ParameterSets.EnsureCapacity( 4 );
 
-			foreach ( var parametre in template.ShaderTemplate.Parameters.AsSpan() )
+			foreach ( var set in template.ShaderTemplate.ParameterSets.AsSpan() )
 			{
-				if ( parametre.Level != MaterialParameterLevel.Global )
+				if ( set.Level != MaterialParameterLevel.Global )
 				{
 					continue;
 				}
 
-				if ( parametre.Type == ShaderDataType.Buffer || parametre.Type == ShaderDataType.BufferRW )
+				MaterialParameterSet? globalSet = Render.GetGlobalParameterSet( set );
+				if ( globalSet is null )
 				{
-					mLogger.Warning( $"Global parametre '{parametre.Name}' is an unknown buffer type (global mat. param.: {parametre.Name})" );
-					continue;
+					mLogger.Error( $"Cannot find global parametre '{set.Parameters[0].Name}'" );
 				}
-
-				MaterialParameter? globalParam = Render.GetGlobalMaterialParameter( parametre.Name );
-				if ( globalParam is null )
-				{
-					mLogger.Error( $"Global parametre '{parametre.Name}' cannot be found" );
-					continue;
-				}
-
-				Parameters.Add( globalParam );
 			}
-
-			RegenerateParameterResourceSets();
 		}
 
 		/// <summary>
@@ -81,35 +64,33 @@ namespace Elegy.RenderSystem.Resources
 			Template = materialTemplate;
 
 			ParameterLevel = perInstance ? MaterialParameterLevel.Data : MaterialParameterLevel.Instance;
-			Parameters.EnsureCapacity( materialTemplate.ShaderTemplate.Parameters.Count );
-
+			ParameterSets.EnsureCapacity( materialTemplate.ShaderTemplate.ParameterSets.Count );
+			
 			// From the shader parametres, we will look up the given material def's parametres
 			// And then generate buffers for em
-			foreach ( var parametre in materialTemplate.ShaderTemplate.Parameters.AsSpan() )
+			foreach ( var set in materialTemplate.ShaderTemplate.ParameterSets.AsSpan() )
 			{
 				// Builtin and global parameters are filled in externally
-				if ( parametre.Level != ParameterLevel )
+				if ( set.Level != ParameterLevel )
 				{
 					continue;
 				}
 
-				if ( parametre.Type == ShaderDataType.Buffer || parametre.Type == ShaderDataType.BufferRW )
+				List<MaterialParameter> parameters = new( set.Parameters.Count );
+				foreach ( var parametre in set.Parameters.AsSpan() )
 				{
-					mLogger.Warning( $"Parametre '{parametre.Name}' is an unknown buffer type (mat: {definition.Name})" );
-					continue;
-				}
-
-				string? value = definition.Parameters.GetValueOrDefault( parametre.Name );
-
-				Parameters.Add( parametre.Type.IsTexture() switch
-				{
-					true => new( parametre.Name, parametre.Type, Utils.CreateTextureForMaterialParameter( device, parametre, value ) ),
-					false => (parametre.Type == ShaderDataType.Sampler) switch
+					if ( parametre.Type == ShaderDataType.Buffer || parametre.Type == ShaderDataType.BufferRW )
 					{
-						true => new( parametre.Name, Utils.GetSamplerByName( value ) ),
-						false => new( parametre.Name, parametre.Type, Utils.CreateBufferForMaterialParameter( device, parametre, value ) )
+						mLogger.Error( $"Parametre '{parametre.Name}' is an unknown buffer type (mat: {definition.Name})" );
+						continue;
 					}
-				} );
+
+					string? value = definition.Parameters.GetValueOrDefault( parametre.Name );
+					parameters.Add( Utils.CreateMaterialParameter( device, parametre.Name, parametre.Type, value ) );
+				}
+
+				MaterialParameterSet parameterSet = new( mDevice, ParameterLevel, materialTemplate.ResourceLayouts[set.ResourceSetId], parameters );
+				ParameterSets.Add( parameterSet );
 			}
 
 			RegenerateParameterResourceSets();
@@ -118,7 +99,7 @@ namespace Elegy.RenderSystem.Resources
 		private GraphicsDevice mDevice;
 		public MaterialParameterLevel ParameterLevel { get; private set; }
 		public List<ResourceSetVariant> ResourceSetVariants { get; private set; } = new();
-		public List<MaterialParameter> Parameters { get; private set; } = new();
+		public List<MaterialParameterSet> ParameterSets { get; private set; } = new();
 		public MaterialDefinition? Definition { get; private set; } = null;
 		public MaterialTemplate Template { get; private set; }
 
@@ -137,16 +118,26 @@ namespace Elegy.RenderSystem.Resources
 
 		public string[] GetParameterNames()
 		{
-			return Parameters.Select( p => p.Name ).ToArray();
+			return ParameterSets.SelectMany( set => set.Parameters.Select( param => param.Name ) ).ToArray();
+		}
+
+		public MaterialParameter GetParameter( int id )
+		{
+			return ParameterSets[id % 100].Parameters[id / 100];
 		}
 
 		public int GetParameterIndex( string name )
 		{
-			for ( int i = 0; i < Parameters.Count; i++ )
+			for ( int setId = 0; setId < ParameterSets.Count; setId++ )
 			{
-				if ( Parameters[i].Name == name )
+				var set = ParameterSets[setId];
+
+				for ( int paramId = 0; paramId < set.Parameters.Count; paramId++ )
 				{
-					return i;
+					if ( set.Parameters[paramId].Name == name )
+					{
+						return setId + paramId * 100;
+					}
 				}
 			}
 
@@ -157,7 +148,7 @@ namespace Elegy.RenderSystem.Resources
 		{
 			if ( ValidateIntention( id, ShaderDataType.Int, ShaderDataType.Short, ShaderDataType.Byte ) )
 			{
-				Parameters[id].SetValue( mDevice, value );
+				GetParameter( id ).SetValue( mDevice, value );
 			}
 		}
 
@@ -165,7 +156,7 @@ namespace Elegy.RenderSystem.Resources
 		{
 			if ( ValidateIntention( id, ShaderDataType.Float ) )
 			{
-				Parameters[id].SetValue( mDevice, value );
+				GetParameter( id ).SetValue( mDevice, value );
 			}
 		}
 
@@ -173,7 +164,7 @@ namespace Elegy.RenderSystem.Resources
 		{
 			if ( ValidateIntention( id, ShaderDataType.Byte ) )
 			{
-				Parameters[id].SetValue( mDevice, value );
+				GetParameter( id ).SetValue( mDevice, value );
 			}
 		}
 
@@ -181,7 +172,7 @@ namespace Elegy.RenderSystem.Resources
 		{
 			if ( ValidateIntention( id, ShaderDataType.Vec2, ShaderDataType.Vec2Byte ) )
 			{
-				Parameters[id].SetValue( mDevice, value );
+				GetParameter( id ).SetValue( mDevice, value );
 			}
 		}
 
@@ -189,7 +180,7 @@ namespace Elegy.RenderSystem.Resources
 		{
 			if ( ValidateIntention( id, ShaderDataType.Vec3, ShaderDataType.Vec3Byte ) )
 			{
-				Parameters[id].SetValue( mDevice, value );
+				GetParameter( id ).SetValue( mDevice, value );
 			}
 		}
 
@@ -197,7 +188,7 @@ namespace Elegy.RenderSystem.Resources
 		{
 			if ( ValidateIntention( id, ShaderDataType.Vec4, ShaderDataType.Vec4Byte ) )
 			{
-				Parameters[id].SetValue( mDevice, value );
+				GetParameter( id ).SetValue( mDevice, value );
 			}
 		}
 
@@ -205,7 +196,7 @@ namespace Elegy.RenderSystem.Resources
 		{
 			if ( ValidateIntention( id, ShaderDataType.Mat44 ) )
 			{
-				Parameters[id].SetValue( mDevice, value );
+				GetParameter( id ).SetValue( mDevice, value );
 			}
 		}
 
@@ -213,7 +204,7 @@ namespace Elegy.RenderSystem.Resources
 		{
 			if ( ValidateIntention( id, ShaderDataType.Buffer, ShaderDataType.BufferRW ) )
 			{
-				Parameters[id].SetBufferValue( mDevice, bufferValue );
+				GetParameter( id ).SetBufferValue( mDevice, bufferValue );
 			}
 		}
 
@@ -221,23 +212,33 @@ namespace Elegy.RenderSystem.Resources
 		{
 			if ( TextureTypeCompatible( id, value.Width, value.Height, value.Depth ) )
 			{
-				Parameters[id].Texture = ((RenderTexture)value).DeviceTexture;
-				RegenerateParameterResourceSets();
+				GetParameter( id ).Texture = ((RenderTexture)value).DeviceTexture;
+				RegenerateResourceSet( id );
 			}
 		}
 
 		public void SetSampler( int id, Sampler sampler )
 		{
-			if ( Parameters[id].Type == ShaderDataType.Sampler )
+			if ( GetParameter( id ).Type == ShaderDataType.Sampler )
 			{
-				Parameters[id].Sampler = sampler;
-				RegenerateParameterResourceSets();
+				GetParameter( id ).Sampler = sampler;
+				RegenerateResourceSet( id );
 			}
+		}
+
+		public void RegenerateResourceSet( int id )
+		{
+			ParameterSets[id].RegenerateSet();
 		}
 
 		public void RegenerateParameterResourceSets()
 		{
 			ResourceSetVariants.EnsureCapacity( Template.ShaderVariants.Count );
+
+			for ( int i = 0; i < ParameterSets.Count; i++ )
+			{
+				RegenerateResourceSet( i );
+			}
 
 			// Generate resource sets from material-level
 			// parametres and shader variants
@@ -247,7 +248,7 @@ namespace Elegy.RenderSystem.Resources
 				ResourceSetVariants.Add( new()
 				{
 					ShaderVariant = variant,
-					ResourceSets = Utils.GenerateResourceSetsForVariant( mDevice, variant, variantAsset, ParameterLevel, Parameters )
+					ResourceSetIds = variantAsset.ParameterSetIds.ToArray()
 				} );
 			}
 		}
@@ -259,13 +260,13 @@ namespace Elegy.RenderSystem.Resources
 				return false;
 			}
 
-			if ( Parameters[id].Texture is null )
+			if ( GetParameter( id ).Texture is null )
 			{
 				return false;
 			}
 
-			var texture = Parameters[id].Texture;
-			return Parameters[id].Texture.Type switch
+			var texture = GetParameter( id ).Texture;
+			return GetParameter( id ).Texture.Type switch
 			{
 				TextureType.Texture1D => height == 0 && depth == 0,
 				TextureType.Texture2D => height > 0 && depth == 0,
@@ -276,15 +277,26 @@ namespace Elegy.RenderSystem.Resources
 
 		private bool ValidateIntention( int id, params ShaderDataType[] types )
 		{
-			if ( id >= Parameters.Count )
+			int setId = id % 100;
+			int paramId = id / 100;
+
+			if ( setId >= ParameterSets.Count )
 			{
 				mLogger.Error( $"Index is out of range ({id})" );
 				return false;
 			}
 
-			if ( !types.Contains( Parameters[id].Type ) )
+			if ( paramId >= ParameterSets[setId].Parameters.Count )
 			{
-				mLogger.Error( $"Type mismatch, parameter is {Parameters[id].Type} but value is {types[0]} ({Parameters[id].Name})" );
+				mLogger.Error( $"Index is out of range ({id})" );
+				return false;
+			}
+
+			var parameter = ParameterSets[setId].Parameters[paramId];
+
+			if ( !types.Contains( parameter.Type ) )
+			{
+				mLogger.Error( $"Type mismatch, parameter is {parameter.Type} but value is {types[0]} ({parameter.Name})" );
 				return false;
 			}
 
@@ -293,7 +305,10 @@ namespace Elegy.RenderSystem.Resources
 
 		public void Dispose()
 		{
-
+			foreach ( var set in ParameterSets )
+			{
+				set.Dispose();
+			}
 		}
 	}
 }

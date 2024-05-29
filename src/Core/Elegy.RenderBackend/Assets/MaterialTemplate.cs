@@ -11,7 +11,7 @@ namespace Elegy.RenderBackend.Assets
 		Transparent,
 		Additive,
 		Multiply,
-		MiddleGray,
+		MiddleGray
 	}
 
 	public class PipelineInfo

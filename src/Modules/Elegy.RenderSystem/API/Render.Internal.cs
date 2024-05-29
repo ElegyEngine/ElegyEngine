@@ -49,7 +49,7 @@ namespace Elegy.RenderSystem.API
 			return Factory.CreateSampler( samplerDescription );
 		}
 
-		private static OutputDescription GetOutputForShaderVariant( RenderBackend.Assets.ShaderTemplateEntry entry, bool postprocessHint )
+		private static OutputDescription GetOutputForShaderVariant( RenderBackend.Assets.ShaderVariantEntry entry, bool postprocessHint )
 		{
 			if ( entry.ShaderDefine.ToLower().Contains( "depth" ) )
 			{

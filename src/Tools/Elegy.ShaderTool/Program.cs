@@ -27,7 +27,7 @@ namespace Elegy.ShaderTool
 				Error( $"There are no GLSL shaders in the provided {ShaderDirectory}!" );
 			}
 
-			List<MaterialParameter> globalParameters = new();
+			List<MaterialParameterSet> globalParameters = new();
 
 			foreach ( var shader in shaderFiles )
 			{
@@ -55,59 +55,77 @@ namespace Elegy.ShaderTool
 			Console.ResetColor();
 		}
 
-		private static void ProcessGlobalMaterialParameters( List<MaterialParameter> parameters )
+		private static void ProcessGlobalMaterialParameters( List<MaterialParameterSet> parameters )
 		{
-			List<GlobalParameter> globalParams = parameters.Select( p => new GlobalParameter()
+			List<GlobalParameterSet> globalParams = parameters.Select( p => new GlobalParameterSet()
 			{
-				Name = p.Name,
-				Type = p.Type
+				Parameters = p.Parameters
 			} ).ToList();
 
 			JsonHelpers.Write( globalParams, "shaders/globalMaterialParams.json" );
 		}
 
-		private static bool AppendGlobalMaterialParameters( ShaderTemplate template, List<MaterialParameter> outGlobalParameters )
+		private static MaterialParameter? FindGlobalMaterialParameter( List<MaterialParameterSet> globalParameters, string name )
+		{
+			foreach ( var set in globalParameters )
+			{
+				foreach ( var param in set.Parameters )
+				{
+					if ( param.Name == name )
+					{
+						return param;
+					}
+				}
+			}
+
+			return null;
+		}
+
+		private static bool AppendGlobalMaterialParameters( ShaderTemplate template, List<MaterialParameterSet> outGlobalParameters )
 		{
 			bool okay = true;
 
-			foreach ( var parameter in template.Parameters )
+			foreach ( var set in template.ParameterSets )
 			{
-				if ( parameter.Level != MaterialParameterLevel.Global )
+				if ( set.Level != MaterialParameterLevel.Global )
 				{
 					continue;
 				}
 
-				MaterialParameter? existingParam = outGlobalParameters.First( item => item.Name == parameter.Name );
-				if ( existingParam is null )
+				foreach ( var parameter in set.Parameters )
 				{
-					outGlobalParameters.Add( parameter );
-					continue;
-				}
+					MaterialParameter? existingParam = FindGlobalMaterialParameter( outGlobalParameters, parameter.Name );
+					if ( existingParam is null )
+					{
+						outGlobalParameters.Add( set );
+						continue;
+					}
 
-				// Mixed types are not allowed for obvious reasons
-				if ( existingParam.Type != parameter.Type )
-				{
-					Error( "Differing global param. datatypes:" );
-					Error( $"{existingParam.Type} (in memory) vs. {parameter.Type} (in shader template '{template.Name}')" );
-					okay = false;
-				}
+					// Mixed types are not allowed for obvious reasons
+					if ( existingParam.Type != parameter.Type )
+					{
+						Error( "Differing global param. datatypes:" );
+						Error( $"{existingParam.Type} (in memory) vs. {parameter.Type} (in shader template '{template.Name}')" );
+						okay = false;
+					}
 
-				// Different set IDs are fine, but different binding IDs are not
-				// You might have a situation where your global parameter consists of 2 or more resources,
-				// at binding slots 0, 1, 2 etc. The order must be the same so it's consistent between
-				// shader templates and whatnot, so their resource sets can be reloaded.
-				if ( existingParam.ResourceBindingId != parameter.ResourceBindingId )
-				{
-					Error( "Differing global param. binding IDs:" );
-					Error( $"{existingParam.ResourceBindingId} (in memory) vs. {parameter.ResourceBindingId} (in shader template '{template.Name}')" );
-					okay = false;
+					// Different set IDs are fine, but different binding IDs are not
+					// You might have a situation where your global parameter consists of 2 or more resources,
+					// at binding slots 0, 1, 2 etc. The order must be the same so it's consistent between
+					// shader templates and whatnot, so their resource sets can be reloaded.
+					if ( existingParam.ResourceBindingId != parameter.ResourceBindingId )
+					{
+						Error( "Differing global param. binding IDs:" );
+						Error( $"{existingParam.ResourceBindingId} (in memory) vs. {parameter.ResourceBindingId} (in shader template '{template.Name}')" );
+						okay = false;
+					}
 				}
 			}
 
 			return okay;
 		}
 
-		private static bool ProcessShader( string path, List<MaterialParameter> outGlobalParameters )
+		private static bool ProcessShader( string path, List<MaterialParameterSet> outGlobalParameters )
 		{
 			ShaderProcessor processor = new( path, File.ReadAllText( path ) );
 			if ( !processor.CreatePermutations() )
@@ -118,7 +136,8 @@ namespace Elegy.ShaderTool
 
 			ShaderTemplate shaderTemplate = processor.CreateShaderTemplate();
 
-			// The compilation may fail, but the shader template will prevail
+			// Compiling this may fail,
+			// but the template will prevail
 			JsonHelpers.Write( shaderTemplate, Path.ChangeExtension( path, ".stemplate" ) );
 
 			// Collect global material params here

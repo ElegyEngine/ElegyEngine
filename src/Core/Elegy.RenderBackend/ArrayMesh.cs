@@ -100,7 +100,7 @@ namespace Elegy.RenderBackend
 			return true;
 		}
 
-		public bool IsCompatibleWith( in ShaderTemplateEntry shaderTemplateEntry, StringBuilder? errorStringBuilder = null )
+		public bool IsCompatibleWith( in ShaderVariantEntry shaderTemplateEntry, StringBuilder? errorStringBuilder = null )
 		{
 			bool compatible = true;
 			int numUvBuffersRequired = 0, numColourBuffersRequired = 0;

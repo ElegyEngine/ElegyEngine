@@ -3,26 +3,20 @@
 
 namespace Elegy.RenderBackend.Assets
 {
-	public class GlobalParameter
+	public class ResourceLayoutElementEntry
 	{
+		public int Binding { get; set; } = 0;
+
 		public string Name { get; set; } = string.Empty;
 
-		public ShaderDataType Type { get; set; } = ShaderDataType.Float;
-
-		public int ResourceBindingId { get; set; } = 0;
+		public ShaderDataType Type { get; set; } = ShaderDataType.Buffer;
 	}
 
-	public class MaterialParameter
+	public class ResourceLayoutEntry
 	{
-		public string Name { get; set; } = string.Empty;
+		public int Set { get; set; } = 0;
 
-		public string ShaderName { get; set; } = string.Empty;
-
-		public ShaderDataType Type { get; set; } = ShaderDataType.Float;
-
-		public int ResourceSetId { get; set; } = 0;
-
-		public int ResourceBindingId { get; set; } = 0;
+		public List<ResourceLayoutElementEntry> Elements { get; set; } = new();
 
 		public MaterialParameterLevel Level { get; set; } = MaterialParameterLevel.Builtin;
 	}
@@ -35,8 +29,10 @@ namespace Elegy.RenderBackend.Assets
 
 		public bool PostprocessHint { get; set; } = false;
 
-		public List<MaterialParameter> Parameters { get; set; } = new();
+		public List<MaterialParameterSet> ParameterSets { get; set; } = new();
 
-		public List<ShaderTemplateEntry> ShaderVariants { get; set; } = new();
+		public List<ShaderVariantEntry> ShaderVariants { get; set; } = new();
+
+		public List<ResourceLayoutEntry> ResourceLayouts { get; set; } = new();
 	}
 }

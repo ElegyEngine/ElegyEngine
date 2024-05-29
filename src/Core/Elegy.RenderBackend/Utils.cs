@@ -126,7 +126,7 @@ namespace Elegy.RenderBackend
 				AttachmentStates = [ ExtractBlendDescription( materialTemplate.PipelineInfo ) ]
 			};
 
-		public static VertexLayoutDescription[] ExtractVertexLayouts( ShaderTemplateEntry variant )
+		public static VertexLayoutDescription[] ExtractVertexLayouts( ShaderVariantEntry variant )
 		{
 			VertexLayoutDescription[] vertexLayouts = new VertexLayoutDescription[variant.VertexLayouts.Count];
 			for ( int i = 0; i < variant.VertexLayouts.Count; i++ )
@@ -231,7 +231,7 @@ namespace Elegy.RenderBackend
 			return File.ReadAllBytes( path );
 		}
 
-		public static string PathToShaderVariant( ShaderTemplate template, ShaderTemplateEntry entry )
+		public static string PathToShaderVariant( ShaderTemplate template, ShaderVariantEntry entry )
 		{
 			return $"shaders/bin/{template.ShaderBinaryBasePath}.{entry.ShaderDefine}";
 		}

@@ -7,6 +7,7 @@ using Elegy.RenderBackend.Templating;
 using Elegy.RenderSystem.Resources;
 using System.Text.Json;
 
+using GlobalParameterSet = Elegy.RenderBackend.Assets.GlobalParameterSet;
 using ShaderTemplate = Elegy.RenderBackend.Assets.ShaderTemplate;
 
 namespace Elegy.RenderSystem.API
@@ -20,7 +21,8 @@ namespace Elegy.RenderSystem.API
 
 		static Dictionary<string, ShaderTemplate> mShaderTemplates = new();
 		static Dictionary<string, MaterialTemplate> mMaterialTemplates = new();
-		
+		static List<MaterialParameterSet> mGlobalParameters = new();
+
 		internal static bool LoadMaterialTemplates()
 		{
 			bool anyFailed = false;
@@ -41,6 +43,23 @@ namespace Elegy.RenderSystem.API
 
 			return LoadMaterialTemplatesInDirectory( Files.CurrentGamePath )
 				&& !anyFailed;
+		}
+
+		internal static bool LoadGlobalParameters()
+		{
+			string path = $"{ShaderTemplatesDirectory}/globalMaterialParams.json";
+
+			mLogger.Developer( $"Loading global material parameters: '{path}'" );
+
+			List<GlobalParameterSet>? globalParams = JsonHelpers.LoadFrom<List<GlobalParameterSet>>( path, JsonOptions );
+			if ( globalParams is null )
+			{
+				return true;
+			}
+
+			// TODO: Initialise global parametres
+			mGlobalParameters = new();
+			return true;
 		}
 
 		internal static bool LoadMaterialTemplatesInDirectory( string directory )
@@ -121,9 +140,81 @@ namespace Elegy.RenderSystem.API
 			return mMaterialTemplates[name];
 		}
 
-		public static MaterialParameter? GetGlobalMaterialParameter( string name )
+		public static MaterialParameterSet? GetGlobalParameterSet( string parameterName )
 		{
-			throw new NotImplementedException();
+			foreach ( var globalSet in mGlobalParameters )
+			{
+				foreach ( var globalParam in globalSet.Parameters )
+				{
+					if ( globalParam.Name == parameterName )
+					{
+						return globalSet;
+					}
+				}
+			}
+
+			return null;
+		}
+
+		public static MaterialParameterSet? GetGlobalParameterSet( RenderBackend.Assets.MaterialParameterSet set )
+		{
+			if ( set.Level != RenderBackend.Assets.MaterialParameterLevel.Global )
+			{
+				return null;
+			}
+
+			var parameters = set.Parameters;
+
+			foreach ( var globalSet in mGlobalParameters )
+			{
+				var globalParams = globalSet.Parameters;
+
+				if ( parameters.Count != globalParams.Count )
+				{
+					continue;
+				}
+
+				bool compatible = true;
+				for ( int i = 0; i < parameters.Count; i++ )
+				{
+					if ( parameters[i].Type != globalParams[i].Type )
+					{
+						compatible = false;
+						break;
+					}
+
+					if ( parameters[i].Name != globalParams[i].Name )
+					{
+						compatible = false;
+						break;
+					}
+				}
+
+				if ( !compatible )
+				{
+					continue;
+				}
+
+				return globalSet;
+			}
+
+			return null;
+		}
+
+		public static MaterialParameter? GetGlobalParameter( string name )
+		{
+			foreach ( var globalSet in mGlobalParameters )
+			{
+				foreach ( var parameter in globalSet.Parameters )
+				{
+					if ( parameter.Name == name )
+					{
+						return parameter;
+					}
+				}
+			}
+
+			return null;
 		}
 	}
 }
