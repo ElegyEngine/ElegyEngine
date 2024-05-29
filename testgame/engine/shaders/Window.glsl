@@ -3,9 +3,12 @@
 
 ShaderTemplate( WindowST );
 ShaderVariants( DEFAULT );
+
 // Shader parametres
-MaterialParameter( 0, 0, texture2D, uViewTexture, ViewTexture, DEFAULT, BUILTIN );
-MaterialParameter( 0, 1, sampler, uViewSampler, ViewSampler, DEFAULT, BUILTIN );
+MaterialParameterSet( 0, DEFAULT, BUILTIN,
+	Data( texture2D, uViewTexture, ViewTexture ),
+	Data( sampler, uViewSampler, ViewSampler )
+);
 // Vertex shader inputs (from device)
 VertexInput( 0, vec2, vPosition, DEFAULT );
 VertexInput( 1, vec2, vUv, DEFAULT );
@@ -21,6 +24,6 @@ VertexShader( DEFAULT,
 	pUv = vec2( vUv.x, 1.0 - vUv.y );
 )
 
-PixelShader( DEFAULT, 
+PixelShader( DEFAULT,
 	return texture( sampler2D( uViewTexture, uViewSampler ), pUv );
 )
