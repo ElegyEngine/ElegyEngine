@@ -36,7 +36,7 @@ namespace Elegy.RenderBackend.Templating
 			ResourceFactory factory = gd.ResourceFactory;
 
 			// 1. Create resource layouts
-			ResourceLayouts = ShaderTemplate.ResourceLayouts.Select( factory.CreateLayout ).ToArray();
+			ResourceLayouts = ShaderTemplate.ParameterSets.Select( layout => factory.CreateLayout( layout.Parameters ) ).ToArray();
 
 			foreach ( var variant in ShaderTemplate.ShaderVariants )
 			{
@@ -60,12 +60,12 @@ namespace Elegy.RenderBackend.Templating
 				}
 
 				// 3. Create resource mapping table
-				List<VariantResourceMapping> globalMappings = new( ResourceLayouts.Length );
-				List<VariantResourceMapping> perMaterialMappings = new( ResourceLayouts.Length );
-				List<VariantResourceMapping> perInstanceMappings = new( ResourceLayouts.Length );
+				List<int> globalMappings = new( ResourceLayouts.Length );
+				List<int> perMaterialMappings = new( ResourceLayouts.Length );
+				List<int> perInstanceMappings = new( ResourceLayouts.Length );
 				for ( int i = 0; i < ResourceLayouts.Length; i++ )
 				{
-					var layout = ShaderTemplate.ResourceLayouts[i];
+					var layout = ShaderTemplate.ParameterSets[i];
 					// Builtin params are set manually while rendering
 					// Instance params have resource sets generated elsewhere
 					if ( layout.Level == Assets.MaterialParameterLevel.Builtin )
@@ -80,11 +80,7 @@ namespace Elegy.RenderBackend.Templating
 						Assets.MaterialParameterLevel.Instance => perInstanceMappings
 					};
 
-					mappingList.Add( new()
-					{
-						LayoutId = i,
-						SetId = layout.Set
-					} );
+					mappingList.Add( layout.ResourceSetId );
 				}
 
 				// 4. Create shader objects
