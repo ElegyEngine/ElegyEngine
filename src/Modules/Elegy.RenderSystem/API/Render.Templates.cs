@@ -58,7 +58,17 @@ namespace Elegy.RenderSystem.API
 			}
 
 			// TODO: Initialise global parametres
-			mGlobalParameters = new();
+			mGlobalParameters = globalParams.Select( p =>
+			{
+
+
+				Veldrid.ResourceLayout resourceLayout = Factory.CreateResourceLayout( new()
+				{
+
+				} );
+
+				return new MaterialParameterSet( mDevice, RenderBackend.Assets.MaterialParameterLevel.Global, null, null );
+			} ).ToList();
 			return true;
 		}
 
