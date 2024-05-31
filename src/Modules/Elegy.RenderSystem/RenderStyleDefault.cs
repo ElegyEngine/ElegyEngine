@@ -55,17 +55,30 @@ namespace Elegy.RenderSystem
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private static void SetMaterialResources( CommandList commands, int variantIndex,
-			List<ResourceSetVariant> resourceVariants, VariantResourceMapping[] mappings )
+			List<ResourceSetVariant> resourceVariants, int[] mappings,
+			IReadOnlyList<MaterialParameterSet> parameterSets )
 		{
-			var shaderVariantSets = resourceVariants[variantIndex].ResourceSets;
-			for ( int resourceSetId = 0; resourceSetId < shaderVariantSets.Length; resourceSetId++ )
+			// This contains indices with gaps, e.g. 0, 1, 3, 4, 6
+			var shaderVariantSets = resourceVariants[variantIndex].ResourceSetIds;
+
+			for ( int i = 0; i < shaderVariantSets.Length; i++ )
 			{
+				// This works in a bit of a convoluted way but let me illustrate:
+				// Essentially we have 3 different arrays of ResourceSets that represent shader
+				// params within a single shader. Let's imagine them on 3 different levels:
+				// Sets 0 and 1 are data, sets 2 and 3 are instance and sets 4 and 5 are global.
+				// Eventually this will result in (0,sets[0]), (1,sets[1]), (2,sets[2]) etc.
+				// So we utilise some remapping tables that take into account all that.
+				
+				// Let's imagine that the first ID in the remapping table is 2
+				// i is 0, and setId is 2
+				int setId = mappings[i];
+
+				// Now, because parameterSets also has these same gaps, and is a subset of the indices
+				// in shaderVariantSets, we can safely just use i directly here
 				commands.SetGraphicsResourceSet(
-					// Maintain correct slot
-					(uint)mappings[resourceSetId].SetId,
-					// Each shader variant provides its own copy of resource sets
-					// It's a bit wasteful but was simpler to implement
-					shaderVariantSets[resourceSetId] );
+					(uint)setId,
+					parameterSets[i].ResourceSet );
 			}
 		}
 
@@ -88,34 +101,36 @@ namespace Elegy.RenderSystem
 				commands.SetGraphicsResourceSet( 1, entity.PerEntitySet );
 
 				// Set shader parametres used by this shader variant
-				// E.g. variant A might not use certain buffers so it omits an entire resource set,
-				// while variant B might have them in a different order. Anything can happen after
-				// the first few hardcoded sets 0 and 1
+				// E.g. variant A might not use resource set 2, but variant B might
+				// Anything can happen after the first couple builtin sets
 				SetMaterialResources( commands, variantIndex,
-					submaterial.ResourceVariants, shaderVariant.ResourceMappingsPerMaterial );
+					submaterial.ResourceVariants,
+					shaderVariant.ResourceMappingsPerMaterial,
+					submaterial.ParameterPool.ParameterSets );
 
 				// Same story as above, just on a global level
 				SetMaterialResources( commands, variantIndex,
-					submaterial.GlobalResourceVariants, shaderVariant.ResourceMappingsGlobal );
+					submaterial.GlobalResourceVariants,
+					shaderVariant.ResourceMappingsGlobal,
+					submaterial.GlobalParameterPool.ParameterSets );
 
 				// Same story as above, just on an instance level
 				var parameterPool = entity.PerInstanceParameterPools[i];
 				SetMaterialResources( commands, variantIndex,
-					parameterPool.ResourceSetVariants, shaderVariant.ResourceMappingsPerInstance );
+					parameterPool.ResourceSetVariants,
+					shaderVariant.ResourceMappingsPerInstance,
+					parameterPool.ParameterSets );
 
 				// Send vertex buffers used by this shader variant
-				// I wonder if this would get any faster using 'unsafe' or Span<T>, but
-				// frankly this is not yet at a stage where it's worth profiling much
-				for ( int vertexAttributeId = 0; vertexAttributeId < shaderVariant.VertexAttributes.Length; vertexAttributeId++ )
+				ReadOnlySpan<VariantVertexAttribute> vertexAttributes = shaderVariant.VertexAttributes;
+				for ( int vertexAttributeId = 0; vertexAttributeId < vertexAttributes.Length; vertexAttributeId++ )
 				{
-					var vertexAttribute = shaderVariant.VertexAttributes[vertexAttributeId];
+					var vertexAttribute = vertexAttributes[vertexAttributeId];
 					var buffer = submesh.GetBuffer( vertexAttribute.Semantic, vertexAttribute.Channel );
 
 					Debug.Assert( buffer is not null, $"The '{vertexAttribute.Semantic}' buffer is MISSING" );
 
-					commands.SetVertexBuffer(
-						(uint)vertexAttributeId,
-						buffer );
+					commands.SetVertexBuffer( (uint)vertexAttributeId, 1buffer );
 				}
 
 				// AT LAST, render the damn thing
