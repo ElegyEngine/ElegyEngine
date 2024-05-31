@@ -57,10 +57,5 @@ namespace Elegy.RenderBackend.Assets
 	public class GlobalParameterSet
 	{
 		public List<MaterialParameter> Parameters { get; set; } = new();
-
-		public override int GetHashCode()
-		{
-			return Parameters.GetHashCode();
-		}
 	}
 }
