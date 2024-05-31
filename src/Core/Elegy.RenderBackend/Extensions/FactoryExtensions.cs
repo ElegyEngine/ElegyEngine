@@ -235,11 +235,11 @@ namespace Elegy.RenderBackend.Extensions
 			return mFactory.CreateResourceLayout( layoutDesc );
 		}
 
-		public static ResourceLayout CreateLayout( this ResourceFactory mFactory, Assets.ResourceLayoutEntry entry )
+		public static ResourceLayout CreateLayout( this ResourceFactory mFactory, IReadOnlyList<Assets.MaterialParameter> entry )
 		{
-			ResourceLayoutElementDescription[] elementDescs = new ResourceLayoutElementDescription[entry.Elements.Count];
+			ResourceLayoutElementDescription[] elementDescs = new ResourceLayoutElementDescription[entry.Count];
 			int i = 0;
-			foreach ( var element in entry.Elements )
+			foreach ( var element in entry )
 			{
 				elementDescs[i] = new()
 				{
