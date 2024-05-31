@@ -301,7 +301,7 @@ public class RenderMaterial : IMaterial
 		}
 	}
 
-	private ResourceSet[] GenerateResourceSetsForVariant( GraphicsDevice device, ShaderVariant variant, RenderBackend.Assets.ShaderTemplateEntry item, int[] builtinLayoutIds )
+	private ResourceSet[] GenerateResourceSetsForVariant( GraphicsDevice device, ShaderVariant variant, RenderBackend.Assets.ShaderVariantEntry item, int[] builtinLayoutIds )
 	{
 		// This loop generates a ResourceSet
 		int setId = 0;

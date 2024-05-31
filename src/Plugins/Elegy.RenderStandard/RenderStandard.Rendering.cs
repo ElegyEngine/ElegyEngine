@@ -63,7 +63,7 @@ public partial class RenderStandard : IRenderFrontend
 		public Vector2 Uv { get; set; }
 	}
 
-	private static OutputDescription GetOutputForShaderVariant( RenderBackend.Assets.ShaderTemplateEntry entry, bool postprocessHint )
+	private static OutputDescription GetOutputForShaderVariant( RenderBackend.Assets.ShaderVariantEntry entry, bool postprocessHint )
 	{
 		if ( entry.ShaderDefine.ToLower().Contains( "depth" ) )
 		{
