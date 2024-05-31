@@ -152,29 +152,8 @@ namespace Elegy.ShaderTool
 			{
 				Name = TemplateName,
 				ShaderBinaryBasePath = Path.ChangeExtension( Path.GetRelativePath( Program.ShaderDirectory, FilePath ), null ),
-				ResourceLayouts = ExtractResourceLayoutData()
+				ParameterSets = ExtractMaterialParameterSetData()
 			};
-
-			shaderTemplate.ParameterSets.EnsureCapacity( ParameterSets.Count );
-			foreach ( var set in ParameterSets )
-			{
-				shaderTemplate.ParameterSets.Add( new()
-				{
-					ResourceSetId = set.SetId,
-					Level = set.Level,
-					Parameters = set.Parameters.Select( param => new MaterialParameter()
-					{
-						Name = param.MaterialName,
-						ShaderName = param.ShaderName,
-						ResourceBindingId = param.BindingId,
-						Type = param switch
-						{
-							GlslMaterialParameter dataParam => dataParam.Type,
-							_ => ShaderDataType.Buffer
-						}
-					} ).ToList()
-				} );
-			}
 
 			shaderTemplate.ShaderVariants.EnsureCapacity( Permutations.Count );
 			foreach ( var permutation in Permutations )
@@ -215,16 +194,16 @@ namespace Elegy.ShaderTool
 			return result;
 		}
 
-		private ResourceLayoutEntry ExtractResourceLayout( GlslMaterialParameterSet set )
+		private MaterialParameterSet ExtractResourceLayout( GlslMaterialParameterSet set )
 		{
 			return new()
 			{
-				Set = set.SetId,
+				ResourceSetId = set.SetId,
 				Level = set.Level,
-				Elements = set.Parameters.Select( param => new ResourceLayoutElementEntry()
+				Parameters = set.Parameters.Select( param => new MaterialParameter()
 				{
 					Name = param.MaterialName,
-					Binding = param.BindingId,
+					ResourceBindingId = param.BindingId,
 					Type = param switch
 					{
 						GlslMaterialParameter dataParam => dataParam.Type,
@@ -234,13 +213,13 @@ namespace Elegy.ShaderTool
 			};
 		}
 
-		private List<ResourceLayoutEntry> ExtractResourceLayoutData()
+		private List<MaterialParameterSet> ExtractMaterialParameterSetData()
 		{
-			List<ResourceLayoutEntry> result = ParameterSets.Select( ExtractResourceLayout ).ToList();
+			List<MaterialParameterSet> result = ParameterSets.Select( ExtractResourceLayout ).ToList();
 
 			// Sometimes these can be out of order, which is not good because the
 			// render backend assumes they are; in fact, in order
-			result.Sort( ( x, y ) => x.Set.CompareTo( y.Set ) );
+			result.Sort( ( x, y ) => x.ResourceSetId.CompareTo( y.ResourceSetId ) );
 
 			return result;
 		}
