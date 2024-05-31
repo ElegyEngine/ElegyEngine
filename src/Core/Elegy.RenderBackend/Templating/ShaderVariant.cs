@@ -12,18 +12,12 @@ namespace Elegy.RenderBackend.Templating
 		public int Channel;
 	}
 
-	public struct VariantResourceMapping
-	{
-		public int LayoutId;
-		public int SetId;
-	}
-
 	public class ShaderVariant
 	{
 		public ShaderVariant( MaterialTemplate parent, ShaderVariantEntry data, ResourceLayout[] layouts,
 			Shader vertexShader, Shader pixelShader, Pipeline pipeline,
-			VariantVertexAttribute[] attributes, VariantResourceMapping[] mappings,
-			VariantResourceMapping[] perInstanceMappings, VariantResourceMapping[] globalMappings )
+			VariantVertexAttribute[] attributes, int[] mappings,
+			int[] perInstanceMappings, int[] globalMappings )
 		{
 			Data = data;
 			Template = parent;
@@ -37,11 +31,11 @@ namespace Elegy.RenderBackend.Templating
 			ResourceMappingsPerInstance = perInstanceMappings;
 		}
 
-		public VariantResourceMapping[] ResourceMappingsGlobal { get; }
+		public int[] ResourceMappingsGlobal { get; }
 
-		public VariantResourceMapping[] ResourceMappingsPerMaterial { get; }
+		public int[] ResourceMappingsPerMaterial { get; }
 
-		public VariantResourceMapping[] ResourceMappingsPerInstance { get; }
+		public int[] ResourceMappingsPerInstance { get; }
 
 		public VariantVertexAttribute[] VertexAttributes { get; }
 
