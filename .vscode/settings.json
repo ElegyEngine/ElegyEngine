@@ -8,6 +8,7 @@
 		"xlocmes": "c",
 		"xlocmon": "c",
 		"xlocnum": "c",
-		"xloctime": "c"
+		"xloctime": "c",
+		"*.inc": "c"
 	}
 }
