@@ -168,7 +168,7 @@ namespace Elegy.RenderSystem.API
 
 		public static MaterialParameterSet? GetGlobalParameterSet( RenderBackend.Assets.MaterialParameterSet set )
 		{
-			if ( set.Level != RenderBackend.Assets.MaterialParameterLevel.Global )
+			if ( set.Level != MaterialParameterLevel.Global )
 			{
 				return null;
 			}
