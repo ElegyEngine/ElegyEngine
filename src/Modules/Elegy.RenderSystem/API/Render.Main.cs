@@ -14,7 +14,7 @@ namespace Elegy.RenderSystem.API
 		/// <summary>
 		/// The style to render the world with.
 		/// </summary>
-		public static IRenderStyle? RenderStyle = null;
+		public static IRenderStyle? RenderStyle = new RenderStyleDefault();
 
 		/// <summary>
 		/// The graphics device. Updates buffers, swaps stuff, all kinds of GPU things.
