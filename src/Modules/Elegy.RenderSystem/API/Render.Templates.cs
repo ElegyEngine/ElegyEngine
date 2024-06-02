@@ -3,11 +3,13 @@
 
 using Elegy.Common.Text;
 using Elegy.FileSystem.API;
+using Elegy.RenderBackend.Extensions;
 using Elegy.RenderBackend.Templating;
 using Elegy.RenderSystem.Resources;
 using System.Text.Json;
 
 using GlobalParameterSet = Elegy.RenderBackend.Assets.GlobalParameterSet;
+using MaterialParameterLevel = Elegy.RenderBackend.Assets.MaterialParameterLevel;
 using ShaderTemplate = Elegy.RenderBackend.Assets.ShaderTemplate;
 
 namespace Elegy.RenderSystem.API
@@ -60,14 +62,13 @@ namespace Elegy.RenderSystem.API
 			// TODO: Initialise global parametres
 			mGlobalParameters = globalParams.Select( p =>
 			{
+				List<MaterialParameter> materialParameters = p.Parameters
+					.Select( p => MaterialParameterUtils.CreateMaterialParameter( mDevice, p.Name, p.Type, null ) )
+					.ToList();
 
-
-				Veldrid.ResourceLayout resourceLayout = Factory.CreateResourceLayout( new()
-				{
-
-				} );
-
-				return new MaterialParameterSet( mDevice, RenderBackend.Assets.MaterialParameterLevel.Global, null, null );
+				Veldrid.ResourceLayout layout = Factory.CreateLayout( p.Parameters );
+				
+				return new MaterialParameterSet( mDevice, MaterialParameterLevel.Global, layout, materialParameters );
 			} ).ToList();
 			return true;
 		}
