@@ -23,6 +23,8 @@ namespace Elegy.RenderSystem.API
 		private static PooledSet<View> mViews = new( 32 );
 
 		private static RenderMaterial mWindowMaterial;
+
+		private static CommandList mRenderCommands;
 		private static GraphicsDevice? mDevice = null;
 
 		private static bool InitialiseGraphicsDevice()
@@ -100,6 +102,7 @@ namespace Elegy.RenderSystem.API
 				return false;
 			}
 
+			mRenderCommands = Factory.CreateCommandList();
 
 			var windowMaterial = LoadMaterial( "materials/builtin/window_default" );
 			if ( windowMaterial is null )
