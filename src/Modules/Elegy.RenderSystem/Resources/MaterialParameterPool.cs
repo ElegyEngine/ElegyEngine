@@ -280,9 +280,9 @@ namespace Elegy.RenderSystem.Resources
 			int setId = id % 100;
 			int paramId = id / 100;
 
-			if ( setId >= ParameterSets.Count )
+			if ( setId >= ParameterSets.Count || id < 0 )
 			{
-				mLogger.Error( $"Index is out of range ({id})" );
+				mLogger.Error( $"Index is out of range (set {setId} param {paramId})" );
 				return false;
 			}
 
