@@ -133,6 +133,39 @@ namespace Elegy.RenderSystem.API
 				new ResourceLayoutElementDescription( "uEntity", ResourceKind.UniformBuffer, ShaderStages.Vertex | ShaderStages.Fragment )
 			);
 
+			Meshes.FullscreenQuad = CreateMesh( new()
+			{
+				Name = "Fullscreen quad",
+				FullPath = "__fullscreen_quad",
+				Meshes =
+				[
+					new()
+					{
+						Name = "Fullscreen Quad Mesh",
+						MaterialName = "materials/builtin/window_default",
+						Positions2D =
+						[
+							new( -1.0f, -1.0f ),
+							new( -1.0f, 1.0f ),
+							new( 1.0f, 1.0f ),
+							new( 1.0f, -1.0f )
+						],
+						Uv0 =
+						[
+							new( 0.0f, 0.0f ),
+							new( 0.0f, 1.0f ),
+							new( 1.0f, 1.0f ),
+							new( 1.0f, 0.0f )
+						],
+						Indices =
+						[
+							0, 1, 2,
+							0, 2, 3
+						]
+					}
+				]
+			} );
+
 			return true;
 		}
 	}
