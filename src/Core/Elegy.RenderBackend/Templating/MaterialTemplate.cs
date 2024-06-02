@@ -29,6 +29,9 @@ namespace Elegy.RenderBackend.Templating
 		public Pipeline GetVariantPipeline( string name )
 			=> ShaderVariants[name].Pipeline;
 
+		public ShaderVariant GetVariant( int id )
+			=> ShaderVariants.ElementAt( id ).Value;
+
 		public bool CompileResources( GraphicsDevice gd,
 			Func<Assets.ShaderVariantEntry, bool, OutputDescription> outputDescriptionFunc,
 			Func<string, string?>? pathTo = null )
