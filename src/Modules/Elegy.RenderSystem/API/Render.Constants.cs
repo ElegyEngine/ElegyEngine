@@ -1,6 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.RenderSystem.Objects;
 using Veldrid;
 
 namespace Elegy.RenderSystem.API
@@ -12,6 +13,11 @@ namespace Elegy.RenderSystem.API
 			public static ResourceLayout PerEntity { get; internal set; }
 			public static ResourceLayout PerView { get; internal set; }
 			public static ResourceLayout Window { get; internal set; }
+		}
+
+		public static class Meshes
+		{
+			public static Mesh FullscreenQuad { get; internal set; }
 		}
 
 		public static class Samplers
