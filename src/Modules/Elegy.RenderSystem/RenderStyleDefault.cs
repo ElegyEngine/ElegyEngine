@@ -130,7 +130,7 @@ namespace Elegy.RenderSystem
 
 					Debug.Assert( buffer is not null, $"The '{vertexAttribute.Semantic}' buffer is MISSING" );
 
-					commands.SetVertexBuffer( (uint)vertexAttributeId, 1buffer );
+					commands.SetVertexBuffer( (uint)vertexAttributeId, buffer );
 				}
 
 				// AT LAST, render the damn thing
