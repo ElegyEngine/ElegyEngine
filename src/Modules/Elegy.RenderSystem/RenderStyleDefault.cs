@@ -3,6 +3,7 @@
 
 using Elegy.ConsoleSystem;
 using Elegy.RenderBackend.Templating;
+using Elegy.RenderSystem.API;
 using Elegy.RenderSystem.Interfaces;
 using Elegy.RenderSystem.Objects;
 using Elegy.RenderSystem.Resources;
@@ -101,25 +102,8 @@ namespace Elegy.RenderSystem
 				commands.SetGraphicsResourceSet( 1, entity.PerEntitySet );
 
 				// Set shader parametres used by this shader variant
-				// E.g. variant A might not use resource set 2, but variant B might
-				// Anything can happen after the first couple builtin sets
-				SetMaterialResources( commands, variantIndex,
-					submaterial.ResourceVariants,
-					shaderVariant.ResourceMappingsPerMaterial,
-					submaterial.ParameterPool.ParameterSets );
-
-				// Same story as above, just on a global level
-				SetMaterialResources( commands, variantIndex,
-					submaterial.GlobalResourceVariants,
-					shaderVariant.ResourceMappingsGlobal,
-					submaterial.GlobalParameterPool.ParameterSets );
-
-				// Same story as above, just on an instance level
 				var parameterPool = entity.PerInstanceParameterPools[i];
-				SetMaterialResources( commands, variantIndex,
-					parameterPool.ResourceSetVariants,
-					shaderVariant.ResourceMappingsPerInstance,
-					parameterPool.ParameterSets );
+				Render.SetMaterialResourceSets( commands, submaterial, variantIndex, parameterPool );
 
 				// Send vertex buffers used by this shader variant
 				ReadOnlySpan<VariantVertexAttribute> vertexAttributes = shaderVariant.VertexAttributes;
