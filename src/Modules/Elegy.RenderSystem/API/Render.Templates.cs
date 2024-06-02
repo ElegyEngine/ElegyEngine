@@ -59,7 +59,6 @@ namespace Elegy.RenderSystem.API
 				return true;
 			}
 
-			// TODO: Initialise global parametres
 			mGlobalParameters = globalParams.Select( p =>
 			{
 				List<MaterialParameter> materialParameters = p.Parameters
