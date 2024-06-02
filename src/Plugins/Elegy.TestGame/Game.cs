@@ -16,6 +16,7 @@ using IRenderView = Elegy.RenderSystem.Interfaces.Rendering.IView;
 using IRenderEntity = Elegy.RenderSystem.Interfaces.Rendering.IEntity;
 using Elegy.PlatformSystem.API;
 using Elegy.Common.Maths;
+using Elegy.RenderSystem.Objects;
 
 namespace TestGame
 {
@@ -155,8 +156,8 @@ namespace TestGame
 				return false;
 			}
 
-			var entity = Render.Instance.CreateEntity( false );
-			var renderMesh = Render.Instance.CreateMesh( model );
+			var entity = Render.CreateEntity( false );
+			var renderMesh = Render.CreateMesh( model );
 			if ( renderMesh is null )
 			{
 				mLogger.Error( $"Could not create rendermesh for '{path}'" );
@@ -183,7 +184,7 @@ namespace TestGame
 			SpawnModel( "models/oricube.glb", Vector3.Zero );
 			SpawnModel( "models/terrain.glb", Vector3.Zero );
 
-			mRenderView = Render.Instance.GetView( Platform.GetCurrentWindow() );
+			mRenderView = Render.GetView( Platform.GetCurrentWindow() );
 			mRenderView.Projection = Coords.CreatePerspectiveMatrix( MathF.PI / 2.0f, 16.0f / 9.0f, 0.01f, 4096.0f );
 			mRenderView.Transform = Matrix4x4.CreateLookAt( new( 1.5f, 3.0f, 1.5f ), Vector3.Zero, Vector3.UnitZ );
 
@@ -220,7 +221,7 @@ namespace TestGame
 
 		private GameClient? mClient;
 		private MainMenu mMenu = new();
-		private IRenderView? mRenderView = null;
+		private View? mRenderView = null;
 
 		private bool mGameIsLoaded = false;
 		private bool mEscapeWasHeld = false;
