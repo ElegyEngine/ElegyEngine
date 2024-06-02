@@ -22,6 +22,7 @@ namespace Elegy.RenderSystem.API
 		private static PooledSet<RenderTexture> mTextureSet = new( 4096 );
 		private static PooledSet<View> mViews = new( 32 );
 
+		private static RenderMaterial mWindowMaterial;
 		private static GraphicsDevice? mDevice = null;
 
 		private static bool InitialiseGraphicsDevice()
@@ -98,6 +99,16 @@ namespace Elegy.RenderSystem.API
 			{
 				return false;
 			}
+
+
+			var windowMaterial = LoadMaterial( "materials/builtin/window_default" );
+			if ( windowMaterial is null )
+			{
+				mLogger.Error( "Cannot load the default view material" );
+				return false;
+			}
+
+			mWindowMaterial = windowMaterial;
 
 			Samplers.Nearest = CreateSampler( SamplerFilter.MinPoint_MagPoint_MipLinear, SamplerAddressMode.Wrap );
 			Samplers.Linear = CreateSampler( SamplerFilter.MinLinear_MagLinear_MipLinear, SamplerAddressMode.Wrap );
