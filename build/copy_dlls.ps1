@@ -26,11 +26,11 @@ if ( $plugin = "none" )
 {
 	## Copy the launcher executable, engine DLL and its dependencies
 	Copy-Item "$input_dir/src/Launchers/Elegy.Launcher2/bin/$build_config/net8.0/*" 						-Destination "$output_dir" -Recurse -Force
-
+	
 	## Copy the plugin DLLs without their dependencies
 	Copy-Item "$input_dir/src/Plugins/Elegy.DevConsole/bin/$build_config/net8.0/Elegy.DevConsole.*"			-Destination "$output_dir/engine/plugins/DevConsole"
-	Copy-Item "$input_dir/src/Plugins/Elegy.RenderStandard/bin/$build_config/net8.0/Elegy.RenderStandard.*"	-Destination "$output_dir/engine/plugins/RenderStandard"
 	Copy-Item "$input_dir/src/Plugins/Elegy.TestGame/bin/$build_config/net8.0/Game.*"						-Destination "$output_dir/game/plugins/Game"
+	Copy-Item "$input_dir/src/Plugins/Elegy.TestGame/bin/$build_config/net8.0/Elegy.RenderWorld.*" 			-Destination "$output_dir/game/plugins/Game"
 }
 else
 {
