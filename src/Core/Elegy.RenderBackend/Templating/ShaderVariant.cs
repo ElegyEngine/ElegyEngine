@@ -10,6 +10,7 @@ namespace Elegy.RenderBackend.Templating
 	{
 		public VertexSemantic Semantic;
 		public int Channel;
+		public uint Id;
 	}
 
 	public class ShaderVariant

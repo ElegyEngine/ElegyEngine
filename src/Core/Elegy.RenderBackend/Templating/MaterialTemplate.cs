@@ -58,7 +58,8 @@ namespace Elegy.RenderBackend.Templating
 							Assets.VertexSemantic.Uv => numUvChannels++,
 							Assets.VertexSemantic.Colour => numColourChannels++,
 							_ => 0
-						}
+						},
+						Id = (uint)variant.VertexLayouts[i].Id
 					};
 				}
 

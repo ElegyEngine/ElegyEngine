@@ -8,6 +8,8 @@ namespace Elegy.RenderBackend.Assets
 		public string Name { get; set; } = string.Empty;
 
 		public Veldrid.VertexElementFormat Type { get; set; } = Veldrid.VertexElementFormat.Float1;
+
+		public int Id { get; set; } = 0;
 	}
 
 	public class ShaderVariantEntry

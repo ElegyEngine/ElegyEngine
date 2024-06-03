@@ -186,7 +186,8 @@ namespace Elegy.ShaderTool
 					result.Add( new()
 					{
 						Name = vertexInput.Name,
-						Type = RenderBackend.Utils.ShaderTypeToVertexElementFormat( vertexInput.Name, vertexInput.Type )
+						Type = RenderBackend.Utils.ShaderTypeToVertexElementFormat( vertexInput.Name, vertexInput.Type ),
+						Id = vertexInput.LocationId
 					} );
 				}
 			}
