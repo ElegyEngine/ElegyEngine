@@ -69,6 +69,23 @@ namespace Elegy.RenderSystem.API
 		}
 
 		/// <summary>
+		/// Updates all <see cref="MeshEntity"/>, <see cref="View"/> etc.
+		/// instances if their render data changed.
+		/// </summary>
+		public static void UpdateBuffers()
+		{
+			foreach ( var meshEntity in mEntitySet )
+			{
+				meshEntity.UpdateBuffers( mDevice );
+			}
+
+			foreach ( var view in mViews )
+			{
+				view.UpdateBuffers( mDevice );
+			}
+		}
+
+		/// <summary>
 		/// Creates a window to render into.
 		/// </summary>
 		public static View? GetOrCreateDefaultView( int width, int height, int rate = 60 )
