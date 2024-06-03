@@ -161,6 +161,7 @@ namespace Elegy.ShaderTool
 				shaderTemplate.ShaderVariants.Add( new()
 				{
 					ShaderDefine = permutation.Variant,
+					ShaderBinaryPath = $"{shaderTemplate.ShaderBinaryBasePath}.{permutation.Variant}",
 					VertexLayouts = ExtractVertexLayoutData( permutation.Variant ),
 					ParameterSetIds = ExtractResourceSetIds( permutation.Variant )
 				} );
@@ -204,6 +205,7 @@ namespace Elegy.ShaderTool
 				Parameters = set.Parameters.Select( param => new MaterialParameter()
 				{
 					Name = param.MaterialName,
+					ShaderName = param.ShaderName,
 					ResourceBindingId = param.BindingId,
 					Type = param switch
 					{

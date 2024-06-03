@@ -233,7 +233,7 @@ namespace Elegy.RenderBackend
 
 		public static string PathToShaderVariant( ShaderTemplate template, ShaderVariantEntry entry )
 		{
-			return $"shaders/bin/{template.ShaderBinaryBasePath}.{entry.ShaderDefine}";
+			return $"shaders/bin/{entry.ShaderBinaryPath}";
 		}
 
 		#region Extraction
