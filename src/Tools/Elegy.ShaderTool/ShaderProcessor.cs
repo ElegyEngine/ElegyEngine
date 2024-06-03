@@ -419,7 +419,7 @@ namespace Elegy.ShaderTool
 				"data" => MaterialParameterLevel.Data,
 				"global" => MaterialParameterLevel.Global,
 				"instance" => MaterialParameterLevel.Instance,
-				_ => throw new Exception( $"Unknown value '{token}'" )
+				_ => throw new Exception( $"Unknown material parameter level '{token}', typo or possibly wrong order?" )
 			};
 		}
 
@@ -443,7 +443,7 @@ namespace Elegy.ShaderTool
 				"texture2d" => ShaderDataType.Texture2D,
 				"texture3d" => ShaderDataType.Texture3D,
 				"sampler" => ShaderDataType.Sampler,
-				_ => throw new Exception( $"Unknown value '{token}'" )
+				_ => throw new Exception( $"Unknown shader data type '{token}'" )
 			};
 		}
 
