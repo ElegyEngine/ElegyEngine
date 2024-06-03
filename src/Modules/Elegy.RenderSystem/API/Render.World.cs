@@ -107,6 +107,14 @@ namespace Elegy.RenderSystem.API
 		public static Mesh CreateMesh( Model modelData )
 			=> mMeshSet.AddAndGet( new( mDevice, modelData ) );
 
+		/// <summary>Creates/loads a render mesh from a file.</summary>
+		public static Mesh LoadMesh( string name )
+		{
+			var mesh = Assets.LoadModel( name );
+			Debug.Assert( mesh is not null );
+			return CreateMesh( mesh );
+		}
+
 		/// <summary>Frees a render mesh.</summary>
 		public static bool FreeMesh( ref Mesh? mesh )
 			=> mMeshSet.RemoveAndThen( mesh, mesh =>
