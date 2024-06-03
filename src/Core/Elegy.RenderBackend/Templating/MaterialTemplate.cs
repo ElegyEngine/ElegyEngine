@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.RenderBackend.Extensions;
+using System.Text;
 using Veldrid;
 
 namespace Elegy.RenderBackend.Templating
@@ -32,9 +33,27 @@ namespace Elegy.RenderBackend.Templating
 		public ShaderVariant GetVariant( int id )
 			=> ShaderVariants.ElementAt( id ).Value;
 
+		public bool ValidateDataExists( Func<string, string?> pathTo, StringBuilder errorStrings )
+		{
+			bool okay = true;
+
+			foreach ( var variant in ShaderTemplate.ShaderVariants )
+			{
+				string pathToShaderVariant = Utils.PathToShaderVariant( ShaderTemplate, variant );
+				string? shaderBasePath = pathTo( pathToShaderVariant );
+				if ( shaderBasePath is null )
+				{
+					errorStrings.AppendLine( $"* {pathToShaderVariant}" );
+					okay = false;
+				}
+			}
+
+			return okay;
+		}
+
 		public bool CompileResources( GraphicsDevice gd,
 			Func<Assets.ShaderVariantEntry, bool, OutputDescription> outputDescriptionFunc,
-			Func<string, string?>? pathTo = null )
+			Func<string, string?> pathTo )
 		{
 			ResourceFactory factory = gd.ResourceFactory;
 
@@ -88,16 +107,8 @@ namespace Elegy.RenderBackend.Templating
 				}
 
 				// 4. Create shader objects
-				string? shaderBasePath = Utils.PathToShaderVariant( ShaderTemplate, variant );
-				if ( pathTo is not null )
-				{
-					shaderBasePath = pathTo( shaderBasePath );
-					// TODO: validate this elsewhere or put the path itself into 'variant'
-					if ( shaderBasePath is null )
-					{
-						throw new FileNotFoundException();
-					}
-				}
+				string shaderBasePath = pathTo( Utils.PathToShaderVariant( ShaderTemplate, variant ) );
+				// shaderBasePath is guaranteed to exist, it is validated upfront
 				Shader vertexShader = factory.LoadShaderDirect( shaderBasePath, ShaderStages.Vertex );
 				Shader pixelShader = factory.LoadShaderDirect( shaderBasePath, ShaderStages.Fragment );
 

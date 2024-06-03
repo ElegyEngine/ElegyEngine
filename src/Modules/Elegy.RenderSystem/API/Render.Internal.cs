@@ -8,6 +8,7 @@ using Elegy.FileSystem.API;
 using Elegy.RenderBackend.Extensions;
 using Elegy.RenderSystem.Objects;
 using Elegy.RenderSystem.Resources;
+using System.Text;
 using Veldrid;
 
 namespace Elegy.RenderSystem.API
@@ -89,6 +90,16 @@ namespace Elegy.RenderSystem.API
 			}
 
 			bool allOkay = true;
+			StringBuilder errorStrings = new();
+			foreach ( var template in MaterialTemplates )
+			{
+				if ( !template.ValidateDataExists( FindShaderBinaryPath, errorStrings ) )
+				{
+					mLogger.Error( "One or more shaders are missing:" );
+					mLogger.Error( errorStrings.ToString() );
+				}
+			}
+
 			foreach ( var template in MaterialTemplates )
 			{
 				if ( !template.CompileResources( mDevice, GetOutputForShaderVariant, FindShaderBinaryPath ) )
