@@ -2,49 +2,44 @@
   "name": "WindowST",
   "shaderBinaryBasePath": "Window",
   "postprocessHint": false,
-  "parameters": [
+  "parameterSets": [
     {
-      "name": "ViewTexture",
-      "shaderName": "uViewTexture",
-      "type": 16,
-      "resourceSetId": 0
-    },
-    {
-      "name": "ViewSampler",
-      "shaderName": "uViewSampler",
-      "type": 18,
-      "resourceSetId": 0
+      "resourceSetId": 0,
+      "level": 0,
+      "parameters": [
+        {
+          "name": "ViewTexture",
+          "shaderName": "",
+          "type": 16,
+          "resourceBindingId": 0
+        },
+        {
+          "name": "ViewSampler",
+          "shaderName": "",
+          "type": 18,
+          "resourceBindingId": 1
+        }
+      ]
     }
   ],
   "shaderVariants": [
     {
       "shaderDefine": "DEFAULT",
+      "shaderBinaryPath": "",
       "vertexLayouts": [
         {
           "name": "vPosition",
-          "type": 1
+          "type": 1,
+          "id": 0
         },
         {
           "name": "vUv",
-          "type": 1
+          "type": 1,
+          "id": 1
         }
       ],
-      "resourceLayouts": [
-        {
-          "set": 0,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "ViewTexture",
-              "type": 16
-            },
-            {
-              "binding": 1,
-              "name": "ViewSampler",
-              "type": 18
-            }
-          ]
-        }
+      "parameterSetIds": [
+        0
       ]
     }
   ]

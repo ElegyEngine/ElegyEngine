@@ -2,21 +2,24 @@
   "name": "DebugST",
   "shaderBinaryBasePath": "Debug",
   "postprocessHint": false,
-  "parameters": [],
+  "parameterSets": [],
   "shaderVariants": [
     {
       "shaderDefine": "DEFAULT",
+      "shaderBinaryPath": "",
       "vertexLayouts": [
         {
           "name": "vPosition",
-          "type": 1
+          "type": 1,
+          "id": 0
         },
         {
           "name": "vUv",
-          "type": 1
+          "type": 1,
+          "id": 1
         }
       ],
-      "resourceLayouts": []
+      "parameterSetIds": []
     }
   ]
 }

@@ -22,7 +22,7 @@ MaterialParameterSet( 1, BUILTIN, ALL,
 	);
 );
 // Per-material data
-MaterialParameterSet( 2, DATA, ALL,
+MaterialParameterSet( 2, DATA, ALL except DEPTH WIREFRAME,
 	Data( sampler, uSampler, Sampler ),
 	Data( texture2D, uDiffuseTexture, DiffuseMap )
 );
