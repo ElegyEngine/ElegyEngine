@@ -12,8 +12,6 @@ using Elegy.RenderSystem.API;
 using Silk.NET.Input;
 using TestGame.Client;
 
-using IRenderView = Elegy.RenderSystem.Interfaces.Rendering.IView;
-using IRenderEntity = Elegy.RenderSystem.Interfaces.Rendering.IEntity;
 using Elegy.PlatformSystem.API;
 using Elegy.Common.Maths;
 using Elegy.RenderSystem.Objects;
@@ -79,7 +77,6 @@ namespace TestGame
 		public void Shutdown()
 		{
 			mLogger.Log( "Shutdown" );
-
 			mClient = null;
 		}
 

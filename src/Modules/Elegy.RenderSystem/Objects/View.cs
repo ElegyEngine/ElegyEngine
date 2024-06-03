@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Maths;
+using Elegy.RenderSystem.API;
 using Elegy.RenderSystem.Resources;
 using Elegy.RenderBackend.Extensions;
 
@@ -12,7 +13,6 @@ using System.Runtime.InteropServices;
 using Veldrid;
 
 using ITexture = Elegy.AssetSystem.Interfaces.Rendering.ITexture;
-using Elegy.RenderSystem.API;
 
 namespace Elegy.RenderSystem.Objects
 {

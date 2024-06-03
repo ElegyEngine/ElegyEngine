@@ -54,35 +54,6 @@ namespace Elegy.RenderSystem
 
 		}
 
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		private static void SetMaterialResources( CommandList commands, int variantIndex,
-			List<ResourceSetVariant> resourceVariants, int[] mappings,
-			IReadOnlyList<MaterialParameterSet> parameterSets )
-		{
-			// This contains indices with gaps, e.g. 0, 1, 3, 4, 6
-			var shaderVariantSets = resourceVariants[variantIndex].ResourceSetIds;
-
-			for ( int i = 0; i < shaderVariantSets.Length; i++ )
-			{
-				// This works in a bit of a convoluted way but let me illustrate:
-				// Essentially we have 3 different arrays of ResourceSets that represent shader
-				// params within a single shader. Let's imagine them on 3 different levels:
-				// Sets 0 and 1 are data, sets 2 and 3 are instance and sets 4 and 5 are global.
-				// Eventually this will result in (0,sets[0]), (1,sets[1]), (2,sets[2]) etc.
-				// So we utilise some remapping tables that take into account all that.
-				
-				// Let's imagine that the first ID in the remapping table is 2
-				// i is 0, and setId is 2
-				int setId = mappings[i];
-
-				// Now, because parameterSets also has these same gaps, and is a subset of the indices
-				// in shaderVariantSets, we can safely just use i directly here
-				commands.SetGraphicsResourceSet(
-					(uint)setId,
-					parameterSets[i].ResourceSet );
-			}
-		}
-
 		private static void RenderSingleEntity( CommandList commands, MeshEntity entity, View view )
 		{
 			for ( int i = 0; i < entity.Mesh.Submeshes.Count; i++ )

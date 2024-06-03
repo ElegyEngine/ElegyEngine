@@ -3,7 +3,6 @@
 
 using Elegy.AssetSystem.API;
 using Elegy.Common.Assets;
-using Elegy.Common.Assets.ElegyMapData;
 using Elegy.Common.Extensions;
 using Elegy.RenderSystem.Objects;
 using Elegy.RenderSystem.Resources;
