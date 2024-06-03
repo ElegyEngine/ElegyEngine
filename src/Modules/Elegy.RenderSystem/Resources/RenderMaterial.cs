@@ -24,8 +24,6 @@ namespace Elegy.RenderSystem.Resources
 
 		public List<ResourceSetVariant> ResourceVariants => ParameterPool.ResourceSetVariants;
 		public List<ResourceSetVariant> GlobalResourceVariants => GlobalParameterPool.ResourceSetVariants;
-		public List<MaterialParameter> Parameters => ParameterPool.Parameters;
-		public List<MaterialParameter> GlobalParameters => GlobalParameterPool.Parameters;
 		public MaterialDefinition Definition { get; init; }
 		public MaterialTemplate Template { get; init; }
 
