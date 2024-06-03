@@ -12,6 +12,11 @@ namespace Elegy.RenderSystem.API
 	public static partial class Render
 	{
 		/// <summary>
+		/// What to render every frame.
+		/// </summary>
+		public static event Action? OnRender;
+
+		/// <summary>
 		/// The style to render the world with.
 		/// </summary>
 		public static IRenderStyle? RenderStyle = new RenderStyleDefault();
@@ -48,8 +53,17 @@ namespace Elegy.RenderSystem.API
 		/// <param name="view">The view to render from. Will render and update an <see cref="IWindow"/>.</param>
 		public static void RenderFrame( View view )
 		{
+			// Start up the counters etc.
 			BeginFrame();
+
+			// Render meshes, effects etc.
+			OnRender?.Invoke();
+			
+			// What was rendered above is now inside a framebuffer
+			// Render that framebuffer into one of the framebuffers in the swapchain
 			RenderView( view );
+			
+			// Finish stuff and present to the screen
 			EndFrame();
 			PresentView( view );
 		}
