@@ -4,6 +4,7 @@
 using Elegy.AssetSystem.API;
 using Elegy.Common.Assets;
 using Elegy.Common.Extensions;
+using Elegy.PlatformSystem.API;
 using Elegy.RenderSystem.Objects;
 using Elegy.RenderSystem.Resources;
 
@@ -129,6 +130,18 @@ namespace Elegy.RenderSystem.API
 		/// <summary>Creates a render view from a render target texture.</summary>
 		public static View CreateView( AssetSystem.Resources.Texture renderTarget )
 			=> mViews.AddAndGet( new( mDevice, renderTarget.RenderTexture ) );
+
+		/// <summary>Gets the current window's view, if any.</summary>
+		public static View? GetCurrentWindowView()
+		{
+			var window = Platform.GetCurrentWindow();
+			if ( window is null )
+			{
+				return null;
+			}
+
+			return GetView( window );
+		}
 
 		/// <summary>Gets the window's view, if any.</summary>
 		public static View? GetView( IWindow window )
