@@ -14,11 +14,9 @@ using Blending = Elegy.RenderBackend.Assets.Blending;
 
 namespace Elegy.RenderWorld
 {
-	public class RenderWorld
+	public partial class RenderWorld
 	{
 		private CommandList mRenderCommands;
-
-		public List<MeshEntity> MeshEntities { get; } = new( 4096 );
 
 		public PooledDictionary<RenderMaterial, PooledList<RenderSurface>> mOpaqueMaterialMap = new( capacity: 512 );
 		public PooledDictionary<RenderMaterial, PooledList<RenderSurface>> mTransparentMaterialMap = new( capacity: 512 );
