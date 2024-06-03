@@ -149,24 +149,14 @@ namespace TestGame
 
 		private bool SpawnModel( string path, Vector3 position )
 		{
-			var model = Assets.LoadModel( path );
-			if ( model is null )
-			{
-				mLogger.Error( $"Cannot load '{path}'" );
-				return false;
-			}
-
-			var entity = Render.CreateEntity( false );
-			var renderMesh = Render.CreateMesh( model );
+			var renderMesh = Render.LoadMesh( path );
 			if ( renderMesh is null )
 			{
 				mLogger.Error( $"Could not create rendermesh for '{path}'" );
 				return false;
 			}
 
-			entity.Mesh = renderMesh;
-			mMeshEntities.Add( entity );
-
+			mRenderWorld.CreateEntity( false, renderMesh, position, Vector3.Zero );
 			return true;
 		}
 
@@ -225,7 +215,6 @@ namespace TestGame
 		private GameClient? mClient;
 		private MainMenu mMenu = new();
 		private View? mRenderView = null;
-		private List<MeshEntity> mMeshEntities = new();
 
 		private bool mGameIsLoaded = false;
 		private bool mEscapeWasHeld = false;
