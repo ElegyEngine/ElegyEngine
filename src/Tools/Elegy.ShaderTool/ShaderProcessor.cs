@@ -549,7 +549,7 @@ namespace Elegy.ShaderTool
 			{
 				string token = lexer.Next();
 
-				if ( token == "Param" )
+				if ( token == "Param" || token == "Data" )
 				{
 					result.Add( ParseMaterialParameter( lexer ) );
 					result.Last().BindingId = currentBindingId++;
