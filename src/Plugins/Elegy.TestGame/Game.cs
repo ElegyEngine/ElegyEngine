@@ -8,6 +8,7 @@ using Elegy.ConsoleSystem;
 using Elegy.InputSystem.API;
 using Elegy.FileSystem.API;
 using Elegy.RenderSystem.API;
+using Elegy.RenderWorld;
 
 using Silk.NET.Input;
 using TestGame.Client;
@@ -67,8 +68,10 @@ namespace TestGame
 				mUserWantsToExit = true;
 			};
 
-			mMenu.Init();
+			mRenderWorld = new();
+			Render.OnRender += mRenderWorld.RenderFrame;
 
+			mMenu.Init();
 			StartGame();
 
 			return true;
@@ -162,6 +165,8 @@ namespace TestGame
 			}
 
 			entity.Mesh = renderMesh;
+			mMeshEntities.Add( entity );
+
 			return true;
 		}
 
@@ -216,9 +221,11 @@ namespace TestGame
 			mUserWantsToExit = true;
 		}
 
+		private RenderWorld mRenderWorld;
 		private GameClient? mClient;
 		private MainMenu mMenu = new();
 		private View? mRenderView = null;
+		private List<MeshEntity> mMeshEntities = new();
 
 		private bool mGameIsLoaded = false;
 		private bool mEscapeWasHeld = false;
