@@ -108,12 +108,15 @@ namespace Elegy.RenderSystem.Resources
 
 		public int GetVariantIndex( string name )
 		{
-			for ( int i = 0; i < ResourceSetVariants.Count; i++ )
+			int i = 0;
+			foreach ( var variant in Template.ShaderVariants.Values )
 			{
-				if ( ResourceSetVariants[i].ShaderVariant.Data.ShaderDefine == name )
+				if ( variant.Data.ShaderDefine == name )
 				{
 					return i;
 				}
+
+				i++;
 			}
 
 			return -1;
