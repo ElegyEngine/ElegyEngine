@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 using Collections.Pooled;
-using Elegy.AssetSystem.API;
 using Elegy.ConsoleSystem;
 using Elegy.FileSystem.API;
 using Elegy.RenderBackend.Extensions;
@@ -152,17 +151,19 @@ namespace Elegy.RenderSystem.API
 			Samplers.Aniso8xBorder = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 8 );
 			Samplers.Aniso16xBorder = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 16 );
 
+			ShaderStages commonShaderStages = ShaderStages.Vertex | ShaderStages.Fragment;
+
 			Layouts.Window = Factory.CreateLayout(
-				new ResourceLayoutElementDescription( "ViewTexture", ResourceKind.TextureReadOnly, ShaderStages.Fragment ),
-				new ResourceLayoutElementDescription( "ViewSampler", ResourceKind.Sampler, ShaderStages.Fragment )
+				new ResourceLayoutElementDescription( "ViewTexture", ResourceKind.TextureReadOnly, commonShaderStages ),
+				new ResourceLayoutElementDescription( "ViewSampler", ResourceKind.Sampler, commonShaderStages )
 			);
 
 			Layouts.PerView = Factory.CreateLayout(
-				new ResourceLayoutElementDescription( "uView", ResourceKind.UniformBuffer, ShaderStages.Vertex | ShaderStages.Fragment )
+				new ResourceLayoutElementDescription( "uView", ResourceKind.UniformBuffer, commonShaderStages )
 			);
 
 			Layouts.PerEntity = Factory.CreateLayout(
-				new ResourceLayoutElementDescription( "uEntity", ResourceKind.UniformBuffer, ShaderStages.Vertex | ShaderStages.Fragment )
+				new ResourceLayoutElementDescription( "uEntity", ResourceKind.UniformBuffer, commonShaderStages )
 			);
 
 			Meshes.FullscreenQuad = CreateMesh( new()
