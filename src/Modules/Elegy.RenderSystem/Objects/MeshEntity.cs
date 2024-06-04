@@ -7,11 +7,13 @@ using Veldrid;
 
 using System.Numerics;
 using Elegy.RenderSystem.Resources;
+using Elegy.RenderSystem.API;
 
 namespace Elegy.RenderSystem.Objects
 {
 	public class MeshEntity : IDisposable
 	{
+		private Mesh mMesh;
 		private Matrix4x4 mTransform;
 		private SpanIndirect<Matrix4x4> mBoneBuffer = Array.Empty<Matrix4x4>();
 
@@ -26,7 +28,15 @@ namespace Elegy.RenderSystem.Objects
 		}
 
 		public int Mask { get; set; }
-		public Mesh Mesh { get; set; }
+		public Mesh Mesh
+		{
+			get => mMesh;
+			set
+			{
+				mMesh = value;
+				RegenerateParameterPools();
+			}
+		}
 
 		public Matrix4x4 Transform
 		{
@@ -63,11 +73,33 @@ namespace Elegy.RenderSystem.Objects
 			}
 		}
 
+		private void RegenerateParameterPools()
+		{
+			foreach ( var pool in PerInstanceParameterPools )
+			{
+				pool.Dispose();
+			}
+
+			PerInstanceParameterPools.Clear();
+			PerInstanceParameterPools.EnsureCapacity( Mesh.Materials.Count );
+
+			foreach ( var material in Mesh.Materials )
+			{
+				MaterialParameterPool pool = new( Render.Device, material.Template, material.Definition, perInstance: true );
+				PerInstanceParameterPools.Add( pool );
+			}
+		}
+
 		public void Dispose()
 		{
 			PerEntitySet.Dispose();
 			TransformBuffer.Dispose();
 			BoneTransformBuffer?.Dispose();
+			foreach ( var pool in PerInstanceParameterPools )
+			{
+				pool.Dispose();
+			}
+			PerInstanceParameterPools.Clear();
 		}
 
 		public bool TransformBufferDirty { get; private set; } = false;
