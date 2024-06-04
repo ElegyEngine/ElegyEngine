@@ -4,6 +4,7 @@
 using Elegy.AssetSystem.API;
 using Elegy.Common.Assets;
 using Elegy.PluginSystem.API;
+using System.Diagnostics;
 
 namespace Elegy.RenderSystem.API
 {
@@ -16,6 +17,8 @@ namespace Elegy.RenderSystem.API
 			Plugins.RegisterDependency( "Elegy.RenderBackend", typeof( RenderBackend.Utils ).Assembly );
 			Plugins.RegisterDependency( "Elegy.RenderSystem", typeof( Render ).Assembly );
 			Plugins.RegisterPluginCollector( new RenderPluginCollector() );
+
+			mStopwatch = Stopwatch.StartNew();
 
 			return true;
 		}
