@@ -89,6 +89,13 @@ namespace Elegy.RenderBackend.Templating
 				for ( int i = 0; i < ResourceLayouts.Length; i++ )
 				{
 					var layout = ShaderTemplate.ParameterSets[i];
+
+					// Do not create mappings for parameters that aren't visible to this shader variant
+					if ( !variant.ParameterSetIds.Contains( layout.ResourceSetId ) )
+					{
+						continue;
+					}
+
 					// Builtin params are set manually while rendering
 					// Instance params have resource sets generated elsewhere
 					if ( layout.Level == Assets.MaterialParameterLevel.Builtin )
