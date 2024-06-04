@@ -17,6 +17,9 @@ using Utils = Elegy.RenderSystem.Resources.MaterialParameterUtils;
 
 namespace Elegy.RenderSystem.Resources
 {
+	// TODO: Get rid of this, it's basically not used, but the shader variant
+	// lookup code relies on this for shader variant indices. It's not right
+	// and can be done much faster
 	public struct ResourceSetVariant
 	{
 		public ShaderVariant ShaderVariant { get; init; }
