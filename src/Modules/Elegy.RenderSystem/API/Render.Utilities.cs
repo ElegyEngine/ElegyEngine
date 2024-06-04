@@ -29,14 +29,10 @@ namespace Elegy.RenderSystem.API
 		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public static void SetMaterialResourceSetsIndividual( CommandList commands, int variantIndex,
-			List<ResourceSetVariant> resourceVariants, int[] mappings,
+		public static void SetMaterialResourceSetsIndividual( CommandList commands, int[] mappings,
 			IReadOnlyList<MaterialParameterSet> parameterSets )
 		{
-			// This contains indices with gaps, e.g. 0, 1, 3, 4, 6
-			var shaderVariantSets = resourceVariants[variantIndex].ResourceSetIds;
-
-			for ( int i = 0; i < shaderVariantSets.Length; i++ )
+			for ( int i = 0; i < mappings.Length; i++ )
 			{
 				// This works in a bit of a convoluted way but let me illustrate:
 				// Essentially we have 3 different arrays of ResourceSets that represent shader
@@ -64,22 +60,19 @@ namespace Elegy.RenderSystem.API
 			// Set shader parametres used by this shader variant
 			// E.g. variant A might not use resource set 2, but variant B might
 			// Anything can happen after the first couple builtin sets
-			SetMaterialResourceSetsIndividual( commands, variantIndex,
-				material.ResourceVariants,
+			SetMaterialResourceSetsIndividual( commands,
 				shaderVariant.ResourceMappingsPerMaterial,
 				material.ParameterPool.ParameterSets );
 
 			// Same story as above, just on a global level
-			SetMaterialResourceSetsIndividual( commands, variantIndex,
-				material.GlobalResourceVariants,
+			SetMaterialResourceSetsIndividual( commands,
 				shaderVariant.ResourceMappingsGlobal,
 				material.GlobalParameterPool.ParameterSets );
 
 			// Same story as above, just on an instance level
 			if ( perInstancePool is not null )
 			{
-				SetMaterialResourceSetsIndividual( commands, variantIndex,
-					perInstancePool.ResourceSetVariants,
+				SetMaterialResourceSetsIndividual( commands,
 					shaderVariant.ResourceMappingsPerInstance,
 					perInstancePool.ParameterSets );
 			}
