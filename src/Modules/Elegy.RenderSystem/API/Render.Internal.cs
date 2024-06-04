@@ -83,7 +83,7 @@ namespace Elegy.RenderSystem.API
 
 		private static bool InitialiseGraphics()
 		{
-			if ( InitialiseGraphicsDevice() )
+			if ( !InitialiseGraphicsDevice() )
 			{
 				mLogger.Error( "Failed to create graphics device" );
 				return false;
