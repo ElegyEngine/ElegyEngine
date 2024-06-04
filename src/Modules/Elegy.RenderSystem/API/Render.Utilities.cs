@@ -92,6 +92,7 @@ namespace Elegy.RenderSystem.API
 			SetMaterialResourceSets( mRenderCommands, mWindowMaterial, 0 );
 
 			mRenderCommands.SetVertexBuffer( 0, ViewMesh.PositionBuffer );
+			mRenderCommands.SetVertexBuffer( 1, ViewMesh.Uv0Buffer );
 			mRenderCommands.SetIndexBuffer( ViewMesh.IndexBuffer, IndexFormat.UInt32 );
 
 			mRenderCommands.DrawIndexed( ViewMesh.NumIndices );
