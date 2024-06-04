@@ -95,13 +95,11 @@ namespace Elegy.RenderSystem.API
 			{
 				if ( !template.ValidateDataExists( FindShaderBinaryPath, errorStrings ) )
 				{
-					mLogger.Error( "One or more shaders are missing:" );
-					mLogger.Error( errorStrings.ToString() );
+					allOkay = false;
+					mLogger.Error( $"Skipping material template '{template.Data.Name}', missing shaders (read below)" );
+					continue;
 				}
-			}
 
-			foreach ( var template in MaterialTemplates )
-			{
 				if ( !template.CompileResources( mDevice, GetOutputForShaderVariant, FindShaderBinaryPath ) )
 				{
 					mLogger.Error( $"Failed to compile pipeline for material template '{template.Data.Name}'" );
@@ -111,6 +109,14 @@ namespace Elegy.RenderSystem.API
 
 			if ( !allOkay )
 			{
+				if ( errorStrings.Length > 0 )
+				{
+					mLogger.Error( "One or more shaders are missing:" );
+					mLogger.Error( errorStrings.ToString() );
+					mLogger.Error(
+						"Look at 'shaders/bin/'. Chances are some shader stages are missing because they failed to compile or they haven't been compiled." );
+				}
+
 				return false;
 			}
 
