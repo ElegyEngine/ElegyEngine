@@ -145,12 +145,12 @@ namespace Elegy.RenderSystem.API
 			Samplers.Aniso8xClamp = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Clamp, 8 );
 			Samplers.Aniso16xClamp = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Clamp, 16 );
 
-			Samplers.NearestClamp = CreateSampler( SamplerFilter.MinPoint_MagPoint_MipLinear, SamplerAddressMode.Border );
-			Samplers.LinearClamp = CreateSampler( SamplerFilter.MinLinear_MagLinear_MipLinear, SamplerAddressMode.Border );
-			Samplers.Aniso2xClamp = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 2 );
-			Samplers.Aniso4xClamp = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 4 );
-			Samplers.Aniso8xClamp = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 8 );
-			Samplers.Aniso16xClamp = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 16 );
+			Samplers.NearestBorder = CreateSampler( SamplerFilter.MinPoint_MagPoint_MipLinear, SamplerAddressMode.Border );
+			Samplers.LinearBorder = CreateSampler( SamplerFilter.MinLinear_MagLinear_MipLinear, SamplerAddressMode.Border );
+			Samplers.Aniso2xBorder = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 2 );
+			Samplers.Aniso4xBorder = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 4 );
+			Samplers.Aniso8xBorder = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 8 );
+			Samplers.Aniso16xBorder = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 16 );
 
 			Layouts.Window = Factory.CreateLayout(
 				new ResourceLayoutElementDescription( "ViewTexture", ResourceKind.TextureReadOnly, ShaderStages.Fragment ),
