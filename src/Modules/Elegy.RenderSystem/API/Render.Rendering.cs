@@ -36,7 +36,8 @@ namespace Elegy.RenderSystem.API
 
 			mRenderCommands.Begin();
 
-			SetRenderView( view );
+			view.UpdateBuffers( mDevice );
+			SetRenderView( mRenderCommands, view );
 			RenderViewIntoBackbuffer( view );
 
 			mRenderCommands.End();

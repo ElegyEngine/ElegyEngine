@@ -18,14 +18,12 @@ namespace Elegy.RenderSystem.API
 
 		private static double GetSeconds() => (double)mStopwatch.ElapsedTicks / Stopwatch.Frequency;
 
-		public static void SetRenderView( in View view )
+		public static void SetRenderView( CommandList commands, in View view )
 		{
-			view.UpdateBuffers( mDevice );
-
-			mRenderCommands.SetFramebuffer( view.RenderFramebuffer );
-			mRenderCommands.ClearColorTarget( 0, new( 0.01f, 0.05f, 0.06f, 1.0f ) );
-			mRenderCommands.ClearDepthStencil( 1.0f );
-			mRenderCommands.SetViewport( 0, new( 0.0f, 0.0f, view.RenderSize.X, view.RenderSize.Y, 0.0f, 1.0f ) );
+			commands.SetFramebuffer( view.RenderFramebuffer );
+			commands.ClearColorTarget( 0, new( 0.01f, 0.05f, 0.06f, 1.0f ) );
+			commands.ClearDepthStencil( 1.0f );
+			commands.SetViewport( 0, new( 0.0f, 0.0f, view.RenderSize.X, view.RenderSize.Y, 0.0f, 1.0f ) );
 		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
