@@ -1,7 +1,7 @@
 {
   "name": "WindowST",
   "shaderBinaryBasePath": "Window",
-  "postprocessHint": false,
+  "postprocessHint": true,
   "parameterSets": [
     {
       "resourceSetId": 0,

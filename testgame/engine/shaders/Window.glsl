@@ -3,6 +3,7 @@
 
 ShaderTemplate( WindowST );
 ShaderVariants( DEFAULT );
+ShaderPostProcessHint();
 
 // Shader parametres
 MaterialParameterSet( 0, BUILTIN, ALL,
