@@ -6,7 +6,7 @@
   "shaderVariants": [
     {
       "shaderDefine": "DEFAULT",
-      "shaderBinaryPath": "",
+      "shaderBinaryPath": "Debug.DEFAULT",
       "vertexLayouts": [
         {
           "name": "vPosition",
