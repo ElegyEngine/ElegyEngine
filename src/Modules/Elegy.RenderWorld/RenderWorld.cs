@@ -67,6 +67,12 @@ namespace Elegy.RenderWorld
 			// Currently we have no lights, so oops
 			ReadOnlySpan<Light> lights = [];
 
+			currentView.UpdateBuffers( Render.Device );
+
+			// Begin rendering
+			mRenderCommands.Begin();
+			Render.SetRenderView( mRenderCommands, currentView );
+
 			// Opaque pass
 			foreach ( var item in mOpaqueMaterialMap )
 			{
@@ -78,6 +84,9 @@ namespace Elegy.RenderWorld
 			{
 				Render.RenderStyle.RenderSurfaces( mRenderCommands, currentView, item.Value.Span, item.Key, lights );
 			}
+
+			mRenderCommands.End();
+			Render.Device.SubmitCommands( mRenderCommands );
 		}
 
 		private void QueueRenderSurface( ArrayMesh mesh, ResourceSet set, MaterialParameterPool pool, RenderMaterial material )
