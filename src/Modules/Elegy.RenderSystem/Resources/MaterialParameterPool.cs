@@ -66,7 +66,7 @@ namespace Elegy.RenderSystem.Resources
 			Definition = definition;
 			Template = materialTemplate;
 
-			ParameterLevel = perInstance ? MaterialParameterLevel.Data : MaterialParameterLevel.Instance;
+			ParameterLevel = perInstance ? MaterialParameterLevel.Instance : MaterialParameterLevel.Data;
 			ParameterSets.EnsureCapacity( materialTemplate.ShaderTemplate.ParameterSets.Count );
 			
 			// From the shader parametres, we will look up the given material def's parametres
