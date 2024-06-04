@@ -33,6 +33,8 @@ namespace Elegy.RenderSystem.Objects
 				.CreateBufferForStruct<CameraData>( BufferUsage.UniformBuffer );
 
 			PerViewSet = device.ResourceFactory.CreateSet( Render.Layouts.PerView, CameraBuffer );
+
+			UpdateBuffers( device );
 		}
 
 		internal View( GraphicsDevice device, ITexture renderTarget )
@@ -179,7 +181,7 @@ namespace Elegy.RenderSystem.Objects
 		public DeviceBuffer CameraBuffer { get; private set; }
 		public ResourceSet PerViewSet { get; private set; }
 
-		internal void UpdateBuffers( GraphicsDevice device )
+		public void UpdateBuffers( GraphicsDevice device )
 		{
 			if ( TransformOrProjectionChanged )
 			{
