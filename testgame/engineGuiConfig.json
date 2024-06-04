@@ -3,7 +3,7 @@
   "engineFolder": "engine",
   "baseFolder": "game",
   "enginePlugins": [
-    "plugins/RenderStandard",
+    //"plugins/RenderStyle99",
     "plugins/DevConsole"
   ]
 }
