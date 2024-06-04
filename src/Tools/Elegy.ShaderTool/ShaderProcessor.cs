@@ -65,6 +65,7 @@ namespace Elegy.ShaderTool
 		public string PixelShaderOutput { get; private set; } = string.Empty;
 		public string TemplateName { get; private set; } = string.Empty;
 
+		public bool PostProcessHint = false;
 		public List<string> ShaderVariants { get; private set; } = new();
 		public string CommonShaderContents { get; private set; } = string.Empty;
 		public Dictionary<string, string> VertexShaderRegions { get; private set; } = new();
@@ -87,6 +88,13 @@ namespace Elegy.ShaderTool
 				else if ( token == "ShaderVariants" )
 				{
 					ShaderVariants = ParseShaderVariants( lexer ).ToList();
+				}
+				else if ( token == "ShaderPostProcessHint" )
+				{
+					PostProcessHint = true;
+					Expect( lexer, "(" );
+					Expect( lexer, ")" );
+					Expect( lexer, ";" );
 				}
 				else if ( token == "MaterialParameterSet" )
 				{
@@ -152,7 +160,8 @@ namespace Elegy.ShaderTool
 			{
 				Name = TemplateName,
 				ShaderBinaryBasePath = Path.ChangeExtension( Path.GetRelativePath( Program.ShaderDirectory, FilePath ), null ),
-				ParameterSets = ExtractMaterialParameterSetData()
+				ParameterSets = ExtractMaterialParameterSetData(),
+				PostprocessHint = PostProcessHint
 			};
 
 			shaderTemplate.ShaderVariants.EnsureCapacity( Permutations.Count );
