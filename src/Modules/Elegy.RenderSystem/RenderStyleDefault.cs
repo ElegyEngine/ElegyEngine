@@ -55,7 +55,7 @@ namespace Elegy.RenderSystem
 			ReadOnlySpan<RenderSurface> surfaces, RenderMaterial material, ReadOnlySpan<Light> lights )
 		{
 			int variantIndex = material.ParameterPool.GetVariantIndex( "GENERAL" );
-			var shaderVariant = material.Template.ShaderVariants.ElementAt( variantIndex ).Value;
+			var shaderVariant = material.Template.ShaderVariants["GENERAL"];
 			
 			renderCommand.SetPipeline( shaderVariant.Pipeline );
 			renderCommand.SetGraphicsResourceSet( 0, view.PerViewSet );
