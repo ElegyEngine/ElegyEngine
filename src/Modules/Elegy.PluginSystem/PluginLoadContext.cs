@@ -1,17 +1,17 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.Common.Extensions;
 using Elegy.ConsoleSystem;
 using System.Reflection;
 using System.Runtime.Loader;
-
-using Console = Elegy.ConsoleSystem.API.Console;
 
 namespace Elegy.PluginSystem
 {
 	internal class PluginLoadContext : AssemblyLoadContext
 	{
 		private List<(string, Assembly)> mDependencies = new(); 
+		private TaggedLogger mLogger = new( "DllLoader" );
 
 		public PluginLoadContext()
 			: base( isCollectible: true )
@@ -26,7 +26,7 @@ namespace Elegy.PluginSystem
 		{
 			if ( mDependencies.Any( ( pair ) => pair.Item1 == name ) )
 			{
-				Console.Warning( "DllLoader", $"Tried registering an existing dependency '{name}.dll'" );
+				mLogger.Warning( $"Tried registering an existing dependency '{name}.dll'" );
 				return;
 			}
 
@@ -38,7 +38,7 @@ namespace Elegy.PluginSystem
 			int index = mDependencies.FindIndex( pair => pair.Item1 == name );
 			if ( index == -1 )
 			{
-				Console.Warning( "DllLoader", $"Tried unregistering a non-existing dependency '{name}.dll'" );
+				mLogger.Warning( $"Tried unregistering a non-existing dependency '{name}.dll'" );
 				return false;
 			}
 
@@ -48,8 +48,9 @@ namespace Elegy.PluginSystem
 
 		protected override Assembly? Load( AssemblyName assemblyName )
 		{
-			Console.Log( "DllLoader", $"'{assemblyName.Name}.dll'", ConsoleMessageType.Verbose );
+			mLogger.Verbose( $"'{assemblyName.Name}.dll'" );
 
+			// Check the global dependencies, like engine modules
 			foreach ( var dependency in mDependencies )
 			{
 				if ( dependency.Item1 == assemblyName.Name )
