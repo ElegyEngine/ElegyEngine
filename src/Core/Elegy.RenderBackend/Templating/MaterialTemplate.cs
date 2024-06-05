@@ -86,15 +86,18 @@ namespace Elegy.RenderBackend.Templating
 				List<int> globalMappings = new( ResourceLayouts.Length );
 				List<int> perMaterialMappings = new( ResourceLayouts.Length );
 				List<int> perInstanceMappings = new( ResourceLayouts.Length );
-				for ( int i = 0; i < ResourceLayouts.Length; i++ )
+				int adjustedSetId = -1;
+				for ( int setId = 0; setId < ResourceLayouts.Length; setId++ )
 				{
-					var layout = ShaderTemplate.ParameterSets[i];
+					var layout = ShaderTemplate.ParameterSets[setId];
 
 					// Do not create mappings for parameters that aren't visible to this shader variant
-					if ( !variant.ParameterSetIds.Contains( layout.ResourceSetId ) )
+					if ( !variant.ParameterSetIds.Contains( setId ) )
 					{
 						continue;
 					}
+
+					adjustedSetId++;
 
 					// Builtin params are set manually while rendering
 					// Instance params have resource sets generated elsewhere
@@ -110,7 +113,7 @@ namespace Elegy.RenderBackend.Templating
 						Assets.MaterialParameterLevel.Instance => perInstanceMappings
 					};
 
-					mappingList.Add( layout.ResourceSetId );
+					mappingList.Add( adjustedSetId );
 				}
 
 				// 4. Create shader objects

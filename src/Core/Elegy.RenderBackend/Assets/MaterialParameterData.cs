@@ -47,8 +47,6 @@ namespace Elegy.RenderBackend.Assets
 
 	public class MaterialParameterSet
 	{
-		public int ResourceSetId { get; set; } = 0;
-
 		public MaterialParameterLevel Level { get; set; } = MaterialParameterLevel.Builtin;
 
 		public List<MaterialParameter> Parameters { get; set; } = new();

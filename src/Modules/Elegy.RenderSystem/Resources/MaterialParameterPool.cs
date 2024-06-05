@@ -68,11 +68,14 @@ namespace Elegy.RenderSystem.Resources
 
 			ParameterLevel = perInstance ? MaterialParameterLevel.Instance : MaterialParameterLevel.Data;
 			ParameterSets.EnsureCapacity( materialTemplate.ShaderTemplate.ParameterSets.Count );
-			
+
 			// From the shader parametres, we will look up the given material def's parametres
 			// And then generate buffers for em
+			int parameterSetId = -1;
 			foreach ( var set in materialTemplate.ShaderTemplate.ParameterSets.AsSpan() )
 			{
+				parameterSetId++;
+
 				// Builtin and global parameters are filled in externally
 				if ( set.Level != ParameterLevel )
 				{
@@ -92,7 +95,7 @@ namespace Elegy.RenderSystem.Resources
 					parameters.Add( Utils.CreateMaterialParameter( device, parametre.Name, parametre.Type, value ) );
 				}
 
-				MaterialParameterSet parameterSet = new( mDevice, ParameterLevel, materialTemplate.ResourceLayouts[set.ResourceSetId], parameters );
+				MaterialParameterSet parameterSet = new( mDevice, ParameterLevel, materialTemplate.ResourceLayouts[parameterSetId], parameters );
 				ParameterSets.Add( parameterSet );
 			}
 
