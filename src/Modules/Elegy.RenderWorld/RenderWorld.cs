@@ -67,7 +67,8 @@ namespace Elegy.RenderWorld
 			// Currently we have no lights, so oops
 			ReadOnlySpan<Light> lights = [];
 
-			currentView.UpdateBuffers( Render.Device );
+			// Update all buffers at the start of the frame pretty please
+			Render.UpdateBuffers();
 
 			// Begin rendering
 			mRenderCommands.Begin();
