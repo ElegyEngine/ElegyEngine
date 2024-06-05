@@ -9,13 +9,11 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\extern\fennecs\fennecs\fennecs.csproj" />
-        <ProjectReference Include="..\..\Elegy.Common\Elegy.Common.csproj" />
+        <ProjectReference Include="..\..\Core\Elegy.Common\Elegy.Common.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\EcsResearch.Generator\EcsResearch.Generator.csproj"
-                          OutputItemType="Analyzer"
-                          ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\EcsResearch.Generator\EcsResearch.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
 </Project>
