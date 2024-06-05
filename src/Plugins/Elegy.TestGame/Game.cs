@@ -137,10 +137,10 @@ namespace TestGame
 					Coords.DirectionsFromDegrees( state.Angles, out var forward, out var up );
 					mRenderView.Transform = Coords.CreateViewMatrix( state.Position, forward, up );
 
-					Console.Log( $"XYZ:      {state.Position.X:F1} {state.Position.Y:F1} {state.Position.Z:F1}" );
-					Console.Log( $"PitchYaw: {state.Angles.X:F1}° {state.Angles.Y:F1}°" );
-					Console.Log( $"Forward:  {forward.X:F1} {forward.Y:F1} {forward.Z:F1}" );
-					Console.Log( $"Up:       {up.X:F1} {up.Y:F1} {up.Z:F1}" );
+					//Console.Log( $"XYZ:      {state.Position.X:F1} {state.Position.Y:F1} {state.Position.Z:F1}" );
+					//Console.Log( $"PitchYaw: {state.Angles.X:F1}° {state.Angles.Y:F1}°" );
+					//Console.Log( $"Forward:  {forward.X:F1} {forward.Y:F1} {forward.Z:F1}" );
+					//Console.Log( $"Up:       {up.X:F1} {up.Y:F1} {up.Z:F1}" );
 				}
 			}
 
@@ -182,6 +182,9 @@ namespace TestGame
 				mRenderView.Projection = Coords.CreatePerspectiveMatrix( MathF.PI / 2.0f, 16.0f / 9.0f, 0.01f, 4096.0f );
 				mRenderView.Transform = Matrix4x4.CreateLookAt( new( 1.5f, 3.0f, 1.5f ), Vector3.Zero, Vector3.UnitZ );
 			}
+
+			var textureSamplerId = Render.GetGlobalParameterIndex( "Sampler" );
+			Render.SetGlobalParameter( textureSamplerId, Render.Samplers.Nearest );
 
 			mLogger.Success( "Map successfully loaded, enjoy" );
 			mGameIsLoaded = true;
