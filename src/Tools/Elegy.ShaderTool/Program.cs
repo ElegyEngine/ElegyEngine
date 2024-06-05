@@ -83,7 +83,7 @@ namespace Elegy.ShaderTool
 				} ).ToList()
 			} ).ToList();
 
-			JsonHelpers.Write( globalParams, "shaders/globalMaterialParams.json" );
+			JsonHelpers.Write( globalParams, $"{ShaderDirectory}/globalMaterialParams.json" );
 		}
 
 		private static MaterialParameter? FindGlobalMaterialParameter( List<MaterialParameterSet> globalParameters, string name )
