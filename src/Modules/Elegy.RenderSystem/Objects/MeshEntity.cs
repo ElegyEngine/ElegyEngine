@@ -19,12 +19,21 @@ namespace Elegy.RenderSystem.Objects
 
 		internal MeshEntity( GraphicsDevice device, bool animated, in ResourceLayout perEntityLayout )
 		{
+			Transform = Matrix4x4.Identity;
 			TransformBuffer = device.ResourceFactory.CreateBufferForStruct<Matrix4x4>( BufferUsage.UniformBuffer );
-			BoneTransformBuffer = animated
-				? device.ResourceFactory.CreateBufferForSpan<Matrix4x4>( BufferUsage.StructuredBufferReadOnly, BoneBuffer )
-				: null;
 
-			PerEntitySet = device.ResourceFactory.CreateSet( perEntityLayout, TransformBuffer );
+			if ( animated )
+			{
+				throw new NotImplementedException();
+				// TODO: This needs a separate resource set t.b.h.
+				//BoneTransformBuffer = device.ResourceFactory.CreateBufferForSpan<Matrix4x4>( BufferUsage.StructuredBufferReadOnly, BoneBuffer );
+				//PerEntitySet = device.ResourceFactory.CreateSet( perEntityLayout, TransformBuffer, BoneTransformBuffer );
+			}
+			else
+			{
+				BoneTransformBuffer = null;
+				PerEntitySet = device.ResourceFactory.CreateSet( perEntityLayout, TransformBuffer );
+			}
 		}
 
 		public int Mask { get; set; }
