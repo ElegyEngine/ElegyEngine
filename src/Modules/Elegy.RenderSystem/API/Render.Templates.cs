@@ -43,32 +43,52 @@ namespace Elegy.RenderSystem.API
 				}
 			}
 
-			return LoadMaterialTemplatesInDirectory( Files.CurrentGamePath )
-				&& !anyFailed;
+			if ( anyFailed )
+			{
+				return false;
+			}
+
+			if ( !LoadMaterialTemplatesInDirectory( Files.CurrentGamePath ) )
+			{
+				return false;
+			}
+
+			return LoadGlobalParameters();
 		}
 
 		internal static bool LoadGlobalParameters()
 		{
 			string path = $"{ShaderTemplatesDirectory}/globalMaterialParams.json";
-
 			mLogger.Developer( $"Loading global material parameters: '{path}'" );
 
-			List<GlobalParameterSet>? globalParams = JsonHelpers.LoadFrom<List<GlobalParameterSet>>( path, JsonOptions );
-			if ( globalParams is null )
+			// TODO: Check all shader templates to see if any of them are using global parametres. If yes,
+			// make this file required, else don't worry about it.
+			string? fullPath = Files.PathTo( path, PathFlags.File );
+			if ( fullPath is null )
 			{
+				mLogger.Warning( $"Global material parameters file missing! ({path})'" );
 				return true;
 			}
 
-			mGlobalParameters = globalParams.Select( p =>
+			List<GlobalParameterSet>? globalParams = JsonHelpers.LoadFrom<List<GlobalParameterSet>>( fullPath );
+			if ( globalParams is null )
 			{
-				List<MaterialParameter> materialParameters = p.Parameters
-					.Select( p => MaterialParameterUtils.CreateMaterialParameter( mDevice, p.Name, p.Type, null ) )
+				mLogger.Error( $"Cannot load global material parameters! ({path})'" );
+				return false;
+			}
+
+			mGlobalParameters = globalParams.Select( globalParam =>
+			{
+				List<MaterialParameter> materialParameters = globalParam.Parameters
+					.Select( p => MaterialParameterUtils.CreateMaterialParameter( mDevice, p.Parameter.Name, p.Parameter.Type, p.DefaultValue ) )
 					.ToList();
 
-				Veldrid.ResourceLayout layout = Factory.CreateLayout( p.Parameters );
+				Veldrid.ResourceLayout layout = Factory.CreateLayout( globalParam.Parameters.Select( p => p.Parameter ).ToList() );
 				
 				return new MaterialParameterSet( mDevice, MaterialParameterLevel.Global, layout, materialParameters );
 			} ).ToList();
+
+			mLogger.Verbose( "Loaded global material parameters!" );
 			return true;
 		}
 

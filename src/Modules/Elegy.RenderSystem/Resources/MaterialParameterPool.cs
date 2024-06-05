@@ -53,7 +53,10 @@ namespace Elegy.RenderSystem.Resources
 				if ( globalSet is null )
 				{
 					mLogger.Error( $"Cannot find global parametre '{set.Parameters[0].Name}'" );
+					continue;
 				}
+
+				ParameterSets.Add( globalSet );
 			}
 		}
 

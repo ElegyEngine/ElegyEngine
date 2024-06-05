@@ -59,7 +59,28 @@ namespace Elegy.ShaderTool
 		{
 			List<GlobalParameterSet> globalParams = parameters.Select( p => new GlobalParameterSet()
 			{
-				Parameters = p.Parameters
+				Parameters = p.Parameters.Select( p => new GlobalParameter()
+				{
+					Parameter = p,
+					DefaultValue = p.Type switch
+					{
+						ShaderDataType.Byte => "0",
+						ShaderDataType.Short => "0",
+						ShaderDataType.Int => "0",
+						ShaderDataType.Float => "0",
+						ShaderDataType.Vec2 => "0 0",
+						ShaderDataType.Vec3 => "0 0 0",
+						ShaderDataType.Vec4 => "0 0 0 0",
+						ShaderDataType.Vec2Byte => "0 0",
+						ShaderDataType.Vec3Byte => "0 0 0",
+						ShaderDataType.Vec4Byte => "0 0 0 0",
+						ShaderDataType.Texture1D => "",
+						ShaderDataType.Texture2D => "",
+						ShaderDataType.Texture3D => "",
+						ShaderDataType.Sampler => "linear",
+						_ => throw new NotSupportedException()
+					}
+				} ).ToList()
 			} ).ToList();
 
 			JsonHelpers.Write( globalParams, "shaders/globalMaterialParams.json" );

@@ -52,8 +52,14 @@ namespace Elegy.RenderBackend.Assets
 		public List<MaterialParameter> Parameters { get; set; } = new();
 	}
 
+	public class GlobalParameter
+	{
+		public string DefaultValue { get; set; }
+		public MaterialParameter Parameter { get; set; }
+	}
+
 	public class GlobalParameterSet
 	{
-		public List<MaterialParameter> Parameters { get; set; } = new();
+		public List<GlobalParameter> Parameters { get; set; } = new();
 	}
 }
