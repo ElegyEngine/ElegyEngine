@@ -49,20 +49,14 @@ Build-Project Tools Elegy.ShaderTool
 Write-Host ""
 
 ## Step 4: Copy the tools
-$build_config = "Debug"
-if ( $release )
+if ( $debug )
 {
-	$build_config = "Release"
+	Invoke-Expression "$PSScriptRoot/copy_tools.ps1"
 }
-
-Write-Host "====== COPYING TOOLS ======"
-Copy-Item "$project_root/src/Tools/Elegy.MapCompiler/bin/$build_config/net8.0/Elegy.MapCompiler*" -Destination $output_dir -Force
-Write-Host "Copied Elegy.MapCompiler"
-Copy-Item "$project_root/src/Tools/Elegy.MaterialGenerator/bin/$build_config/net8.0/Elegy.MaterialGenerator*" -Destination $output_dir -Force
-Write-Host "Copied Elegy.MaterialGenerator"
-Copy-Item "$project_root/src/Tools/Elegy.ShaderTool/bin/$build_config/net8.0/Elegy.ShaderTool*" -Destination $output_dir -Force
-Write-Host "Copied Elegy.ShaderTool"
-Write-Host ""
+else
+{
+	Invoke-Expression "$PSScriptRoot/copy_tools.ps1 -release"
+}
 
 ## Step 5: Finally, compile the shaders
 Write-Host "====== BUILDING SHADERS ======"
