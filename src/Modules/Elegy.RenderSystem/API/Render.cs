@@ -25,6 +25,16 @@ namespace Elegy.RenderSystem.API
 
 		public static bool PostInit()
 		{
+			if ( !InitialiseGraphicsDevice() )
+			{
+				mLogger.Error( "Failed to create graphics device" );
+				return false;
+			}
+
+			// Builtin samplers, layouts etc.
+			InitialiseGraphicsConstants();
+
+			// Load material and shader templates
 			if ( !LoadMaterialTemplates() )
 			{
 				return false;
@@ -40,11 +50,15 @@ namespace Elegy.RenderSystem.API
 				return false;
 			}
 
+			// Create pipelines etc. from shader templates
 			if ( !InitialiseGraphics() )
 			{
 				mLogger.Error( "Failed to initialise graphics, can't render anything without that" );
 				return false;
 			}
+
+			// Create fullscreen quad etc.
+			InitialiseBuiltinMeshes();
 
 			return RenderStyle.CreateCorePipelines();
 		}

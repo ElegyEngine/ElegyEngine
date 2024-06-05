@@ -80,14 +80,83 @@ namespace Elegy.RenderSystem.API
 			return null;
 		}
 
+		private static void InitialiseBuiltinMeshes()
+		{
+			Meshes.FullscreenQuad = CreateMesh( new()
+			{
+				Name = "Fullscreen quad",
+				FullPath = "__fullscreen_quad",
+				Meshes =
+				[
+					new()
+					{
+						Name = "Fullscreen Quad Mesh",
+						MaterialName = "materials/builtin/window_default",
+						Positions2D =
+						[
+							new( -1.0f, -1.0f ),
+							new( -1.0f, 1.0f ),
+							new( 1.0f, 1.0f ),
+							new( 1.0f, -1.0f )
+						],
+						Uv0 =
+						[
+							new( 0.0f, 0.0f ),
+							new( 0.0f, 1.0f ),
+							new( 1.0f, 1.0f ),
+							new( 1.0f, 0.0f )
+						],
+						Indices =
+						[
+							0, 1, 2,
+							0, 2, 3
+						]
+					}
+				]
+			} );
+		}
+
+		private static void InitialiseGraphicsConstants()
+		{
+			Samplers.Nearest = CreateSampler( SamplerFilter.MinPoint_MagPoint_MipLinear, SamplerAddressMode.Wrap );
+			Samplers.Linear = CreateSampler( SamplerFilter.MinLinear_MagLinear_MipLinear, SamplerAddressMode.Wrap );
+			Samplers.Aniso2x = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Wrap, 2 );
+			Samplers.Aniso4x = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Wrap, 4 );
+			Samplers.Aniso8x = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Wrap, 8 );
+			Samplers.Aniso16x = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Wrap, 16 );
+
+			Samplers.NearestClamp = CreateSampler( SamplerFilter.MinPoint_MagPoint_MipLinear, SamplerAddressMode.Clamp );
+			Samplers.LinearClamp = CreateSampler( SamplerFilter.MinLinear_MagLinear_MipLinear, SamplerAddressMode.Clamp );
+			Samplers.Aniso2xClamp = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Clamp, 2 );
+			Samplers.Aniso4xClamp = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Clamp, 4 );
+			Samplers.Aniso8xClamp = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Clamp, 8 );
+			Samplers.Aniso16xClamp = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Clamp, 16 );
+
+			Samplers.NearestBorder = CreateSampler( SamplerFilter.MinPoint_MagPoint_MipLinear, SamplerAddressMode.Border );
+			Samplers.LinearBorder = CreateSampler( SamplerFilter.MinLinear_MagLinear_MipLinear, SamplerAddressMode.Border );
+			Samplers.Aniso2xBorder = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 2 );
+			Samplers.Aniso4xBorder = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 4 );
+			Samplers.Aniso8xBorder = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 8 );
+			Samplers.Aniso16xBorder = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 16 );
+
+			ShaderStages commonShaderStages = ShaderStages.Vertex | ShaderStages.Fragment;
+
+			Layouts.Window = Factory.CreateLayout(
+				new ResourceLayoutElementDescription( "ViewTexture", ResourceKind.TextureReadOnly, commonShaderStages ),
+				new ResourceLayoutElementDescription( "ViewSampler", ResourceKind.Sampler, commonShaderStages )
+			);
+
+			Layouts.PerView = Factory.CreateLayout(
+				new ResourceLayoutElementDescription( "uView", ResourceKind.UniformBuffer, commonShaderStages )
+			);
+
+			Layouts.PerEntity = Factory.CreateLayout(
+				new ResourceLayoutElementDescription( "uEntity", ResourceKind.UniformBuffer, commonShaderStages )
+			);
+		}
+
 		private static bool InitialiseGraphics()
 		{
-			if ( !InitialiseGraphicsDevice() )
-			{
-				mLogger.Error( "Failed to create graphics device" );
-				return false;
-			}
-
 			bool allOkay = true;
 			StringBuilder errorStrings = new();
 			foreach ( var template in MaterialTemplates )
@@ -129,76 +198,6 @@ namespace Elegy.RenderSystem.API
 			}
 
 			mWindowMaterial = windowMaterial;
-
-			Samplers.Nearest = CreateSampler( SamplerFilter.MinPoint_MagPoint_MipLinear, SamplerAddressMode.Wrap );
-			Samplers.Linear = CreateSampler( SamplerFilter.MinLinear_MagLinear_MipLinear, SamplerAddressMode.Wrap );
-			Samplers.Aniso2x = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Wrap, 2 );
-			Samplers.Aniso4x = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Wrap, 4 );
-			Samplers.Aniso8x = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Wrap, 8 );
-			Samplers.Aniso16x = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Wrap, 16 );
-
-			Samplers.NearestClamp = CreateSampler( SamplerFilter.MinPoint_MagPoint_MipLinear, SamplerAddressMode.Clamp );
-			Samplers.LinearClamp = CreateSampler( SamplerFilter.MinLinear_MagLinear_MipLinear, SamplerAddressMode.Clamp );
-			Samplers.Aniso2xClamp = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Clamp, 2 );
-			Samplers.Aniso4xClamp = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Clamp, 4 );
-			Samplers.Aniso8xClamp = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Clamp, 8 );
-			Samplers.Aniso16xClamp = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Clamp, 16 );
-
-			Samplers.NearestBorder = CreateSampler( SamplerFilter.MinPoint_MagPoint_MipLinear, SamplerAddressMode.Border );
-			Samplers.LinearBorder = CreateSampler( SamplerFilter.MinLinear_MagLinear_MipLinear, SamplerAddressMode.Border );
-			Samplers.Aniso2xBorder = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 2 );
-			Samplers.Aniso4xBorder = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 4 );
-			Samplers.Aniso8xBorder = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 8 );
-			Samplers.Aniso16xBorder = CreateSampler( SamplerFilter.Anisotropic, SamplerAddressMode.Border, 16 );
-
-			ShaderStages commonShaderStages = ShaderStages.Vertex | ShaderStages.Fragment;
-
-			Layouts.Window = Factory.CreateLayout(
-				new ResourceLayoutElementDescription( "ViewTexture", ResourceKind.TextureReadOnly, commonShaderStages ),
-				new ResourceLayoutElementDescription( "ViewSampler", ResourceKind.Sampler, commonShaderStages )
-			);
-
-			Layouts.PerView = Factory.CreateLayout(
-				new ResourceLayoutElementDescription( "uView", ResourceKind.UniformBuffer, commonShaderStages )
-			);
-
-			Layouts.PerEntity = Factory.CreateLayout(
-				new ResourceLayoutElementDescription( "uEntity", ResourceKind.UniformBuffer, commonShaderStages )
-			);
-
-			Meshes.FullscreenQuad = CreateMesh( new()
-			{
-				Name = "Fullscreen quad",
-				FullPath = "__fullscreen_quad",
-				Meshes =
-				[
-					new()
-					{
-						Name = "Fullscreen Quad Mesh",
-						MaterialName = "materials/builtin/window_default",
-						Positions2D =
-						[
-							new( -1.0f, -1.0f ),
-							new( -1.0f, 1.0f ),
-							new( 1.0f, 1.0f ),
-							new( 1.0f, -1.0f )
-						],
-						Uv0 =
-						[
-							new( 0.0f, 0.0f ),
-							new( 0.0f, 1.0f ),
-							new( 1.0f, 1.0f ),
-							new( 1.0f, 0.0f )
-						],
-						Indices =
-						[
-							0, 1, 2,
-							0, 2, 3
-						]
-					}
-				]
-			} );
-
 			return true;
 		}
 	}
