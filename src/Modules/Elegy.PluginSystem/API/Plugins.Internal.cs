@@ -56,12 +56,16 @@ namespace Elegy.PluginSystem.API
 			}
 
 			string pluginDirectory = fullPath[..fullPath.LastIndexOf( '/' )];
+			string fullPluginDirectory = $"{Directory.GetCurrentDirectory()}/{pluginDirectory}";
 			string assemblyPath = $"{pluginDirectory}/{pluginConfig.AssemblyName}.dll";
+			string fullAssemblyPath = $"{Directory.GetCurrentDirectory()}/{assemblyPath}";
+
+			mLoadContext.AddPluginSearchPaths( path, fullPluginDirectory );
 
 			Assembly assembly;
 			try
 			{
-				assembly = mLoadContext.LoadFromAssemblyPath( $"{Directory.GetCurrentDirectory()}/{assemblyPath}" );
+				assembly = mLoadContext.LoadFromAssemblyPath( fullAssemblyPath );
 			}
 			catch ( Exception ex )
 			{
@@ -101,6 +105,7 @@ namespace Elegy.PluginSystem.API
 
 			mLogger.Log( $"'{assemblyPath}' loaded successfully" );
 			mPluginLibraries.Add( library );
+
 			return library;
 		}
 	}
