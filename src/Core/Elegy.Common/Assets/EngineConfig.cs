@@ -21,7 +21,7 @@ namespace Elegy.Common.Assets
 		/// <summary></summary>
 		public string[] EnginePlugins { get; set; } =
 		[
-			"plugins/RenderStandard",
+			//"plugins/RenderStyle99",
 			// We don't have audio yet, so this one shall wait
 			//"plugins/AudioStandard",
 			"plugins/DevConsole"

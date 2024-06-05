@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Text;
+using Elegy.RenderBackend.Assets;
 
 namespace Elegy.ShaderTool
 {
@@ -26,17 +27,21 @@ namespace Elegy.ShaderTool
 				Error( $"There are no GLSL shaders in the provided {ShaderDirectory}!" );
 			}
 
+			List<MaterialParameterSet> globalParameters = new();
+
 			foreach ( var shader in shaderFiles )
 			{
 				if ( !shader.Contains( "generated" ) )
 				{
 					Console.WriteLine( $"Processing shader '{shader}'..." );
-					ProcessShader( shader );
+					ProcessShader( shader, globalParameters );
 				}
 			}
+
+			ProcessGlobalMaterialParameters( globalParameters );
 		}
 
-		private static void Error( string errorMessage )
+		internal static void Error( string errorMessage )
 		{
 			Console.ForegroundColor = ConsoleColor.Red;
 			if ( !errorMessage.StartsWith( "ERROR:" ) )
@@ -50,7 +55,98 @@ namespace Elegy.ShaderTool
 			Console.ResetColor();
 		}
 
-		private static bool ProcessShader( string path )
+		private static void ProcessGlobalMaterialParameters( List<MaterialParameterSet> parameters )
+		{
+			List<GlobalParameterSet> globalParams = parameters.Select( p => new GlobalParameterSet()
+			{
+				Parameters = p.Parameters.Select( p => new GlobalParameter()
+				{
+					Parameter = p,
+					DefaultValue = p.Type switch
+					{
+						ShaderDataType.Byte => "0",
+						ShaderDataType.Short => "0",
+						ShaderDataType.Int => "0",
+						ShaderDataType.Float => "0",
+						ShaderDataType.Vec2 => "0 0",
+						ShaderDataType.Vec3 => "0 0 0",
+						ShaderDataType.Vec4 => "0 0 0 0",
+						ShaderDataType.Vec2Byte => "0 0",
+						ShaderDataType.Vec3Byte => "0 0 0",
+						ShaderDataType.Vec4Byte => "0 0 0 0",
+						ShaderDataType.Texture1D => "",
+						ShaderDataType.Texture2D => "",
+						ShaderDataType.Texture3D => "",
+						ShaderDataType.Sampler => "linear",
+						_ => throw new NotSupportedException()
+					}
+				} ).ToList()
+			} ).ToList();
+
+			JsonHelpers.Write( globalParams, $"{ShaderDirectory}/globalMaterialParams.json" );
+		}
+
+		private static MaterialParameter? FindGlobalMaterialParameter( List<MaterialParameterSet> globalParameters, string name )
+		{
+			foreach ( var set in globalParameters )
+			{
+				foreach ( var param in set.Parameters )
+				{
+					if ( param.Name == name )
+					{
+						return param;
+					}
+				}
+			}
+
+			return null;
+		}
+
+		private static bool AppendGlobalMaterialParameters( ShaderTemplate template, List<MaterialParameterSet> outGlobalParameters )
+		{
+			bool okay = true;
+
+			foreach ( var set in template.ParameterSets )
+			{
+				if ( set.Level != MaterialParameterLevel.Global )
+				{
+					continue;
+				}
+
+				foreach ( var parameter in set.Parameters )
+				{
+					MaterialParameter? existingParam = FindGlobalMaterialParameter( outGlobalParameters, parameter.Name );
+					if ( existingParam is null )
+					{
+						outGlobalParameters.Add( set );
+						continue;
+					}
+
+					// Mixed types are not allowed for obvious reasons
+					if ( existingParam.Type != parameter.Type )
+					{
+						Error( "Differing global param. datatypes:" );
+						Error( $"{existingParam.Type} (in memory) vs. {parameter.Type} (in shader template '{template.Name}')" );
+						okay = false;
+					}
+
+					// Different set IDs are fine, but different binding IDs are not
+					// You might have a situation where your global parameter consists of 2 or more resources,
+					// at binding slots 0, 1, 2 etc. The order must be the same so it's consistent between
+					// shader templates and whatnot, so their resource sets can be reloaded.
+					if ( existingParam.ResourceBindingId != parameter.ResourceBindingId )
+					{
+						Error( "Differing global param. binding IDs:" );
+						Error( $"{existingParam.ResourceBindingId} (in memory) vs. {parameter.ResourceBindingId} (in shader template '{template.Name}')" );
+						okay = false;
+					}
+				}
+			}
+
+			return okay;
+		}
+
+		private static bool ProcessShader( string path, List<MaterialParameterSet> outGlobalParameters )
 		{
 			ShaderProcessor processor = new( path, File.ReadAllText( path ) );
 			if ( !processor.CreatePermutations() )
@@ -59,8 +155,14 @@ namespace Elegy.ShaderTool
 				return false;
 			}
 
-			// The compilation may fail, but the shader template will prevail
-			JsonHelpers.Write( processor.CreateShaderTemplate(), Path.ChangeExtension( path, ".stemplate" ) );
+			ShaderTemplate shaderTemplate = processor.CreateShaderTemplate();
+
+			// Compiling this may fail,
+			// but the template will prevail
+			JsonHelpers.Write( shaderTemplate, Path.ChangeExtension( path, ".stemplate" ) );
+
+			// Collect global material params here
+			AppendGlobalMaterialParameters( shaderTemplate, outGlobalParameters );
 
 			string pathNoExtension = Path.ChangeExtension( path, null );
 			foreach ( var permutation in processor.Permutations )

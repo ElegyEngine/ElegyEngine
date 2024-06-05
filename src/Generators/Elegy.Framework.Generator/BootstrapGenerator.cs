@@ -185,8 +185,10 @@ namespace Elegy.Bootstrap.Generator
 			};
 
 			if ( data.WithPluginSystem ) validatePostInit( "plugin system", "PluginSystem", "Plugins" );
-			if ( data.WithPluginSystem ) validatePostInit( "asset system", "AssetSystem", "Assets" );
-			if ( data.WithPluginSystem ) validatePostInit( "render system", "RenderSystem", "Render" );
+			if ( data.WithRenderSystem ) validatePostInit( "render system", "RenderSystem", "Render" );
+			// Normally the asset system would go before the renderer here, but when the renderer is
+			// post-initialising, it doesn't need anything from the asset system. Rather it's the opposite.
+			if ( data.WithAssetSystem ) validatePostInit( "asset system", "AssetSystem", "Assets" );
 
 			return sb.ToString();
 		}

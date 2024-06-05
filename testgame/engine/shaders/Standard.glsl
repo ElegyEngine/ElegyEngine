@@ -7,20 +7,33 @@ ShaderTemplate( StandardST );
 ShaderVariants( GENERAL, LIGHTMAP, DEPTH, WIREFRAME );
 
 // Shader parametres
-MaterialParameterBuffer( 0, 0, uView, ViewData, ALL,
-	// Per-frame data
-	mat4 ViewMatrix;
-	mat4 ProjMatrix;
+
+// Per-frame data
+MaterialParameterSet( BUILTIN, ALL,
+	Buffer( uView, ViewData,
+		mat4 ViewMatrix;
+		mat4 ProjMatrix;
+	);
 );
-MaterialParameterBuffer( 1, 0, uEntity, EntityData, ALL,
-	// Per-entity data
-	mat4 EntityMatrix;
+// Per-entity data
+MaterialParameterSet( BUILTIN, ALL,
+	Buffer( uEntity, EntityData,
+		mat4 EntityMatrix;
+	);
 );
 // Per-material data
-MaterialParameter( 2, 0, sampler, uSampler, Sampler, ALL );
-MaterialParameter( 2, 1, texture2D, uDiffuseTexture, DiffuseMap, ALL );
-MaterialParameter( 3, 0, sampler, uLightmapSampler, LightmapSampler, LIGHTMAP );
-MaterialParameter( 3, 1, texture2D, uLightmapTexture, LightmapMap, LIGHTMAP );
+MaterialParameterSet( DATA, ALL except DEPTH WIREFRAME,
+	Data( texture2D, uDiffuseTexture, DiffuseMap )
+);
+MaterialParameterSet( INSTANCE, LIGHTMAP,
+	Data( texture2D, uLightmapTexture, LightmapMap )
+);
+MaterialParameterSet( GLOBAL, ALL except DEPTH WIREFRAME,
+	Data( sampler, uSampler, Sampler )
+);
+MaterialParameterSet( GLOBAL, LIGHTMAP,
+	Data( sampler, uLightmapSampler, LightmapSampler )
+);
 
 // Vertex shader inputs (from device)
 VertexInput( 0, vec3, vPosition, ALL );
@@ -38,7 +51,7 @@ PixelOutput( outColour );
 
 vec4 CalculateGlPosition( vec3 worldspacePosition )
 {
-	return uView.ProjMatrix * uView.ViewMatrix * vec4( worldspacePosition, 1.0 );
+	return uView.ProjMatrix * uView.ViewMatrix * uEntity.EntityMatrix * vec4( worldspacePosition, 1.0 );
 }
 
 // GENERAL

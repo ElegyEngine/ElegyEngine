@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Elegy.Common\Elegy.Common.csproj" />
+    <ProjectReference Include="..\..\Core\Elegy.RenderBackend\Elegy.RenderBackend.csproj" />
+    <ProjectReference Include="..\Elegy.AssetSystem\Elegy.AssetSystem.csproj" />
+    <ProjectReference Include="..\Elegy.ConsoleSystem\Elegy.ConsoleSystem.csproj" />
+    <ProjectReference Include="..\Elegy.FileSystem\Elegy.FileSystem.csproj" />
+    <ProjectReference Include="..\Elegy.PlatformSystem\Elegy.PlatformSystem.csproj" />
+    <ProjectReference Include="..\Elegy.PluginSystem\Elegy.PluginSystem.csproj" />
+    <ProjectReference Include="..\Elegy.RenderSystem\Elegy.RenderSystem.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -85,8 +85,8 @@ namespace Elegy.ShaderTool
 				return false;
 			}
 
-			process.BeginOutputReadLine();
 			process.BeginErrorReadLine();
+			process.BeginOutputReadLine();
 
 			process.ErrorDataReceived += OnProcessError;
 			process.OutputDataReceived += OnProcessMessage;

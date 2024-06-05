@@ -2,262 +2,164 @@
   "name": "StandardST",
   "shaderBinaryBasePath": "Standard",
   "postprocessHint": false,
-  "parameters": [
+  "parameterSets": [
     {
-      "name": "Sampler",
-      "shaderName": "uSampler",
-      "type": 18,
-      "resourceSetId": 2
+      "level": 0,
+      "parameters": [
+        {
+          "name": "ViewData",
+          "shaderName": "uView",
+          "type": 13,
+          "resourceBindingId": 0
+        }
+      ]
     },
     {
-      "name": "DiffuseMap",
-      "shaderName": "uDiffuseTexture",
-      "type": 16,
-      "resourceSetId": 2
+      "level": 0,
+      "parameters": [
+        {
+          "name": "EntityData",
+          "shaderName": "uEntity",
+          "type": 13,
+          "resourceBindingId": 0
+        }
+      ]
     },
     {
-      "name": "LightmapSampler",
-      "shaderName": "uLightmapSampler",
-      "type": 18,
-      "resourceSetId": 3
+      "level": 1,
+      "parameters": [
+        {
+          "name": "DiffuseMap",
+          "shaderName": "uDiffuseTexture",
+          "type": 16,
+          "resourceBindingId": 0
+        }
+      ]
     },
     {
-      "name": "LightmapMap",
-      "shaderName": "uLightmapTexture",
-      "type": 16,
-      "resourceSetId": 3
+      "level": 3,
+      "parameters": [
+        {
+          "name": "LightmapMap",
+          "shaderName": "uLightmapTexture",
+          "type": 16,
+          "resourceBindingId": 0
+        }
+      ]
     },
     {
-      "name": "ViewData",
-      "shaderName": "uView",
-      "type": 13,
-      "resourceSetId": 0
+      "level": 2,
+      "parameters": [
+        {
+          "name": "Sampler",
+          "shaderName": "uSampler",
+          "type": 18,
+          "resourceBindingId": 0
+        }
+      ]
     },
     {
-      "name": "EntityData",
-      "shaderName": "uEntity",
-      "type": 13,
-      "resourceSetId": 1
+      "level": 2,
+      "parameters": [
+        {
+          "name": "LightmapSampler",
+          "shaderName": "uLightmapSampler",
+          "type": 18,
+          "resourceBindingId": 0
+        }
+      ]
     }
   ],
   "shaderVariants": [
     {
       "shaderDefine": "GENERAL",
+      "shaderBinaryPath": "Standard.GENERAL",
       "vertexLayouts": [
         {
           "name": "vPosition",
-          "type": 2
+          "type": 2,
+          "id": 0
         },
         {
           "name": "vNormal",
-          "type": 10
+          "type": 10,
+          "id": 1
         },
         {
           "name": "vUv",
-          "type": 1
+          "type": 1,
+          "id": 2
         }
       ],
-      "resourceLayouts": [
-        {
-          "set": 0,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "ViewData",
-              "type": 13
-            }
-          ]
-        },
-        {
-          "set": 1,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "EntityData",
-              "type": 13
-            }
-          ]
-        },
-        {
-          "set": 2,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "Sampler",
-              "type": 18
-            },
-            {
-              "binding": 1,
-              "name": "DiffuseMap",
-              "type": 16
-            }
-          ]
-        }
+      "parameterSetIds": [
+        0,
+        1,
+        2,
+        4
       ]
     },
     {
       "shaderDefine": "LIGHTMAP",
+      "shaderBinaryPath": "Standard.LIGHTMAP",
       "vertexLayouts": [
         {
           "name": "vPosition",
-          "type": 2
+          "type": 2,
+          "id": 0
         },
         {
           "name": "vNormal",
-          "type": 10
+          "type": 10,
+          "id": 1
         },
         {
           "name": "vUv",
-          "type": 1
+          "type": 1,
+          "id": 2
         },
         {
           "name": "vUvLightmap",
-          "type": 1
+          "type": 1,
+          "id": 3
         }
       ],
-      "resourceLayouts": [
-        {
-          "set": 0,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "ViewData",
-              "type": 13
-            }
-          ]
-        },
-        {
-          "set": 1,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "EntityData",
-              "type": 13
-            }
-          ]
-        },
-        {
-          "set": 2,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "Sampler",
-              "type": 18
-            },
-            {
-              "binding": 1,
-              "name": "DiffuseMap",
-              "type": 16
-            }
-          ]
-        },
-        {
-          "set": 3,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "LightmapSampler",
-              "type": 18
-            },
-            {
-              "binding": 1,
-              "name": "LightmapMap",
-              "type": 16
-            }
-          ]
-        }
+      "parameterSetIds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
       ]
     },
     {
       "shaderDefine": "DEPTH",
+      "shaderBinaryPath": "Standard.DEPTH",
       "vertexLayouts": [
         {
           "name": "vPosition",
-          "type": 2
+          "type": 2,
+          "id": 0
         }
       ],
-      "resourceLayouts": [
-        {
-          "set": 0,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "ViewData",
-              "type": 13
-            }
-          ]
-        },
-        {
-          "set": 1,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "EntityData",
-              "type": 13
-            }
-          ]
-        },
-        {
-          "set": 2,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "Sampler",
-              "type": 18
-            },
-            {
-              "binding": 1,
-              "name": "DiffuseMap",
-              "type": 16
-            }
-          ]
-        }
+      "parameterSetIds": [
+        0,
+        1
       ]
     },
     {
       "shaderDefine": "WIREFRAME",
+      "shaderBinaryPath": "Standard.WIREFRAME",
       "vertexLayouts": [
         {
           "name": "vPosition",
-          "type": 2
+          "type": 2,
+          "id": 0
         }
       ],
-      "resourceLayouts": [
-        {
-          "set": 0,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "ViewData",
-              "type": 13
-            }
-          ]
-        },
-        {
-          "set": 1,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "EntityData",
-              "type": 13
-            }
-          ]
-        },
-        {
-          "set": 2,
-          "elements": [
-            {
-              "binding": 0,
-              "name": "Sampler",
-              "type": 18
-            },
-            {
-              "binding": 1,
-              "name": "DiffuseMap",
-              "type": 16
-            }
-          ]
-        }
+      "parameterSetIds": [
+        0,
+        1
       ]
     }
   ]

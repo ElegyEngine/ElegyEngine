@@ -3,21 +3,18 @@
 
 using Elegy.Common.Assets;
 using Elegy.Common.Extensions;
-using Elegy.Common.Interfaces;
 using Elegy.ConsoleSystem;
-using Elegy.FileSystem.API;
 using Elegy.Framework;
 using Elegy.Framework.Bootstrap;
 using Elegy.PlatformSystem.API;
 using Elegy.PluginSystem.API;
 using Elegy.RenderBackend.Extensions;
 using Elegy.RenderSystem.API;
-using Elegy.RenderSystem.Interfaces;
+using Elegy.RenderSystem.Objects;
 
 using Silk.NET.Windowing;
 using System.Diagnostics;
 
-using IView = Elegy.RenderSystem.Interfaces.Rendering.IView;
 using ElegyConsole = Elegy.ConsoleSystem.API.Console;
 
 namespace Elegy.AppTemplate
@@ -32,7 +29,7 @@ namespace Elegy.AppTemplate
 	[WithRenderSystem]
 	public static partial class Application
 	{
-		private static IView? mRenderView = null;
+		private static View? mRenderView = null;
 		private static TaggedLogger mLogger = new( "App" );
 		private static Stopwatch mStopwatch = new();
 		public static double GetSeconds() => (double)mStopwatch.ElapsedTicks / Stopwatch.Frequency;
@@ -86,7 +83,7 @@ namespace Elegy.AppTemplate
 			IWindow? window = Platform.GetCurrentWindow();
 			Debug.Assert( window is not null );
 
-			IView? renderView = Render.Instance.GetView( window );
+			View renderView = Render.GetView( window );
 			Debug.Assert( renderView is not null );
 
 			window.Update += ( deltaTime ) =>

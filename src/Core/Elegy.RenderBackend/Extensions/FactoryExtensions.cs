@@ -97,11 +97,11 @@ namespace Elegy.RenderBackend.Extensions
 			return mFactory.CreateShader( pixelShaderDesc );
 		}
 
-		public static Pipeline CreatePipeline( this ResourceFactory factory, MaterialTemplate materialTemplate, ShaderTemplateEntry shaderTemplateEntry,
+		public static Pipeline CreatePipeline( this ResourceFactory factory, MaterialTemplate materialTemplate, ShaderVariantEntry shaderTemplateEntry,
 			Shader vertexShader, Shader pixelShader, ResourceLayout[] layouts, Framebuffer outputFramebuffer )
 			=> factory.CreatePipeline( materialTemplate, shaderTemplateEntry, vertexShader, pixelShader, layouts, outputFramebuffer.OutputDescription );
 
-		public static Pipeline CreatePipeline( this ResourceFactory factory, MaterialTemplate materialTemplate, ShaderTemplateEntry shaderTemplateEntry,
+		public static Pipeline CreatePipeline( this ResourceFactory factory, MaterialTemplate materialTemplate, ShaderVariantEntry shaderTemplateEntry,
 			Shader vertexShader, Shader pixelShader, ResourceLayout[] layouts, in OutputDescription outputFramebufferDesc )
 		{
 			GraphicsPipelineDescription pipelineDesc = new()
@@ -235,11 +235,11 @@ namespace Elegy.RenderBackend.Extensions
 			return mFactory.CreateResourceLayout( layoutDesc );
 		}
 
-		public static ResourceLayout CreateLayout( this ResourceFactory mFactory, Assets.ResourceLayoutEntry entry )
+		public static ResourceLayout CreateLayout( this ResourceFactory mFactory, IReadOnlyList<Assets.MaterialParameter> entry )
 		{
-			ResourceLayoutElementDescription[] elementDescs = new ResourceLayoutElementDescription[entry.Elements.Count];
+			ResourceLayoutElementDescription[] elementDescs = new ResourceLayoutElementDescription[entry.Count];
 			int i = 0;
-			foreach ( var element in entry.Elements )
+			foreach ( var element in entry )
 			{
 				elementDescs[i] = new()
 				{

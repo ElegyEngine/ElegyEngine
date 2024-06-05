@@ -1,0 +1,28 @@
+[
+  {
+    "parameters": [
+      {
+        "defaultValue": "linear",
+        "parameter": {
+          "name": "Sampler",
+          "shaderName": "uSampler",
+          "type": 18,
+          "resourceBindingId": 0
+        }
+      }
+    ]
+  },
+  {
+    "parameters": [
+      {
+        "defaultValue": "linear",
+        "parameter": {
+          "name": "LightmapSampler",
+          "shaderName": "uLightmapSampler",
+          "type": 18,
+          "resourceBindingId": 0
+        }
+      }
+    ]
+  }
+]

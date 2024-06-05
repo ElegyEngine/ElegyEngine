@@ -1,19 +1,35 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Common.Assets;
 using Elegy.PlatformSystem.API;
+using Elegy.RenderSystem.Objects;
 using Elegy.RenderSystem.Interfaces;
 using Silk.NET.Windowing;
-using TerraFX.Interop.Vulkan;
 using Veldrid;
-using IView = Elegy.RenderSystem.Interfaces.Rendering.IView;
 
 namespace Elegy.RenderSystem.API
 {
 	public static partial class Render
 	{
-		public static IRenderFrontend Instance => mFrontend;
+		/// <summary>
+		/// What to render every frame.
+		/// </summary>
+		public static event Action? OnRender;
+
+		/// <summary>
+		/// The style to render the world with.
+		/// </summary>
+		public static IRenderStyle? RenderStyle = new RenderStyleDefault();
+
+		/// <summary>
+		/// The graphics device. Updates buffers, swaps stuff, all kinds of GPU things.
+		/// </summary>
+		public static GraphicsDevice Device => mDevice;
+
+		/// <summary>
+		/// The graphics resource factory. Creates buffers, shaders and all kinds of stuff.
+		/// </summary>
+		public static ResourceFactory Factory => mDevice.ResourceFactory;
 
 		/// <summary>
 		/// Renders everything for a given window.
@@ -21,7 +37,7 @@ namespace Elegy.RenderSystem.API
 		/// <param name="window">The window to render into.</param>
 		public static void RenderFrame( IWindow window )
 		{
-			IView? view = Render.Instance.GetView( window );
+			View? view = GetView( window );
 			if ( view is null )
 			{
 				mLogger.Error( "Cannot render frame - there is no renderview for the window!" );
@@ -35,18 +51,44 @@ namespace Elegy.RenderSystem.API
 		/// Renders everything for a given view.
 		/// </summary>
 		/// <param name="view">The view to render from. Will render and update an <see cref="IWindow"/>.</param>
-		public static void RenderFrame( IView view )
+		public static void RenderFrame( View view )
 		{
-			Render.Instance.BeginFrame();
-			Render.Instance.RenderView( view );
-			Render.Instance.EndFrame();
-			Render.Instance.PresentView( view );
+			// Start up the counters etc.
+			BeginFrame();
+
+			// Render meshes, effects etc.
+			OnRender?.Invoke();
+			
+			// What was rendered above is now inside a framebuffer
+			// Render that framebuffer into one of the framebuffers in the swapchain
+			RenderView( view );
+			
+			// Finish stuff and present to the screen
+			EndFrame();
+			PresentView( view );
+		}
+
+		/// <summary>
+		/// Updates all <see cref="MeshEntity"/>, <see cref="View"/> etc.
+		/// instances if their render data changed.
+		/// </summary>
+		public static void UpdateBuffers()
+		{
+			foreach ( var meshEntity in mEntitySet )
+			{
+				meshEntity.UpdateBuffers( mDevice );
+			}
+
+			foreach ( var view in mViews )
+			{
+				view.UpdateBuffers( mDevice );
+			}
 		}
 
 		/// <summary>
 		/// Creates a window to render into.
 		/// </summary>
-		public static IView? GetOrCreateDefaultView( int width, int height, int rate = 60 )
+		public static View? GetOrCreateDefaultView( int width, int height, int rate = 60 )
 		{
 			IWindow? window = Platform.GetCurrentWindow();
 			if ( window is null )
@@ -66,12 +108,12 @@ namespace Elegy.RenderSystem.API
 				}
 			}
 
-			if ( Instance.GetView( window ) is IView view )
+			if ( GetView( window ) is View view )
 			{
 				return view;
 			}
 
-			IView? renderView = Instance.CreateView( window );
+			View? renderView = CreateView( window );
 			if ( renderView is null )
 			{
 				mLogger.Error( "Cannot create renderview from window!" );
@@ -79,7 +121,7 @@ namespace Elegy.RenderSystem.API
 
 			return renderView;
 		}
-		
+
 		public static GraphicsDevice? CreateGraphicsDevice( string[] extraInstanceExtensions, string[] extraDeviceExtensions )
 		{
 			GraphicsDevice? device = null;

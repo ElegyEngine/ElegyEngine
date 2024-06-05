@@ -11,9 +11,9 @@ namespace Elegy.RenderSystem
 	{
 		public void OnPluginLoaded( IPlugin plugin )
 		{
-			if ( plugin is IRenderFrontend renderFrontend )
+			if ( plugin is IRenderStyle renderStyle )
 			{
-				Render.SetFrontend( renderFrontend );
+				Render.RenderStyle = renderStyle;
 			}
 		}
 

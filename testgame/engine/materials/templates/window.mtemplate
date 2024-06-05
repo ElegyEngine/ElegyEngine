@@ -1,0 +1,11 @@
+
+{
+	"name": "Window",
+	"shaderTemplate": "WindowST",
+	"pipelineInfo":
+	{
+		"alphaTest": false,
+		"faceCulling": "None",
+		"blending": "Opaque"
+	}
+}

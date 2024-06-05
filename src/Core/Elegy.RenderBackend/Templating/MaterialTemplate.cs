@@ -1,54 +1,12 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.RenderBackend.Assets;
 using Elegy.RenderBackend.Extensions;
+using System.Text;
 using Veldrid;
 
 namespace Elegy.RenderBackend.Templating
 {
-	public struct VariantVertexAttribute
-	{
-		public VertexSemantic Semantic;
-		public int Channel;
-	}
-
-	public struct VariantResourceMapping
-	{
-		public int LayoutId;
-		public int SetId;
-	}
-
-	public class ShaderVariant
-	{
-		public ShaderVariant( MaterialTemplate parent, ResourceLayout[] layouts,
-			Shader vertexShader, Shader pixelShader, Pipeline pipeline,
-			VariantVertexAttribute[] attributes, VariantResourceMapping[] mappings )
-		{
-			Template = parent;
-			Layouts = layouts;
-			VertexShader = vertexShader;
-			PixelShader = pixelShader;
-			Pipeline = pipeline;
-			VertexAttributes = attributes;
-			ResourceMappings = mappings;
-		}
-
-		public VariantResourceMapping[] ResourceMappings { get; }
-
-		public VariantVertexAttribute[] VertexAttributes { get; }
-
-		public MaterialTemplate Template { get; }
-
-		public ResourceLayout[] Layouts { get; }
-
-		public Shader VertexShader { get; }
-
-		public Shader PixelShader { get; }
-
-		public Pipeline Pipeline { get; }
-	}
-
 	public class MaterialTemplate
 	{
 		public MaterialTemplate( Assets.MaterialTemplate data, Assets.ShaderTemplate shaderTemplate )
@@ -62,6 +20,8 @@ namespace Elegy.RenderBackend.Templating
 
 		public Assets.ShaderTemplate ShaderTemplate { get; }
 
+		public ResourceLayout[] ResourceLayouts { get; private set; }
+
 		public Dictionary<string, ShaderVariant> ShaderVariants { get; } = new();
 
 		public bool HasVariant( string name )
@@ -70,22 +30,38 @@ namespace Elegy.RenderBackend.Templating
 		public Pipeline GetVariantPipeline( string name )
 			=> ShaderVariants[name].Pipeline;
 
-		public bool CompileResources( GraphicsDevice gd,
-			Func<ShaderTemplateEntry, bool, OutputDescription> outputDescriptionFunc,
-			int[] skippedSetIds,
-			Func<string, string?>? pathTo = null )
+		public ShaderVariant GetVariant( int id )
+			=> ShaderVariants.ElementAt( id ).Value;
+
+		public bool ValidateDataExists( Func<string, string?> pathTo, StringBuilder errorStrings )
 		{
-			ResourceFactory factory = gd.ResourceFactory;
+			bool okay = true;
 
 			foreach ( var variant in ShaderTemplate.ShaderVariants )
 			{
-				// 1. Create resource layouts
-				ResourceLayout[] layouts = new ResourceLayout[variant.ResourceLayouts.Count];
-				for ( int i = 0; i < layouts.Length; i++ )
+				string pathToShaderVariant = Utils.PathToShaderVariant( ShaderTemplate, variant );
+				string? shaderBasePath = pathTo( pathToShaderVariant );
+				if ( shaderBasePath is null )
 				{
-					layouts[i] = factory.CreateLayout( variant.ResourceLayouts[i] );
+					errorStrings.AppendLine( $"* {pathToShaderVariant}" );
+					okay = false;
 				}
+			}
 
+			return okay;
+		}
+
+		public bool CompileResources( GraphicsDevice gd,
+			Func<Assets.ShaderVariantEntry, bool, OutputDescription> outputDescriptionFunc,
+			Func<string, string?> pathTo )
+		{
+			ResourceFactory factory = gd.ResourceFactory;
+
+			// 1. Create resource layouts
+			ResourceLayouts = ShaderTemplate.ParameterSets.Select( layout => factory.CreateLayout( layout.Parameters ) ).ToArray();
+
+			foreach ( var variant in ShaderTemplate.ShaderVariants )
+			{
 				// 2. Create vertex attribute metadata for linking
 				VariantVertexAttribute[] attributes = new VariantVertexAttribute[variant.VertexLayouts.Count];
 				int numUvChannels = 0;
@@ -98,48 +74,63 @@ namespace Elegy.RenderBackend.Templating
 						Semantic = semantic,
 						Channel = semantic switch
 						{
-							VertexSemantic.Uv => numUvChannels++,
-							VertexSemantic.Colour => numColourChannels++,
+							Assets.VertexSemantic.Uv => numUvChannels++,
+							Assets.VertexSemantic.Colour => numColourChannels++,
 							_ => 0
-						}
+						},
+						Id = (uint)variant.VertexLayouts[i].Id
 					};
 				}
 
 				// 3. Create resource mapping table
-				List<VariantResourceMapping> mappings = new( variant.ResourceLayouts.Count );
-				for ( int i = 0; i < variant.ResourceLayouts.Count; i++ )
+				List<int> globalMappings = new( ResourceLayouts.Length );
+				List<int> perMaterialMappings = new( ResourceLayouts.Length );
+				List<int> perInstanceMappings = new( ResourceLayouts.Length );
+				int adjustedSetId = -1;
+				for ( int setId = 0; setId < ResourceLayouts.Length; setId++ )
 				{
-					var layout = variant.ResourceLayouts[i];
-					if ( skippedSetIds.Contains( layout.Set ) )
+					var layout = ShaderTemplate.ParameterSets[setId];
+
+					// Do not create mappings for parameters that aren't visible to this shader variant
+					if ( !variant.ParameterSetIds.Contains( setId ) )
 					{
 						continue;
 					}
 
-					mappings.Add( new()
+					adjustedSetId++;
+
+					// Builtin params are set manually while rendering
+					// Instance params have resource sets generated elsewhere
+					if ( layout.Level == Assets.MaterialParameterLevel.Builtin )
 					{
-						LayoutId = i,
-						SetId = layout.Set
-					} );
+						continue;
+					}
+
+					var mappingList = layout.Level switch
+					{
+						Assets.MaterialParameterLevel.Data => perMaterialMappings,
+						Assets.MaterialParameterLevel.Global => globalMappings,
+						Assets.MaterialParameterLevel.Instance => perInstanceMappings
+					};
+
+					mappingList.Add( adjustedSetId );
 				}
 
 				// 4. Create shader objects
-				string? shaderBasePath = Utils.PathToShaderVariant( ShaderTemplate, variant );
-				if ( pathTo is not null )
-				{
-					shaderBasePath = pathTo( shaderBasePath );
-					if ( shaderBasePath is null )
-					{
-						throw new FileNotFoundException();
-					}
-				}
+				string shaderBasePath = pathTo( Utils.PathToShaderVariant( ShaderTemplate, variant ) );
+				// shaderBasePath is guaranteed to exist, it is validated upfront
 				Shader vertexShader = factory.LoadShaderDirect( shaderBasePath, ShaderStages.Vertex );
 				Shader pixelShader = factory.LoadShaderDirect( shaderBasePath, ShaderStages.Fragment );
 
 				// 5. Create pipelines
+				ResourceLayout[] layouts = variant.ParameterSetIds.Select( id => ResourceLayouts[id] ).ToArray();
+
 				Pipeline pipeline = factory.CreatePipeline( Data, variant, vertexShader, pixelShader, layouts,
 					outputDescriptionFunc( variant, ShaderTemplate.PostprocessHint ) );
 
-				ShaderVariants.Add( variant.ShaderDefine, new( this, layouts, vertexShader, pixelShader, pipeline, attributes, mappings.ToArray() ) );
+				ShaderVariants.Add( variant.ShaderDefine,
+					new( this, variant, layouts, vertexShader, pixelShader, pipeline, attributes,
+						perMaterialMappings.ToArray(), perInstanceMappings.ToArray(), globalMappings.ToArray() ) );
 			}
 
 			return true;

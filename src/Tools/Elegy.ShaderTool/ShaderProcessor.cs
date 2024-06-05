@@ -10,25 +10,31 @@ using System.Text;
 
 namespace Elegy.ShaderTool
 {
-	public class GlslMaterialParameter
+	public abstract class GlslMaterialParameterBase
 	{
-		public int SetId { get; set; } = 0;
 		public int BindingId { get; set; } = 0;
-		public ShaderDataType Type { get; set; } = ShaderDataType.Texture2D;
-		public string TypeGlslName => RenderBackend.Utils.ShaderTypeToGlslString( Type );
 		public string ShaderName { get; set; } = string.Empty;
 		public string MaterialName { get; set; } = string.Empty;
-		public string[] VariantMask { get; set; } = Array.Empty<string>();
 	}
 
-	public class GlslMaterialParameterBuffer
+	public class GlslMaterialParameter : GlslMaterialParameterBase
 	{
-		public int SetId { get; set; } = 0;
-		public int BindingId { get; set; } = 0;
-		public string ShaderName { get; set; } = string.Empty;
-		public string MaterialName { get; set; } = string.Empty;
-		public string[] VariantMask { get; set; } = Array.Empty<string>();
+		public ShaderDataType Type { get; set; } = ShaderDataType.Texture2D;
+
+		public string TypeGlslName => RenderBackend.Utils.ShaderTypeToGlslString( Type );
+	}
+
+	public class GlslMaterialParameterBuffer : GlslMaterialParameterBase
+	{
 		public string StructContents { get; set; } = string.Empty;
+	}
+
+	public class GlslMaterialParameterSet
+	{
+		public string[] VariantMask { get; set; } = Array.Empty<string>();
+		public MaterialParameterLevel Level { get; set; } = MaterialParameterLevel.Builtin;
+
+		public List<GlslMaterialParameterBase> Parameters { get; set; } = new();
 	}
 
 	public class GlslInput
@@ -52,13 +58,12 @@ namespace Elegy.ShaderTool
 		public string Contents { get; }
 
 		public List<ShaderPermutation> Permutations { get; } = new();
-		public List<GlslMaterialParameter> MaterialParameters { get; } = new();
-		public List<GlslMaterialParameterBuffer> MaterialParameterBuffers { get; } = new();
+		public List<GlslMaterialParameterSet> ParameterSets { get; } = new();
 		public List<GlslInput> VertexInputs { get; } = new();
 		public List<GlslInput> PixelInputs { get; } = new();
-		public string PixelShaderOutput { get; private set; } = string.Empty;
 		public string TemplateName { get; private set; } = string.Empty;
 
+		public bool PostProcessHint = false;
 		public List<string> ShaderVariants { get; private set; } = new();
 		public string CommonShaderContents { get; private set; } = string.Empty;
 		public Dictionary<string, string> VertexShaderRegions { get; private set; } = new();
@@ -82,13 +87,16 @@ namespace Elegy.ShaderTool
 				{
 					ShaderVariants = ParseShaderVariants( lexer ).ToList();
 				}
-				else if ( token == "MaterialParameter" )
+				else if ( token == "ShaderPostProcessHint" )
 				{
-					MaterialParameters.Add( ParseMaterialParameter( lexer ) );
+					PostProcessHint = true;
+					Expect( lexer, "(" );
+					Expect( lexer, ")" );
+					Expect( lexer, ";" );
 				}
-				else if ( token == "MaterialParameterBuffer" )
+				else if ( token == "MaterialParameterSet" )
 				{
-					MaterialParameterBuffers.Add( ParseMaterialParameterBuffer( lexer ) );
+					ParameterSets.Add( ParseMaterialParameterSet( lexer ) );
 				}
 				else if ( token == "VertexInput" )
 				{
@@ -97,10 +105,6 @@ namespace Elegy.ShaderTool
 				else if ( token == "PixelInput" )
 				{
 					PixelInputs.Add( ParseShaderInput( lexer ) );
-				}
-				else if ( token == "PixelOutput" )
-				{
-					PixelShaderOutput = ParseSimpleNameDeclaration( lexer );
 				}
 				else if ( token == "VertexShader" )
 				{
@@ -149,30 +153,10 @@ namespace Elegy.ShaderTool
 			ShaderTemplate shaderTemplate = new()
 			{
 				Name = TemplateName,
-				ShaderBinaryBasePath = Path.ChangeExtension( Path.GetRelativePath( Program.ShaderDirectory, FilePath ), null )
+				ShaderBinaryBasePath = Path.ChangeExtension( Path.GetRelativePath( Program.ShaderDirectory, FilePath ), null ),
+				ParameterSets = ExtractMaterialParameterSetData(),
+				PostprocessHint = PostProcessHint
 			};
-
-			shaderTemplate.Parameters.EnsureCapacity( MaterialParameters.Count + MaterialParameterBuffers.Count );
-			foreach ( var param in MaterialParameters )
-			{
-				shaderTemplate.Parameters.Add( new()
-				{
-					Name = param.MaterialName,
-					ShaderName = param.ShaderName,
-					Type = param.Type,
-					ResourceSetId = param.SetId
-				} );
-			}
-			foreach ( var param in MaterialParameterBuffers )
-			{
-				shaderTemplate.Parameters.Add( new()
-				{
-					Name = param.MaterialName,
-					ShaderName = param.ShaderName,
-					Type = ShaderDataType.Buffer,
-					ResourceSetId = param.SetId
-				} );
-			}
 
 			shaderTemplate.ShaderVariants.EnsureCapacity( Permutations.Count );
 			foreach ( var permutation in Permutations )
@@ -180,12 +164,20 @@ namespace Elegy.ShaderTool
 				shaderTemplate.ShaderVariants.Add( new()
 				{
 					ShaderDefine = permutation.Variant,
+					ShaderBinaryPath = $"{shaderTemplate.ShaderBinaryBasePath}.{permutation.Variant}",
 					VertexLayouts = ExtractVertexLayoutData( permutation.Variant ),
-					ResourceLayouts = ExtractResourceLayoutData( permutation.Variant )
+					ParameterSetIds = ExtractResourceSetIds( permutation.Variant )
 				} );
 			}
 
 			return shaderTemplate;
+		}
+
+		private List<int> ExtractResourceSetIds( string variant )
+		{
+			return Enumerable.Range( 0, ParameterSets.Count )
+				.Where( i => IsVisibleTo( variant, ParameterSets[i].VariantMask ) )
+				.ToList();
 		}
 
 		private List<VertexLayoutEntry> ExtractVertexLayoutData( string variant )
@@ -198,7 +190,8 @@ namespace Elegy.ShaderTool
 					result.Add( new()
 					{
 						Name = vertexInput.Name,
-						Type = RenderBackend.Utils.ShaderTypeToVertexElementFormat( vertexInput.Name, vertexInput.Type )
+						Type = RenderBackend.Utils.ShaderTypeToVertexElementFormat( vertexInput.Name, vertexInput.Type ),
+						Id = vertexInput.LocationId
 					} );
 				}
 			}
@@ -206,71 +199,28 @@ namespace Elegy.ShaderTool
 			return result;
 		}
 
-		private List<ResourceLayoutEntry> ExtractResourceLayoutData( string variant )
+		private MaterialParameterSet ExtractResourceLayout( GlslMaterialParameterSet set )
 		{
-			List<ResourceLayoutEntry> result = new();
-			List<int> uniqueSets = new();
-			foreach ( var param in MaterialParameters )
+			return new()
 			{
-				if ( IsVisibleTo( variant, param.VariantMask ) )
+				Level = set.Level,
+				Parameters = set.Parameters.Select( param => new MaterialParameter()
 				{
-					if ( !uniqueSets.Contains( param.SetId ) )
+					Name = param.MaterialName,
+					ShaderName = param.ShaderName,
+					ResourceBindingId = param.BindingId,
+					Type = param switch
 					{
-						uniqueSets.Add( param.SetId );
+						GlslMaterialParameter dataParam => dataParam.Type,
+						_ => ShaderDataType.Buffer
 					}
-				}
-			}
+				} ).ToList()
+			};
+		}
 
-			foreach ( var setId in uniqueSets )
-			{
-				result.Add( new()
-				{
-					Set = setId,
-					Elements = MaterialParameters
-						.Where( param => IsVisibleTo( variant, param.VariantMask ) )
-						.Where( param => param.SetId == setId )
-						.Select( param => new ResourceLayoutElementEntry()
-						{
-							Name = param.MaterialName,
-							Binding = param.BindingId,
-							Type = param.Type
-						} ).ToList()
-				} );
-			}
-
-			// Argh not a fan of this copy-pasting
-			uniqueSets.Clear();
-			foreach ( var param in MaterialParameterBuffers )
-			{
-				if ( IsVisibleTo( variant, param.VariantMask ) )
-				{
-					if ( !uniqueSets.Contains( param.SetId ) )
-					{
-						uniqueSets.Add( param.SetId );
-					}
-				}
-			}
-
-			foreach ( var setId in uniqueSets )
-			{
-				result.Add( new()
-				{
-					Set = setId,
-					Elements = MaterialParameterBuffers
-						.Where( param => IsVisibleTo( variant, param.VariantMask ) )
-						.Where( param => param.SetId == setId )
-						.Select( param => new ResourceLayoutElementEntry()
-						{
-							Name = param.MaterialName,
-							Binding = param.BindingId,
-							Type = ShaderDataType.Buffer
-						} ).ToList()
-				} );
-			}
-
-			result.Sort( ( x, y ) => x.Set.CompareTo( y.Set ) );
-
-			return result;
+		private List<MaterialParameterSet> ExtractMaterialParameterSetData()
+		{
+			return ParameterSets.Select( ExtractResourceLayout ).ToList();
 		}
 
 		private static bool IsVisibleTo( string shaderVariant, string[] variantMask )
@@ -313,7 +263,7 @@ namespace Elegy.ShaderTool
 				{
 					sb.AppendLine( $"void main_ps()" );
 					sb.AppendLine( "{" );
-					sb.AppendLine( $"	{PixelShaderOutput} = {shaderVariant}_ps();" );
+					sb.AppendLine( $"	_builtinOutColour = {shaderVariant}_ps();" );
 					sb.AppendLine( "}" );
 				}
 
@@ -354,7 +304,7 @@ namespace Elegy.ShaderTool
 			if ( shaderKind == ShaderKind.Pixel )
 			{
 				sb.AppendLine(
-					$"layout( location = 0 ) out vec4 {PixelShaderOutput};" );
+					$"layout( location = 0 ) out vec4 _builtinOutColour;" );
 			}
 
 			string vertexToPixelKeyword = shaderKind == ShaderKind.Vertex ? "out" : "in";
@@ -369,33 +319,40 @@ namespace Elegy.ShaderTool
 			sb.AppendLine();
 
 			// Step 3: material parametres
-			foreach ( var parameter in MaterialParameters )
+			int setId = 0;
+			foreach ( var set in ParameterSets )
 			{
-				if ( IsVisibleTo( shaderVariant, parameter.VariantMask ) )
+				if ( !IsVisibleTo( shaderVariant, set.VariantMask ) )
 				{
-					sb.AppendLine(
-						$"layout( set = {parameter.SetId}, binding = {parameter.BindingId} ) uniform {parameter.TypeGlslName} {parameter.ShaderName};" );
+					continue;
 				}
-			}
-			sb.AppendLine();
 
-			foreach ( var bufferParameter in MaterialParameterBuffers )
-			{
-				if ( IsVisibleTo( shaderVariant, bufferParameter.VariantMask ) )
+				foreach ( var parameter in set.Parameters )
 				{
-					sb.AppendLine( $"struct {bufferParameter.ShaderName}_t" );
-					sb.Append( "{" );
-					sb.Append( bufferParameter.StructContents );
-					sb.AppendLine( "};" );
+					if ( parameter is GlslMaterialParameter dataParameter )
+					{
+						sb.AppendLine(
+							$"layout( set = {setId}, binding = {parameter.BindingId} ) uniform {dataParameter.TypeGlslName} {parameter.ShaderName};" );
+					}
+					else if ( parameter is GlslMaterialParameterBuffer bufferParameter )
+					{
+						sb.AppendLine();
+						sb.AppendLine( $"struct {bufferParameter.ShaderName}_t" );
+						sb.Append( '{' );
+						sb.Append( bufferParameter.StructContents );
+						sb.AppendLine( "};" );
 
-					sb.AppendLine(
-						$"layout( set = {bufferParameter.SetId}, binding = {bufferParameter.BindingId} ) uniform _{bufferParameter.ShaderName}" );
-					sb.AppendLine( "{" );
-					sb.AppendLine( $"	{bufferParameter.ShaderName}_t {bufferParameter.ShaderName};" );
-					sb.AppendLine( "};" );
+						sb.AppendLine(
+							$"layout( set = {setId}, binding = {bufferParameter.BindingId} ) uniform _{bufferParameter.ShaderName}" );
+						sb.AppendLine( "{" );
+						sb.AppendLine( $"	{bufferParameter.ShaderName}_t {bufferParameter.ShaderName};" );
+						sb.AppendLine( "};" );
+						sb.AppendLine();
+					}
 				}
+
+				setId++;
 			}
-			sb.AppendLine();
 
 			// Step 4: more common stuff, this time utility functions and whatnot
 			sb.AppendLine( CommonShaderContents );
@@ -427,7 +384,7 @@ namespace Elegy.ShaderTool
 			string token = lexer.Next();
 			if ( !ValidateName( token ) )
 			{
-				throw lexer.ParsingException( $"'{token}' isn't valid shader variant" );
+				throw lexer.ParsingException( $"'{token}' isn't a valid name" );
 			}
 
 			Expect( lexer, ")" );
@@ -453,6 +410,18 @@ namespace Elegy.ShaderTool
 			return variants.ToArray();
 		}
 
+		private MaterialParameterLevel ParseMaterialParameterLevel( string token )
+		{
+			return token.ToLower() switch
+			{
+				"builtin" => MaterialParameterLevel.Builtin,
+				"data" => MaterialParameterLevel.Data,
+				"global" => MaterialParameterLevel.Global,
+				"instance" => MaterialParameterLevel.Instance,
+				_ => throw new Exception( $"Unknown material parameter level '{token}', typo or possibly wrong order?" )
+			};
+		}
+
 		private ShaderDataType ParseShaderDataType( string token )
 		{
 			return token.ToLower() switch
@@ -473,7 +442,7 @@ namespace Elegy.ShaderTool
 				"texture2d" => ShaderDataType.Texture2D,
 				"texture3d" => ShaderDataType.Texture3D,
 				"sampler" => ShaderDataType.Sampler,
-				_ => throw new Exception( $"Unknown value '{token}'" )
+				_ => throw new Exception( $"Unknown shader data type '{token}'" )
 			};
 		}
 
@@ -534,54 +503,94 @@ namespace Elegy.ShaderTool
 		private GlslMaterialParameter ParseMaterialParameter( Lexer lexer )
 		{
 			Expect( lexer, "(" );
-			int setId = Parse.Int( lexer.Next() );
-			Expect( lexer, "," );
-			int bindingId = Parse.Int( lexer.Next() );
-			Expect( lexer, "," );
 			ShaderDataType shaderDataType = ParseShaderDataType( lexer.Next() );
 			Expect( lexer, "," );
 			string shaderName = lexer.Next();
 			Expect( lexer, "," );
 			string materialName = lexer.Next();
-			Expect( lexer, "," );
-			string[] variantMask = ParseVariantMask( lexer );
 			Expect( lexer, ")" );
-			lexer.Expect( ";", true );
 			return new()
 			{
-				SetId = setId,
-				BindingId = bindingId,
+				// Filled in later
+				BindingId = -1,
 				Type = shaderDataType,
 				ShaderName = shaderName,
-				MaterialName = materialName,
-				VariantMask = variantMask
+				MaterialName = materialName
 			};
 		}
 
 		private GlslMaterialParameterBuffer ParseMaterialParameterBuffer( Lexer lexer )
 		{
 			Expect( lexer, "(" );
-			int setId = Parse.Int( lexer.Next() );
-			Expect( lexer, "," );
-			int bindingId = Parse.Int( lexer.Next() );
-			Expect( lexer, "," );
 			string shaderName = lexer.Next();
 			Expect( lexer, "," );
 			string materialName = lexer.Next();
 			Expect( lexer, "," );
-			string[] variantMask = ParseVariantMask( lexer );
-			Expect( lexer, "," );
 			string structContents = lexer.PeekUntil( ")", skipPeeked: true, skipWhatToo: false );
 			Expect( lexer, ")" );
-			lexer.Expect( ";", true );
 			return new()
 			{
-				SetId = setId,
-				BindingId = bindingId,
+				// Filled in later
+				BindingId = -1,
 				ShaderName = shaderName,
 				MaterialName = materialName,
-				VariantMask = variantMask,
 				StructContents = structContents
+			};
+		}
+
+		private List<GlslMaterialParameterBase> ParseMaterialParameters( Lexer lexer )
+		{
+			List<GlslMaterialParameterBase> result = new();
+
+			int currentBindingId = 0;
+
+			while ( !lexer.IsEnd() )
+			{
+				string token = lexer.Next();
+
+				if ( token == "Param" || token == "Data" )
+				{
+					result.Add( ParseMaterialParameter( lexer ) );
+					result.Last().BindingId = currentBindingId++;
+				}
+				else if ( token == "Buffer" )
+				{
+					result.Add( ParseMaterialParameterBuffer( lexer ) );
+					result.Last().BindingId = currentBindingId++;
+				}
+				// Trailing comma!
+				else if ( token == "," )
+				{
+					continue;
+				}
+
+				// Reached the end of the array
+				// Do not advance, the parsing code outside will take of that
+				if ( !lexer.Expect( "," ) && lexer.Expect( ")" ) )
+				{
+					break;
+				}
+			}
+
+			return result;
+		}
+
+		private GlslMaterialParameterSet ParseMaterialParameterSet( Lexer lexer )
+		{
+			Expect( lexer, "(" );
+			MaterialParameterLevel materialParameterLevel = ParseMaterialParameterLevel( lexer.Next() );
+			Expect( lexer, "," );
+			string[] variantMask = ParseVariantMask( lexer );
+			Expect( lexer, "," );
+			List<GlslMaterialParameterBase> parameters = ParseMaterialParameters( lexer );
+			Expect( lexer, ")" );
+			lexer.Expect( ";", true );
+
+			return new()
+			{
+				Level = materialParameterLevel,
+				VariantMask = variantMask,
+				Parameters = parameters
 			};
 		}
 

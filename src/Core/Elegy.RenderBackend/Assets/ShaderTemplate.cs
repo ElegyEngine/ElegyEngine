@@ -3,17 +3,6 @@
 
 namespace Elegy.RenderBackend.Assets
 {
-	public class MaterialParameter
-	{
-		public string Name { get; set; } = string.Empty;
-
-		public string ShaderName { get; set; } = string.Empty;
-
-		public ShaderDataType Type { get; set; } = ShaderDataType.Float;
-
-		public int ResourceSetId { get; set; } = 0;
-	}
-
 	public class ShaderTemplate
 	{
 		public string Name { get; set; } = string.Empty;
@@ -22,8 +11,8 @@ namespace Elegy.RenderBackend.Assets
 
 		public bool PostprocessHint { get; set; } = false;
 
-		public List<MaterialParameter> Parameters { get; set; } = new();
+		public List<MaterialParameterSet> ParameterSets { get; set; } = new();
 
-		public List<ShaderTemplateEntry> ShaderVariants { get; set; } = new();
+		public List<ShaderVariantEntry> ShaderVariants { get; set; } = new();
 	}
 }

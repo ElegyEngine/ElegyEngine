@@ -17,6 +17,12 @@ namespace Elegy.RenderBackend
 	/// </summary>
 	public class ArrayMesh : IDisposable
 	{
+		private Vector2SB ConvertVec2ToVec2SB( Vector2 input )
+		{
+			input *= 127.0f;
+			return new Vector2SB( (sbyte)input.X, (sbyte)input.Y );
+		}
+
 		private Vector4SB ConvertVec3ToVec4SB( Vector3 input )
 		{
 			input *= 127.0f;
@@ -51,10 +57,18 @@ namespace Elegy.RenderBackend
 		public ArrayMesh( GraphicsDevice device, Mesh meshData )
 		{
 			NumIndices = (uint)meshData.Indices.Length;
-			PositionBuffer = device.CreateBufferFromSpan<Vector3>( BufferUsage.VertexBuffer, meshData.Positions );
+			if ( meshData.Positions.Length > 0 )
+			{
+				PositionBuffer = device.CreateBufferFromSpan<Vector3>( BufferUsage.VertexBuffer, meshData.Positions );
+				LoadChannelTransformed( ref NormalBuffer, device, meshData.Normals, ConvertVec3ToVec4SB );
+			}
+			else
+			{
+				PositionBuffer = device.CreateBufferFromSpan<Vector2>( BufferUsage.VertexBuffer, meshData.Positions2D );
+				LoadChannelTransformed( ref NormalBuffer, device, meshData.Normals2D, ConvertVec2ToVec2SB );
+			}
 			IndexBuffer = device.CreateBufferFromSpan<uint>( BufferUsage.IndexBuffer, meshData.Indices );
 
-			LoadChannelTransformed( ref NormalBuffer, device, meshData.Normals, ConvertVec3ToVec4SB );
 			LoadChannelTransformed( ref TangentBuffer, device, meshData.Tangents, ConvertVec4ToVec4SB );
 			
 			LoadChannel( ref Uv0Buffer, device, meshData.Uv0 );
@@ -71,7 +85,22 @@ namespace Elegy.RenderBackend
 			LoadChannelTransformed( ref BoneWeightBuffer, device, meshData.BoneWeights, ConvertVec4ToVec4SB );
 		}
 
-		public bool IsCompatibleWith( in ShaderTemplateEntry shaderTemplateEntry, StringBuilder? errorStringBuilder = null )
+		public bool IsCompatible2DOr3D( VertexElementFormat format )
+		{
+			if ( format == VertexElementFormat.Float3 && Is2D )
+			{
+				return false;
+			}
+
+			if ( format == VertexElementFormat.Float2 && !Is2D )
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		public bool IsCompatibleWith( in ShaderVariantEntry shaderTemplateEntry, StringBuilder? errorStringBuilder = null )
 		{
 			bool compatible = true;
 			int numUvBuffersRequired = 0, numColourBuffersRequired = 0;
@@ -81,11 +110,22 @@ namespace Elegy.RenderBackend
 			{
 				switch ( Utils.GetVertexSemantic( span[i].Name ) )
 				{
-					case VertexSemantic.Position: continue;
+					case VertexSemantic.Position:
+						if ( IsCompatible2DOr3D( span[i].Type ) )
+						{
+							errorStringBuilder.AppendLine( "* Position (2D-3D mismatch)" );
+							compatible = false;
+						}
+						break;
 					case VertexSemantic.Normal:
 						if ( NormalBuffer is null )
 						{
 							errorStringBuilder.AppendLine( "* Normal" );
+							compatible = false;
+						}
+						else if ( IsCompatible2DOr3D( span[i].Type ) )
+						{
+							errorStringBuilder.AppendLine( "* Normal (2D-3D mismatch)" );
 							compatible = false;
 						}
 						break;
@@ -217,6 +257,8 @@ namespace Elegy.RenderBackend
 			BoneWeightBuffer = null;
 		}
 
+		/// <summary> Whether this has 2D position vertices or not. </summary>
+		public bool Is2D = false;
 		/// <summary> Number of indices. Determining it from <see cref="IndexBuffer"/> is not reliable. </summary>
 		public uint NumIndices;
 		/// <summary> Vertex index buffer. </summary>

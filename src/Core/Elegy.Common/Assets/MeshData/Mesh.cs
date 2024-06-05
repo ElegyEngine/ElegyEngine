@@ -22,8 +22,12 @@ namespace Elegy.Common.Assets.MeshData
 
 		/// <summary> Vertex positions. </summary>
 		public Vector3[] Positions { get; set; } = Array.Empty<Vector3>();
+		/// <summary> Vertex positions but 2D. </summary>
+		public Vector2[] Positions2D { get; set; } = Array.Empty<Vector2>();
 		/// <summary> Vertex normals. </summary>
 		public Vector3[] Normals { get; set; } = Array.Empty<Vector3>();
+		/// <summary> Vertex normals but 2D. </summary>
+		public Vector2[] Normals2D { get; set; } = Array.Empty<Vector2>();
 		/// <summary> Vertex tangents. </summary>
 		public Vector4[] Tangents { get; set; } = Array.Empty<Vector4>();
 		/// <summary> Vertex texture coordinates, channel 0. </summary>

@@ -22,7 +22,6 @@
     <ProjectReference Include="..\..\..\Modules\Elegy.PlatformSystem\Elegy.PlatformSystem.csproj" />
     <ProjectReference Include="..\..\..\Modules\Elegy.PluginSystem\Elegy.PluginSystem.csproj" />
     <ProjectReference Include="..\..\..\Modules\Elegy.RenderSystem\Elegy.RenderSystem.csproj" />
-    <ProjectReference Include="..\..\..\Plugins\Elegy.RenderStandard\Elegy.RenderStandard.csproj" />
   </ItemGroup>
 
 </Project>

@@ -15,52 +15,69 @@
 // VertexInput( 0, vec3, vPosition, ALL );
 // VertexInput( 1, vec2, vUv, ALL );
 // VertexInput( 2, vec2, vUvLightmap, LIGHTMAPPED );
-#ifndef SHADER_TYPE
-#define VertexInput( id, datatype, name, visibility ) \
-layout( location = id ) in datatype name;
-#else
 #define VertexInput( id, datatype, name, visibility )
-#endif
 
 // Defines a pixel shader input/output.
-#ifndef SHADER_TYPE
-#define PixelInput( id, datatype, name, visibility ) \
-layout( location = id ) out datatype name;
-#else
 #define PixelInput( id, datatype, name, visibility )
-#endif
-
-#ifndef SHADER_TYPE
-#define PixelOutput( name ) \
-layout( location = 0 ) out vec4 name;
-#else
 #define PixelOutput( name )
-#endif
 
 // Defines a simple material parameter.
-// MaterialParameter( 1, 1, vec4, pLightmapOffsets, LightmapOffsets, ALL )
-#ifndef SHADER_TYPE
-#define MaterialParameter( set_id, binding_id, datatype, shaderName, materialName, visibility ) \
-layout( set = set_id, binding = binding_id ) uniform datatype shaderName;
-#else
-#define MaterialParameter( set_id, binding_id, datatype, shaderName, materialName, visibility )
-#endif
+// Params:
+// * datatype     => The shader datatype (vec2, vec3, sampler2D, texture2D...)
+//
+// * shaderName   => Param name within the shader.
+//
+// * materialName => Param name within the material template (and game code).
+//
+// Examples:
+// Param( vec4, pLightmapOffsets, LightmapOffsets ),
+// Param( vec4, pEmissiveColour, EmissiveColour ),
+// Param( vec2, pSnowVector, SnowVector )
+#define Param( datatype, shaderName, materialName )
 
 // Defines a more complex material parameter.
-// These are typically not editable material definitions.
+// These are typically not editable material definitions. Refer to MaterialParameter's parametres.
+// Example:
 /*
-struct CameraBuffer { mat4 View; mat4 Proj; };
-MaterialParameterBuffer( 1, 2, CameraBuffer, pCamera, CameraInfo, ALL );
+	Buffer( pCamera, CameraInfo,
+		mat4 View;
+		mat4 Proj;
+	);
 */
-#ifndef SHADER_TYPE
-#define MaterialParameterBuffer( set_id, binding_id, structName, shaderName, materialName, visibility ) \
-layout ( set = set_id, binding = binding_id ) uniform __##shaderName \
-{ \
-	structName shaderName; \
-}
-#else
-#define MaterialParameterBuffer( set_id, binding_id, structName, shaderName, materialName, visibility )
-#endif
+#define Buffer( shaderName, materialName, structContents )
+
+// Defines a set of material parameters.
+// Params:
+// * set_id     => Resource set ID.
+//
+// * visibility => Which ShaderVariants this compiles into.
+//                   It is possible to combine it with "except", like 'ALL except GENERAL WIREFRAME'.
+//
+// * level      => A level of indirection. Determines how, when and by whom this parameter is updated.
+//                   Possible values:
+//                    * BUILTIN  => "Built-in" as in, the renderer expects it here. Updated at any time.
+//                                  Updated usually by the renderer and indirectly by game code. Example usecase: camera variables.
+//                    * DATA     => This is material data, initialised from files and normally never touched afterwards.
+//                    * GLOBAL   => There is only a single instance of this for all materials.
+//                                  Usually is updated by game code or a render style. Example usecase: global weather data.
+//                    * INSTANCE => Updated at any time. Typically used for game-specific effects, or by a render style.
+//                                  Example usecase: lightmaps, colour gradients, overrideable individual textures...
+// Examples:
+// MaterialParameterSet( 0, ALL, BUILTIN,
+//   Buffer( CameraBuffer, pCamera, CameraInfo,
+//     mat4 View;
+//     mat4 Proj;
+//   )
+// )
+// MaterialParameterSet( 1, INSTANCE, ALL,
+//   Data( vec3, pPositionOffset, PositionOffset ),
+//   Data( vec2, pUvOffset, UvOffset ),
+//   Data( float, pTime, Time )
+// )
+// MaterialParameterSet( 2, GLOBAL, ALL except SUMMER,
+//   Param( vec2, pSnowVector, SnowVector )
+// )
+#define MaterialParameterSet( set_id, level, visibility, parameters )
 
 // Defines the vertex shader region.
 #define VertexShader()

@@ -8,14 +8,14 @@ using Elegy.ConsoleSystem;
 using Elegy.InputSystem.API;
 using Elegy.FileSystem.API;
 using Elegy.RenderSystem.API;
+using Elegy.RenderWorld;
 
 using Silk.NET.Input;
 using TestGame.Client;
 
-using IRenderView = Elegy.RenderSystem.Interfaces.Rendering.IView;
-using IRenderEntity = Elegy.RenderSystem.Interfaces.Rendering.IEntity;
 using Elegy.PlatformSystem.API;
 using Elegy.Common.Maths;
+using Elegy.RenderSystem.Objects;
 
 namespace TestGame
 {
@@ -68,8 +68,10 @@ namespace TestGame
 				mUserWantsToExit = true;
 			};
 
-			mMenu.Init();
+			mRenderWorld = new();
+			Render.OnRender += mRenderWorld.RenderFrame;
 
+			mMenu.Init();
 			StartGame();
 
 			return true;
@@ -78,7 +80,6 @@ namespace TestGame
 		public void Shutdown()
 		{
 			mLogger.Log( "Shutdown" );
-
 			mClient = null;
 		}
 
@@ -136,10 +137,10 @@ namespace TestGame
 					Coords.DirectionsFromDegrees( state.Angles, out var forward, out var up );
 					mRenderView.Transform = Coords.CreateViewMatrix( state.Position, forward, up );
 
-					Console.Log( $"XYZ:      {state.Position.X:F1} {state.Position.Y:F1} {state.Position.Z:F1}" );
-					Console.Log( $"PitchYaw: {state.Angles.X:F1}° {state.Angles.Y:F1}°" );
-					Console.Log( $"Forward:  {forward.X:F1} {forward.Y:F1} {forward.Z:F1}" );
-					Console.Log( $"Up:       {up.X:F1} {up.Y:F1} {up.Z:F1}" );
+					//Console.Log( $"XYZ:      {state.Position.X:F1} {state.Position.Y:F1} {state.Position.Z:F1}" );
+					//Console.Log( $"PitchYaw: {state.Angles.X:F1}° {state.Angles.Y:F1}°" );
+					//Console.Log( $"Forward:  {forward.X:F1} {forward.Y:F1} {forward.Z:F1}" );
+					//Console.Log( $"Up:       {up.X:F1} {up.Y:F1} {up.Z:F1}" );
 				}
 			}
 
@@ -148,22 +149,14 @@ namespace TestGame
 
 		private bool SpawnModel( string path, Vector3 position )
 		{
-			var model = Assets.LoadModel( path );
-			if ( model is null )
-			{
-				mLogger.Error( $"Cannot load '{path}'" );
-				return false;
-			}
-
-			var entity = Render.Instance.CreateEntity( false );
-			var renderMesh = Render.Instance.CreateMesh( model );
+			var renderMesh = Render.LoadMesh( path );
 			if ( renderMesh is null )
 			{
 				mLogger.Error( $"Could not create rendermesh for '{path}'" );
 				return false;
 			}
 
-			entity.Mesh = renderMesh;
+			mRenderWorld.CreateEntity( false, renderMesh, position, Vector3.Zero );
 			return true;
 		}
 
@@ -183,9 +176,15 @@ namespace TestGame
 			SpawnModel( "models/oricube.glb", Vector3.Zero );
 			SpawnModel( "models/terrain.glb", Vector3.Zero );
 
-			mRenderView = Render.Instance.GetView( Platform.GetCurrentWindow() );
-			mRenderView.Projection = Coords.CreatePerspectiveMatrix( MathF.PI / 2.0f, 16.0f / 9.0f, 0.01f, 4096.0f );
-			mRenderView.Transform = Matrix4x4.CreateLookAt( new( 1.5f, 3.0f, 1.5f ), Vector3.Zero, Vector3.UnitZ );
+			mRenderView = Render.GetCurrentWindowView();
+			if ( mRenderView is not null )
+			{
+				mRenderView.Projection = Coords.CreatePerspectiveMatrix( MathF.PI / 2.0f, 16.0f / 9.0f, 0.01f, 4096.0f );
+				mRenderView.Transform = Matrix4x4.CreateLookAt( new( 1.5f, 3.0f, 1.5f ), Vector3.Zero, Vector3.UnitZ );
+			}
+
+			var textureSamplerId = Render.GetGlobalParameterIndex( "Sampler" );
+			Render.SetGlobalParameter( textureSamplerId, Render.Samplers.Nearest );
 
 			mLogger.Success( "Map successfully loaded, enjoy" );
 			mGameIsLoaded = true;
@@ -218,9 +217,10 @@ namespace TestGame
 			mUserWantsToExit = true;
 		}
 
+		private RenderWorld mRenderWorld;
 		private GameClient? mClient;
 		private MainMenu mMenu = new();
-		private IRenderView? mRenderView = null;
+		private View? mRenderView = null;
 
 		private bool mGameIsLoaded = false;
 		private bool mEscapeWasHeld = false;
