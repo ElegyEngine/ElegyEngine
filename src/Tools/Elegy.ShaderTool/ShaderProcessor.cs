@@ -61,7 +61,6 @@ namespace Elegy.ShaderTool
 		public List<GlslMaterialParameterSet> ParameterSets { get; } = new();
 		public List<GlslInput> VertexInputs { get; } = new();
 		public List<GlslInput> PixelInputs { get; } = new();
-		public string PixelShaderOutput { get; private set; } = string.Empty;
 		public string TemplateName { get; private set; } = string.Empty;
 
 		public bool PostProcessHint = false;
@@ -106,10 +105,6 @@ namespace Elegy.ShaderTool
 				else if ( token == "PixelInput" )
 				{
 					PixelInputs.Add( ParseShaderInput( lexer ) );
-				}
-				else if ( token == "PixelOutput" )
-				{
-					PixelShaderOutput = ParseSimpleNameDeclaration( lexer );
 				}
 				else if ( token == "VertexShader" )
 				{
@@ -268,7 +263,7 @@ namespace Elegy.ShaderTool
 				{
 					sb.AppendLine( $"void main_ps()" );
 					sb.AppendLine( "{" );
-					sb.AppendLine( $"	{PixelShaderOutput} = {shaderVariant}_ps();" );
+					sb.AppendLine( $"	_builtinOutColour = {shaderVariant}_ps();" );
 					sb.AppendLine( "}" );
 				}
 
@@ -309,7 +304,7 @@ namespace Elegy.ShaderTool
 			if ( shaderKind == ShaderKind.Pixel )
 			{
 				sb.AppendLine(
-					$"layout( location = 0 ) out vec4 {PixelShaderOutput};" );
+					$"layout( location = 0 ) out vec4 _builtinOutColour;" );
 			}
 
 			string vertexToPixelKeyword = shaderKind == ShaderKind.Vertex ? "out" : "in";
@@ -389,7 +384,7 @@ namespace Elegy.ShaderTool
 			string token = lexer.Next();
 			if ( !ValidateName( token ) )
 			{
-				throw lexer.ParsingException( $"'{token}' isn't valid shader variant" );
+				throw lexer.ParsingException( $"'{token}' isn't a valid name" );
 			}
 
 			Expect( lexer, ")" );
