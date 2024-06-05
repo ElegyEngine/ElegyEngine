@@ -6,7 +6,7 @@ ShaderVariants( DEFAULT );
 ShaderPostProcessHint();
 
 // Shader parametres
-MaterialParameterSet( 0, BUILTIN, ALL,
+MaterialParameterSet( BUILTIN, ALL,
 	Data( texture2D, uViewTexture, ViewTexture ),
 	Data( sampler, uViewSampler, ViewSampler )
 );

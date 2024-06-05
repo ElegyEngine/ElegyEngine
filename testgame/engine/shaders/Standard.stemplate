@@ -4,7 +4,6 @@
   "postprocessHint": false,
   "parameterSets": [
     {
-      "resourceSetId": 0,
       "level": 0,
       "parameters": [
         {
@@ -16,7 +15,6 @@
       ]
     },
     {
-      "resourceSetId": 1,
       "level": 0,
       "parameters": [
         {
@@ -28,38 +26,46 @@
       ]
     },
     {
-      "resourceSetId": 2,
       "level": 1,
+      "parameters": [
+        {
+          "name": "DiffuseMap",
+          "shaderName": "uDiffuseTexture",
+          "type": 16,
+          "resourceBindingId": 0
+        }
+      ]
+    },
+    {
+      "level": 3,
+      "parameters": [
+        {
+          "name": "LightmapMap",
+          "shaderName": "uLightmapTexture",
+          "type": 16,
+          "resourceBindingId": 0
+        }
+      ]
+    },
+    {
+      "level": 2,
       "parameters": [
         {
           "name": "Sampler",
           "shaderName": "uSampler",
           "type": 18,
           "resourceBindingId": 0
-        },
-        {
-          "name": "DiffuseMap",
-          "shaderName": "uDiffuseTexture",
-          "type": 16,
-          "resourceBindingId": 1
         }
       ]
     },
     {
-      "resourceSetId": 3,
-      "level": 3,
+      "level": 2,
       "parameters": [
         {
           "name": "LightmapSampler",
           "shaderName": "uLightmapSampler",
           "type": 18,
           "resourceBindingId": 0
-        },
-        {
-          "name": "LightmapMap",
-          "shaderName": "uLightmapTexture",
-          "type": 16,
-          "resourceBindingId": 1
         }
       ]
     }
@@ -88,7 +94,8 @@
       "parameterSetIds": [
         0,
         1,
-        2
+        2,
+        4
       ]
     },
     {
@@ -120,7 +127,9 @@
         0,
         1,
         2,
-        3
+        3,
+        4,
+        5
       ]
     },
     {

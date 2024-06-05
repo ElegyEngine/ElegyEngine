@@ -4,7 +4,6 @@
   "postprocessHint": true,
   "parameterSets": [
     {
-      "resourceSetId": 0,
       "level": 0,
       "parameters": [
         {
