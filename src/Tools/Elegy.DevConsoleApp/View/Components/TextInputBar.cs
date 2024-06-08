@@ -22,6 +22,17 @@ namespace Elegy.DevConsoleApp.View.Components
 			Cursor++;
 		}
 
+		public void Pop()
+		{
+			if ( Text == string.Empty )
+			{
+				return;
+			}
+
+			Text = Text.Remove( Cursor - 1, 1 );
+			CursorUnadvance();
+		}
+
 		public void AdvanceTime( int milliseconds )
 		{
 			int lastChunk = mMilliseconds / BlinkRate;
@@ -41,7 +52,7 @@ namespace Elegy.DevConsoleApp.View.Components
 
 		public void CursorAdvance()
 		{
-			Cursor = Math.Min( Text.Length - 1, Cursor + 1 );
+			Cursor = Math.Min( Text.Length, Cursor + 1 );
 		}
 
 		public void CursorUnadvance()
@@ -64,6 +75,10 @@ namespace Elegy.DevConsoleApp.View.Components
 			else if ( key.Key == ConsoleKey.RightArrow )
 			{
 				CursorAdvance();
+			}
+			else if ( key.Key == ConsoleKey.Backspace || key.Key == ConsoleKey.Delete )
+			{
+				Pop();
 			}
 		}
 
