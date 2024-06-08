@@ -123,11 +123,11 @@ namespace Elegy.DevConsoleApp.View
 					while ( mState.IsRunning )
 					{
 						context.Refresh();
-						Thread.Sleep( 50 );
+						Thread.Sleep( 16 );
 
 						ProcessEvents();
 
-						mInputBar.AdvanceTime( 50 );
+						mInputBar.AdvanceTime( 16 );
 						mState.InputText = mInputBar.Text;
 					}
 
