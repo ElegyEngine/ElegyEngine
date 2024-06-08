@@ -102,5 +102,5 @@ PixelShader( WIREFRAME,
 	// This gives us 1.0 for edges, 0.0 for face area
 	const float wireframeAlpha = 1.0 - smoothstep( 0.0, 0.01, closestEdge );
 
-	return vec4( 0.0, 1.0, 0.35, wireframeAlpha ); // TODO: barycentric wireframe
+	return vec4( 0.0, 1.0, 0.35, wireframeAlpha );
 )
