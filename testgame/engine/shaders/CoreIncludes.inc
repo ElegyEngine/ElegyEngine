@@ -19,7 +19,6 @@
 
 // Defines a pixel shader input/output.
 #define PixelInput( id, datatype, name, visibility )
-#define PixelOutput( name )
 
 // Defines a simple material parameter.
 // Params:

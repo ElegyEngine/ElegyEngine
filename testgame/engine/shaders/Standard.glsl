@@ -46,9 +46,6 @@ PixelInput( 0, vec3, pPosition, ALL except WIREFRAME );
 PixelInput( 1, vec2, pUv, ALL except DEPTH WIREFRAME );
 PixelInput( 2, vec2, pUvLightmap, LIGHTMAP );
 
-// Pixel shader outputs (to framebuffer)
-PixelOutput( outColour );
-
 vec4 CalculateGlPosition( vec3 worldspacePosition )
 {
 	return uView.ProjMatrix * uView.ViewMatrix * uEntity.EntityMatrix * vec4( worldspacePosition, 1.0 );
