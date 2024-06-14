@@ -112,6 +112,7 @@ namespace Elegy.DevConsoleApp.View
 					.Expand()
 				);
 
+			AnsiConsole.Console.Cursor.Hide();
 			AnsiConsole.Live( layout )
 				.Cropping( VerticalOverflowCropping.Bottom )
 				.Overflow( VerticalOverflow.Ellipsis )
