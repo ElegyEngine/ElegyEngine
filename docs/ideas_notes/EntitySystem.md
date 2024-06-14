@@ -81,6 +81,8 @@ public struct Door
 }
 ```
 
+*TODO: write about procedural entity creation and components requiring other components*
+
 ### Saving/loading, sending/receiving, transitioning
 
 The end user would simply mark fields with attributes:
