@@ -43,8 +43,9 @@ VertexInput( 3, vec2, vUvLightmap, LIGHTMAP );
 
 // Vertex shader to pixel shader IO
 PixelInput( 0, vec3, pPosition, ALL except WIREFRAME );
-PixelInput( 1, vec2, pUv, ALL except DEPTH WIREFRAME );
-PixelInput( 2, vec2, pUvLightmap, LIGHTMAP );
+PixelInput( 1, vec3, pNormal, ALL except WIREFRAME );
+PixelInput( 2, vec2, pUv, ALL except DEPTH WIREFRAME );
+PixelInput( 3, vec2, pUvLightmap, LIGHTMAP );
 
 vec4 CalculateGlPosition( vec3 worldspacePosition )
 {
@@ -55,10 +56,16 @@ vec4 CalculateGlPosition( vec3 worldspacePosition )
 VertexShader( GENERAL,
 	gl_Position = CalculateGlPosition( vPosition );
 	pPosition = vPosition;
+	pNormal = vNormal;
 	pUv = vUv;
 )
 PixelShader( GENERAL,
-	return texture( sampler2D( uDiffuseTexture, uSampler ), pUv );
+	float halfLambert = dot( pNormal, normalize( vec3( 10.0, 20.0, 50.0 ) ) ) * 0.5 + 0.5;
+
+	vec4 cDiffuse = texture( sampler2D( uDiffuseTexture, uSampler ), pUv );
+	cDiffuse.rgb *= halfLambert;
+
+	return cDiffuse + vec4( 0.01, 0.02, 0.025, 0.0 );
 )
 
 // LIGHTMAP
