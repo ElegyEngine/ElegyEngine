@@ -4,42 +4,47 @@ This is a rough sketch of the final engine. Treat this as some type of "this is 
 ## Overall architecture
 
 - Elegy.Common - utility library
-- Elegy.Engine - engine core
+- Elegy.Framework - engine core, handles engine configuration etc.
+- Engine modules
+- Elegy.GameSDK - the game SDK
 - Elegy.RenderBackend - Veldrid/Vulkan utilities
 
-## Elegy.Engine subsystems
+## Engine modules
 
-- Audio (plugin-based)
+- Elegy.AssetSystem
+	- Quake 3-style materials
+	- Data-driven shaders
+	- Model asset loading (plugin-based)
+	- Texture asset loading (plugin-based)
+- Elegy.AudioSystem (plugin-based)
 	- Sound sources, listener
 	- Sound FX
 	- Geometric acoustics
-- Core
+- Elegy.ConsoleSystem
+	- Logging, console frontends, CVars, console commands
+- Elegy.FileSystem
+	- Mounting game/mod paths
+	- Mounting addon paths
+- Elegy.Input
+	- Keyboard, mouse input
+	- Gamepad & joysticks
+- Elegy.NetworkSystem
+	- Utility layer on top of ENet or RiptideNetworking
+- Elegy.PlatformSystem
 	- Windowing (injected)
 	- Time
 	- Fundamental engine configuration, e.g. headless mode
-- Console
-	- Logging, console frontends, CVars, console commands
-- Virtual file system
-	- Mounting game/mod paths
-	- Mounting addon paths
-- Input (injected)
-	- Keyboard, mouse input
-	- Gamepad & joysticks
-- Material system
-	- Quake 3-style materials
-	- Custom/user shaders
-- Model manager
-	- Model asset loading (plugin-based)
-- Networking
-	- Utility layer on top of ENet or RiptideNetworking
-- Plugin system
+- Elegy.PluginSystem
 	- Full-blown dynamic plugin system
-- Rendering (plugin-based)
-	- Renderable objects (entities, batches, volumes, lights)
-	- Render injection and interception
-	- Views
+- Elegy.RenderSystem
+	- Renderable objects (entities, batches, volumes, lights...)
+	- Views & rendering into windows
 	- Debug rendering
-	- Rendering into windows
+	- Render styles (plugin-based)
+- Elegy.RenderWorld
+	- Occlusion culling (injected)
+	- Render loop
+	- High-level graphics API for games
 
 Legend:
 - plugin-based: implemented in a plugin, engine just provides API
@@ -59,7 +64,7 @@ Legend:
 	- Client controllers (handle input and interaction with the game world)
 	- Keybind system
 	- View bobbing and viewport management
-- Entity
+- Entity system
 	- Component system with “traits” and Quake-style triggering, later Source-style I/O
 	- Scripting
 - Game sessions
