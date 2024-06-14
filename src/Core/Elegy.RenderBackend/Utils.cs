@@ -152,7 +152,7 @@ namespace Elegy.RenderBackend
 		public static RasterizerStateDescription ExtractRasterizerState( MaterialTemplate materialTemplate )
 			=> new()
 			{
-				FrontFace = FrontFace.CounterClockwise,
+				FrontFace = FrontFace.Clockwise,
 				ScissorTestEnabled = false,
 				CullMode = materialTemplate.PipelineInfo.FaceCulling,
 				FillMode = PolygonFillMode.Solid,
