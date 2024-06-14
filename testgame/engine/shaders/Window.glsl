@@ -16,8 +16,6 @@ VertexInput( 1, vec2, vUv, ALL );
 // Vertex shader to pixel shader IO
 PixelInput( 0, vec2, pPosition, ALL );
 PixelInput( 1, vec2, pUv, ALL );
-// Pixel shader outputs (to framebuffer)
-PixelOutput( outColour );
 
 VertexShader( DEFAULT,
 	gl_Position = vec4( vPosition, 0.5, 1.0 );
