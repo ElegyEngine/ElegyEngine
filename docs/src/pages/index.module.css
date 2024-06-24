@@ -1,0 +1,59 @@
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+.heroBanner {
+  padding: 1rem 32rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroTitleContainer {
+  padding: 3rem 1rem;
+}
+
+.hero--primary--mine {
+  --ifm-hero-background-color: #294435;
+  --ifm-hero-text-color: var(--ifm-color-primary);
+}
+
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 2rem;
+  }
+}
+
+.description {
+  background-color: var(--ifm-desc-background-color);
+  padding: 1rem 20%;
+  margin: 0;
+  max-width: 100%;
+  font-size: 1.2rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.elegySummary {
+  padding: 12px;
+  border: 4px solid;
+  border-radius: 12px;
+  border-color: var(--ifm-hero-background-color);
+}
+
+.homepageTabs {
+  padding: 0 25%;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttonHomepage {
+  margin: 0rem 1rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: var(--ifm-hero-text-color);
+}
