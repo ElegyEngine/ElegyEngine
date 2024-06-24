@@ -57,9 +57,9 @@ const config: Config = {
       items: [
         {
           type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
+          sidebarId: 'docsSidebar',
           position: 'left',
-          label: 'Guides',
+          label: 'Documentation',
         },
         {
           type: 'docSidebar',
@@ -87,19 +87,19 @@ const config: Config = {
           items: [
             {
               label: 'Getting started',
-              to: '/docs/Work in progress',
+              to: '/docs/wip',
             },
             {
               label: 'Guides (N/A)',
-              to: '/docs/Work in progress',
+              to: '/docs/wip',
             },
             {
               label: 'Community tutorials (N/A)',
-              to: '/docs/Work in progress',
+              to: '/docs/wip',
             },
             {
               label: 'API reference (N/A)',
-              to: '/docs/Work in progress',
+              to: '/docs/api/wip',
             },
           ],
         },
