@@ -1,4 +1,6 @@
 
+# Engine design document
+
 This is a rough sketch of the final engine. Treat this as some type of "this is how a 1.0 will look".
 
 ## Overall architecture

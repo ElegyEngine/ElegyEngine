@@ -1,3 +1,9 @@
+---
+slug: virtual-reality
+title: Virtual reality
+authors: [admer456]
+tags: [idea]
+---
 
 # VR integration plan
 

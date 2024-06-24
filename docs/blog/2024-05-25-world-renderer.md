@@ -1,3 +1,9 @@
+---
+slug: world-renderer
+title: World rendering
+authors: [admer456]
+tags: [idea]
+---
 
 # World rendering
 

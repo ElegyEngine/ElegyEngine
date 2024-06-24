@@ -1,5 +1,5 @@
 
-# Elegy roadmap
+# Roadmap
 
 Here you can read about the overall plans, long-term and short-term, for Elegy Engine and its plugins.
 

@@ -1,3 +1,9 @@
+---
+slug: entity-system
+title: Hybrid entity system
+authors: [admer456]
+tags: [idea]
+---
 
 # Hybrid entity system
 

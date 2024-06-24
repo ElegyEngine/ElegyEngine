@@ -1,3 +1,9 @@
+---
+slug: material-templates
+title: Material templates
+authors: [admer456]
+tags: [idea]
+---
 
 # Material templates and Polyshaders
 *and other pipeline shenanigans...*

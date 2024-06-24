@@ -3,4 +3,4 @@
 
 SDL launcher for Elegy.
 
-![](/docs/img/launcher2.png)
+![](img/launcher2.png)

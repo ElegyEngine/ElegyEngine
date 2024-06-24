@@ -2,3 +2,7 @@ hello:
   label: Hello
   permalink: /hello
   description: This is for introductions and stuff
+idea:
+  label: Idea
+  permalink: /idea
+  description: This is for development ideas and proposals
