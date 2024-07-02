@@ -66,7 +66,7 @@ namespace Elegy.DevConsoleApp.View
 		{
 			string command = mState.InputText.Trim();
 
-			if ( command == "!exit" )
+			if ( command == "!exit" || command == "!quit" )
 			{
 				mState.IsRunning = false;
 			}
