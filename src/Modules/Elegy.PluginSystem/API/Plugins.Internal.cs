@@ -28,6 +28,7 @@ namespace Elegy.PluginSystem.API
 		private static int mEngineMinorVersion;
 		private static string mEnginePath;
 		private static string[] mEnginePlugins;
+		private static bool mToolMode;
 
 		private static PluginLibrary? LoadLibrary( string path )
 		{

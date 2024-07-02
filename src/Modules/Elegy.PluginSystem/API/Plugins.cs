@@ -18,6 +18,7 @@ namespace Elegy.PluginSystem.API
 
 			mEnginePath = config.Engine.EngineFolder;
 			mEnginePlugins = config.Engine.EnginePlugins;
+			mToolMode = config.ToolMode;
 
 			mLoadContext = new();
 
@@ -44,17 +45,20 @@ namespace Elegy.PluginSystem.API
 					mLogger.Warning( "One or more engine plugins couldn't load, some things may not work!" );
 				}
 
-				bool someGamePluginsFailed = false;
-				foreach ( string gamePlugin in Files.CurrentConfig.Plugins )
+				if ( !mToolMode )
 				{
-					if ( LoadLibrary( $"{Files.CurrentGamePath}/{gamePlugin}/pluginConfig.json" ) == null )
+					bool someGamePluginsFailed = false;
+					foreach ( string gamePlugin in Files.CurrentConfig.Plugins )
 					{
-						someGamePluginsFailed = true;
+						if ( LoadLibrary( $"{Files.CurrentGamePath}/{gamePlugin}/pluginConfig.json" ) == null )
+						{
+							someGamePluginsFailed = true;
+						}
 					}
-				}
-				if ( someGamePluginsFailed )
-				{
-					mLogger.Warning( "One or more base game plugins couldn't load, some things may not work!" );
+					if ( someGamePluginsFailed )
+					{
+						mLogger.Warning( "One or more base game plugins couldn't load, some things may not work!" );
+					}
 				}
 			}
 

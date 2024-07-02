@@ -22,5 +22,8 @@ namespace Elegy.Common.Assets
 
 		/// <summary>Whether to create a main window or not at the start.</summary>
 		public bool WithMainWindow { get; set; } = true;
+
+		/// <summary>If set to <c>true</c>, will not load application plugins.</summary>
+		public bool ToolMode { get; set; } = false;
 	}
 }
