@@ -23,6 +23,7 @@
 // 4. Update visual mesh with lightmap texture names
 
 using Elegy.Common.Assets;
+using Elegy.ConsoleSystem;
 using Elegy.FileSystem.API;
 using Elegy.Framework;
 using Elegy.Framework.Bootstrap;
@@ -40,7 +41,8 @@ namespace Elegy.MapCompiler
 	public static partial class Program
 	{
 		private static MapCompilerParameters mParameters = new();
-		
+		private static TaggedLogger mLogger = new( "MapCompiler" );
+
 		public static void Main( string[] args )
 		{
 			if ( !ProcessArgs( args ) )
@@ -53,24 +55,25 @@ namespace Elegy.MapCompiler
 			{
 				DebugFreeze();
 			}
-			
-			Console.Log("Elegy.MapCompiler", "Initializing Engine" );
+
+			mLogger.Log( "Init" );
 
 			if ( mParameters.MapFile == string.Empty )
 			{
 				// The engine is still uninitialized, so we must use System.Console instead.
 				System.Console.WriteLine( "No map file was provided. Specify one with '-map path/to/file.map'." );
+				return;
 			}
-			
+
 			if ( mParameters.RootPath == string.Empty )
 			{
 				// Guess the root directory from the map file path.
 				string? mapDirectoryName = Path.GetDirectoryName( mParameters.MapFile );
-				if ( mapDirectoryName != null && Path.IsPathRooted( mParameters.MapFile ))
+				if ( mapDirectoryName != null && Path.IsPathRooted( mParameters.MapFile ) )
 				{
 					DirectoryInfo? dir = new( mapDirectoryName );
 					// Get the 'maps' folder in the game folder.
-					while (dir != null && dir.Name != "maps")
+					while ( dir != null && dir.Name != "maps" )
 					{
 						dir = dir.Parent;
 					}
@@ -79,20 +82,21 @@ namespace Elegy.MapCompiler
 					// We have a candidate for the root directory. Let's try it!
 					if ( dir != null )
 					{
-						Directory.SetCurrentDirectory(dir.FullName);
-						System.Console.WriteLine($"No root folder specified: Guessing from the map file path that it is '{dir.FullName}'.");
+						Directory.SetCurrentDirectory( dir.FullName );
+						System.Console.WriteLine( $"No root folder specified: Guessing from the map file path that it is '{dir.FullName}'." );
 					}
 				}
 				else
 				{
-					System.Console.WriteLine($"No root folder specified: Using the current directory as the root.");
+					System.Console.WriteLine( "No root folder specified. Using the current working directory as the root:" );
+					System.Console.WriteLine( Directory.GetCurrentDirectory() );
 				}
 			}
 			else
 			{
-				Directory.SetCurrentDirectory(mParameters.RootPath);
+				Directory.SetCurrentDirectory( mParameters.RootPath );
 			}
-			
+
 			// The file system needs a relative path, so convert the map file path if it isn't one.
 			if ( Path.IsPathRooted( mParameters.MapFile ) )
 			{
@@ -115,21 +119,21 @@ namespace Elegy.MapCompiler
 
 			if ( mParameters.MapFile == string.Empty )
 			{
-				Console.Error( "Elegy.MapCompiler", "No map file was provided. Specify one with '-map path/to/file.map'." );
+				mLogger.Error( "No map file was provided. Specify one with '-map path/to/file.map'." );
 				return;
 			}
-			
-			string? mapPath = Files.PathTo(mParameters.MapFile);
+
+			string? mapPath = Files.PathTo( mParameters.MapFile );
 			if ( mapPath == null )
 			{
-				Console.Error( "Elegy.MapCompiler", $"""
-				                                    The specified map file '{mapPath}' does not exist or cannot be accessed.
-				                                    Please check that the path is correct and that you are in the correct root folder. (Currently: '{Directory.GetCurrentDirectory()}')
-				                                    You can specify a custom root folder with '-root path/to/root'.
-				                                    """ );
+				mLogger.Error( $"""
+							   The specified map file '{mapPath}' does not exist or cannot be accessed.
+							   Please check that the path is correct and that you are in the correct root folder. (Currently: '{Directory.GetCurrentDirectory()}')
+							   You can specify a custom root folder with '-root path/to/root'.
+							   """ );
 				return;
 			}
-			
+
 			if ( mParameters.OutputPath == string.Empty )
 			{
 				mParameters.OutputPath = Path.ChangeExtension( mParameters.MapFile, ".elf" );
@@ -138,7 +142,7 @@ namespace Elegy.MapCompiler
 			{
 				mParameters.OutputPath = Path.Join( Path.GetDirectoryName( mapPath ) ?? "", mParameters.OutputPath );
 			}
-			
+
 			BrushMapDocument? document = null;
 			try
 			{
@@ -146,24 +150,24 @@ namespace Elegy.MapCompiler
 			}
 			catch ( Exception ex )
 			{
-				Console.Error( "Elegy.MapCompiler", $"""
-													An error occured while parsing the map file!
-													Message: {ex.Message}.
+				mLogger.Error( $"""
+								An error occured while parsing the map file!
+								Message: {ex.Message}.
 
-													An error while parsing the map means something went fundementally wrong.
-													You can try opening the map file in a text editor and checking that line & column for an anomaly.
+								An error while parsing the map means something went fundementally wrong.
+								You can try opening the map file in a text editor and checking that line & column for an anomaly.
 
-													If this is a perfectly valid .map file (i.e. it is parsed fine by other compilers),
-													then please open an issue on our GitHub repository:
-													https://github.com/ElegyEngine/ElegyEngine/issues
-													Thank you for your patience. :3
-													""");
+								If this is a perfectly valid .map file (i.e. it is parsed fine by other compilers),
+								then please open an issue on our GitHub repository:
+								https://github.com/ElegyEngine/ElegyEngine/issues
+								Thank you for your patience. :3
+								""" );
 				return;
 			}
 
 			if ( document is null )
 			{
-				Console.Fatal("Elegy.MapCompiler", "An unknown error occured." );
+				mLogger.Fatal( "An unknown error occured." );
 				return;
 			}
 
@@ -187,7 +191,7 @@ namespace Elegy.MapCompiler
 			op.GenerateOutputData();
 			op.WriteToFile( mParameters.OutputPath );
 
-			Console.Success( "Elegy.MapCompiler", $"Map compiled successfully. The result can be found at '{mParameters.OutputPath}'." );
+			mLogger.Success( $"Map compiled successfully. The result can be found at '{mParameters.OutputPath}'." );
 		}
 
 		private static void DebugFreeze()
@@ -196,13 +200,17 @@ namespace Elegy.MapCompiler
 			                      DEVELOPER: You have entered the 'debug freeze'. The map compiler will now freeze until a debugger is attached.
 			                      You can quit the map compiler by pressing Ctrl+C or closing the console window.
 			                      """ );
-			
+
 			while ( true )
 			{
 				Thread.Sleep( 250 );
 
-				if ( !System.Diagnostics.Debugger.IsAttached ) continue;
-				System.Console.WriteLine("Debugger attached! Continuing...");
+				if ( !System.Diagnostics.Debugger.IsAttached )
+				{
+					continue;
+				}
+
+				System.Console.WriteLine( "Debugger attached! Continuing..." );
 				Thread.Sleep( 500 );
 				return;
 			}
@@ -212,13 +220,13 @@ namespace Elegy.MapCompiler
 		{
 			if ( args.Length == 0 )
 			{
-				Console.Error( "Elegy.MapCompiler", "No arguments were provided." );
+				mLogger.Error( "No arguments were provided." );
 				return false;
 			}
 
 			if ( args.Length == 1 && args[0] == "-help" )
 			{
-				Console.Log( "Elegy.MapCompiler", "Ah, a lost soul like myself. Let me guide you..." );
+				mLogger.Log( "Ah, a lost soul like myself. Let me guide you..." );
 				return false;
 			}
 
@@ -251,7 +259,7 @@ namespace Elegy.MapCompiler
 			                       """;
 
 			// Since this is currently only ever called before the engine is initialized, we must use System.Console.
-			System.Console.WriteLine(message);
+			System.Console.WriteLine( message );
 		}
 	}
 }

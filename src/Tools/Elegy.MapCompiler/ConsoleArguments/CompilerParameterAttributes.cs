@@ -29,11 +29,11 @@ namespace Elegy.MapCompiler.ConsoleArguments
 
 		public override object Parse( string value )
 		{
-			return value == "1" || value.Equals("true", StringComparison.CurrentCultureIgnoreCase);
+			return value == "1" || value.Equals( "true", StringComparison.CurrentCultureIgnoreCase );
 		}
 
 		public override string GetPossibleValues() => "true or false";
-	
+
 	}
 
 	public class PathParamAttribute : CompilerParamAttribute

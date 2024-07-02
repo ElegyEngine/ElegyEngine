@@ -16,7 +16,7 @@ namespace Elegy.MapCompiler.Assets
 		[PathParam( "-root" )]
 		public string RootPath { get; set; } = string.Empty;
 
-		[BoolParam("-debugfreeze")]
+		[BoolParam( "-debugfreeze" )]
 		public bool DebugFreeze { get; set; } = false;
 	}
 }
