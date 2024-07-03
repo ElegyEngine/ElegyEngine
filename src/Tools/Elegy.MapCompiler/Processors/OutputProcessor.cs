@@ -28,25 +28,22 @@ namespace Elegy.MapCompiler.Processors
 		{
 			Dictionary<string, RenderSurface> surfaceDict = new();
 
-			foreach ( var brush in entity.Brushes )
+			foreach ( var face in entity.Faces )
 			{
-				foreach ( var face in brush.Faces )
+				if ( face.Material.Data.ToolFlags.HasFlag( ToolMaterialFlag.NoDraw ) )
 				{
-					if ( face.Material.Data.ToolFlags.HasFlag( ToolMaterialFlag.NoDraw ) )
-					{
-						continue;
-					}
-
-					if ( !surfaceDict.ContainsKey( face.Material.Name ) )
-					{
-						surfaceDict.Add( face.Material.Name, new()
-						{
-							Material = face.Material.Name
-						} );
-					}
-
-					AddBrushFace( surfaceDict[face.Material.Name], face.Vertices );
+					continue;
 				}
+
+				if ( !surfaceDict.ContainsKey( face.Material.Name ) )
+				{
+					surfaceDict.Add( face.Material.Name, new()
+					{
+						Material = face.Material.Name
+					} );
+				}
+
+				AddBrushFace( surfaceDict[face.Material.Name], face.Vertices );
 			}
 
 			if ( surfaceDict.Count == 0 )
@@ -79,6 +76,8 @@ namespace Elegy.MapCompiler.Processors
 			surface.BoundingBox = new( vertices[0].Position, Vector3.Zero );
 			for ( int i = 0; i < vertices.Count; i++ )
 			{
+				GeoValidation.Vec3( vertices[i].Position, $"Vertex {i} invalid" );
+
 				surface.Positions.Add( vertices[i].Position );
 				surface.Normals.Add( vertices[i].Normal );
 				surface.Uvs.Add( vertices[i].Uv );
@@ -103,28 +102,25 @@ namespace Elegy.MapCompiler.Processors
 				return -1;
 			}
 
-			foreach ( var brush in entity.Brushes )
+			foreach ( var face in entity.Faces )
 			{
 				// Skip non-solid brushes
-				if ( brush.HasMaterialFlag( ToolMaterialFlag.NoCollision ) )
+				if ( face.HasMaterialFlag( ToolMaterialFlag.NoCollision ) )
 				{
 					continue;
 				}
 
-				foreach ( var face in brush.Faces )
+				if ( !collisionDict.ContainsKey( face.Material.Name ) )
 				{
-					if ( !collisionDict.ContainsKey( face.Material.Name ) )
-					{
-						collisionDict.Add( face.Material.Name, new() );
-					}
+					collisionDict.Add( face.Material.Name, new() );
+				}
 
-					for ( int i = 2; i < face.Vertices.Count; i++ )
-					{
-						var list = collisionDict[face.Material.Name];
-						list.Add( face.Vertices[0].Position );
-						list.Add( face.Vertices[i - 1].Position );
-						list.Add( face.Vertices[i].Position );
-					}
+				for ( int i = 2; i < face.Vertices.Count; i++ )
+				{
+					var list = collisionDict[face.Material.Name];
+					list.Add( face.Vertices[0].Position );
+					list.Add( face.Vertices[i - 1].Position );
+					list.Add( face.Vertices[i].Position );
 				}
 			}
 
