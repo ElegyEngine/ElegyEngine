@@ -177,9 +177,9 @@ namespace Elegy.MapCompiler
 			processor.FixBrushOrigins();
 			processor.UpdateBoundaries();
 			//processor.SmoothenNormals();
+			//processor.GenerateDualGrid();
 
 			//VisibilityProcessor vp = new( data, mParameters );
-			//vp.GenerateOctree();
 			//vp.ProcessVisibility();
 
 			//LightProcessor lp = new( data, mParameters );
