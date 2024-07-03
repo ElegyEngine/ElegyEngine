@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Assets;
-using Elegy.Common.Extensions;
 using Elegy.MapCompiler.Assets;
 using Elegy.MapCompiler.Data.Processing;
 
@@ -31,6 +30,7 @@ namespace Elegy.MapCompiler.Processors
 		public void GenerateGeometryFromMap( BrushMapDocument map )
 		{
 			map.MergeInto( "worldspawn", "func_group" );
+			map.MergeInto( "worldspawn", "func_detail" );
 
 			Data.Entities.Capacity = map.MapEntities.Count;
 			foreach ( var entity in map.MapEntities )
