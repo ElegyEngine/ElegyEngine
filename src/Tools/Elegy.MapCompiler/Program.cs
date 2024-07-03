@@ -56,7 +56,7 @@ namespace Elegy.MapCompiler
 				DebugFreeze();
 			}
 
-			mLogger.Log( "Init" );
+			System.Console.WriteLine( "Init" );
 
 			if ( mParameters.MapFile == string.Empty )
 			{
