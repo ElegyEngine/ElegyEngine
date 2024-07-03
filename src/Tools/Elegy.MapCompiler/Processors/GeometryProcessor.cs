@@ -19,6 +19,15 @@ namespace Elegy.MapCompiler.Processors
 			Parameters = parameters;
 		}
 
+		private void ValidateBrush( BrushMapBrush brush )
+		{
+			foreach ( var face in brush.Faces )
+			{
+				GeoValidation.Vec3( face.PlaneDefinition[0], "Plane definition bad, something went wrong with map export" );
+				GeoValidation.Vec3( face.Polygon.Origin, "Face centre bad, couldn't generate polygons from this" );
+			}
+		}
+
 		public void GenerateGeometryFromMap( BrushMapDocument map )
 		{
 			map.MergeInto( "worldspawn", "func_group" );
@@ -29,6 +38,7 @@ namespace Elegy.MapCompiler.Processors
 				foreach ( var brush in entity.Brushes )
 				{
 					brush.IntersectPlanes();
+					ValidateBrush( brush );
 				}
 
 				Data.Entities.Add( new( entity ) );
@@ -63,6 +73,8 @@ namespace Elegy.MapCompiler.Processors
 
 			foreach ( var entity in Data.Entities )
 			{
+				GeoValidation.Vec3( entity.Centre, "Entity centre invalid" );
+
 				for ( int i = 0; i < 8; i++ )
 				{
 					Vector3 point = entity.Centre + entity.BoundingBox.GetEndpoint( i );
