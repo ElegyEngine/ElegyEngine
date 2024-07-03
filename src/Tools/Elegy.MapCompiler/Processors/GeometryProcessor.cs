@@ -46,26 +46,7 @@ namespace Elegy.MapCompiler.Processors
 		}
 
 		public void RemoveFacesWithFlags( ToolMaterialFlag flags )
-		{
-			foreach ( var entity in Data.Entities )
-			{
-				foreach ( var brush in entity.Brushes )
-				{
-					foreach ( var face in brush.Faces )
-					{
-						if ( face.Material.Data.ToolFlags.HasFlag( flags ) )
-						{
-							brush.Faces.Remove( face );
-						}
-					}
-
-					if ( brush.Faces.Count == 0 )
-					{
-						entity.Brushes.Remove( brush );
-					}
-				}
-			}
-		}
+			=> Data.Entities.ForEach( entity => entity.Faces.RemoveAll( face => face.HasMaterialFlag( flags ) ) );
 
 		public void UpdateBoundaries()
 		{
@@ -87,49 +68,43 @@ namespace Elegy.MapCompiler.Processors
 		{
 			foreach ( var entity in Data.Entities )
 			{
-				// Skip point entities
-				if ( entity.Brushes.Count == 0 || entity.Pairs.ContainsKey( "origin" ) )
-				{
-					continue;
-				}
-
-				// Worldspawn's origin must be 0,0,0
-				if ( entity.ClassName == "worldspawn" )
+				// Point entities don't need origin adjustments, they don't
+				// possess brushes. And worldspawn's origin must be 0,0,0
+				if ( entity.IsPointEntity() || entity.IsWorld() )
 				{
 					continue;
 				}
 
 				// Obtain brush entity origin from origin brushes
 				Vector3 brushOrigin = Vector3.Zero;
-				float brushOriginCount = 0.0f;
-				foreach ( var brush in entity.Brushes )
+				int brushOriginCount = 0;
+				foreach ( var face in entity.Faces )
 				{
-					if ( brush.HasMaterialFlag( ToolMaterialFlag.Origin ) )
+					if ( face.HasMaterialFlag( ToolMaterialFlag.Origin ) )
 					{
-						brushOrigin += brush.BoundingBox.GetCenter();
-						brushOriginCount += 1.0f;
+						brushOrigin += face.Centre;
+						brushOriginCount++;
 					}
 				}
 
 				// If there's no origin brushes associated with this entity,
 				// form one implicitly from the bounding box centre
-				if ( brushOriginCount == 0.0f )
+				if ( brushOriginCount == 0 )
 				{
-					foreach ( var brush in entity.Brushes )
+					foreach ( var face in entity.Faces )
 					{
-						brushOrigin += brush.BoundingBox.GetCenter();
-						brushOriginCount += 1.0f;
+						brushOrigin += face.Centre;
+						brushOriginCount++;
 					}
 				}
+
 				brushOrigin /= brushOriginCount;
 
 				// Shift the entity's centre + all other geometry so that the world position of
-				// the vertices stays the same. Just different relative to the origin
+				// the vertices stays the same, just different relative to the entity's origin
 				Vector3 originDelta = entity.Centre - brushOrigin;
-				foreach ( var brush in entity.Brushes )
-				{
-					brush.Move( -originDelta );
-				}
+				entity.MoveFaces( -originDelta );
+
 				entity.Centre = brushOrigin;
 				entity.Pairs.SetVector3( "origin", entity.Centre );
 

@@ -30,6 +30,25 @@ namespace Elegy.MapCompiler.Data.Processing
 			}
 		}
 
+		public static List<Face> CreateFacesFromMapBrush( BrushMapBrush mapBrush )
+		{
+			List<Face> result = new();
+
+			for ( int i = 0; i < mapBrush.Faces.Count; i++ )
+			{
+				// To be 100% explicit we're building Processing.Face from Map.Face
+				BrushMapFace mapFace = mapBrush.Faces[i];
+				result.Add( new( mapFace ) );
+			}
+
+			return result;
+		}
+
+		public bool HasMaterialFlag( ToolMaterialFlag flag )
+		{
+			return Material.Data.ToolFlags.HasFlag( flag );
+		}
+
 		public void Move( Vector3 offset )
 		{
 			for ( int i = 0; i < Vertices.Count; i++ )
