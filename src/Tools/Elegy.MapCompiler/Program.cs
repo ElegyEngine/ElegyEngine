@@ -140,7 +140,7 @@ namespace Elegy.MapCompiler
 			}
 			else
 			{
-				mParameters.OutputPath = Path.Join( Path.GetDirectoryName( mapPath ) ?? "", mParameters.OutputPath );
+				mParameters.OutputPath = Path.Join( Path.GetDirectoryName( mapPath ) ?? "", Path.ChangeExtension( mParameters.OutputPath, ".elf" ) );
 			}
 
 			BrushMapDocument? document = null;
