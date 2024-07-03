@@ -102,18 +102,24 @@ namespace Elegy.MapCompiler
 			{
 				mParameters.MapFile = Path.GetRelativePath( Directory.GetCurrentDirectory(), mParameters.MapFile );
 			}
-			
-			
-			LaunchConfig config = new();
-			while (!EngineSystem.Init(config,
-				       systemInitFunc: Init_Generated,
-				       systemPostInitFunc: PostInit_Generated,
-				       systemShutdownFunc: Shutdown_Generated,
-				       systemErrorFunc: ErrorMessage_Generated))
-			{
-				Console.Fatal("Elegy.MapCompiler", EngineSystem.ShutdownReason is null ? "Engine failed to initialise: reason unknown" : $"Engine failed to initialise: '{EngineSystem.ShutdownReason}'" );
 
-				Console.Error("Elegy.MapCompiler", "Failed to compile map." );
+			LaunchConfig config = new()
+			{
+				ToolMode = true
+			};
+
+			if ( !EngineSystem.Init( config,
+					   systemInitFunc: Init_Generated,
+					   systemPostInitFunc: PostInit_Generated,
+					   systemShutdownFunc: Shutdown_Generated,
+					   systemErrorFunc: ErrorMessage_Generated ) )
+			{
+				mLogger.Fatal(
+					EngineSystem.ShutdownReason is null
+					? "Engine failed to initialise: reason unknown"
+					: $"Engine failed to initialise: '{EngineSystem.ShutdownReason}'" );
+
+				mLogger.Error( "Failed to compile map." );
 				return;
 			}
 
@@ -134,6 +140,7 @@ namespace Elegy.MapCompiler
 				return;
 			}
 
+			// If the output path wasn't provided, then we assume the user wants to output to the same location as the .map
 			if ( mParameters.OutputPath == string.Empty )
 			{
 				mParameters.OutputPath = Path.ChangeExtension( mParameters.MapFile, ".elf" );
