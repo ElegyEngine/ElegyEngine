@@ -53,7 +53,7 @@ namespace TestGame
 
 			mMenu.OnNewGame = ( string mapName ) =>
 			{
-				StartGame( /*mapName*/ );
+				StartGame( mapName );
 				mMenu.Visible = false;
 			};
 
@@ -72,7 +72,7 @@ namespace TestGame
 			Render.OnRender += mRenderWorld.RenderFrame;
 
 			mMenu.Init();
-			StartGame();
+			StartGame( "maps/test2" );
 
 			return true;
 		}
@@ -161,12 +161,14 @@ namespace TestGame
 		}
 
 		[ConsoleCommand( "map" )]
-		public void StartGame()
+		public void StartGame( string path )
 		{
 			if ( mGameIsLoaded )
 			{
 				LeaveGame();
 			}
+
+			mLogger.Log( $"Loading level '{path}'..." );
 
 			mClient = new()
 			{
