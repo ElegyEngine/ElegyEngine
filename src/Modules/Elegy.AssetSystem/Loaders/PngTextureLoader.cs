@@ -10,7 +10,7 @@ namespace Elegy.AssetSystem.Loaders
 	/// <summary>
 	/// Built-in OBJ loader.
 	/// </summary>
-	public class PngImageLoader : BaseAssetLoader, ITextureLoader
+	public class PngTextureLoader : BaseAssetIo, ITextureLoader
 	{
 		private TaggedLogger mLogger = new( "PngLoader" );
 
@@ -18,7 +18,7 @@ namespace Elegy.AssetSystem.Loaders
 		public override string Name => "PngImageLoader";
 
 		/// <inheritdoc/>
-		public override bool CanLoad( string path )
+		public override bool Supports( string path )
 			=> path == ".png";
 
 		/// <inheritdoc/>
