@@ -29,7 +29,6 @@ namespace TestGame
 
 		public Game()
 		{
-
 		}
 
 		public bool Init()
@@ -147,18 +146,20 @@ namespace TestGame
 			return !mUserWantsToExit;
 		}
 
-		private bool SpawnModel( string path, Vector3 position )
+		private int SpawnModel( string path, Vector3 position )
 		{
 			var renderMesh = Render.LoadMesh( path );
 			if ( renderMesh is null )
 			{
 				mLogger.Error( $"Could not create rendermesh for '{path}'" );
-				return false;
+				return -1;
 			}
 
-			mRenderWorld.CreateEntity( false, renderMesh, position, Vector3.Zero );
-			return true;
+			return mRenderWorld.CreateEntity( false, renderMesh, position, Vector3.Zero );
 		}
+
+		private int mOricubeRenderEntity = -1;
+		private int mTerrainRenderEntity = -1;
 
 		[ConsoleCommand( "map" )]
 		public void StartGame( string path )
@@ -175,8 +176,8 @@ namespace TestGame
 				Controller = new BasicController()
 			};
 
-			SpawnModel( "models/oricube.glb", Vector3.Zero );
-			SpawnModel( "models/terrain.glb", Vector3.Zero );
+			mOricubeRenderEntity = SpawnModel( "models/oricube.glb", Coords.Forward * 5.0f );
+			mTerrainRenderEntity = SpawnModel( "models/terrain.glb", Vector3.Zero );
 
 			mRenderView = Render.GetCurrentWindowView();
 			if ( mRenderView is not null )
