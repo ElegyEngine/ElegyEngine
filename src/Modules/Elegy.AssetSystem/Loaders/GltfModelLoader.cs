@@ -18,7 +18,7 @@ namespace Elegy.AssetSystem.Loaders
 	/// <summary>
 	/// Built-in GLTF loader.
 	/// </summary>
-	public class GltfModelLoader : BaseAssetLoader, IModelLoader
+	public class GltfModelLoader : BaseAssetIo, IModelLoader
 	{
 		private TaggedLogger mLogger = new( "GltfLoader" );
 
@@ -26,7 +26,7 @@ namespace Elegy.AssetSystem.Loaders
 		public override string Name => "GltfModelLoader";
 
 		/// <inheritdoc/>
-		public override bool CanLoad( string extension )
+		public override bool Supports( string extension )
 			=> extension switch
 			{
 				".gltf" => true,

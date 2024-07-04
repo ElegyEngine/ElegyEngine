@@ -9,13 +9,13 @@ namespace Elegy.AssetSystem.Loaders
 	/// <summary>
 	/// Built-in OBJ loader.
 	/// </summary>
-	public class ObjModelLoader : BaseAssetLoader, IModelLoader
+	public class ObjModelLoader : BaseAssetIo, IModelLoader
 	{
 		/// <inheritdoc/>
 		public override string Name => "ObjModelLoader";
 
 		/// <inheritdoc/>
-		public override bool CanLoad( string path )
+		public override bool Supports( string path )
 			=> path == ".obj";
 
 		/// <inheritdoc/>

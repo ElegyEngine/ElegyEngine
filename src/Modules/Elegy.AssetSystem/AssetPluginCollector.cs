@@ -12,7 +12,7 @@ namespace Elegy.AssetSystem
 		private TaggedLogger mLogger = new( "AssetSystem" );
 
 		private void AddLoader<TLoader>( List<TLoader> loaders, TLoader loader )
-			where TLoader : IAssetLoader
+			where TLoader : IAssetIo
 		{
 			if ( loaders.Contains( loader ) )
 			{
@@ -24,7 +24,7 @@ namespace Elegy.AssetSystem
 		}
 
 		private void RemoveLoader<TLoader>( List<TLoader> loaders, TLoader loader )
-			where TLoader : IAssetLoader
+			where TLoader : IAssetIo
 		{
 			if ( !loaders.Remove( loader ) )
 			{

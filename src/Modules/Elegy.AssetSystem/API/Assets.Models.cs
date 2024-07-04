@@ -50,7 +50,7 @@ namespace Elegy.AssetSystem.API
 			{
 				for ( int i = 0; i < extensions.Length; i++ )
 				{
-					if ( modelLoader.CanLoad( extensions[i] ) )
+					if ( modelLoader.Supports( extensions[i] ) )
 					{
 						return modelLoader;
 					}

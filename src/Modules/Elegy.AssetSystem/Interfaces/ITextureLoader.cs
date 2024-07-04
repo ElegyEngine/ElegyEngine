@@ -8,7 +8,7 @@ namespace Elegy.AssetSystem.Interfaces
 	/// <summary>
 	/// Texture loader interface.
 	/// </summary>
-	public interface ITextureLoader : IAssetLoader
+	public interface ITextureLoader : IAssetIo
 	{
 		/// <summary>
 		/// Loads a texture from the given <paramref name="path"/>.

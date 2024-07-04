@@ -6,7 +6,7 @@ namespace Elegy.AssetSystem.Interfaces
 	/// <summary>
 	/// Level loader interface.
 	/// </summary>
-	public interface ILevelLoader : IAssetLoader
+	public interface ILevelLoader : IAssetIo
 	{
 		
 	}

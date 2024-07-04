@@ -6,9 +6,9 @@ using Elegy.AssetSystem.Interfaces;
 namespace Elegy.AssetSystem.Loaders
 {
 	/// <summary>
-	/// Base model loader, makes implementing the <see cref="IAssetLoader"/> interface quicker.
+	/// Base model loader, makes implementing the <see cref="IAssetIo"/> interface quicker.
 	/// </summary>
-	public abstract class BaseAssetLoader : IAssetLoader
+	public abstract class BaseAssetIo : IAssetIo
 	{
 		/// <inheritdoc/>
 		public abstract string Name { get; }
@@ -24,6 +24,6 @@ namespace Elegy.AssetSystem.Loaders
 		public void Shutdown() { }
 
 		/// <inheritdoc/>
-		public abstract bool CanLoad( string path );
+		public abstract bool Supports( string path );
 	}
 }

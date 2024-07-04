@@ -128,7 +128,7 @@ namespace Elegy.AssetSystem.API
 			{
 				foreach ( var extension in extensions )
 				{
-					if ( textureLoader.CanLoad( extension ) )
+					if ( textureLoader.Supports( extension ) )
 					{
 						return textureLoader;
 					}

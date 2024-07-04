@@ -8,7 +8,7 @@ namespace Elegy.AssetSystem.Interfaces
 	/// <summary>
 	/// Model loader interface.
 	/// </summary>
-	public interface IModelLoader : IAssetLoader
+	public interface IModelLoader : IAssetIo
 	{
 		/// <summary>
 		/// Loads a model from the given path.
