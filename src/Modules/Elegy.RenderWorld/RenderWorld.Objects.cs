@@ -1,6 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.Common.Maths;
 using Elegy.RenderSystem.API;
 using Elegy.RenderSystem.Objects;
 using System.Numerics;
@@ -15,6 +16,8 @@ namespace Elegy.RenderWorld
 		{
 			var renderEntity = Render.CreateEntity( animated );
 			renderEntity.Mesh = mesh;
+
+			renderEntity.Transform = Coords.CreateWorldMatrixDegrees( position, angles );
 
 			MeshEntities.Add( renderEntity );
 			return MeshEntities.Count - 1;
