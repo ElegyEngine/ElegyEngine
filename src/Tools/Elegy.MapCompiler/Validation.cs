@@ -9,7 +9,7 @@ namespace Elegy.MapCompiler
 	{
 		public static bool Scalar( float x, string message )
 		{
-			bool isNan = x == float.NaN;
+			bool isNan = float.IsNaN( x );
 			bool isInfinite = float.IsInfinity( x );
 
 			Debug.Assert( !isNan, $"{message} - got value 'NaN'" );
