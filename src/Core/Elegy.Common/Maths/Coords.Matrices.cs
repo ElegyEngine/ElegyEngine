@@ -65,12 +65,18 @@ namespace Elegy.Common.Maths
 			);
 
 			return mat.AsM4x4();
+		}
 
-			//return Matrix4x4.CreateLookToLeftHanded( new(
-			//	position.X,
-			//	position.Y,
-			//	position.Z ),
-			//	up, forward );
+		public static Matrix4x4 CreateViewMatrixDegrees( Vector3 position, Vector3 angles )
+		{
+			DirectionsFromDegrees( angles, out var forward, out var up );
+			return CreateViewMatrix( position, forward, up );
+		}
+
+		public static Matrix4x4 CreateViewMatrixRadians( Vector3 position, Vector3 angles )
+		{
+			DirectionsFromRadians( angles, out var forward, out var up );
+			return CreateViewMatrix( position, forward, up );
 		}
 
 		public static Matrix4x4 CreatePerspectiveMatrix( float fov, float aspectRatio, float nearZ, float farZ )
