@@ -16,12 +16,14 @@ using TestGame.Client;
 using Elegy.PlatformSystem.API;
 using Elegy.Common.Maths;
 using Elegy.RenderSystem.Objects;
+using System.Diagnostics;
 
 namespace TestGame
 {
 	public class Game : IApplication
 	{
 		private TaggedLogger mLogger = new( "Game" );
+		private Stopwatch mStopwatch = new();
 
 		public string Name => "Elegy test game";
 		public string Error { get; private set; } = string.Empty;
@@ -49,6 +51,7 @@ namespace TestGame
 		public bool Start()
 		{
 			mLogger.Log( "Start" );
+			mStopwatch.Restart();
 
 			mMenu.OnNewGame = ( string mapName ) =>
 			{
@@ -140,6 +143,18 @@ namespace TestGame
 					//Console.Log( $"PitchYaw: {state.Angles.X:F1}° {state.Angles.Y:F1}°" );
 					//Console.Log( $"Forward:  {forward.X:F1} {forward.Y:F1} {forward.Z:F1}" );
 					//Console.Log( $"Up:       {up.X:F1} {up.Y:F1} {up.Z:F1}" );
+				}
+
+				if ( mOricubeRenderEntity != -1 )
+				{
+					var renderEntity = mRenderWorld.MeshEntities[mOricubeRenderEntity];
+					float time = mStopwatch.ElapsedMilliseconds * 0.001f;
+
+					renderEntity.Transform = Coords.CreateWorldMatrixRadians(
+						// Bob up'n'down slightly
+						position: Coords.Up * 0.2f * MathF.Sin( time * 2.5f ),
+						// 1/24th of a turn is like 15 degrees
+						angles: Coords.TurnUp * (1.0f / 24.0f) * MathF.Sin( time ) );
 				}
 			}
 
