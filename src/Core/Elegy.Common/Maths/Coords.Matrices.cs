@@ -83,5 +83,31 @@ namespace Elegy.Common.Maths
 		{
 			return Matrix4x4.CreatePerspectiveFieldOfView( fov, aspectRatio, nearZ, farZ );
 		}
+
+		public static Matrix4x4 CreateWorldMatrix( Vector3 position, Vector3 forward, Vector3 up )
+		{
+			Vector3 right = Vector3.Cross( forward, up );
+
+			MatrixWithVec4s mat = new(
+				new( right, 0.0f ),
+				new( forward, 0.0f ),
+				new( up, 0.0f ),
+				new( position, 1.0f )
+			);
+
+			return mat.AsM4x4();
+		}
+
+		public static Matrix4x4 CreateWorldMatrixDegrees( Vector3 position, Vector3 angles )
+		{
+			DirectionsFromDegrees( angles, out var forward, out var up );
+			return CreateWorldMatrix( position, forward, up );
+		}
+
+		public static Matrix4x4 CreateWorldMatrixRadians( Vector3 position, Vector3 angles )
+		{
+			DirectionsFromRadians( angles, out var forward, out var up );
+			return CreateWorldMatrix( position, forward, up );
+		}
 	}
 }
