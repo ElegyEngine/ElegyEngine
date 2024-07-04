@@ -1,6 +1,8 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.Common.Maths;
+
 namespace Elegy.Common.Geometry
 {
 	/// <summary></summary>
@@ -67,7 +69,7 @@ namespace Elegy.Common.Geometry
 		public Polygon3( Plane plane, float radius )
 		{
 			Vector3 direction = plane.GetClosestAxis();
-			Vector3 bidirection = direction == Vector3.UnitZ ? -Vector3.UnitX : -Vector3.UnitZ;
+			Vector3 bidirection = direction == Coords.Up ? Coords.Right : Coords.Down;
 
 			Vector3 up = bidirection.Cross( plane.Normal ).Normalized();
 			Vector3 right = plane.Normal.Cross( up ).Normalized();
