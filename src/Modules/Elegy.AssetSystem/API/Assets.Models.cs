@@ -22,7 +22,7 @@ namespace Elegy.AssetSystem.API
 			}
 
 			string extension = Path.GetExtension( path ) ?? "";
-			IModelLoader? modelLoader = FindModelLoader( [extension] );
+			IModelLoader? modelLoader = FindModelLoader( extension );
 			if ( modelLoader is null )
 			{
 				mLogger.Error( $"LoadModel: Unsupported format '{extension}'" );
