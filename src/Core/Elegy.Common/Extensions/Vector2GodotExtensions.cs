@@ -243,6 +243,20 @@ namespace Elegy.Common.Extensions
 		}
 
 		/// <summary>
+		/// Returns <see langword="true"/> if this vector and <paramref name="other"/> are approximately equal,
+		/// by running <see cref="Utils.IsEqualApprox(float, float)"/> on each component.
+		/// </summary>
+		/// <param name="v"></param>
+		/// <param name="other">The other vector to compare.</param>
+		/// <param name="tolerance">The approximate radius of comparison.</param>
+		/// <returns>Whether or not the vectors are approximately equal.</returns>
+		public static bool IsEqualApprox( this Vector2 v, Vector2 other, float tolerance )
+		{
+			return Utils.IsEqualApprox( v.X, other.X, tolerance )
+				&& Utils.IsEqualApprox( v.Y, other.Y, tolerance );
+		}
+
+		/// <summary>
 		/// Returns <see langword="true"/> if this vector's values are approximately zero,
 		/// by running <see cref="Utils.IsZeroApprox(float)"/> on each component.
 		/// This method is faster than using <see cref="IsEqualApprox"/> with one value
