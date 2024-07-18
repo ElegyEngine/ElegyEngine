@@ -76,6 +76,23 @@ namespace Elegy.Common.Extensions
 		}
 
 		/// <summary></summary>
+		public static Dictionary<Vector3, int> ToVectorIndexDictionary( this IReadOnlyList<Vector3> vectors )
+		{
+			Dictionary<Vector3, int> result = new();
+			int vertexId = 0;
+			foreach ( var v in vectors )
+			{
+				if ( !result.ContainsKey( v ) )
+				{
+					result[v] = vertexId;
+					vertexId++;
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary></summary>
 		public static Vector3 ToVector3( this Vector4 vector )
 		{
 			return new Vector3( vector.X, vector.Y, vector.Z );
