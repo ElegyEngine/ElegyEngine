@@ -61,6 +61,7 @@ namespace Elegy.AssetSystem.Loaders
 			foreach ( var mesh in gltfScene.LogicalMeshes )
 			{
 				mLogger.Log( $"Mesh '{mesh.Name}'" );
+				int primitiveId = 0;
 				foreach ( var primitive in mesh.Primitives )
 				{
 					mLogger.Log( $"  * Primitive {primitive.GetHashCode()}" );
@@ -70,7 +71,11 @@ namespace Elegy.AssetSystem.Loaders
 						mLogger.Log( $"    * Vertex input {vertexAccessor.Key}" );
 					}
 
-					engineMeshes.Add( GltfHelpers.LoadMesh( primitive ) );
+					var gltfMesh = GltfHelpers.LoadMesh( primitive );
+					gltfMesh.Name = $"{mesh.Name}.S{primitiveId}";
+
+					engineMeshes.Add( gltfMesh );
+					primitiveId++;
 				}
 			}
 
