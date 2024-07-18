@@ -8,6 +8,7 @@ using Elegy.MapCompiler.Data.Processing;
 using CollisionMeshlet = Elegy.Common.Assets.ElegyMapData.CollisionMeshlet;
 using RenderSurface = Elegy.Common.Assets.ElegyMapData.RenderSurface;
 using RenderMesh = Elegy.Common.Assets.ElegyMapData.RenderMesh;
+using Elegy.ConsoleSystem;
 
 namespace Elegy.MapCompiler.Processors
 {
@@ -16,6 +17,7 @@ namespace Elegy.MapCompiler.Processors
 		public ProcessingData Data { get; }
 		public MapCompilerParameters Parameters { get; }
 
+		private TaggedLogger mLogger = new( "OutputProc" );
 		private ElegyMapDocument mOutput = new();
 
 		public OutputProcessor( ProcessingData data, MapCompilerParameters parameters )
@@ -88,7 +90,7 @@ namespace Elegy.MapCompiler.Processors
 			}
 		}
 
-		int GetOrCreateCollisionMesh( Entity entity )
+		private int GetOrCreateCollisionMesh( Entity entity )
 		{
 			// A brush entity (whether worlspawn, or func_wall or whatever) can
 			// have multiple faces with different materials. Different materials may
@@ -146,6 +148,84 @@ namespace Elegy.MapCompiler.Processors
 			} );
 
 			return mOutput.CollisionMeshes.Count - 1;
+		}
+
+		private static bool IsVertexUnique( RenderSurface optimisedSurface, RenderSurface originalSurface, int vertexIndex )
+		{
+			const float radiusTolerance = 1.0f / 256.0f;
+			const float radiusTolerancePosition = 1.0f / 64.0f;
+
+			for ( int i = 0; i < optimisedSurface.VertexCount; i++ )
+			{
+				bool samePositions = optimisedSurface.Positions[i].IsEqualApprox( originalSurface.Positions[vertexIndex], radiusTolerancePosition );
+				bool sameNormals = optimisedSurface.Normals[i].IsEqualApprox( originalSurface.Normals[vertexIndex], radiusTolerance );
+				bool sameUvs = optimisedSurface.Uvs[i].IsEqualApprox( originalSurface.Uvs[vertexIndex], radiusTolerance );
+				bool sameLightmapUvs = optimisedSurface.LightmapUvs[i].IsEqualApprox( originalSurface.LightmapUvs[vertexIndex], radiusTolerance );
+				bool sameColours = optimisedSurface.Colours[i] == originalSurface.Colours[vertexIndex];
+
+				// Usually this condition will happen on duplicated vertices, and that's what we're optimising for.
+				// It may also help seal some micro gaps, and produce degenerate triangles, i.e. triangles which
+				// point to the same 3 vertices now that they've been reduced. That is dealt with elsewhere
+				if ( samePositions && sameNormals && sameUvs && sameLightmapUvs && sameColours )
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		public void OptimiseRenderSurfaces()
+		{
+			foreach ( var entity in mOutput.Entities )
+			{
+				if ( entity.RenderMeshId < 0 )
+				{
+					continue;
+				}
+
+				var mesh = mOutput.RenderMeshes[entity.RenderMeshId];
+				List<RenderSurface> optimisedRenderSurfaces = new( mesh.Surfaces.Count );
+
+				foreach ( var surface in mesh.Surfaces )
+				{
+					RenderSurface optimisedSurface = new();
+					List<int> vertexIndexRemap = new();
+
+					for ( int i = 0; i < surface.VertexCount; i++ )
+					{
+						vertexIndexRemap.Add( optimisedSurface.VertexCount );
+
+						if ( IsVertexUnique( optimisedSurface, surface, i ) )
+						{
+							optimisedSurface.AddVertex(
+								surface.Positions[i],
+								surface.Normals[i],
+								surface.Uvs[i],
+								surface.LightmapUvs[i],
+								surface.Colours[i] );
+						}
+					}
+
+					for ( int i = 0; i < surface.Indices.Count; i += 3 )
+					{
+						int a = vertexIndexRemap[i];
+						int b = vertexIndexRemap[i + 1];
+						int c = vertexIndexRemap[i + 2];
+
+						if ( a == b || a == c || b == c )
+						{
+							// Degenerate micro triangle, got reduced by optimising
+							mLogger.Warning( $"Degenerate micro triangle: ({optimisedSurface.Positions[a]})" );
+							continue;
+						}
+
+						optimisedSurface.AddTriangle( vertexIndexRemap[i], vertexIndexRemap[i + 1], vertexIndexRemap[i + 2] );
+					}
+
+					optimisedRenderSurfaces.Add( optimisedSurface );
+				}
+			}
 		}
 
 		public void GenerateOutputData()

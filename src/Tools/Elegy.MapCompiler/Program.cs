@@ -196,6 +196,7 @@ namespace Elegy.MapCompiler
 
 			OutputProcessor op = new( data, mParameters );
 			op.GenerateOutputData();
+			op.OptimiseRenderSurfaces();
 			op.WriteToFile( mParameters.OutputPath );
 
 			mLogger.Success( $"Map compiled successfully. The result can be found at '{mParameters.OutputPath}'." );
