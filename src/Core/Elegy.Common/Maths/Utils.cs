@@ -727,6 +727,30 @@ namespace Elegy.Common.Maths
 		/// <summary>
 		/// Returns <see langword="true"/> if <paramref name="a"/> and <paramref name="b"/> are approximately equal
 		/// to each other.
+		/// The comparison is done using a tolerance calculation with <see cref="float.Epsilon"/>.
+		/// </summary>
+		/// <param name="a">One of the values.</param>
+		/// <param name="b">The other value.</param>
+		/// <returns>A <see langword="bool"/> for whether or not the two values are approximately equal.</returns>
+		public static bool IsEqualApprox( float a, float b, float radius )
+		{
+			// Check for exact equality first, required to handle "infinity" values.
+			if ( a == b )
+			{
+				return true;
+			}
+			// Then check for approximate equality.
+			float tolerance = radius * Math.Abs( a );
+			if ( tolerance < radius )
+			{
+				tolerance = radius;
+			}
+			return Math.Abs( a - b ) < tolerance;
+		}
+
+		/// <summary>
+		/// Returns <see langword="true"/> if <paramref name="a"/> and <paramref name="b"/> are approximately equal
+		/// to each other.
 		/// The comparison is done using a tolerance calculation with <see cref="double.Epsilon"/>.
 		/// </summary>
 		/// <param name="a">One of the values.</param>
