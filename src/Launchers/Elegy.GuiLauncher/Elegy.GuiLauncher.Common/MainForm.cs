@@ -7,7 +7,7 @@ using Elegy.ConsoleSystem;
 using Elegy.ConsoleSystem.Frontends;
 using Elegy.Framework;
 using Elegy.RenderSystem.API;
-using Elegy.RenderSystem.Interfaces.Rendering;
+using Elegy.RenderSystem.Objects;
 using Elegy.PluginSystem.API;
 
 using Eto;
@@ -112,7 +112,7 @@ namespace Elegy.GuiLauncher
 		private Label mStatusLabel;
 		private LaunchConfig mLaunchConfig;
 
-		private IView? mRenderView = null;
+		private View? mRenderView = null;
 
 		private Stopwatch mStopwatch;
 		private double GetSeconds() => (double)mStopwatch.ElapsedTicks / Stopwatch.Frequency;
@@ -202,7 +202,7 @@ namespace Elegy.GuiLauncher
 						}
 
 						PlatformSystem.API.Platform.AddWindow( mSurface );
-						mRenderView = Render.Instance.CreateView( mSurface );
+						mRenderView = Render.CreateView( mSurface );
 
 						Plugins.RegisterPlugin( new FormApp() );
 					} ),
@@ -238,7 +238,7 @@ namespace Elegy.GuiLauncher
 			// Register any convars here
 			ElegyConsole.InitAssemblyConvars( typeof( MainForm ).Assembly );
 
-			mRenderView = Render.Instance.GetView( mSurface );
+			mRenderView = Render.GetView( mSurface );
 
 			// Just to give the engine something to do
 			Plugins.RegisterPlugin( new FormApp() );
