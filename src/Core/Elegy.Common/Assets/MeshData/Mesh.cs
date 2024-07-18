@@ -34,7 +34,7 @@ namespace Elegy.Common.Assets.MeshData
 	public class Mesh
 	{
 		/// <summary>
-		/// Name of the model, usually the file name.
+		/// Name of the model, usually the file name + surface ID.
 		/// </summary>
 		public string Name { get; set; } = string.Empty;
 
