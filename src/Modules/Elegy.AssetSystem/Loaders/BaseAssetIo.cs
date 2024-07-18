@@ -18,10 +18,10 @@ namespace Elegy.AssetSystem.Loaders
 		public bool Initialised => true;
 
 		/// <inheritdoc/>
-		public bool Init() => true;
+		public virtual bool Init() => true;
 
 		/// <inheritdoc/>
-		public void Shutdown() { }
+		public virtual void Shutdown() { }
 
 		/// <inheritdoc/>
 		public abstract bool Supports( string path );
