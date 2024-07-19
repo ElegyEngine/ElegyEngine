@@ -11,49 +11,47 @@ namespace Elegy.AssetSystem
 	{
 		private TaggedLogger mLogger = new( "AssetSystem" );
 
-		private void AddLoader<TLoader>( List<TLoader> loaders, TLoader loader )
+		private void TryRegisterPlugin<TLoader>( List<TLoader> loaders, IPlugin loader )
 			where TLoader : IAssetIo
 		{
-			if ( loaders.Contains( loader ) )
+			if ( loader is TLoader typedLoader )
 			{
-				mLogger.Error( $"Tried loading an already registered plugin {loader.Name}" );
-				return;
-			}
+				if ( loaders.Contains( typedLoader ) )
+				{
+					mLogger.Error( $"Tried loading an already registered plugin {loader.Name}" );
+					return;
+				}
 
-			loaders.Add( loader );
+				loaders.Add( typedLoader );
+			}
 		}
 
-		private void RemoveLoader<TLoader>( List<TLoader> loaders, TLoader loader )
+		private void TryUnregisterPlugin<TLoader>( List<TLoader> loaders, IPlugin loader )
 			where TLoader : IAssetIo
 		{
-			if ( !loaders.Remove( loader ) )
+			if ( loader is TLoader typedLoader )
 			{
-				mLogger.Error( $"Tried unloading non-registered plugin {loader.Name}" );
+				if ( !loaders.Remove( typedLoader ) )
+				{
+					mLogger.Error( $"Tried unloading non-registered plugin {loader.Name}" );
+				}
 			}
 		}
 
 		public void OnPluginLoaded( IPlugin plugin )
 		{
-			if ( plugin is IModelLoader modelLoader )
-			{
-				AddLoader( API.Assets.mModelLoaders, modelLoader );
-			}
-			else if ( plugin is ITextureLoader textureLoader )
-			{
-				AddLoader( API.Assets.mTextureLoaders, textureLoader );
-			}
+			TryRegisterPlugin( API.Assets.mModelLoaders, plugin );
+			TryRegisterPlugin( API.Assets.mTextureLoaders, plugin );
+			TryRegisterPlugin( API.Assets.mLevelLoaders, plugin );
+			TryRegisterPlugin( API.Assets.mLevelWriters, plugin );
 		}
 
 		public void OnPluginUnloaded( IPlugin plugin )
 		{
-			if ( plugin is IModelLoader modelLoader )
-			{
-				RemoveLoader( API.Assets.mModelLoaders, modelLoader );
-			}
-			else if ( plugin is ITextureLoader textureLoader )
-			{
-				RemoveLoader( API.Assets.mTextureLoaders, textureLoader );
-			}
+			TryUnregisterPlugin( API.Assets.mModelLoaders, plugin );
+			TryUnregisterPlugin( API.Assets.mTextureLoaders, plugin );
+			TryUnregisterPlugin( API.Assets.mLevelLoaders, plugin );
+			TryUnregisterPlugin( API.Assets.mLevelWriters, plugin );
 		}
 	}
 }
