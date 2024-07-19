@@ -44,14 +44,14 @@ namespace Elegy.Common.Assets
 		/// <summary>
 		/// Writes the contents of this <see cref="ElegyMapDocument"/> to a file.
 		/// </summary>
-		public void WriteToFile( string path )
+		public void WriteJson( string path )
 			=> JsonHelpers.Write( this, path );
 
 		/// <summary>
 		/// Loads an <see cref="ElegyMapDocument"/> from a file.
 		/// </summary>
 		/// <exception cref="Exception">File isn't an ELF</exception>
-		public static ElegyMapDocument? LoadFromFile( string path )
+		public static ElegyMapDocument? LoadJson( string path )
 			=> JsonHelpers.LoadFrom<ElegyMapDocument>( path );
 	}
 }
