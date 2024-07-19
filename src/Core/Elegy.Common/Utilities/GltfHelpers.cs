@@ -7,11 +7,8 @@ using Elegy.Common.Maths;
 using EngineMesh = Elegy.Common.Assets.MeshData.Mesh;
 using GltfMesh = SharpGLTF.Schema2.Mesh;
 
-using SharpGLTF.Geometry;
 using SharpGLTF.Schema2;
 using SharpGLTF.Memory;
-using SharpGLTF.Geometry.VertexTypes;
-using SharpGLTF.Scenes;
 using Buffer = SharpGLTF.Schema2.Buffer;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
@@ -19,112 +16,6 @@ using System.Xml.Linq;
 
 namespace Elegy.Common.Utilities
 {
-	public struct ElegyGltfVertex : IVertexReflection
-	{
-		public ElegyGltfVertex( EngineMesh mesh, int vertexId )
-		{
-			VertexFlags = mesh.GetVertexFlags();
-
-			Position = mesh.Positions.ElementAtOrDefault( vertexId );
-			Position2D = mesh.Positions2D.ElementAtOrDefault( vertexId );
-			Normal = mesh.Normals.ElementAtOrDefault( vertexId );
-			Normal2D = mesh.Normals2D.ElementAtOrDefault( vertexId );
-			Tangent = mesh.Tangents.ElementAtOrDefault( vertexId );
-			Uv0 = mesh.Uv0.ElementAtOrDefault( vertexId );
-			Uv1 = mesh.Uv1.ElementAtOrDefault( vertexId );
-			Uv2 = mesh.Uv2.ElementAtOrDefault( vertexId );
-			Uv3 = mesh.Uv3.ElementAtOrDefault( vertexId );
-			Color0 = mesh.Color0.ElementAtOrDefault( vertexId );
-			Color1 = mesh.Color1.ElementAtOrDefault( vertexId );
-			Color2 = mesh.Color2.ElementAtOrDefault( vertexId );
-			Color3 = mesh.Color3.ElementAtOrDefault( vertexId );
-			BoneIndices = mesh.BoneIndices.ElementAtOrDefault( vertexId );
-			BoneWeights = mesh.BoneWeights.ElementAtOrDefault( vertexId );
-		}
-
-		public MeshVertexFlags VertexFlags { get; }
-
-		public Vector3 Position { get; set; }
-		public Vector2 Position2D { get; set; }
-		public Vector3 Normal { get; set; }
-		public Vector2 Normal2D { get; set; }
-		public Vector4 Tangent { get; set; }
-		public Vector2 Uv0 { get; set; }
-		public Vector2 Uv1 { get; set; }
-		public Vector2 Uv2 { get; set; }
-		public Vector2 Uv3 { get; set; }
-		public Vector4B Color0 { get; set; }
-		public Vector4B Color1 { get; set; }
-		public Vector4B Color2 { get; set; }
-		public Vector4B Color3 { get; set; }
-		public Vector4B BoneIndices { get; set; }
-		public Vector4 BoneWeights { get; set; }
-
-		public IEnumerable<KeyValuePair<string, AttributeFormat>> GetEncodingAttributes()
-		{
-			if ( VertexFlags.HasFlag( MeshVertexFlags.Positions ) )
-			{
-				yield return new( "POSITION", new AttributeFormat( DimensionType.VEC3, EncodingType.FLOAT ) );
-			}
-			if ( VertexFlags.HasFlag( MeshVertexFlags.Positions2D ) )
-			{
-				yield return new( "POSITION", new AttributeFormat( DimensionType.VEC2, EncodingType.FLOAT ) );
-			}
-			if ( VertexFlags.HasFlag( MeshVertexFlags.Normals ) )
-			{
-				yield return new( "NORMAL", new AttributeFormat( DimensionType.VEC3, EncodingType.BYTE, nrm: true ) );
-			}
-			if ( VertexFlags.HasFlag( MeshVertexFlags.Normals2D ) )
-			{
-				yield return new( "NORMAL", new AttributeFormat( DimensionType.VEC2, EncodingType.BYTE, nrm: true ) );
-			}
-			if ( VertexFlags.HasFlag( MeshVertexFlags.Tangents ) )
-			{
-				yield return new( "TANGENT", new AttributeFormat( DimensionType.VEC4, EncodingType.BYTE, nrm: true ) );
-			}
-			if ( VertexFlags.HasFlag( MeshVertexFlags.Uv0 ) )
-			{
-				yield return new( "TEXCOORD_0", new AttributeFormat( DimensionType.VEC2, EncodingType.FLOAT ) );
-			}
-			if ( VertexFlags.HasFlag( MeshVertexFlags.Uv1 ) )
-			{
-				yield return new( "TEXCOORD_1", new AttributeFormat( DimensionType.VEC2, EncodingType.FLOAT ) );
-			}
-			if ( VertexFlags.HasFlag( MeshVertexFlags.Uv2 ) )
-			{
-				yield return new( "TEXCOORD_2", new AttributeFormat( DimensionType.VEC2, EncodingType.FLOAT ) );
-			}
-			if ( VertexFlags.HasFlag( MeshVertexFlags.Uv3 ) )
-			{
-				yield return new( "TEXCOORD_3", new AttributeFormat( DimensionType.VEC2, EncodingType.FLOAT ) );
-			}
-			if ( VertexFlags.HasFlag( MeshVertexFlags.Color0 ) )
-			{
-				yield return new( "COLOR_0", new AttributeFormat( DimensionType.VEC4, EncodingType.UNSIGNED_BYTE, nrm: true ) );
-			}
-			if ( VertexFlags.HasFlag( MeshVertexFlags.Color1 ) )
-			{
-				yield return new( "COLOR_1", new AttributeFormat( DimensionType.VEC4, EncodingType.UNSIGNED_BYTE, nrm: true ) );
-			}
-			if ( VertexFlags.HasFlag( MeshVertexFlags.Color2 ) )
-			{
-				yield return new( "COLOR_2", new AttributeFormat( DimensionType.VEC4, EncodingType.UNSIGNED_BYTE, nrm: true ) );
-			}
-			if ( VertexFlags.HasFlag( MeshVertexFlags.Color3 ) )
-			{
-				yield return new( "COLOR_3", new AttributeFormat( DimensionType.VEC4, EncodingType.UNSIGNED_BYTE, nrm: true ) );
-			}
-			if ( VertexFlags.HasFlag( MeshVertexFlags.BoneIndices ) )
-			{
-				yield return new( "JOINTS_0", new AttributeFormat( DimensionType.VEC4, EncodingType.UNSIGNED_BYTE ) );
-			}
-			if ( VertexFlags.HasFlag( MeshVertexFlags.BoneWeights ) )
-			{
-				yield return new( "WEIGHTS_0", new AttributeFormat( DimensionType.VEC4, EncodingType.UNSIGNED_BYTE, nrm: true ) );
-			}
-		}
-	}
-
 	public static class GltfHelpers
 	{
 		public static Vector3[] LoadPositions( Accessor value )

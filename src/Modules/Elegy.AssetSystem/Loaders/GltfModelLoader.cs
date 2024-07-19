@@ -3,14 +3,12 @@
 
 using Elegy.AssetSystem.Interfaces;
 using Elegy.Common.Assets;
-using Elegy.Common.Maths;
 using Elegy.Common.Utilities;
 using Elegy.ConsoleSystem;
 
 using EngineMesh = Elegy.Common.Assets.MeshData.Mesh;
 
 using SharpGLTF.Schema2;
-using System.Numerics;
 
 namespace Elegy.AssetSystem.Loaders
 {
