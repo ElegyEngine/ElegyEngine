@@ -18,5 +18,14 @@ namespace Elegy.MapCompiler.Assets
 
 		[BoolParam( "-debugfreeze" )]
 		public bool DebugFreeze { get; set; } = false;
+
+		[BoolParam( "-nogeo" )]
+		public bool WithoutGeometry { get; set; } = false;
+
+		[BoolParam( "-novis" )]
+		public bool WithoutVisibility { get; set; } = false;
+
+		[BoolParam( "-nolight" )]
+		public bool WithoutLighting { get; set; } = false;
 	}
 }
