@@ -66,8 +66,8 @@ namespace Elegy.Common.Maths
 				Vector3D n = a.Cross( b );
 				Vector3D normal = n.Normalized();
 
-				// D = - Dot(N, point1)
-				double d = -normal.Dot( point1 );
+				// D = Dot(N, point1)
+				double d = normal.Dot( point1 );
 
 				return new PlaneD( normal, d );
 			}

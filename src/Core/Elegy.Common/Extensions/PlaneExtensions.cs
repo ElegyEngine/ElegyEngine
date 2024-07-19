@@ -18,16 +18,16 @@ namespace Elegy.Common.Extensions
 		{
 			Vector3 normal = plane.Normal.Abs();
 
-			// Forward is +Y
-			if ( normal.Y >= normal.X && normal.Y >= normal.Z )
-			{
-				return Coords.Forward;
-			}
-
 			// Right is +X
-			if ( normal.X >= normal.Z )
+			if ( normal.X >= normal.Y && normal.X >= normal.Z )
 			{
 				return Coords.Right;
+			}
+
+			// Forward is +Y
+			if ( normal.Y >= normal.Z )
+			{
+				return Coords.Forward;
 			}
 
 			// Up is +Z

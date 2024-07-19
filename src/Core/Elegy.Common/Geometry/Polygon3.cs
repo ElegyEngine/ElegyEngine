@@ -69,7 +69,7 @@ namespace Elegy.Common.Geometry
 		public Polygon3( Plane plane, float radius )
 		{
 			Vector3 direction = plane.GetClosestAxis();
-			Vector3 bidirection = direction == Coords.Up ? Coords.Right : Coords.Down;
+			Vector3 bidirection = direction == Coords.Up ? Coords.Left : Coords.Down;
 
 			Vector3 up = bidirection.Cross( plane.Normal ).Normalized();
 			Vector3 right = plane.Normal.Cross( up ).Normalized();
@@ -92,7 +92,8 @@ namespace Elegy.Common.Geometry
 
 		#region Properties
 		/// <summary></summary>
-		public Plane Plane => Plane.CreateFromVertices( Points[0], Points[1], Points[2] );
+		public Plane Plane => Coords.PlaneFromPoints( Points[0], Points[1], Points[2] );
+
 		/// <summary></summary>
 		public Vector3 Origin
 		{

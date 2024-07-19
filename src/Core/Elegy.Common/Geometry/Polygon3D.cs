@@ -69,7 +69,7 @@ namespace Elegy.Common.Geometry
 		public Polygon3D( PlaneD plane, double radius )
 		{
 			Vector3D direction = plane.GetClosestAxis();
-			Vector3D bidirection = direction == Vector3D.UnitZ ? Vector3D.UnitY : -Vector3D.UnitZ;
+			Vector3D bidirection = direction == Vector3D.UnitZ ? -Vector3D.UnitX : -Vector3D.UnitZ;
 
 			Vector3D up = bidirection.Cross( plane.Normal ).Normalized();
 			Vector3D right = plane.Normal.Cross( up ).Normalized();

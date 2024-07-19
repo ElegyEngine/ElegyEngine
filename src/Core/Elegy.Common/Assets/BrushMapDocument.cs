@@ -59,7 +59,7 @@ namespace Elegy.Common.Assets
 				}
 			}
 
-			face.Plane = Plane.CreateFromVertices( face.PlaneDefinition[0], face.PlaneDefinition[1], face.PlaneDefinition[2] );
+			face.Plane = Coords.PlaneFromPoints( face.PlaneDefinition[0], face.PlaneDefinition[1], face.PlaneDefinition[2] );
 
 			// We could potentially have slashes in here and all kinds of wacky characters
 			lex.IgnoreDelimiters = true;
