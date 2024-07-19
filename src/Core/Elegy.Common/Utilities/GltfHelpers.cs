@@ -80,7 +80,7 @@ namespace Elegy.Common.Utilities
 			return engineMesh;
 		}
 
-		public static string GetAccessorNameForVertexFlag( MeshVertexFlags flag )
+		public static string GetAccessorNameForVertexFlag( MeshVertexFlags? flag )
 			=> flag switch
 			{
 				MeshVertexFlags.Positions or
@@ -98,10 +98,11 @@ namespace Elegy.Common.Utilities
 				MeshVertexFlags.Color3 => "COLOR_3",
 				MeshVertexFlags.BoneIndices => "JOINTS_0",
 				MeshVertexFlags.BoneWeights => "WEIGHTS_0",
+				null => "INDICES",
 				_ => throw new NotSupportedException()
 			};
 
-		public static Accessor CreateBufferAndAccessorFromData<T>( ModelRoot root, string modelName, MeshVertexFlags flag, T[] values )
+		public static Accessor CreateBufferAndAccessorFromData<T>( ModelRoot root, string modelName, MeshVertexFlags? flag, T[] values )
 			where T: unmanaged
 		{
 			string extension = GetAccessorNameForVertexFlag( flag );
@@ -110,30 +111,45 @@ namespace Elegy.Common.Utilities
 			{
 				MeshVertexFlags.Positions => (DimensionType.VEC3, EncodingType.FLOAT, false),
 				MeshVertexFlags.Positions2D => (DimensionType.VEC2, EncodingType.FLOAT, false),
-				MeshVertexFlags.Normals => (DimensionType.VEC3, EncodingType.FLOAT, true),
-				MeshVertexFlags.Normals2D => (DimensionType.VEC2, EncodingType.FLOAT, true),
-				MeshVertexFlags.Tangents => (DimensionType.VEC4, EncodingType.FLOAT, true),
+				MeshVertexFlags.Normals => (DimensionType.VEC3, EncodingType.FLOAT, false),
+				MeshVertexFlags.Normals2D => (DimensionType.VEC2, EncodingType.FLOAT, false),
+				MeshVertexFlags.Tangents => (DimensionType.VEC4, EncodingType.FLOAT, false),
 				MeshVertexFlags.Uv0 => (DimensionType.VEC2, EncodingType.FLOAT, false),
 				MeshVertexFlags.Uv1 => (DimensionType.VEC2, EncodingType.FLOAT, false),
 				MeshVertexFlags.Uv2 => (DimensionType.VEC2, EncodingType.FLOAT, false),
 				MeshVertexFlags.Uv3 => (DimensionType.VEC2, EncodingType.FLOAT, false),
-				MeshVertexFlags.Color0 => (DimensionType.VEC4, EncodingType.UNSIGNED_BYTE, false),
-				MeshVertexFlags.Color1 => (DimensionType.VEC4, EncodingType.UNSIGNED_BYTE, false),
-				MeshVertexFlags.Color2 => (DimensionType.VEC4, EncodingType.UNSIGNED_BYTE, false),
-				MeshVertexFlags.Color3 => (DimensionType.VEC4, EncodingType.UNSIGNED_BYTE, false),
+				MeshVertexFlags.Color0 => (DimensionType.VEC4, EncodingType.UNSIGNED_BYTE, true),
+				MeshVertexFlags.Color1 => (DimensionType.VEC4, EncodingType.UNSIGNED_BYTE, true),
+				MeshVertexFlags.Color2 => (DimensionType.VEC4, EncodingType.UNSIGNED_BYTE, true),
+				MeshVertexFlags.Color3 => (DimensionType.VEC4, EncodingType.UNSIGNED_BYTE, true),
 				MeshVertexFlags.BoneIndices => (DimensionType.VEC4, EncodingType.UNSIGNED_BYTE, false),
 				MeshVertexFlags.BoneWeights => (DimensionType.VEC4, EncodingType.FLOAT, false),
+				null => (DimensionType.SCALAR, EncodingType.UNSIGNED_INT, false),
 				_ => throw new NotSupportedException()
 			};
 
 			var valuesBytes = MemoryMarshal.AsBytes( values.AsSpan() );
 			Buffer buffer = root.CreateBuffer( valuesBytes.Length );
+			buffer.Name = $"{modelName}_{extension}.buf";
+
 			valuesBytes.CopyTo( buffer.Content.AsSpan() );
 
-			BufferView bufferView = root.UseBufferView( buffer, 0, valuesBytes.Length, Unsafe.SizeOf<T>() );
+			// For some reason, SharpGLTF (or GLTF itself?) requires the index buffer
+			// to be of stride 0? Fair enough I guess
+			BufferView bufferView = root.UseBufferView( buffer, 0, valuesBytes.Length,
+				flag is null ? 0 : Unsafe.SizeOf<T>() );
+
+			bufferView.Name = $"{buffer.Name}v";
 
 			Accessor result = root.CreateAccessor( $"{modelName}_{extension}" );
-			result.SetVertexData( bufferView, 0, values.Length, dimensions, encoding, normalised );
+			if ( flag is null )
+			{
+				result.SetIndexData( bufferView, 0, values.Length, IndexEncodingType.UNSIGNED_INT );
+			}
+			else
+			{
+				result.SetVertexData( bufferView, 0, values.Length, dimensions, encoding, normalised );
+			}
 
 			return result;
 		}
@@ -141,6 +157,20 @@ namespace Elegy.Common.Utilities
 		public static GltfMesh WriteMesh( ModelRoot root, string name, IReadOnlyList<EngineMesh> meshes )
 		{
 			GltfMesh result = root.CreateMesh( name );
+			Scene rootScene = root.UseScene( 0 );
+
+			Material useMaterial( string name )
+			{
+				foreach ( var material in root.LogicalMaterials )
+				{
+					if ( material.Name == name )
+					{
+						return material;
+					}
+				}
+
+				return root.CreateMaterial( name );
+			}
 
 			foreach ( var mesh in meshes )
 			{
@@ -173,7 +203,15 @@ namespace Elegy.Common.Utilities
 				tryAppendAccessor( MeshVertexFlags.Color3, mesh.Color3 );
 				tryAppendAccessor( MeshVertexFlags.BoneIndices, mesh.BoneIndices );
 				tryAppendAccessor( MeshVertexFlags.BoneWeights, mesh.BoneWeights );
+
+				primitive.SetIndexAccessor(
+					CreateBufferAndAccessorFromData( root, name, null, mesh.Indices ) );
+
+				primitive.Material = useMaterial( mesh.MaterialName );
 			}
+
+			Node meshNode = rootScene.CreateNode( name );
+			meshNode.Mesh = result;
 
 			return result;
 		}
