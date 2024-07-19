@@ -48,6 +48,35 @@ namespace Elegy.MapCompiler.Processors
 		public void RemoveFacesWithFlags( ToolMaterialFlag flags )
 			=> Data.Entities.ForEach( entity => entity.Faces.RemoveAll( face => face.HasMaterialFlag( flags ) ) );
 
+		public void Scale( float scale )
+		{
+			foreach ( var entity in Data.Entities )
+			{
+				foreach ( var face in entity.Faces )
+				{
+					face.Vertices = face.Vertices.Select( v =>
+					{
+						Vertex scaledVertex = new();
+
+						scaledVertex.Position = v.Position * scale;
+						scaledVertex.Uv = v.Uv;
+						scaledVertex.Normal = v.Normal;
+						scaledVertex.Colour = v.Colour;
+
+						return scaledVertex;
+					} ).ToList();
+				}
+
+				// TODO: other keyvalues may potentially need scaling too
+				Vector3 position = entity.Pairs.GetVector3( "origin" );
+				if ( position != Vector3.Zero )
+				{
+					position *= scale;
+					entity.Pairs.SetVector3( "origin", position );
+				}
+			}
+		}
+
 		public void UpdateBoundaries()
 		{
 			Data.MapBoundaries = new Box3( Vector3.Zero, Vector3.One * 0.1f );

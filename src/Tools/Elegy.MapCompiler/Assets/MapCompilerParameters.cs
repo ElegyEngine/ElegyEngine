@@ -7,6 +7,7 @@ namespace Elegy.MapCompiler.Assets
 {
 	public class MapCompilerParameters
 	{
+		#region Filesystem
 		[PathParam( "-map" )]
 		public string MapFile { get; set; } = string.Empty;
 
@@ -15,10 +16,9 @@ namespace Elegy.MapCompiler.Assets
 
 		[PathParam( "-root" )]
 		public string RootPath { get; set; } = string.Empty;
+		#endregion
 
-		[BoolParam( "-debugfreeze" )]
-		public bool DebugFreeze { get; set; } = false;
-
+		#region Stages
 		[BoolParam( "-nogeo" )]
 		public bool WithoutGeometry { get; set; } = false;
 
@@ -27,5 +27,16 @@ namespace Elegy.MapCompiler.Assets
 
 		[BoolParam( "-nolight" )]
 		public bool WithoutLighting { get; set; } = false;
+		#endregion
+
+		#region Misc
+		[FloatParam( "-unitscale", 1.0f / 512.0f, 512.0f )]
+		public float GlobalScale { get; set; } = 64.0f;
+		#endregion
+
+		#region Debug
+		[BoolParam( "-debugfreeze" )]
+		public bool DebugFreeze { get; set; } = false;
+		#endregion
 	}
 }
