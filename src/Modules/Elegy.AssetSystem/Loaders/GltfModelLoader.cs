@@ -9,7 +9,6 @@ using Elegy.ConsoleSystem;
 
 using EngineMesh = Elegy.Common.Assets.MeshData.Mesh;
 
-using SharpGLTF.Scenes;
 using SharpGLTF.Schema2;
 using System.Numerics;
 
@@ -40,14 +39,9 @@ namespace Elegy.AssetSystem.Loaders
 			ModelRoot gltfScene;
 			try
 			{
-				gltfScene = SceneBuilder.LoadDefaultScene( path, new()
+				gltfScene = ModelRoot.Load( path, new()
 				{
 					Validation = SharpGLTF.Validation.ValidationMode.Skip
-				} )
-				.ToGltf2( new()
-				{
-					MergeBuffers = false,
-					UseStridedBuffers = true
 				} );
 			}
 			catch ( Exception ex )
