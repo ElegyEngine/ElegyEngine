@@ -69,9 +69,9 @@ namespace Elegy.MapCompiler.Processors
 			// A triangle mesh would be added quite differently.
 			for ( int i = 2; i < vertices.Count; i++ )
 			{
-				surface.Indices.Add( surface.VertexCount );
-				surface.Indices.Add( surface.VertexCount + i - 1 );
 				surface.Indices.Add( surface.VertexCount + i );
+				surface.Indices.Add( surface.VertexCount + i - 1 );
+				surface.Indices.Add( surface.VertexCount );
 			}
 			surface.VertexCount += vertices.Count;
 
@@ -120,9 +120,9 @@ namespace Elegy.MapCompiler.Processors
 				for ( int i = 2; i < face.Vertices.Count; i++ )
 				{
 					var list = collisionDict[face.Material.Name];
-					list.Add( face.Vertices[0].Position );
-					list.Add( face.Vertices[i - 1].Position );
 					list.Add( face.Vertices[i].Position );
+					list.Add( face.Vertices[i - 1].Position );
+					list.Add( face.Vertices[0].Position );
 				}
 			}
 
