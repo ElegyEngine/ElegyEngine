@@ -136,7 +136,7 @@ namespace Elegy.AssetSystem.Loaders
 		{
 			return gltfMeshes.Where( mesh => mesh.Name.StartsWith( filter ) )
 				.Select( mesh => mesh.Primitives
-					.Select( GltfHelpers.LoadMesh )
+					.Select( p => GltfHelpers.LoadMesh( p, yIntoZ: true ) )
 					.ToList() )
 				.ToList();
 		}

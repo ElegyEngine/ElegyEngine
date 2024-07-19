@@ -52,7 +52,13 @@ namespace Elegy.AssetSystem.Loaders
 					[OccluderToEngineMesh( map.OccluderMeshes[i] )] );
 			}
 
-			root.SaveGLB( path );
+			Scene rootScene = root.UseScene( 0 );
+
+			root.SaveGLB( path, new()
+			{
+				ImageWriting = ResourceWriteMode.Default,
+				JsonIndented = true
+			} );
 			return true;
 		}
 
