@@ -15,7 +15,7 @@ namespace Elegy.MapCompiler.Data.Processing
 		public Face( BrushMapFace face )
 		{
 			Material = AssetSystem.API.Assets.LoadMaterial( "materials/" + face.MaterialName ) ?? throw new ArgumentException($"Material \"{face.MaterialName}\" not found");
-			TextureMetadata diffuseMetadata = AssetSystem.API.Assets.GetTextureMetadata( Material.Data.DiffuseMap ?? "") ?? AssetSystem.API.Assets.MissingTexture.Metadata;
+			TextureMetadata diffuseMetadata = AssetSystem.API.Assets.GetTextureMetadata( Material.Data.DiffuseMap ?? "" ) ?? AssetSystem.API.Assets.MissingTexture.Metadata;
 			Centre = face.Polygon.Origin;
 
 			for ( int i = 0; i < face.Polygon.Points.Count; i++ )
