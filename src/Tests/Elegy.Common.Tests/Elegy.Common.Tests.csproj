@@ -22,15 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Collections\" />
-    <Folder Include="Utilities\" />
-    <Folder Include="Text\" />
-    <Folder Include="Reflection\" />
-    <Folder Include="Geometry\" />
-    <Folder Include="Extensions\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Core\Elegy.Common\Elegy.Common.csproj" />
   </ItemGroup>
 
