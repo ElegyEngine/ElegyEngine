@@ -6,22 +6,11 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Reflection;
 using System.Runtime;
+using System.Runtime.CompilerServices;
 
 namespace EcsResearch
 {
 	#region Internal stuff
-	public static class FennecsExtensions
-	{
-		public static void QueryNow<C0>( this World world, RefAction<C0> action )
-			=> world.Query<C0>().Build().For( action );
-
-		public static void QueryNow<C0, C1>( this World world, RefAction<C0, C1> action )
-			=> world.Query<C0, C1>().Build().For( action );
-
-		public static void QueryNow<C0, C1, C2>( this World world, RefAction<C0, C1, C2> action )
-			=> world.Query<C0, C1, C2>().Build().For( action );
-	}
-
 	public class InputAttribute : Attribute
 	{
 	}
@@ -312,8 +301,15 @@ namespace EcsResearch
 			}
 		}
 
+		private static Stream<GameEntity, Transform, Door>? mProcessStream = null;
 		public static void Process( World world, float deltaTime )
-			=> world.QueryNow( ( ref GameEntity entity, ref Transform transform, ref Door door ) =>
+		{
+			if ( mProcessStream is null )
+			{
+				mProcessStream = world.Query<GameEntity, Transform, Door>().Stream();
+			}
+
+			mProcessStream.For( ( ref GameEntity entity, ref Transform transform, ref Door door ) =>
 			{
 				if ( !door.NeedsUpdate )
 				{
@@ -344,6 +340,7 @@ namespace EcsResearch
 				transform.SetYaw( door.InitialAngle + door.OpenAngle * door.TravelFraction );
 				Console.WriteLine( $"Angle: {door.InitialAngle + door.OpenAngle * door.TravelFraction}" );
 			} );
+		}
 	}
 
 	public struct Transform
