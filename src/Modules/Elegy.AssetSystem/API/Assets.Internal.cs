@@ -27,11 +27,14 @@ namespace Elegy.AssetSystem.API
 		private static TaggedLogger mLogger = new( "AssetSystem" );
 
 		internal static List<IModelLoader> mModelLoaders = new();
+		internal static List<ILevelLoader> mLevelLoaders = new();
+		internal static List<ILevelWriter> mLevelWriters = new();
 		internal static List<ITextureLoader> mTextureLoaders = new();
 
 		private static List<MaterialDocument> mMaterialDocuments = new();
 		private static Dictionary<string, MaterialDefinitionPair> mMaterialDefs = new();
 		private static Dictionary<string, Texture> mTextures = new();
+		private static Dictionary<string, ElegyMapDocument> mLevels = new();
 		private static Dictionary<string, Model> mModels = new();
 
 		internal static Texture mMissingTexture;
