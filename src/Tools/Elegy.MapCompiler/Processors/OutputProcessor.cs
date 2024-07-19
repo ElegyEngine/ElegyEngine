@@ -1,6 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.ConsoleSystem;
 using Elegy.Common.Assets;
 using Elegy.MapCompiler.Assets;
 using Elegy.MapCompiler.Data.Processing;
@@ -8,7 +9,6 @@ using Elegy.MapCompiler.Data.Processing;
 using CollisionMeshlet = Elegy.Common.Assets.ElegyMapData.CollisionMeshlet;
 using RenderSurface = Elegy.Common.Assets.ElegyMapData.RenderSurface;
 using RenderMesh = Elegy.Common.Assets.ElegyMapData.RenderMesh;
-using Elegy.ConsoleSystem;
 
 namespace Elegy.MapCompiler.Processors
 {
