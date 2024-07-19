@@ -120,6 +120,8 @@ namespace Elegy.MapCompiler
 			if ( !mParameters.WithoutVisibility )
 			{
 				VisibilityProcessor vp = new( outputData, mParameters );
+				//vp.GenerateProbes();
+				//vp.FilterProbes();
 				//vp.ProcessVisibility();
 			}
 
