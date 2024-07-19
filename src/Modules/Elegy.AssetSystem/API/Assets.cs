@@ -18,6 +18,8 @@ namespace Elegy.AssetSystem.API
 			Plugins.RegisterPluginCollector( new AssetPluginCollector() );
 
 			Plugins.RegisterPlugin( new GltfModelLoader() );
+			Plugins.RegisterPlugin( new ElfLevelLoader() );
+			Plugins.RegisterPlugin( new ElfLevelWriter() );
 			Plugins.RegisterPlugin( new ObjModelLoader() ); // it's not implemented but oh well
 			Plugins.RegisterPlugin( new PngTextureLoader() );
 
