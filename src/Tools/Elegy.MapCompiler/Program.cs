@@ -85,6 +85,8 @@ namespace Elegy.MapCompiler
 
 			ElegyMapDocument? outputData = null;
 
+			// TODO: GeometryProcessor could just be a static method that calls all these other ones
+			// ProcessingData data = GeometryProcessor.Process( document, mParameters );
 			if ( !mParameters.WithoutGeometry )
 			{
 				ProcessingData data = new();
@@ -113,12 +115,14 @@ namespace Elegy.MapCompiler
 				}
 			}
 
+			// TODO: VisibilityProcessor.Process( outputData, mParameters );
 			if ( !mParameters.WithoutVisibility )
 			{
 				VisibilityProcessor vp = new( outputData, mParameters );
 				//vp.ProcessVisibility();
 			}
 
+			// TODO: LightProcessor.Process( outputData, mParameters );
 			if ( !mParameters.WithoutLighting )
 			{
 				LightProcessor lp = new( outputData, mParameters );
