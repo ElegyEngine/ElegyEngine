@@ -134,7 +134,7 @@ namespace Elegy.MapCompiler
 				//lp.ProcessLighting();
 			}
 
-			AssetSystem.API.Assets.WriteLevel( mParameters.OutputPath, outputData );
+			AssetSystem.API.Assets.WriteLevel( $"{mParameters.RootPath}/{mParameters.OutputPath}", outputData );
 
 			mLogger.Success( $"Map compiled successfully. The result can be found at '{mParameters.OutputPath}'." );
 		}
@@ -194,8 +194,10 @@ namespace Elegy.MapCompiler
 				}
 				else
 				{
+					mParameters.RootPath = Directory.GetCurrentDirectory();
+
 					System.Console.WriteLine( "No root folder specified. Using the current working directory as the root:" );
-					System.Console.WriteLine( Directory.GetCurrentDirectory() );
+					System.Console.WriteLine( mParameters.RootPath );
 				}
 			}
 			else
