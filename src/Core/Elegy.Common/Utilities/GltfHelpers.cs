@@ -16,6 +16,16 @@ namespace Elegy.Common.Utilities
 {
 	public static class GltfHelpers
 	{
+		public static Vector3 TransformYUp( Vector3 yup )
+		{
+			return new( yup.X, yup.Z, yup.Y );
+		}
+
+		public static Vector4 TransformYUp( Vector4 yup )
+		{
+			return new( yup.X, yup.Z, yup.Y, yup.W );
+		}
+
 		public static Vector3[] LoadPositions( Accessor value )
 			=> value.AsVector3Array().ToArray();
 
@@ -50,7 +60,7 @@ namespace Elegy.Common.Utilities
 		public static uint[] LoadIndices( Accessor value )
 			=> value.AsIndicesArray().ToArray();
 
-		public static EngineMesh LoadMesh( MeshPrimitive primitive )
+		public static EngineMesh LoadMesh( MeshPrimitive primitive, bool yIntoZ = false )
 		{
 			EngineMesh engineMesh = new();
 
@@ -72,6 +82,13 @@ namespace Elegy.Common.Utilities
 					case "JOINTS_0": engineMesh.BoneIndices = LoadJoints( vertexAccessor.Value ); break;
 					case "WEIGHTS_0": engineMesh.BoneWeights = LoadWeights( vertexAccessor.Value ); break;
 				}
+			}
+
+			if ( yIntoZ )
+			{
+				engineMesh.Positions = engineMesh.Positions.Select( TransformYUp ).ToArray();
+				engineMesh.Normals = engineMesh.Normals.Select( TransformYUp ).ToArray();
+				engineMesh.Tangents = engineMesh.Tangents.Select( TransformYUp ).ToArray();
 			}
 
 			engineMesh.Indices = LoadIndices( primitive.IndexAccessor );
@@ -188,11 +205,15 @@ namespace Elegy.Common.Utilities
 					}
 				}
 
-				tryAppendAccessor( MeshVertexFlags.Positions, mesh.Positions );
+				Vector3[] positionsYUp = mesh.Positions.Select( TransformYUp ).ToArray();
+				Vector3[] normalsYUp = mesh.Normals.Select( TransformYUp ).ToArray();
+				Vector4[] tangentsYUp = mesh.Tangents.Select( TransformYUp ).ToArray();
+
+				tryAppendAccessor( MeshVertexFlags.Positions, positionsYUp );
 				tryAppendAccessor( MeshVertexFlags.Positions2D, mesh.Positions2D );
-				tryAppendAccessor( MeshVertexFlags.Normals, mesh.Normals );
+				tryAppendAccessor( MeshVertexFlags.Normals, normalsYUp );
 				tryAppendAccessor( MeshVertexFlags.Normals2D, mesh.Normals2D );
-				tryAppendAccessor( MeshVertexFlags.Tangents, mesh.Tangents );
+				tryAppendAccessor( MeshVertexFlags.Tangents, tangentsYUp );
 				tryAppendAccessor( MeshVertexFlags.Uv0, mesh.Uv0 );
 				tryAppendAccessor( MeshVertexFlags.Uv1, mesh.Uv1 );
 				tryAppendAccessor( MeshVertexFlags.Uv2, mesh.Uv2 );
