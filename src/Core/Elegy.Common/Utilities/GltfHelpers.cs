@@ -3,16 +3,14 @@
 
 using Elegy.Common.Assets.MeshData;
 using Elegy.Common.Maths;
-
 using EngineMesh = Elegy.Common.Assets.MeshData.Mesh;
 using GltfMesh = SharpGLTF.Schema2.Mesh;
 
 using SharpGLTF.Schema2;
-using SharpGLTF.Memory;
 using Buffer = SharpGLTF.Schema2.Buffer;
+
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
-using System.Xml.Linq;
 
 namespace Elegy.Common.Utilities
 {
