@@ -28,7 +28,6 @@ using Elegy.FileSystem.API;
 using Elegy.Framework;
 using Elegy.Framework.Bootstrap;
 using Elegy.MapCompiler.Assets;
-using Elegy.MapCompiler.ConsoleArguments;
 using Elegy.MapCompiler.Data.Processing;
 using Elegy.MapCompiler.Processors;
 
@@ -56,13 +55,113 @@ namespace Elegy.MapCompiler
 				DebugFreeze();
 			}
 
+			if ( mParameters.WithoutGeometry && mParameters.WithoutVisibility && mParameters.WithoutLighting )
+			{
+				System.Console.WriteLine( "You are using -nogeo, -novis and -nolight all at once." );
+				System.Console.WriteLine( "No work will be done on the map in this case." );
+				System.Console.WriteLine( "Just what on Earth do you expect? An eggless omelette?!" );
+				return;
+			}
+
 			System.Console.WriteLine( "Init" );
 
+			if ( !VerifyAndFixPaths() )
+			{
+				System.Console.WriteLine( "Failed to compile map: incorrect input paths" );
+				return;
+			}
+
+			if ( !LaunchEngine() )
+			{
+				System.Console.WriteLine( "Failed to compile map: cannot launch engine" );
+				return;
+			}
+
+			BrushMapDocument? document = LoadBrushMap();
+			if ( document is null )
+			{
+				return;
+			}
+
+			ElegyMapDocument? outputData = null;
+
+			if ( !mParameters.WithoutGeometry )
+			{
+				ProcessingData data = new();
+				GeometryProcessor processor = new( data, mParameters );
+				processor.GenerateGeometryFromMap( document );
+				processor.FixBrushOrigins();
+				processor.UpdateBoundaries();
+				//processor.SmoothenNormals();
+				//processor.GenerateDualGrid();
+
+				OutputProcessor op = new( data, mParameters );
+				op.GenerateOutputData();
+				op.OptimiseRenderSurfaces();
+
+				outputData = op.GetOutputData();
+			}
+			else
+			{
+				outputData = AssetSystem.API.Assets.LoadLevel( mParameters.OutputPath );
+				if ( outputData is null )
+				{
+					mLogger.Fatal( $"Cannot find '{mParameters.OutputPath}' for modification." );
+					mLogger.Log( $"             ^ It is needed since you are using '-nogeo', meaning the input" );
+					mLogger.Log( $"             ^ .map file is ignored; nothing is done with it." );
+					return;
+				}
+			}
+
+			if ( !mParameters.WithoutVisibility )
+			{
+				VisibilityProcessor vp = new( outputData, mParameters );
+				//vp.ProcessVisibility();
+			}
+
+			if ( !mParameters.WithoutLighting )
+			{
+				LightProcessor lp = new( outputData, mParameters );
+				//lp.GenerateLightmapUvs();
+				//lp.GenerateLightmapImages();
+				//lp.ProcessLighting();
+			}
+
+			AssetSystem.API.Assets.WriteLevel( mParameters.OutputPath, outputData );
+
+			mLogger.Success( $"Map compiled successfully. The result can be found at '{mParameters.OutputPath}'." );
+		}
+
+		private static bool LaunchEngine()
+		{
+			LaunchConfig config = new()
+			{
+				ToolMode = true
+			};
+
+			if ( !EngineSystem.Init( config,
+					   systemInitFunc: Init_Generated,
+					   systemPostInitFunc: PostInit_Generated,
+					   systemShutdownFunc: Shutdown_Generated,
+					   systemErrorFunc: ErrorMessage_Generated ) )
+			{
+				mLogger.Fatal(
+					EngineSystem.ShutdownReason is null
+					? "Engine failed to initialise: reason unknown"
+					: $"Engine failed to initialise: '{EngineSystem.ShutdownReason}'" );
+				return false;
+			}
+
+			return true;
+		}
+
+		private static bool VerifyAndFixPaths()
+		{
 			if ( mParameters.MapFile == string.Empty )
 			{
 				// The engine is still uninitialized, so we must use System.Console instead.
 				System.Console.WriteLine( "No map file was provided. Specify one with '-map path/to/file.map'." );
-				return;
+				return false;
 			}
 
 			if ( mParameters.RootPath == string.Empty )
@@ -103,32 +202,12 @@ namespace Elegy.MapCompiler
 				mParameters.MapFile = Path.GetRelativePath( Directory.GetCurrentDirectory(), mParameters.MapFile );
 			}
 
-			LaunchConfig config = new()
-			{
-				ToolMode = true
-			};
+			return true;
+		}
 
-			if ( !EngineSystem.Init( config,
-					   systemInitFunc: Init_Generated,
-					   systemPostInitFunc: PostInit_Generated,
-					   systemShutdownFunc: Shutdown_Generated,
-					   systemErrorFunc: ErrorMessage_Generated ) )
-			{
-				mLogger.Fatal(
-					EngineSystem.ShutdownReason is null
-					? "Engine failed to initialise: reason unknown"
-					: $"Engine failed to initialise: '{EngineSystem.ShutdownReason}'" );
-
-				mLogger.Error( "Failed to compile map." );
-				return;
-			}
-
-			if ( mParameters.MapFile == string.Empty )
-			{
-				mLogger.Error( "No map file was provided. Specify one with '-map path/to/file.map'." );
-				return;
-			}
-
+		private static BrushMapDocument? LoadBrushMap()
+		{
+			// First obtain the full path to the .map file
 			string? mapPath = Files.PathTo( mParameters.MapFile );
 			if ( mapPath == null )
 			{
@@ -137,7 +216,7 @@ namespace Elegy.MapCompiler
 							   Please check that the path is correct and that you are in the correct root folder. (Currently: '{Directory.GetCurrentDirectory()}')
 							   You can specify a custom root folder with '-root path/to/root'.
 							   """ );
-				return;
+				return null;
 			}
 
 			// If the output path wasn't provided, then we assume the user wants to output to the same location as the .map
@@ -169,105 +248,16 @@ namespace Elegy.MapCompiler
 								https://github.com/ElegyEngine/ElegyEngine/issues
 								Thank you for your patience. :3
 								""" );
-				return;
+				return null;
 			}
 
 			if ( document is null )
 			{
 				mLogger.Fatal( "An unknown error occured." );
-				return;
+				return null;
 			}
 
-			ProcessingData data = new();
-			GeometryProcessor processor = new( data, mParameters );
-			processor.GenerateGeometryFromMap( document );
-			processor.FixBrushOrigins();
-			processor.UpdateBoundaries();
-			//processor.SmoothenNormals();
-			//processor.GenerateDualGrid();
-
-			//VisibilityProcessor vp = new( data, mParameters );
-			//vp.ProcessVisibility();
-
-			//LightProcessor lp = new( data, mParameters );
-			//lp.GenerateLightmapUvs();
-			//lp.GenerateLightmapImages();
-			//lp.ProcessLighting();
-
-			OutputProcessor op = new( data, mParameters );
-			op.GenerateOutputData();
-			op.OptimiseRenderSurfaces();
-			op.WriteToFile( mParameters.OutputPath );
-
-			mLogger.Success( $"Map compiled successfully. The result can be found at '{mParameters.OutputPath}'." );
-		}
-
-		private static void DebugFreeze()
-		{
-			System.Console.Write( """
-			                      DEVELOPER: You have entered the 'debug freeze'. The map compiler will now freeze until a debugger is attached.
-			                      You can quit the map compiler by pressing Ctrl+C or closing the console window.
-			                      """ );
-
-			while ( true )
-			{
-				Thread.Sleep( 250 );
-
-				if ( !System.Diagnostics.Debugger.IsAttached )
-				{
-					continue;
-				}
-
-				System.Console.WriteLine( "Debugger attached! Continuing..." );
-				Thread.Sleep( 500 );
-				return;
-			}
-		}
-
-		private static bool ProcessArgs( string[] args )
-		{
-			if ( args.Length == 0 )
-			{
-				mLogger.Error( "No arguments were provided." );
-				return false;
-			}
-
-			if ( args.Length == 1 && args[0] == "-help" )
-			{
-				mLogger.Log( "Ah, a lost soul like myself. Let me guide you..." );
-				return false;
-			}
-
-			ParameterManager.ProcessArguments( args, out mParameters );
-			return true;
-		}
-
-		private static void PrintUsage()
-		{
-			const string message = """
-			                       In order to compile a map, you need to call me like so:
-			                       > Elegy.MapCompiler -map "game/maps/mymap.map" -root "C:/MyGame/game"
-
-			                       Now, here's a list of all parameters:
-			                       | NAME          | DESCRIPTION
-			                       
-			                         -map:           Path to the map, preferably absolute, can be relative to the game directory.
-			                         
-			                         -out:           Path to the resulting compiled map file, relative to the map file's directory.
-			                                         If left empty, I'll use the same path as the map file, but with a different extension.
-			                         
-			                         -root:          Path to the root directory, from which all assets are pulled.
-			                                         If left empty, I'll try to guess the root directory from the provided path to the map file.
-			                                         E.g. If you specify "-map 'C:/MyGame/game/maps/mymap.map'", your root folder will likely be 'C:/MyGame/'.
-			                                         If '-map' is relative to the game directory (e.g. "-map 'games/maps/mymap.map'"), I will instead
-			                                         use the current directory as the root.
-			                                         
-			                         -debugfreeze:   Freezes the compiler until a debugger is attached. Of no use to you, unless you're a developer.
-			                                         E.g. '-debugfreeze 1' will freeze the compiler until a debugger is attached. By default, it is off.
-			                       """;
-
-			// Since this is currently only ever called before the engine is initialized, we must use System.Console.
-			System.Console.WriteLine( message );
+			return document;
 		}
 	}
 }

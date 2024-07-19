@@ -242,9 +242,9 @@ namespace Elegy.MapCompiler.Processors
 			}
 		}
 
-		public void WriteToFile( string fileName )
+		public ElegyMapDocument GetOutputData()
 		{
-			mOutput.WriteToFile( fileName );
+			return mOutput;
 		}
 	}
 }
