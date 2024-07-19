@@ -93,6 +93,18 @@ namespace Elegy.MapCompiler.Processors
 			}
 		}
 
+		public void FixCoordinateSystem()
+		{
+			foreach ( var entity in Data.Entities )
+			{
+				Vector3 angles = entity.Pairs.GetVector3( "angles" );
+
+				angles.Y -= 90.0f;
+
+				entity.Pairs.SetVector3( "angles", angles );
+			}
+		}
+
 		public void FixBrushOrigins()
 		{
 			foreach ( var entity in Data.Entities )
