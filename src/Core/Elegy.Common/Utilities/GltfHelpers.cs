@@ -18,12 +18,12 @@ namespace Elegy.Common.Utilities
 	{
 		public static Vector3 TransformYUp( Vector3 yup )
 		{
-			return new( yup.X, yup.Z, yup.Y );
+			return new( yup.X, yup.Z, -yup.Y );
 		}
 
 		public static Vector4 TransformYUp( Vector4 yup )
 		{
-			return new( yup.X, yup.Z, yup.Y, yup.W );
+			return new( yup.X, yup.Z, -yup.Y, yup.W );
 		}
 
 		public static Vector3[] LoadPositions( Accessor value )
