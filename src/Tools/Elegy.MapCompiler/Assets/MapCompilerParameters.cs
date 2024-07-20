@@ -31,7 +31,9 @@ namespace Elegy.MapCompiler.Assets
 
 		#region Misc
 		[FloatParam( "-unitscale", 1.0f / 512.0f, 512.0f )]
-		public float GlobalScale { get; set; } = 64.0f;
+		public float UnitsPerMetre { get; set; } = 64.0f;
+
+		public float GlobalScale => 1.0f / UnitsPerMetre;
 		#endregion
 
 		#region Debug
