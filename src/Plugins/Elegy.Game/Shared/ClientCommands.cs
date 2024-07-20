@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Game.Client
+namespace Game.Shared
 {
 	[Flags]
 	public enum ClientActions
@@ -14,7 +14,7 @@ namespace Game.Client
 		Use = 1 << 4,
 		Reload = 1 << 5,
 		Flashlight = 1 << 6,
-		
+
 		LeanLeft = 1 << 7,
 		LeanRight = 1 << 8,
 		LeanForward = 1 << 9,
@@ -29,8 +29,10 @@ namespace Game.Client
 		// Movement direction in world coordinates
 		// Not exactly normalised, but doesn't contain speed
 		public Vector3 MovementDirection { get; set; }
+
 		// Euler view angles in world coordinates
 		public Vector3 ViewAngles { get; set; }
+
 		// What buttons are being held down (e.g. primary attack, jump etc.)
 		public ClientActions ActionStates { get; set; }
 	}

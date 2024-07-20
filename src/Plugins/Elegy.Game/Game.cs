@@ -16,6 +16,7 @@ using Game.Client;
 
 using Silk.NET.Input;
 using System.Diagnostics;
+using Game.Shared;
 
 namespace Game
 {

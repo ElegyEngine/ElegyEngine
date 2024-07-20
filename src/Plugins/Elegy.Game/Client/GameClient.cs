@@ -3,6 +3,7 @@
 
 using Elegy.Common.Maths;
 using Elegy.InputSystem.API;
+using Game.Shared;
 using Silk.NET.Input;
 
 namespace Game.Client
@@ -59,7 +60,7 @@ namespace Game.Client
 				mAngles.X -= mMousePositionDeltaSmooth.Y * 0.06f;
 			}
 			mCommands.ViewAngles = mAngles;
-	
+
 			var state = Controller.GenerateControllerState();
 			//mPresentation.Position = state.Position;
 			//mPresentation.Angles = mAngles;

@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Game.Client
+namespace Game.Shared
 {
 	// What the server sends back to the client
 	public struct PlayerControllerState
