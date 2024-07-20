@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Assets;
+using Elegy.ConsoleSystem;
 using Elegy.MapCompiler.Assets;
 using Elegy.MapCompiler.Data.Processing;
 
@@ -12,8 +13,12 @@ namespace Elegy.MapCompiler.Processors
 		public ProcessingData Data { get; }
 		public MapCompilerParameters Parameters { get; }
 
+		private TaggedLogger mLogger = new( "Geometry" );
+
 		public GeometryProcessor( ProcessingData data, MapCompilerParameters parameters )
 		{
+			mLogger.Log( "Init" );
+
 			Data = data;
 			Parameters = parameters;
 		}
@@ -29,6 +34,8 @@ namespace Elegy.MapCompiler.Processors
 
 		public void GenerateGeometryFromMap( BrushMapDocument map )
 		{
+			mLogger.Log( "GenerateGeometryFromMap" );
+
 			map.MergeInto( "worldspawn", "func_group" );
 			map.MergeInto( "worldspawn", "func_detail" );
 
@@ -50,6 +57,8 @@ namespace Elegy.MapCompiler.Processors
 
 		public void Scale( float scale )
 		{
+			mLogger.Log( $"Scale '{scale}' | {1.0f / scale} units per metre" );
+
 			foreach ( var entity in Data.Entities )
 			{
 				foreach ( var face in entity.Faces )
@@ -79,6 +88,8 @@ namespace Elegy.MapCompiler.Processors
 
 		public void UpdateBoundaries()
 		{
+			mLogger.Log( "UpdateBoundaries" );
+
 			Data.MapBoundaries = new Box3( Vector3.Zero, Vector3.One * 0.1f );
 
 			foreach ( var entity in Data.Entities )
@@ -95,6 +106,8 @@ namespace Elegy.MapCompiler.Processors
 
 		public void FixCoordinateSystem()
 		{
+			mLogger.Log( "FixCoordinateSystem" );
+
 			foreach ( var entity in Data.Entities )
 			{
 				Vector3 angles = entity.Pairs.GetVector3( "angles" );
@@ -107,6 +120,8 @@ namespace Elegy.MapCompiler.Processors
 
 		public void FixBrushOrigins()
 		{
+			mLogger.Log( "FixBrushOrigins" );
+
 			foreach ( var entity in Data.Entities )
 			{
 				// Point entities don't need origin adjustments, they don't

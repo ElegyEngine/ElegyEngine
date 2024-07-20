@@ -17,11 +17,13 @@ namespace Elegy.MapCompiler.Processors
 		public ProcessingData Data { get; }
 		public MapCompilerParameters Parameters { get; }
 
-		private TaggedLogger mLogger = new( "OutputProc" );
+		private TaggedLogger mLogger = new( "Output" );
 		private ElegyMapDocument mOutput = new();
 
 		public OutputProcessor( ProcessingData data, MapCompilerParameters parameters )
 		{
+			mLogger.Log( "Init" );
+
 			Data = data;
 			Parameters = parameters;
 		}
@@ -185,6 +187,8 @@ namespace Elegy.MapCompiler.Processors
 
 		public void OptimiseRenderSurfaces()
 		{
+			mLogger.Log( "OptimiseRenderSurfaces" );
+
 			foreach ( var entity in mOutput.Entities )
 			{
 				if ( entity.RenderMeshId < 0 )
@@ -250,6 +254,8 @@ namespace Elegy.MapCompiler.Processors
 
 		public void GenerateOutputData()
 		{
+			mLogger.Log( "GenerateOutputData" );
+
 			foreach ( var entity in Data.Entities )
 			{
 				mOutput.Entities.Add( new()
@@ -260,6 +266,11 @@ namespace Elegy.MapCompiler.Processors
 					Attributes = new( entity.Pairs )
 				} );
 			}
+
+			mLogger.Log( $"  * Entities:      {mOutput.Entities.Count}" );
+			mLogger.Log( $"  * Render meshes: {mOutput.RenderMeshes.Count}" );
+			mLogger.Log( $"  * Coll. meshes:  {mOutput.CollisionMeshes.Count}" );
+			mLogger.Log( $"  * Occl. meshes:  {mOutput.OccluderMeshes.Count}" );
 		}
 
 		public ElegyMapDocument GetOutputData()
