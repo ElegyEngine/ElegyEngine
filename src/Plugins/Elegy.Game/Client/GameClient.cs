@@ -5,7 +5,7 @@ using Elegy.Common.Maths;
 using Elegy.InputSystem.API;
 using Silk.NET.Input;
 
-namespace TestGame.Client
+namespace Game.Client
 {
 	public class GameClient
 	{

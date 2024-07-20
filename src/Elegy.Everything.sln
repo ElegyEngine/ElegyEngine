@@ -53,7 +53,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.RenderSystem", "Modul
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.DevConsole", "Plugins\Elegy.DevConsole\Elegy.DevConsole.csproj", "{5506E6CE-353C-47EB-A80D-749695F75025}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.TestGame", "Plugins\Elegy.TestGame\Elegy.TestGame.csproj", "{E8FDD62F-088F-41B6-80F6-94DFA765A909}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.Game", "Plugins\Elegy.Game\Elegy.Game.csproj", "{E8FDD62F-088F-41B6-80F6-94DFA765A909}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcsResearch", "Scratchpad\EcsResearch\EcsResearch.csproj", "{944B1B1E-85E5-40C4-9F2C-080A274CE07C}"
 EndProject

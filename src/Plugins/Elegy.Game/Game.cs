@@ -12,12 +12,12 @@ using Elegy.RenderSystem.API;
 using Elegy.RenderSystem.Objects;
 using Elegy.RenderWorld;
 
-using TestGame.Client;
+using Game.Client;
 
 using Silk.NET.Input;
 using System.Diagnostics;
 
-namespace TestGame
+namespace Game
 {
 	public class Game : IApplication
 	{

@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace TestGame.Client
+namespace Game.Client
 {
 	[Flags]
 	public enum ClientActions
