@@ -1,6 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.Common.Assets.MeshData;
 using Elegy.Common.Maths;
 
 namespace Elegy.Common.Assets.ElegyMapData
@@ -77,5 +78,20 @@ namespace Elegy.Common.Assets.ElegyMapData
 		/// materials for these lightmaps.
 		/// </summary>
 		public string LightmapTexture { get; set; } = string.Empty;
+
+		/// <summary>
+		/// Converts this into an Elegy render mesh.
+		/// </summary>
+		public Mesh ToMesh()
+			=> new()
+			{
+				Positions = Positions.ToArray(),
+				Normals = Normals.ToArray(),
+				Uv0 = Uvs.ToArray(),
+				Uv1 = LightmapUvs.ToArray(),
+				Color0 = Colours.Select( v => (Vector4B)v ).ToArray(),
+				Indices = Indices.Select( i => (uint)i ).ToArray(),
+				MaterialName = Material
+			};
 	}
 }

@@ -1,6 +1,8 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using Elegy.Common.Assets.MeshData;
+
 namespace Elegy.Common.Assets.ElegyMapData
 {
 	/// <summary>
@@ -17,6 +19,26 @@ namespace Elegy.Common.Assets.ElegyMapData
 		/// Material that this mesh is associated with.
 		/// </summary>
 		public string MaterialName { get; set; } = string.Empty;
+
+		/// <summary>
+		/// Converts this into an Elegy render mesh.
+		/// </summary>
+		public Mesh ToMesh()
+		{
+			var uniquePositionIndices = Positions.ToVectorIndexDictionary();
+
+			Mesh result = new()
+			{
+				MaterialName = MaterialName,
+				Positions = uniquePositionIndices.Keys.ToArray(),
+				Indices = Positions.Select( v =>
+				{
+					return (uint)uniquePositionIndices[v];
+				} ).ToArray()
+			};
+
+			return result;
+		}
 	}
 
 	/// <summary>
@@ -28,5 +50,11 @@ namespace Elegy.Common.Assets.ElegyMapData
 		/// Collision submeshes.
 		/// </summary>
 		public List<CollisionMeshlet> Meshlets { get; set; } = new();
+
+		/// <summary>
+		/// Converts this into a list of Elegy render meshes.
+		/// </summary>
+		public List<Mesh> ToMeshes()
+			=> Meshlets.Select( m => m.ToMesh() ).ToList();
 	}
 }
