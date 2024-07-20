@@ -93,6 +93,7 @@ namespace Elegy.MapCompiler
 				GeometryProcessor processor = new( data, mParameters );
 				processor.GenerateGeometryFromMap( document );
 				processor.Scale( 1.0f / mParameters.GlobalScale );
+				processor.FixCoordinateSystem();
 				processor.FixBrushOrigins();
 				processor.UpdateBoundaries();
 				//processor.SmoothenNormals();
