@@ -4,18 +4,17 @@
 using Elegy.AssetSystem.API;
 using Elegy.Common.Assets;
 using Elegy.Common.Interfaces;
+using Elegy.Common.Maths;
 using Elegy.ConsoleSystem;
 using Elegy.InputSystem.API;
 using Elegy.FileSystem.API;
 using Elegy.RenderSystem.API;
+using Elegy.RenderSystem.Objects;
 using Elegy.RenderWorld;
 
-using Silk.NET.Input;
 using TestGame.Client;
 
-using Elegy.PlatformSystem.API;
-using Elegy.Common.Maths;
-using Elegy.RenderSystem.Objects;
+using Silk.NET.Input;
 using System.Diagnostics;
 
 namespace TestGame
@@ -161,6 +160,43 @@ namespace TestGame
 			return !mUserWantsToExit;
 		}
 
+		private bool LoadLevel( string path )
+		{
+			string pathWithExt = Path.ChangeExtension( path, ".elf" );
+			string? fullPath = Files.PathTo( pathWithExt, PathFlags.File );
+
+			if ( fullPath is null )
+			{
+				mLogger.Error( $"Level '{pathWithExt}' does not exist." );
+
+				// Check for a TrenchBroom .map file, chances are the user did not compile
+				// the .elf for whatever reason.
+				string originalMapPath = Path.ChangeExtension( path, ".map" );
+				fullPath = Files.PathTo( originalMapPath, PathFlags.File );
+				if ( fullPath is not null )
+				{
+					// TODO: some people probably won't be reading the compile log, so what if we
+					// implemented intelligent log reading? The formatting is super consistent and
+					// it should be easy to find errors
+					mLogger.Log( "There's a .map file with the same name though. Did you compile it?" );
+					mLogger.Log( "If you did and it's not there, please read the compile log." );
+				}
+
+				return false;
+			}
+
+			ElegyMapDocument? map = Assets.LoadLevel( fullPath );
+			if ( map is null )
+			{
+				mLogger.Error( "Error while reading the map file" );
+				return false;
+			}
+
+
+
+			return true;
+		}
+
 		private int SpawnModel( string path, Vector3 position )
 		{
 			var renderMesh = Render.LoadMesh( path );
@@ -185,6 +221,11 @@ namespace TestGame
 			}
 
 			mLogger.Log( $"Loading level '{path}'..." );
+			if ( !LoadLevel( path ) )
+			{
+				mLogger.Error( $"Could not load level '{path}'" );
+				return;
+			}
 
 			mClient = new()
 			{

@@ -61,9 +61,9 @@ namespace TestGame.Client
 			mCommands.ViewAngles = mAngles;
 	
 			var state = Controller.GenerateControllerState();
-			mPresentation.Position = state.Position;
-			mPresentation.Angles = mAngles;
-			mPresentation.Update();
+			//mPresentation.Position = state.Position;
+			//mPresentation.Angles = mAngles;
+			//mPresentation.Update();
 
 			mMousePositionDelta = Vector2.Zero;
 			mOldMousePosition = Input.Mouse.Position;
@@ -134,8 +134,6 @@ namespace TestGame.Client
 		public ClientCommands Commands { get => mCommands; }
 
 		private ClientCommands mCommands = new();
-
-		Presentation mPresentation = new();
 
 		private Vector2 mOldMousePosition = Vector2.Zero;
 		private Vector2 mMousePositionDelta = Vector2.Zero;
