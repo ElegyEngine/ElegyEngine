@@ -150,14 +150,22 @@ namespace Elegy.MapCompiler.Processors
 			return mOutput.CollisionMeshes.Count - 1;
 		}
 
-		private static bool IsVertexUnique( RenderSurface optimisedSurface, RenderSurface originalSurface, int vertexIndex )
+		private static int TryAddUniqueVertex( RenderSurface optimisedSurface, RenderSurface originalSurface, int vertexIndex, float scale )
 		{
-			const float radiusTolerance = 1.0f / 256.0f;
-			const float radiusTolerancePosition = 1.0f / 64.0f;
+			float radiusTolerance = (1.0f / 128.0f); // This is effectively like compressing the normals into bytes
+			float radiusTolerancePosition = (1.0f / 5.0f) * scale; // Fifth of a TrenchBroom unit, just about half a centimetre
+
+			if ( optimisedSurface.VertexCount == 0 )
+			{
+				return -1;
+			}
 
 			for ( int i = 0; i < optimisedSurface.VertexCount; i++ )
 			{
-				bool samePositions = optimisedSurface.Positions[i].IsEqualApprox( originalSurface.Positions[vertexIndex], radiusTolerancePosition );
+				Vector3 positionA = optimisedSurface.Positions[i];
+				Vector3 positionB = originalSurface.Positions[vertexIndex];
+
+				bool samePositions = positionA.IsEqualApprox( positionB, radiusTolerancePosition );
 				bool sameNormals = optimisedSurface.Normals[i].IsEqualApprox( originalSurface.Normals[vertexIndex], radiusTolerance );
 				bool sameUvs = optimisedSurface.Uvs[i].IsEqualApprox( originalSurface.Uvs[vertexIndex], radiusTolerance );
 				bool sameLightmapUvs = optimisedSurface.LightmapUvs[i].IsEqualApprox( originalSurface.LightmapUvs[vertexIndex], radiusTolerance );
@@ -168,11 +176,11 @@ namespace Elegy.MapCompiler.Processors
 				// point to the same 3 vertices now that they've been reduced. That is dealt with elsewhere
 				if ( samePositions && sameNormals && sameUvs && sameLightmapUvs && sameColours )
 				{
-					return false;
+					return i;
 				}
 			}
 
-			return true;
+			return -1;
 		}
 
 		public void OptimiseRenderSurfaces()
@@ -192,39 +200,51 @@ namespace Elegy.MapCompiler.Processors
 					RenderSurface optimisedSurface = new();
 					List<int> vertexIndexRemap = new();
 
-					for ( int i = 0; i < surface.VertexCount; i++ )
+					for ( int i = 0; i < surface.Indices.Count; i++ )
 					{
-						vertexIndexRemap.Add( optimisedSurface.VertexCount );
+						int vertexIndex = surface.Indices[i];
 
-						if ( IsVertexUnique( optimisedSurface, surface, i ) )
+						int newVertexIndex = TryAddUniqueVertex( optimisedSurface, surface, vertexIndex, Parameters.GlobalScale );
+						if ( newVertexIndex < 0 )
 						{
+							vertexIndexRemap.Add( optimisedSurface.VertexCount );
+
 							optimisedSurface.AddVertex(
-								surface.Positions[i],
-								surface.Normals[i],
-								surface.Uvs[i],
-								surface.LightmapUvs[i],
-								surface.Colours[i] );
+								surface.Positions[vertexIndex],
+								surface.Normals[vertexIndex],
+								surface.Uvs[vertexIndex],
+								surface.LightmapUvs[vertexIndex],
+								surface.Colours[vertexIndex] );
+						}
+						else
+						{
+							vertexIndexRemap.Add( newVertexIndex );
 						}
 					}
 
-					for ( int i = 0; i < surface.Indices.Count; i += 3 )
+					for ( int i = 2; i < surface.Indices.Count; i += 3 )
 					{
-						int a = vertexIndexRemap[i];
-						int b = vertexIndexRemap[i + 1];
-						int c = vertexIndexRemap[i + 2];
+						int a = vertexIndexRemap[i - 2];
+						int b = vertexIndexRemap[i - 1];
+						int c = vertexIndexRemap[i];
 
 						if ( a == b || a == c || b == c )
 						{
 							// Degenerate micro triangle, got reduced by optimising
-							mLogger.Warning( $"Degenerate micro triangle: ({optimisedSurface.Positions[a]})" );
+							mLogger.Warning( $"Degenerate micro triangle: ({optimisedSurface.Positions[a] * Parameters.UnitsPerMetre})" );
 							continue;
 						}
 
-						optimisedSurface.AddTriangle( vertexIndexRemap[i], vertexIndexRemap[i + 1], vertexIndexRemap[i + 2] );
+						optimisedSurface.AddTriangle( a, b, c );
 					}
+
+					optimisedSurface.Material = surface.Material;
 
 					optimisedRenderSurfaces.Add( optimisedSurface );
 				}
+
+				mesh.Surfaces.Clear();
+				mesh.Surfaces = optimisedRenderSurfaces;
 			}
 		}
 
