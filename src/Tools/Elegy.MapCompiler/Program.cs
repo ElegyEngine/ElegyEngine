@@ -90,20 +90,20 @@ namespace Elegy.MapCompiler
 			if ( !mParameters.WithoutGeometry )
 			{
 				ProcessingData data = new();
-				GeometryProcessor processor = new( data, mParameters );
-				processor.GenerateGeometryFromMap( document );
-				processor.Scale( mParameters.GlobalScale );
-				processor.FixCoordinateSystem();
-				processor.FixBrushOrigins();
-				processor.UpdateBoundaries();
-				//processor.SmoothenNormals();
-				//processor.GenerateDualGrid();
+				GeometryProcessor geometry = new( data, mParameters );
+				geometry.GenerateGeometryFromMap( document );
+				geometry.Scale( mParameters.GlobalScale );
+				geometry.FixCoordinateSystem();
+				geometry.FixBrushOrigins();
+				geometry.UpdateBoundaries();
+				//geometry.SmoothenNormals();
+				//geometry.GenerateDualGrid();
 
-				OutputProcessor op = new( data, mParameters );
-				op.GenerateOutputData();
-				op.OptimiseRenderSurfaces();
+				TransmissionProcessor transmission = new( data, mParameters );
+				transmission.GenerateOutputData();
+				transmission.OptimiseRenderSurfaces();
 
-				outputData = op.GetOutputData();
+				outputData = transmission.GetOutputData();
 			}
 			else
 			{
@@ -120,19 +120,19 @@ namespace Elegy.MapCompiler
 			// TODO: VisibilityProcessor.Process( outputData, mParameters );
 			if ( !mParameters.WithoutVisibility )
 			{
-				VisibilityProcessor vp = new( outputData, mParameters );
-				//vp.GenerateProbes();
-				//vp.FilterProbes();
-				//vp.ProcessVisibility();
+				VisibilityProcessor visibility = new( outputData, mParameters );
+				//visibility.GenerateProbes();
+				//visibility.FilterProbes();
+				//visibility.ProcessVisibility();
 			}
 
 			// TODO: LightProcessor.Process( outputData, mParameters );
 			if ( !mParameters.WithoutLighting )
 			{
 				LightProcessor lp = new( outputData, mParameters );
-				//lp.GenerateLightmapUvs();
-				//lp.GenerateLightmapImages();
-				//lp.ProcessLighting();
+				//light.GenerateLightmapUvs();
+				//light.GenerateLightmapImages();
+				//light.ProcessLighting();
 			}
 
 			AssetSystem.API.Assets.WriteLevel( $"{mParameters.RootPath}/{mParameters.OutputPath}", outputData );

@@ -12,15 +12,15 @@ using RenderMesh = Elegy.Common.Assets.ElegyMapData.RenderMesh;
 
 namespace Elegy.MapCompiler.Processors
 {
-	public class OutputProcessor
+	public class TransmissionProcessor
 	{
 		public ProcessingData Data { get; }
 		public MapCompilerParameters Parameters { get; }
 
-		private TaggedLogger mLogger = new( "Output" );
+		private TaggedLogger mLogger = new( "Transmission" );
 		private ElegyMapDocument mOutput = new();
 
-		public OutputProcessor( ProcessingData data, MapCompilerParameters parameters )
+		public TransmissionProcessor( ProcessingData data, MapCompilerParameters parameters )
 		{
 			mLogger.Log( "Init" );
 
