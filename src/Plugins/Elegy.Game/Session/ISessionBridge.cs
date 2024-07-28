@@ -24,5 +24,12 @@ namespace Game.Session
 		/// from the server's gamestate packets.
 		/// </summary>
 		List<Entity> GetEntities();
+
+		/// <summary>
+		/// Returns an asset registry for asset string bookkeeping.
+		/// In singleplayer, it returns the server's own copy directly.
+		/// In multiplayer, it constructs itself from the server's packets.
+		/// </summary>
+		AssetRegistry GetAssetRegistry();
 	}
 }
