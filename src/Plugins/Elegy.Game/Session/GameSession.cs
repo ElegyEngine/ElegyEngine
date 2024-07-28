@@ -3,7 +3,16 @@
 
 namespace Game.Session
 {
-	public interface IStateAdapter
+	public class GameSession
 	{
+		public bool Init()
+		{
+			return true;
+		}
+
+		public void Shutdown()
+		{
+
+		}
 	}
 }

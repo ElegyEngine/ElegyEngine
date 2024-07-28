@@ -10,11 +10,24 @@ namespace Game.Client
 {
 	public class GameClient
 	{
+		private InputSystem mInput;
+		private MainMenu mMenu;
+
 		public GameClient()
 		{
 		}
 
-		public void Update()
+		public bool Init()
+		{
+			return true;
+		}
+
+		public void Shutdown()
+		{
+
+		}
+
+		public void Update( float delta )
 		{
 			Coords.DirectionsFromDegrees( mAngles, out var viewForward, out var viewUp );
 			Vector3 viewRight = viewForward.Cross( viewUp );
@@ -131,7 +144,7 @@ namespace Game.Client
 			return actionStates;
 		}
 
-		public IPlayerControllable Controller { get; set; }
+		public IPlayerControllable? Controller { get; set; }
 		public ClientCommands Commands { get => mCommands; }
 
 		private ClientCommands mCommands = new();

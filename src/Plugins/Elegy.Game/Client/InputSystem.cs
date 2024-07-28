@@ -5,5 +5,14 @@ namespace Game.Client
 {
 	public class InputSystem
 	{
+		public bool Init()
+		{
+			return true;
+		}
+
+		public void Shutdown()
+		{
+
+		}
 	}
 }

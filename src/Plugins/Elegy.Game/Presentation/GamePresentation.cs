@@ -3,7 +3,16 @@
 
 namespace Game.Presentation
 {
-	public class GameRenderer
+	public class GamePresentation
 	{
+		public bool Init()
+		{
+			return true;
+		}
+
+		public void Shutdown()
+		{
+
+		}
 	}
 }

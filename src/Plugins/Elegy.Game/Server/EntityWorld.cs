@@ -3,7 +3,16 @@
 
 namespace Game.Server
 {
-	public class GameWorld
+	public class EntityWorld
 	{
+		public bool Init()
+		{
+			return true;
+		}
+
+		public void Shutdown()
+		{
+
+		}
 	}
 }

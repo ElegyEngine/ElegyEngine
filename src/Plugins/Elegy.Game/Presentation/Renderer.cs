@@ -3,7 +3,7 @@
 
 namespace Game.Presentation
 {
-	public class Hud
+	public class Renderer
 	{
 		public bool Init()
 		{
