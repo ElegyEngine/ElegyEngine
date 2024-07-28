@@ -5,9 +5,9 @@ using Game.Session;
 
 namespace Game.Shared.Bridges
 {
-	public class SingleplayerSessionBridge : ISessionBridge
+	public class LocalSessionBridge : ISessionBridge
 	{
-		public SingleplayerSessionBridge( Server.GameServer server )
+		public LocalSessionBridge( Server.GameServer server )
 		{
 
 		}

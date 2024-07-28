@@ -5,9 +5,9 @@ using Game.Session;
 
 namespace Game.Shared.Bridges
 {
-	public class MultiplayerSessionBridge : ISessionBridge
+	public class RemoteSessionBridge : ISessionBridge
 	{
-		public MultiplayerSessionBridge( string hostIp )
+		public RemoteSessionBridge( string hostIp )
 		{
 
 		}

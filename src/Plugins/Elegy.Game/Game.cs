@@ -118,14 +118,15 @@ namespace Game
 		private bool StartSingleplayerServer()
 		{
 			mServer = new();
-			mSessionBridge = new SingleplayerSessionBridge( mServer );
+			mSessionBridge = new LocalSessionBridge( mServer );
 
 			return true;
 		}
 
 		private bool StartMultiplayerServer()
 		{
-			mSessionBridge = new MultiplayerSessionBridge( "localhost" );
+			mServer = new();
+			mSessionBridge = new LocalSessionBridge( mServer );
 			mLogger.Warning( "Multiplayer not supported yet" );
 
 			return false;
@@ -133,13 +134,17 @@ namespace Game
 
 		private bool StartDedicatedServer()
 		{
+			mServer = new();
 			mLogger.Warning( "Multiplayer not supported yet" );
+			
 			return false;
 		}
 
 		private bool JoinServer()
 		{
+			mSessionBridge = new RemoteSessionBridge( "your.ip.here" );
 			mLogger.Warning( "Multiplayer not supported yet" );
+
 			return false;
 		}
 		#endregion
