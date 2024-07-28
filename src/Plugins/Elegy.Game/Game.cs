@@ -154,13 +154,13 @@ namespace Game
 				return false;
 			}
 
-			if ( !mServer?.Setup( level ) ?? true )
+			if ( !mServer?.Setup( level ) ?? false )
 			{
 				mLogger.Warning( "Failed to start server" );
 				return false;
 			}
 
-			if ( !mSession?.Setup( mSessionBridge, level ) ?? true )
+			if ( !mSession?.Setup( mSessionBridge, level ) ?? false )
 			{
 				mLogger.Warning( "Failed to start session" );
 				return false;
