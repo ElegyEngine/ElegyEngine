@@ -100,10 +100,11 @@ namespace EcsResearch.Generators
 				}
 			}
 
-			StringBuilder sb = new( namespaces.Count + 1 );
-			for ( int i = namespaces.Count - 1; i > 0; i-- )
+			StringBuilder sb = new( namespaces.Count * 2 + 1 );
+			for ( int i = namespaces.Count - 1; i >= 0; i-- )
 			{
 				sb.Append( namespaces[i] );
+				sb.Append( '.' );
 			}
 			sb.Append( symbol.Name );
 
