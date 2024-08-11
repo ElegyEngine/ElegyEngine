@@ -232,7 +232,7 @@ namespace EcsResearch.Generators
 							sb.AppendLine(
 					$"""
 							case "{component.ComponentName}.{property.PropertyName}":
-								GetComp<{component.FullName}>( entity ).{property.PropertyName} = {GetParser( property.Type, property.TypeName )};
+								Create<{component.FullName}>( entity ).{property.PropertyName} = {GetParser( property.Type, property.TypeName )};
 								break;
 					"""
 							);
@@ -249,7 +249,8 @@ namespace EcsResearch.Generators
 					}
 					""" );
 
-					sourceProductionContext.AddSource( "ComponentRegistry.generated.cs", SourceText.From( sb.ToString(), Encoding.UTF8 ) );
+					sourceProductionContext.AddSource( "ComponentRegistry.Keyvalues.generated.cs",
+						SourceText.From( sb.ToString(), Encoding.UTF8 ) );
 				} );
 		}
 	}

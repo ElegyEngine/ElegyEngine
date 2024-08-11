@@ -95,8 +95,6 @@ namespace EcsResearch
 		public GameEntity( World world, Dictionary<string, string>? data )
 		{
 			EcsEntity = world.Spawn()
-				.Add<AudioSource>()
-				.Add<Transform>()
 				.Add( this );
 
 			if ( data is null )
@@ -143,11 +141,6 @@ namespace EcsResearch
 
 		public ref AudioSource AudioSource => ref EcsEntity.Ref<AudioSource>();
 		public ref Transform Transform => ref EcsEntity.Ref<Transform>();
-
-		public void FireOutputs( string name )
-		{
-			Console.WriteLine( $"FireOutputs: {name}" );
-		}
 	}
 	#endregion
 
