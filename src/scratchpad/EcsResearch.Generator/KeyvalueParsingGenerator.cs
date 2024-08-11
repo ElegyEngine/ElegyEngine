@@ -14,6 +14,7 @@ namespace EcsResearch.Generators
 	{
 		Enum,
 		String,
+		Bool,
 		Int,
 		Byte,
 		Short,
@@ -52,6 +53,9 @@ namespace EcsResearch.Generators
 		private static ComponentPropertyType GetComponentPropertyType( string typeName )
 			=> typeName switch
 			{
+				"Bool" => ComponentPropertyType.Bool,
+				"Boolean" => ComponentPropertyType.Bool,
+				"bool" => ComponentPropertyType.Bool,
 				"Double" => ComponentPropertyType.Double,
 				"double" => ComponentPropertyType.Double,
 				"Single" => ComponentPropertyType.Float,
@@ -116,6 +120,7 @@ namespace EcsResearch.Generators
 			{
 				ComponentPropertyType.Enum => $"({typeName})Enum.ToObject( typeof({typeName}), Parse.Int( value ) )",
 				ComponentPropertyType.String => "value",
+				ComponentPropertyType.Bool => "Parse.Int( value ) != 0",
 				ComponentPropertyType.Int => "Parse.Int( value )",
 				ComponentPropertyType.Byte => "(byte)Parse.Int( value )",
 				ComponentPropertyType.Short => "(short)Parse.Int( value )",
