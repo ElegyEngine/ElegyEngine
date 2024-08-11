@@ -30,7 +30,9 @@ namespace EcsResearch.Generators
 		Vector4,
 		Vector4B,
 		Vector4D,
-		Vector4I
+		Vector4I,
+
+		Output
 	}
 
 	public record ComponentPropertyMetadata
@@ -77,6 +79,8 @@ namespace EcsResearch.Generators
 				"Vector4B" => ComponentPropertyType.Vector4B,
 				"Vector4D" => ComponentPropertyType.Vector4D,
 				"Vector4I" => ComponentPropertyType.Vector4I,
+
+				"Output" => ComponentPropertyType.Output,
 
 				_ => throw new NotSupportedException( $"Component property unknown: '{typeName}'" )
 			};
@@ -137,6 +141,8 @@ namespace EcsResearch.Generators
 				ComponentPropertyType.Vector4B => "Parse.Vector4B( value )",
 				ComponentPropertyType.Vector4D => "Parse.Vector4D( value )",
 				ComponentPropertyType.Vector4I => "Parse.Vector4I( value )",
+
+				ComponentPropertyType.Output => "ParseOutput( entity, key, value )",
 
 				_ => throw new NotSupportedException()
 			};
