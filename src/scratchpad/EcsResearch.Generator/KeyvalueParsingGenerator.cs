@@ -88,7 +88,10 @@ namespace EcsResearch.Generators
 		private static string GetFullName( ISymbol symbol )
 		{
 			List<string> namespaces = new();
-			INamespaceOrTypeSymbol? containingSymbol = symbol.ContainingNamespace;
+			INamespaceOrTypeSymbol? containingSymbol = symbol.ContainingType is null 
+				? symbol.ContainingNamespace
+				: symbol.ContainingType;
+
 			while ( containingSymbol is not null )
 			{
 				if ( containingSymbol is INamespaceSymbol namespaceSymbol && namespaceSymbol.IsGlobalNamespace )
@@ -151,8 +154,10 @@ namespace EcsResearch.Generators
 		{
 			var pipeline = context.SyntaxProvider.ForAttributeWithMetadataName(
 				fullyQualifiedMetadataName: "EcsResearch.MapComponentAttribute",
+
 				predicate: static ( syntaxNode, cancellationToken )
-					=> syntaxNode is StructDeclarationSyntax,
+					=> syntaxNode is TypeDeclarationSyntax,
+
 				transform: static ( syntaxContext, cancellationToken ) =>
 				{
 					List<ComponentPropertyMetadata> propertyMetadatas = new();
