@@ -5,6 +5,39 @@ using EcsResearch;
 using fennecs;
 using System.Numerics;
 
+namespace EcsResearchFunky
+{
+	namespace ContainingNamespace.Another
+	{
+		public class ContainingContainingClass
+		{
+			public struct ContainingContainingStruct
+			{
+				public class ContainingClass
+				{
+					public struct ContainingStruct
+					{
+						[Requires<Transform>]
+						[MapComponent]
+						public record struct FunkyComponent()
+						{
+							public string Data { get; set; }
+						}
+					}
+				}
+
+				[Requires<AudioSource>]
+				[Requires<Transform>]
+				[MapComponent]
+				public record struct AnotherFunkyComponent()
+				{
+					public string Data { get; set; }
+				}
+			}
+		}
+	}
+}
+
 namespace EcsResearch
 {
 	#region Internal stuff
@@ -385,6 +418,15 @@ namespace EcsResearch
 		}
 	}
 
+	[MapComponent]
+	public struct Trigger
+	{
+		public Trigger() { }
+
+		public bool Once { get; set; }
+		public Output OnClientEnter { get; set; }
+	}
+
 	public struct Transform
 	{
 		public Transform() { }
@@ -403,17 +445,28 @@ namespace EcsResearch
 		static void Main( string[] args )
 		{
 			World world = new();
-			GameEntity ge = new( world, new()
+			GameEntity triggerEntity = new( world, new()
 			{
+				{ "targetname", "bob" },
+				{ "Trigger.Once", "1" },
+				{ "@Trigger.OnClientEnter", "billy.Door.Open" }
+			} );
+
+			GameEntity doorEntity = new( world, new()
+			{
+				{ "targetname", "billy" },
 				{ "Door.OpenAngle", "120" },
 				{ "Door.Speed", "180" }
 			} );
 
-			ge.EcsEntity.Ref<Door>().Open( ge );
+			// TODO: add a physics engine and spawn a player inside the trigger volume :)
+			//triggerEntity.FireOutput<Trigger>( "OnClientEnter" );
+			triggerEntity.Get<Trigger>().OnClientEnter.Fire();
+
 			for ( int i = 0; i < 100; i++ )
 			{
 				Door.Process( world, 0.016f );
-				Console.WriteLine( $"TravelFraction: {ge.EcsEntity.Ref<Door>().TravelFraction}" );
+				Console.WriteLine( $"TravelFraction: {doorEntity.EcsEntity.Ref<Door>().TravelFraction}" );
 			}
 		}
 	}
