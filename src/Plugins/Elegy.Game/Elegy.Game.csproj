@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <RootNamespace>Game</RootNamespace>
     <AssemblyName>Game</AssemblyName>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\extern\fennecs\fennecs\fennecs.csproj" />
     <ProjectReference Include="..\..\Core\Elegy.Common\Elegy.Common.csproj" />
+    <ProjectReference Include="..\..\Core\Elegy.ECS\Elegy.ECS.csproj" />
     <ProjectReference Include="..\..\Modules\Elegy.AssetSystem\Elegy.AssetSystem.csproj" />
     <ProjectReference Include="..\..\Modules\Elegy.ConsoleSystem\Elegy.ConsoleSystem.csproj" />
     <ProjectReference Include="..\..\Modules\Elegy.FileSystem\Elegy.FileSystem.csproj" />
@@ -25,6 +27,10 @@
     <ProjectReference Include="..\..\Modules\Elegy.PluginSystem\Elegy.PluginSystem.csproj" />
     <ProjectReference Include="..\..\Modules\Elegy.RenderSystem\Elegy.RenderSystem.csproj" />
     <ProjectReference Include="..\..\Modules\Elegy.RenderWorld\Elegy.RenderWorld.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Generators\Elegy.ECS.Generator\Elegy.ECS.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
 </Project>
