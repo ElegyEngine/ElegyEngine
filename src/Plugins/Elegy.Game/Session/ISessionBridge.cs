@@ -31,5 +31,15 @@ namespace Game.Session
 		/// In multiplayer, it constructs itself from the server's packets.
 		/// </summary>
 		AssetRegistry GetAssetRegistry();
+
+		/// <summary>
+		/// Sends a <see cref="ClientCommands"/> snapshot to the server.
+		/// This is performed by clients multiple times per second.
+		/// 
+		/// In singleplayer, this directly copies <paramref name="snapshot"/>
+		/// into the server's client snapshot buffer.
+		/// In multiplayer, it emits it as a packet.
+		/// </summary>
+		void SendInputSnapshot( in ClientCommands snapshot );
 	}
 }
