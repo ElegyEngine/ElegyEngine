@@ -3,25 +3,34 @@
 
 namespace Game.Session
 {
+	/// <summary>
+	/// Client connection state.
+	/// </summary>
 	public enum GameSessionState
 	{
+		/// <summary>
+		/// Client is disconnected.
+		/// </summary>
 		Disconnected,
-		Authenticating,
+
+		/// <summary>
+		/// Client initiated a connection.
+		/// </summary>
 		Connecting,
+
+		/// <summary>
+		/// Client is authenticating, e.g. via password.
+		/// </summary>
+		Authenticating,
+
+		/// <summary>
+		/// Client is loading assets and joining the game session.
+		/// </summary>
 		Joining,
+
+		/// <summary>
+		/// Client has fully connected and is playing.
+		/// </summary>
 		Connected
-	}
-
-	public class State
-	{
-		public bool Init()
-		{
-			return true;
-		}
-
-		public void Shutdown()
-		{
-
-		}
 	}
 }
