@@ -26,14 +26,25 @@ namespace Game.Shared
 
 	public struct ClientCommands
 	{
-		// Movement direction in world coordinates
-		// Not exactly normalised, but doesn't contain speed
+		/// <summary>
+		/// Time of recording this client command.
+		/// </summary>
+		public ulong Time { get; set; }
+
+		/// <summary>
+		/// Movement direction in world coordinates.
+		/// Not exactly normalised, but doesn't contain speed.
+		/// </summary>
 		public Vector3 MovementDirection { get; set; }
 
-		// Euler view angles in world coordinates
+		/// <summary>
+		/// Euler view angles in world coordinates.
+		/// </summary>
 		public Vector3 ViewAngles { get; set; }
 
-		// What buttons are being held down (e.g. primary attack, jump etc.)
+		/// <summary>
+		/// What buttons are being held down (e.g. primary attack, jump etc.)
+		/// </summary>
 		public ClientActions ActionStates { get; set; }
 	}
 }
