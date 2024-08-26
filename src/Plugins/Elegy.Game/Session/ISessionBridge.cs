@@ -22,6 +22,9 @@ namespace Game.Session
 		/// it returns a direct list of entities from the server.
 		/// In multiplayer, it maintains its own list and deserialises
 		/// from the server's gamestate packets.
+		/// 
+		/// It's important to note that this list doesn't
+		/// get re-generated. It is instead maintained.
 		/// </summary>
 		List<Entity> GetEntities();
 
