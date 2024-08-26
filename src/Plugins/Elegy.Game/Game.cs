@@ -142,7 +142,7 @@ namespace Game
 
 		private bool JoinServer()
 		{
-			mSessionBridge = new RemoteSessionBridge( "your.ip.here" );
+			mSessionBridge = new RemoteSessionBridge( IPAddress.IPv6Loopback );
 			mLogger.Warning( "Multiplayer not supported yet" );
 
 			return false;
