@@ -9,6 +9,8 @@ namespace Game.Shared.Bridges
 {
 	public class RemoteSessionBridge : ISessionBridge
 	{
+		public List<Entity> Entities { get; } = new();
+
 		public RemoteSessionBridge( IPAddress hostAddress )
 		{
 
@@ -20,9 +22,7 @@ namespace Game.Shared.Bridges
 		}
 
 		public List<Entity> GetEntities()
-		{
-			throw new NotImplementedException();
-		}
+			=> Entities;
 
 		public void SendInputSnapshot( in ClientCommands snapshot )
 		{
