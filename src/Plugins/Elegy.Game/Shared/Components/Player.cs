@@ -6,7 +6,7 @@ using Elegy.ECS;
 namespace Game.Shared.Components
 {
 	[GameComponent]
-	public struct Player
+	public partial struct Player
 	{
 		[EntityEvent<Entity.SpawnEvent>]
 		public void Spawn()
