@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Maths;
+using Elegy.ConsoleSystem;
 using Elegy.InputSystem.API;
 using Game.Shared;
 using Silk.NET.Input;
@@ -10,21 +11,41 @@ namespace Game.Client
 {
 	public class GameClient
 	{
-		private InputSystem mInput;
-		private MainMenu mMenu;
+		private TaggedLogger mLogger = new( "GameClient" );
+		private InputSystem mInput = new();
+		private MainMenu mMenu = new();
 
-		public GameClient()
-		{
-		}
+		private ClientCommands mCommands = new();
+
+		private Vector2 mOldMousePosition = Vector2.Zero;
+		private Vector2 mMousePositionDelta = Vector2.Zero;
+		private Vector2 mMousePositionDeltaSmooth = Vector2.Zero;
+
+		private Vector3 mMovementDirection = Vector3.Zero;
+		private Vector3 mAngles = Vector3.Zero;
+
+		public IPlayerControllable? Controller { get; set; }
+		public ClientCommands Commands => mCommands;
 
 		public bool Init()
 		{
+			mLogger.Log( "Init" );
+
+			if ( !mInput.Init() )
+			{
+				return false;
+			}
+
+			mMenu.Init();
+			mMenu.Visible = true;
+
 			return true;
 		}
 
 		public void Shutdown()
 		{
-
+			mLogger.Log( "Shutdown" );
+			mInput.Shutdown();
 		}
 
 		public void Update( float delta )
@@ -88,21 +109,13 @@ namespace Game.Client
 			Controller.HandleClientInput( Commands );
 		}
 
+		// TODO: move over to the Session layer
 		public void UpdateMovement( float deltaTime )
 		{
-			((BasicController)Controller).Update( deltaTime );
+			Controller?.Update( deltaTime );
 		}
 
-		public void GrabMouse()
-		{
-			Input.Mouse.Cursor.CursorMode = CursorMode.Hidden;
-		}
-
-		public void ReleaseMouse()
-		{
-			Input.Mouse.Cursor.CursorMode = CursorMode.Normal;
-		}
-
+		// TODO:
 		private ClientActions GrabActionStates()
 		{
 			ClientActions actionStates = 0;
@@ -143,17 +156,5 @@ namespace Game.Client
 
 			return actionStates;
 		}
-
-		public IPlayerControllable? Controller { get; set; }
-		public ClientCommands Commands { get => mCommands; }
-
-		private ClientCommands mCommands = new();
-
-		private Vector2 mOldMousePosition = Vector2.Zero;
-		private Vector2 mMousePositionDelta = Vector2.Zero;
-		private Vector2 mMousePositionDeltaSmooth = Vector2.Zero;
-
-		private Vector3 mMovementDirection = Vector3.Zero;
-		private Vector3 mAngles = Vector3.Zero;
 	}
 }
