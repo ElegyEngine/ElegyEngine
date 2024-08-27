@@ -102,16 +102,16 @@ namespace Game
 			mClient?.Update( delta );
 
 			// Send client state to server
-			mSession?.SendClientState( delta );
+			//mSession?.SendClientState( delta );
 
 			// Entity simulation on the server, sending data to clients etc.
 			mServer?.Update( delta );
 
 			// Receive entity state from server, predict & simulate clientside entities
-			mSession?.Update( delta );
+			//mSession?.Update( delta );
 
 			// Update camera, HUD etc. Rendering is handled elsewhere
-			mPresentation?.Update( delta );
+			//mPresentation?.Update( delta );
 
 			return !mUserWantsToExit;
 		}
@@ -187,17 +187,17 @@ namespace Game
 				return false;
 			}
 
-			if ( !mServer?.Setup( level ) ?? false )
+			if ( !mServer?.Setup( 16, level ) ?? false )
 			{
 				mLogger.Warning( "Failed to start server" );
 				return false;
 			}
 
-			if ( !mSession?.Setup( mSessionBridge, level ) ?? false )
-			{
-				mLogger.Warning( "Failed to start session" );
-				return false;
-			}
+			//if ( !mSession?.Setup( mSessionBridge, level ) ?? false )
+			//{
+			//	mLogger.Warning( "Failed to start session" );
+			//	return false;
+			//}
 
 			return true;
 		}
