@@ -20,9 +20,7 @@ namespace Game.Shared.Bridges
 		}
 
 		public List<Entity> GetEntities()
-		{
-			throw new NotImplementedException();
-		}
+			=> mServer.EntityWorld.Entities;
 
 		public void SendInputSnapshot( in ClientCommands snapshot )
 		{
@@ -33,7 +31,7 @@ namespace Game.Shared.Bridges
 
 		public void Update( float delta )
 		{
-			throw new NotImplementedException();
+			// *shrug*
 		}
 	}
 }
