@@ -2,14 +2,12 @@
 // SPDX-License-Identifier: MIT
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 
 namespace Elegy.ECS.Generator
 {
@@ -17,183 +15,109 @@ namespace Elegy.ECS.Generator
 	{
 		public string ComponentName { get; set; } = string.Empty;
 		public string ComponentFullName { get; set; } = string.Empty;
+
 		public List<string> DependencyNames { get; set; } = [];
+		public List<string> DependencyFullNames { get; set; } = [];
 	}
 
 	[Generator]
 	public class CreateComponentGenerator : IIncrementalGenerator
 	{
-		private string GetFullNameForDecl( TypeDeclarationSyntax syntax )
+		private static ComponentDependencyEntry ExtractComponentDependencyEntry( ITypeSymbol symbol, IEnumerable<string> fullNames )
 		{
-			string name = GetNameForTypeDecl( syntax );
-
-			List<string> namespaces = new( 4 );
-			SyntaxNode? containingNode = syntax.Parent;
-			while ( containingNode is not null )
+			string FindComponentFullName( string name )
 			{
-				if ( containingNode is NamespaceDeclarationSyntax @namespace )
+				foreach ( var fullName in fullNames )
 				{
-					namespaces.Add( @namespace.Name.ToString() );
-				}
-				else if ( containingNode is TypeDeclarationSyntax type )
-				{
-					namespaces.Add( GetNameForTypeDecl( type ) );
-				}
-
-				containingNode = containingNode.Parent;
-			}
-
-			StringBuilder sb = new( namespaces.Count * 2 + 1 );
-			for ( int i = namespaces.Count - 1; i >= 0; i-- )
-			{
-				sb.Append( namespaces[i] );
-				sb.Append( '.' );
-			}
-			sb.Append( name );
-
-			return sb.ToString();
-		}
-
-		private static SyntaxList<AttributeListSyntax>? GetAttributeLists( SyntaxNode node )
-		{
-			if ( node is TypeDeclarationSyntax typeDecl )
-			{
-				return typeDecl.AttributeLists;
-			}
-			else if ( node is MemberDeclarationSyntax memberDecl )
-			{
-				return memberDecl.AttributeLists;
-			}
-			return [];
-		}
-
-		private static string GetNameForTypeDecl( TypeDeclarationSyntax syntax )
-		{
-			if ( syntax is ClassDeclarationSyntax @class )
-			{
-				return @class.Identifier.ToString();
-			}
-			else if ( syntax is StructDeclarationSyntax @struct )
-			{
-				return @struct.Identifier.ToString();
-			}
-			else if ( syntax is RecordDeclarationSyntax @record )
-			{
-				return @record.Identifier.ToString();
-			}
-			else if ( syntax is InterfaceDeclarationSyntax @interface )
-			{
-				return @interface.Identifier.ToString();
-			}
-
-			return "unknown";
-		}
-
-		private static Func<SyntaxNode, CancellationToken, bool> MatchNodeByAttribute( Predicate<AttributeSyntax> any )
-			=> ( node, token ) =>
-			{
-				var attributeLists = GetAttributeLists( node );
-
-				foreach ( var attributeList in attributeLists )
-				{
-					foreach ( var attribute in attributeList.Attributes )
+					if ( fullName.EndsWith( $".{name}" ) )
 					{
-						if ( any( attribute ) )
-						{
-							return true;
-						}
+						return fullName;
 					}
 				}
 
-				return false;
+				return name;
+			}
+
+			ComponentDependencyEntry result = new()
+			{
+				ComponentName = symbol.Name,
+				ComponentFullName = Utilities.GetFullName( symbol )
 			};
 
-		private static Func<SyntaxNode, CancellationToken, bool> MatchNodeByAttributeName( Predicate<string> any )
-			=> MatchNodeByAttribute( attribute => any( attribute.Name.ToString() ) );
+			Console.WriteLine( $"Component: '{result.ComponentFullName}'" );
+			Console.WriteLine( $"     a.k.a '{result.ComponentName}'" );
+
+			foreach ( var attributeData in symbol.GetAttributes() )
+			{
+				if ( attributeData.AttributeClass is null )
+				{
+					continue;
+				}
+
+				string attributeName = attributeData.AttributeClass.Name;
+
+				Console.WriteLine( $"  * Attrib: {attributeName}" );
+
+				if ( attributeName.Contains( "Requires<" ) )
+				{
+					int leftArrow = attributeName.IndexOf( '<' ) + 1;
+					int rightArrow = attributeName.LastIndexOf( '>' );
+
+					string componentName = attributeName.Substring( leftArrow, rightArrow - leftArrow );
+					Console.WriteLine( $"    * This one requires a '{componentName}' component!" );
+
+					result.DependencyNames.Add( componentName );
+					result.DependencyFullNames.Add( FindComponentFullName( componentName ) );
+				}
+			}
+
+			return result;
+		}
 
 		public void Initialize( IncrementalGeneratorInitializationContext context )
 		{
-			// Step 1: obtain full names of all component types
-			var componentNamePipeline = context.SyntaxProvider.CreateSyntaxProvider(
-				predicate: ( node, token )
-					=> node is TypeDeclarationSyntax
-						&& MatchNodeByAttributeName( name => name.Contains( "GameComponent" ) )( node, token ),
-				transform: ( context, token )
-					=> GetFullNameForDecl( context.Node as TypeDeclarationSyntax ) );
-
-			// Step 2: get a list of dependencies for each component
-			var componentDependencyPipeline = context.SyntaxProvider.CreateSyntaxProvider<ComponentDependencyEntry>(
-				predicate: ( node, token )
-					=> node is TypeDeclarationSyntax
-						&& MatchNodeByAttributeName( name => name.Contains( "Requires<" ) )( node, token ),
-
-				transform: ( context, token ) =>
+			Utilities.SetupSymbolBasedGenerator( context,
+				implementationOutput: false,
+				action: ( production, symbols ) =>
 				{
-					var syntax = context.Node as TypeDeclarationSyntax;
-					Console.WriteLine( $"Type: {GetNameForTypeDecl( syntax )}" );
-					Console.WriteLine( $"  * Full name: {GetFullNameForDecl( syntax )}" );
+					// Step 1: obtain full names of all component types
+					var components = symbols
+						.Where( s => Utilities.HasAttribute( s, "Elegy.ECS.GameComponentAttribute" ) );
 
-					ComponentDependencyEntry result = new()
+					var componentFullNames = components
+						.Select( s => Utilities.GetFullName( (ITypeSymbol)s ) );
+
+					// Step 2: get a list of dependencies for each component
+					var componentsWithRequires = components
+						.Where( s => Utilities.HasAttribute( s, "Elegy.ECS.Requires", partial: true ) );
+
+					// Step 3: generate component dependency data
+					var componentDependencies = componentsWithRequires
+						.Select( s => ExtractComponentDependencyEntry( (ITypeSymbol)s, componentFullNames ) );
+
+					// Step 4: obtain the component registry name
+					string? fullRegistryName = Utilities.GetComponentRegistryFullName( symbols );
+					if ( fullRegistryName is null )
 					{
-						ComponentName = GetNameForTypeDecl( syntax ),
-						ComponentFullName = GetFullNameForDecl( syntax )
-					};
-
-					foreach ( var attributeList in syntax.AttributeLists )
-					{
-						foreach ( var attribute in attributeList.Attributes )
-						{
-							string attributeName = attribute.Name.ToString();
-							Console.WriteLine( $"  * Attrib: {attributeName}" );
-
-							if ( attributeName.Contains( "Requires<" ) )
-							{
-								int leftArrow = attributeName.IndexOf( '<' ) + 1;
-								int rightArrow = attributeName.LastIndexOf( '>' );
-
-								string componentName = attributeName.Substring( leftArrow, rightArrow - leftArrow );
-								Console.WriteLine( $"    * This one requires a '{componentName}' component!" );
-
-								// The full name will be resolved later
-								result.DependencyNames.Add( componentName );
-							}
-						}
+						throw new EntryPointNotFoundException( "There's no type that is marked with 'GenerateComponentRegistry'" );
 					}
 
-					return result;
-				} );
+					(string registryNamespaces, string registryName) = Utilities.SeparateNamespaceAndTypename( fullRegistryName );
 
-			var combinedPipeline = componentDependencyPipeline.Combine( componentNamePipeline.Collect() );
-
-			context.RegisterSourceOutput( combinedPipeline.Collect(),
-				static ( sourceProductionContext, data ) =>
-				{
-					string FindComponentFullName( string name )
-					{
-						var fullNames = data.First().Right;
-
-						foreach ( var fullName in fullNames )
-						{
-							if ( fullName.EndsWith( $".{name}" ) )
-							{
-								return fullName;
-							}
-						}
-
-						return name;
-					}
+					// Step 5: generate!
 
 					StringBuilder sb = new();
 					sb.AppendLine(
-					"""
+					$$"""
 					// This madness was auto-generated by Elegy.ECS.Generator
 					
 					using System;
 					using fennecs;
+					using Elegy.ECS;
 					
-					namespace Elegy.ECS;
-					
-					public static partial class ComponentRegistry
+					namespace {{registryNamespaces}};
+
+					public static partial class {{registryName}}
 					{
 						public static partial ref T Create<T>( Entity entity )
 							where T: notnull, new()
@@ -204,23 +128,21 @@ namespace Elegy.ECS.Generator
 							ref T result = ref GetComp<T>( entity );
 					""" );
 
-					foreach ( var item in data )
+					foreach ( var item in componentDependencies )
 					{
 						sb.AppendLine(
 					$$"""
-							if ( typeOfT == typeof( {{item.Left.ComponentFullName}} ) )
+							if ( typeOfT == typeof( {{item.ComponentFullName}} ) )
 							{
 					""" );
 
-						foreach ( var dependency in item.Left.DependencyNames )
+						foreach ( var dependency in item.DependencyFullNames )
 						{
-							string fullName = FindComponentFullName( dependency );
-
 							sb.AppendLine(
 					$$"""
-								if ( !entity.Has<{{fullName}}>() )
+								if ( !entity.Has<{{dependency}}>() )
 								{
-									Create<{{FindComponentFullName( dependency )}}>( entity );
+									Create<{{dependency}}>( entity );
 								}
 					""" );
 						}
@@ -239,7 +161,7 @@ namespace Elegy.ECS.Generator
 					}
 					""" );
 
-					sourceProductionContext.AddSource( "ComponentRegistry.Create.generated.cs",
+					production.AddSource( "ComponentRegistry.Create.generated.cs",
 						SourceText.From( sb.ToString(), Encoding.UTF8 ) );
 				} );
 		}
