@@ -12,6 +12,7 @@ namespace Game.Shared
 
 	public interface IPlayerControllable
 	{
+		void Update( float delta );
 		void HandleClientInput( ClientCommands commands );
 		PlayerControllerState GenerateControllerState();
 	}
