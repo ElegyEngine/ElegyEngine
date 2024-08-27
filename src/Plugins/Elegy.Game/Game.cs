@@ -14,6 +14,7 @@ using Game.Session;
 using Game.Shared.Bridges;
 
 using System.Diagnostics;
+using System.Net;
 
 namespace Game
 {
@@ -64,9 +65,10 @@ namespace Game
 				return StartDedicatedServer();
 			}
 
-			mClient = new();
-			mPresentation = new();
-			mSession = new();
+			if ( !StartClient() )
+			{
+				return false;
+			}
 
 			// TODO: since we don't have any UI yet, we'll force start an SP server
 			if ( !StartSingleplayerServer() || mServer is null )
@@ -114,7 +116,33 @@ namespace Game
 			return !mUserWantsToExit;
 		}
 
-		#region Server initialisation
+		#region Server and client initialisation
+		private bool StartClient()
+		{
+			mClient = new();
+			if ( !mClient.Init() )
+			{
+				mLogger.Error( "Failed to initialise client" );
+				return false;
+			}
+
+			mPresentation = new();
+			if ( !mPresentation.Init() )
+			{
+				mLogger.Error( "Failed to initialise client (presentation layer)" );
+				return false;
+			}
+
+			mSession = new();
+			if ( !mSession.Init() )
+			{
+				mLogger.Error( "Failed to initialise client (session layer)" );
+				return false;
+			}
+
+			return true;
+		}
+
 		private bool StartSingleplayerServer()
 		{
 			mServer = new();
