@@ -3,13 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-namespace EcsResearch.Generators
+namespace Elegy.ECS.Generator
 {
 	public enum ComponentPropertyType
 	{
@@ -86,43 +85,7 @@ namespace EcsResearch.Generators
 				_ => throw new NotSupportedException( $"Component property unknown: '{typeName}'" )
 			};
 
-		private static string GetFullName( ISymbol symbol )
-		{
-			List<string> namespaces = new();
-			INamespaceOrTypeSymbol? containingSymbol = symbol.ContainingType is null 
-				? symbol.ContainingNamespace
-				: symbol.ContainingType;
-
-			while ( containingSymbol is not null )
-			{
-				if ( containingSymbol is INamespaceSymbol namespaceSymbol && namespaceSymbol.IsGlobalNamespace )
-				{
-					break;
-				}
-
-				namespaces.Add( containingSymbol.Name );
-
-				if ( containingSymbol.ContainingType is null )
-				{
-					containingSymbol = containingSymbol.ContainingNamespace;
-				}
-				else
-				{
-					containingSymbol = containingSymbol.ContainingType;
-				}
-			}
-
-			StringBuilder sb = new( namespaces.Count * 2 + 1 );
-			for ( int i = namespaces.Count - 1; i >= 0; i-- )
-			{
-				sb.Append( namespaces[i] );
-				sb.Append( '.' );
-			}
-			sb.Append( symbol.Name );
-
-			return sb.ToString();
-		}
-
+		// TODO: custom parsers?
 		private static string GetParser( ComponentPropertyType type, string typeName )
 			=> type switch
 			{
@@ -151,64 +114,75 @@ namespace EcsResearch.Generators
 				_ => throw new NotSupportedException()
 			};
 
-		public void Initialize( IncrementalGeneratorInitializationContext context )
+		private static ComponentMetadata ExtractMetadata( ISymbol symbol )
 		{
-			var pipeline = context.SyntaxProvider.ForAttributeWithMetadataName(
-				fullyQualifiedMetadataName: "EcsResearch.MapComponentAttribute",
+			List<ComponentPropertyMetadata> propertyMetadatas = new();
 
-				predicate: static ( syntaxNode, cancellationToken )
-					=> syntaxNode is TypeDeclarationSyntax,
-
-				transform: static ( syntaxContext, cancellationToken ) =>
+			var typeSymbol = (ITypeSymbol)symbol;
+			var typeMembers = typeSymbol.GetMembers();
+			foreach ( var member in typeMembers )
+			{
+				if ( member is IPropertySymbol typeProperty )
 				{
-					List<ComponentPropertyMetadata> propertyMetadatas = new();
-
-					var typeSymbol = syntaxContext.TargetSymbol as ITypeSymbol;
-					var typeMembers = typeSymbol.GetMembers();
-					foreach ( var member in typeMembers )
+					if ( typeProperty.SetMethod is null )
 					{
-						if ( member is IPropertySymbol typeProperty )
-						{
-							if ( typeProperty.SetMethod is null )
-							{
-								continue;
-							}
-
-							propertyMetadatas.Add( new()
-							{
-								PropertyName = typeProperty.Name,
-								TypeName = typeProperty.Type.Name,
-								Type = typeProperty.Type.TypeKind switch
-								{
-									TypeKind.Enum => ComponentPropertyType.Enum,
-									_ => GetComponentPropertyType( typeProperty.Type.Name )
-								} } );
-						}
+						continue;
 					}
 
-					return new ComponentMetadata()
+					propertyMetadatas.Add( new()
 					{
-						FullName = GetFullName( syntaxContext.TargetSymbol ),
-						ComponentName = syntaxContext.TargetSymbol.Name,
-						Properties = propertyMetadatas
-					};
-				} );
+						PropertyName = typeProperty.Name,
+						TypeName = typeProperty.Type.Name,
+						Type = typeProperty.Type.TypeKind switch
+						{
+							TypeKind.Enum => ComponentPropertyType.Enum,
+							_ => GetComponentPropertyType( typeProperty.Type.Name )
+						}
+					} );
+				}
+			}
 
-			context.RegisterSourceOutput( pipeline.Collect(),
-				static ( sourceProductionContext, data ) =>
+			return new ComponentMetadata()
+			{
+				FullName = Utilities.GetFullName( typeSymbol ),
+				ComponentName = typeSymbol.Name,
+				Properties = propertyMetadatas
+			};
+		}
+
+		public void Initialize( IncrementalGeneratorInitializationContext context )
+		{
+			Utilities.SetupSymbolBasedGenerator( context,
+				implementationOutput: false,
+				action: static ( production, symbols ) =>
 				{
+					// Step 1: obtain all types with the respective attribute
+					var data = symbols
+						.Where( s => Utilities.HasAttribute( s, "Elegy.ECS.GameComponentAttribute" ) )
+						.Select( ExtractMetadata );
+
+					// Step 2: obtain the component registry name
+					string? fullRegistryName = Utilities.GetComponentRegistryFullName( symbols );
+					if ( fullRegistryName is null )
+					{
+						throw new EntryPointNotFoundException( "There's no type that is marked with 'GenerateComponentRegistry'" );
+					}
+
+					(string registryNamespaces, string registryName) = Utilities.SeparateNamespaceAndTypename( fullRegistryName );
+					
+					// Step 3: generate!
 					StringBuilder sb = new();
 					sb.AppendLine(
-					"""
+					$$"""
 					// This madness was auto-generated by Elegy.ECS.Generator
 					
 					using System;
 					using Elegy.Common.Utilities;
 					using fennecs;
 					
-					namespace Elegy.ECS;
-					
-					public static partial class ComponentRegistry
+					namespace {{registryNamespaces}};
+
+					public static partial class {{registryName}}
 					{
 						private static ref C GetComp<C>( Entity entity ) where C: new()
 						{
@@ -250,7 +224,7 @@ namespace EcsResearch.Generators
 					}
 					""" );
 
-					sourceProductionContext.AddSource( "ComponentRegistry.Keyvalues.generated.cs",
+					production.AddSource( $"{registryName}.Keyvalues.generated.cs",
 						SourceText.From( sb.ToString(), Encoding.UTF8 ) );
 				} );
 		}
