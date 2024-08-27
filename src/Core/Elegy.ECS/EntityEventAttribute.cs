@@ -3,14 +3,21 @@
 
 namespace Elegy.ECS
 {
-	public abstract class BaseEntityEventAttribute : Attribute
+	public abstract class BaseEventAttribute : Attribute
 	{
 		public abstract Type EventHandlerType { get; }
 	}
 
 	[AttributeUsage( AttributeTargets.Method )]
-	public class EntityEventAttribute<T> : BaseEntityEventAttribute
+	public class EntityEventAttribute<T> : BaseEventAttribute
 		where T: Delegate
+	{
+		public override Type EventHandlerType => typeof( T );
+	}
+
+	[AttributeUsage( AttributeTargets.Method )]
+	public class SystemEventAttribute<T> : BaseEventAttribute
+		where T : Delegate
 	{
 		public override Type EventHandlerType => typeof( T );
 	}
