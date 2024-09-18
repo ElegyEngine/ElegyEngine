@@ -85,9 +85,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.RenderWorld", "Module
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.DevConsoleApp", "Tools\Elegy.DevConsoleApp\Elegy.DevConsoleApp.csproj", "{20B32B55-72CC-4F9E-841B-3DDFDB917A18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elegy.ECS.Generator", "Generators\Elegy.ECS.Generator\Elegy.ECS.Generator.csproj", "{1BDA4FBB-7006-434F-80C2-F0A45E011F4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.ECS.Generator", "Generators\Elegy.ECS.Generator\Elegy.ECS.Generator.csproj", "{1BDA4FBB-7006-434F-80C2-F0A45E011F4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elegy.ECS", "Core\Elegy.ECS\Elegy.ECS.csproj", "{7334C3E7-D1FC-4885-8954-DBC9E1BDE017}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.ECS", "Core\Elegy.ECS\Elegy.ECS.csproj", "{7334C3E7-D1FC-4885-8954-DBC9E1BDE017}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.Game.Tests", "Tests\Elegy.Game.Tests\Elegy.Game.Tests.csproj", "{C0B1B5CD-83CA-44DF-BDA1-A7A9E6C84946}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -227,6 +229,10 @@ Global
 		{7334C3E7-D1FC-4885-8954-DBC9E1BDE017}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7334C3E7-D1FC-4885-8954-DBC9E1BDE017}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7334C3E7-D1FC-4885-8954-DBC9E1BDE017}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0B1B5CD-83CA-44DF-BDA1-A7A9E6C84946}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0B1B5CD-83CA-44DF-BDA1-A7A9E6C84946}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0B1B5CD-83CA-44DF-BDA1-A7A9E6C84946}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0B1B5CD-83CA-44DF-BDA1-A7A9E6C84946}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -266,6 +272,7 @@ Global
 		{20B32B55-72CC-4F9E-841B-3DDFDB917A18} = {48F3CFB9-0F03-4627-80DA-1E60BA0158E5}
 		{1BDA4FBB-7006-434F-80C2-F0A45E011F4A} = {5961BB45-8060-4916-A0AB-D2922BB693D7}
 		{7334C3E7-D1FC-4885-8954-DBC9E1BDE017} = {F41FE246-7C7B-450A-8210-75069071CCAD}
+		{C0B1B5CD-83CA-44DF-BDA1-A7A9E6C84946} = {C1767200-D5C3-4650-9346-4E0E2CE2EA74}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2F37BB09-DC21-4691-83D8-55A741939103}
