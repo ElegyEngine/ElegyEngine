@@ -9,7 +9,7 @@ namespace Game.Server
 {
 	public partial class GameServer
 	{
-		public List<ClientConnection> Connections { get; } = new();
+		public List<ClientConnection> Connections { get; }
 		
 		public void ClientStartedConnecting( IPAddress clientAddress )
 		{
