@@ -1,7 +1,6 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Common.Assets;
 using Game.Server.Bridges;
 using Game.Session;
 using Game.Shared;
@@ -40,22 +39,34 @@ namespace Game.Server
 			} );
 		}
 
-		public void AcceptClientInput( int clientId, in ClientCommands snapshot )
+		public void ConnectionModify( int clientId, GameSessionState newState )
 		{
-			if ( clientId >= Connections.Count )
+			var client = Connections[clientId];
+
+			mLogger.Verbose( $"Connection '{client.Address}' modified, new state: {newState}" );
+			Connections[clientId].State = newState;
+		}
+
+		public void ConnectionTerminate( int clientId, string reason = "Unknown error" )
+		{
+			var client = Connections[clientId];
+
+			client.Bridge.SendDisconnect( reason );
+			ConnectionModify( clientId, GameSessionState.Disconnected );
+		}
+
+		public int GetClientId( IPAddress clientAddress )
+		{
+			foreach ( var connection in Connections )
 			{
-				//mLogger.Error( $"Received input snapshot from an out-of-range client" );
-				return;
+				if ( connection.Address == clientAddress
+					&& connection.State != GameSessionState.Disconnected )
+				{
+					return connection.Id;
+				}
 			}
 
-			ClientConnection client = Connections[clientId];
-
-			if ( client.State != Session.GameSessionState.Connected )
-			{
-				//mLogger.Warning( $"Received input snapshot from a client that hasn't yet spawned" );
-			}
-
-			Connections[clientId].InputSnapshots.Add( snapshot );
+			return -1;
 		}
 	}
 }
