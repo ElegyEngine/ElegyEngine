@@ -65,6 +65,20 @@ namespace Elegy.Common.Utilities
 			return 0.0f;
 		}
 
+		/// <summary>
+		/// Parses a float from a string.
+		/// </summary>
+		/// <param name="token">Something like "20.05".</param>
+		/// <returns>A valid floating-point value on successful parse, 0.0f if the token is invalid.</returns>
+		public static float Float( ReadOnlySpan<char> token )
+		{
+			if ( TryFloat( token, out float result ) )
+			{
+				return result;
+			}
+
+			return 0.0f;
+		}
 		// TODO: DateOnly instead of DateTime?
 
 		/// <summary>
