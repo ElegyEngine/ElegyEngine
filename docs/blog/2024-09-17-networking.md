@@ -120,7 +120,7 @@ Here's how the game protocol may concretely look in code, from the end user's PO
 public partial struct Vehicle
 {
     // Called on the clientside
-    [Event<Entity.ClientUpdateEvent>]
+    [Event]
     public void ClientUpdate( Entity.ClientUpdateData data )
     {
         var rpc = data.Session.Rpc;
@@ -146,7 +146,7 @@ public partial struct Explosive
 {
     // Serverside combat-related event
     // When this entity is damaged, it immediately explodes
-    [Event<Entity.DamageEvent>]
+    [Event]
     public void OnDamage( Entity.DamageData data )
     {
         var rpc = data.Server.Rpc;
