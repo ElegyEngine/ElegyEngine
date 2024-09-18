@@ -63,10 +63,13 @@ namespace Game
 			mLogger.Log( "Start" );
 			mStopwatch.Restart();
 
-			bool headlessMode = Console.Arguments.ContainsKey( "-server" );
+			string mapName = Console.Arguments.GetValueOrDefault( "+map", "test2" );
+			int maxPlayers = Console.Arguments.GetInt( "+maxplayers", 16 );
+
+			bool headlessMode = Console.Arguments.ContainsKey( "-headless" );
 			if ( headlessMode )
 			{
-				return StartDedicatedServer();
+				return StartServer( mapName, maxPlayers );
 			}
 
 			if ( !StartClient() )
@@ -75,12 +78,7 @@ namespace Game
 			}
 
 			// TODO: since we don't have any UI yet, we'll force start an SP server
-			if ( !StartSingleplayerServer() || mServer is null )
-			{
-				return false;
-			}
-
-			return StartLevel( "test2" );
+			return StartServerAndJoin( mapName );
 		}
 
 		public void Shutdown()
@@ -137,51 +135,67 @@ namespace Game
 				return false;
 			}
 
-			mSession = new();
-			if ( !mSession.Init() )
+			return true;
+		}
+
+		/// <summary>
+		/// Starts a game instance and joins it.
+		/// </summary>
+		private bool StartServerAndJoin( string mapName, int maxPlayers = 1 )
+		{
+			if ( !StartServer( mapName, maxPlayers ) )
 			{
-				mLogger.Error( "Failed to initialise client (session layer)" );
 				return false;
 			}
 
+			// In singleplayer, update every frame so
+			// there's no need for clientside prediction
+			if ( maxPlayers == 1 )
+			{
+				mServer.ServerUpdateRate = 1000;
+			}
+
+			return StartJoiningServer( IPAddress.IPv6Loopback );
+		}
+
+		/// <summary>
+		/// Joins a game instance.
+		/// </summary>
+		private bool StartJoiningServer( IPAddress address )
+		{
+			if ( mClient is null )
+			{
+				mLogger.Error( "Tried joining server without a client" );
+				return false;
+			}
+
+			mSession = new( mClient, mEntityWorld );
+
+			// In singleplayer, don't waste time on sending & receiving your own packets.
+			// But also take into account that a headless server may run on the same machine!
+			var sessionBridgeFactory = IServerBridge () =>
+			{
+				if ( IPAddress.IsLoopback( address ) && mServer is not null )
+				{
+					return new LocalSessionBridge( mServer, mSession );
+				}
+
+				return new RemoteSessionBridge( mSession, address );
+			};
+
+			mSession.Bridge = sessionBridgeFactory();
+			mSession.Bridge.SendJoinRequest( address );
+
+			// The actual connection will happen over the course of a few seconds,
+			// the session bridge will take care of it all.
 			return true;
-		}
-
-		private bool StartSingleplayerServer()
-		{
-			mServer = new();
-			mSessionBridge = new LocalSessionBridge( mServer );
-
-			return true;
-		}
-
-		private bool StartMultiplayerServer()
-		{
-			mServer = new();
-			mSessionBridge = new LocalSessionBridge( mServer );
-			mLogger.Warning( "Multiplayer not supported yet" );
-
-			return false;
-		}
-
-		private bool StartDedicatedServer()
-		{
-			mServer = new();
-			mLogger.Warning( "Multiplayer not supported yet" );
-			
-			return false;
-		}
-
-		private bool JoinServer()
-		{
-			mSessionBridge = new RemoteSessionBridge( IPAddress.IPv6Loopback );
-			mLogger.Warning( "Multiplayer not supported yet" );
-
-			return false;
 		}
 		#endregion
 
-		private bool StartLevel( string path )
+		/// <summary>
+		/// Starts a game instance.
+		/// </summary>
+		private bool StartServer( string path, int maxPlayers = 1 )
 		{
 			mLogger.Log( "StartLevel" );
 			ElegyMapDocument? level = LoadLevel( $"maps/{path}" );
@@ -191,17 +205,13 @@ namespace Game
 				return false;
 			}
 
-			if ( !mServer?.Setup( 16, level ) ?? false )
+			mServer = new( mEntityWorld, maxPlayers );
+
+			if ( !mServer.Setup( level ) )
 			{
 				mLogger.Warning( "Failed to start server" );
 				return false;
 			}
-
-			//if ( !mSession?.Setup( mSessionBridge, level ) ?? false )
-			//{
-			//	mLogger.Warning( "Failed to start session" );
-			//	return false;
-			//}
 
 			return true;
 		}
