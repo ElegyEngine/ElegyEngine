@@ -5,7 +5,7 @@ using Elegy.ECS;
 
 namespace Game.Shared.Components
 {
-	[GameComponent]
+	[Component]
 	public partial struct Transform
 	{
 		public Vector3 Position { get; set; }

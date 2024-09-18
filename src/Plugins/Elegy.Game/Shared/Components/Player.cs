@@ -7,7 +7,7 @@ using Game.Server;
 
 namespace Game.Shared.Components
 {
-	[GameComponent]
+	[Component]
 	[Requires<Transform>]
 	public partial struct Player
 	{
