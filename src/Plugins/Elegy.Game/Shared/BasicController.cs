@@ -9,6 +9,11 @@ namespace Game.Shared
 		Vector3 mDirection = new();
 		Vector3 mViewAngles = new();
 
+		public void Setup( EntityWorld world )
+		{
+
+		}
+
 		public void Update( float dt )
 		{
 			mPosition += mDirection * dt;
