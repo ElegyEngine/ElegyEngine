@@ -24,7 +24,8 @@ namespace Elegy.Launcher2
 					},
 
 				windowPlatform:
-					Window.GetWindowPlatform( viewOnly: false ) ?? throw new Exception( "SDL2 not found" )
+					Window.GetWindowPlatform( viewOnly: false )
+					?? throw new Exception( "SDL2 not found" )
 			);
 		}
 	}
