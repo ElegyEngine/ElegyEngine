@@ -12,6 +12,7 @@ using Game.Presentation;
 using Game.Server;
 using Game.Session;
 using Game.Session.Bridges;
+using Game.Shared;
 
 using System.Diagnostics;
 using System.Net;
@@ -26,8 +27,8 @@ namespace Game
 		private GameClient? mClient; // User input handling, main menu etc.
 		private GamePresentation? mPresentation; // Rendering, HUD etc.
 		private GameSession? mSession; // Clientside game state
-		private GameServer? mServer; // Serverside entities etc.
-		private ISessionBridge? mSessionBridge; // Bridge between server and session
+		private GameServer? mServer; // Serverside entities etc. null when connecting to a server
+
 		// Clientside and/or serverside game entities. In singleplayer, it is shared
 		// between GameSession and GameServer, in multiplayer it is only in GameSession.
 		private EntityWorld mEntityWorld = new();
