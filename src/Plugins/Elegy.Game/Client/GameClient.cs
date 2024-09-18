@@ -11,7 +11,7 @@ namespace Game.Client
 {
 	public class GameClient
 	{
-		private TaggedLogger mLogger = new( "GameClient" );
+		private TaggedLogger mLogger = new( "Client" );
 		private InputSystem mInput = new();
 		private MainMenu mMenu = new();
 
