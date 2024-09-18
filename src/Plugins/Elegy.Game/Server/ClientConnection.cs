@@ -55,5 +55,12 @@ namespace Game.Server
 		{
 			return GetInputSnapshotInPast( 0 );
 		}
+
+		public void Renew( IPAddress address, IClientBridge bridge )
+		{
+			Address = address;
+			Bridge = bridge;
+			State = GameSessionState.Connecting;
+		}
 	}
 }
