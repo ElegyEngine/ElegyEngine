@@ -7,7 +7,6 @@ namespace Game.Server
 {
 	public partial class GameServer
 	{
-		public EntityWorld EntityWorld { get; } = new();
 		public int MaxPlayers => Connections.Capacity;
 
 		/// <summary>
