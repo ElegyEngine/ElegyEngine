@@ -95,6 +95,28 @@ namespace Elegy.Common.Utilities
 				Y = Float( ystring )
 			};
 		}
+
+		/// <summary>
+		/// Parses a <see cref="System.Numerics.Vector3"/> from a string.
+		/// </summary>
+		/// <param name="token">A string like "10 20 30".</param>
+		public static Vector3 Vector3( string token )
+		{
+			int firstSpace = token.IndexOf( ' ' );
+			int secondSpace = token.IndexOf( ' ', firstSpace + 1 );
+
+			ReadOnlySpan<char> xstring = token.AsSpan( 0, firstSpace );
+			ReadOnlySpan<char> ystring = token.AsSpan( firstSpace + 1, secondSpace - firstSpace );
+			ReadOnlySpan<char> zstring = token.AsSpan( secondSpace );
+
+			return new()
+			{
+				X = Float( xstring ),
+				Y = Float( ystring ),
+				Z = Float( zstring )
+			};
+		}
+
 		// TODO: DateOnly instead of DateTime?
 
 		/// <summary>
