@@ -11,6 +11,8 @@ namespace Game.Shared.Components
 	[Requires<Transform>]
 	public partial struct Player
 	{
+		[EventModel] public record struct PlayerSpawnedEvent( Player player );
+
 		public Player() { }
 
 		public IPlayerControllable Controller { get; set; } = new BasicController();
