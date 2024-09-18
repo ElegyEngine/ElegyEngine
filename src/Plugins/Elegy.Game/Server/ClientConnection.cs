@@ -12,6 +12,8 @@ namespace Game.Server
 	/// </summary>
 	public class ClientConnection
 	{
+		private int mConnectionRingIndex = 0;
+
 		/// <summary>
 		/// ID of the client. Client 0 is typically a host in a LAN game.
 		/// </summary>
@@ -37,9 +39,21 @@ namespace Game.Server
 		/// The server keeps track of the last 64 input snapshots from the client,
 		/// partly for the purposes of rollback, partly for cheating.
 		/// </summary>
-		public List<ClientCommands> InputSnapshots { get; set; } = new( 64 );
+		public ClientCommands[] InputSnapshots { get; } = new ClientCommands[64];
 
-		// TODO: have an e.g. ENet peer object here so we can actually interact with
-		// clients over the network, kick them etc.
+		public void AddInputSnapshot( ClientCommands snapshot )
+		{
+			InputSnapshots.RingAdd( snapshot, 64, mConnectionRingIndex++ );
+		}
+
+		public ClientCommands GetInputSnapshotInPast( int pastSteps = 1 )
+		{
+			return InputSnapshots.RingAt( 64, mConnectionRingIndex - pastSteps );
+		}
+
+		public ClientCommands GetLatestInputSnapshot()
+		{
+			return GetInputSnapshotInPast( 0 );
+		}
 	}
 }
