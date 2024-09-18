@@ -97,5 +97,18 @@ namespace Elegy.Common.Extensions
 			int index = System.Random.Shared.Next() % list.Count;
 			return list[index];
 		}
+
+		public static int RingAdd<T>( this IList<T> list, T element, int ringSize, int index )
+		{
+			index %= ringSize;
+			list[index] = element;
+			return index;
+		}
+
+		public static T RingAt<T>( this IList<T> list, int ringSize, int index )
+		{
+			index %= ringSize;
+			return list[index];
+		}
 	}
 }
