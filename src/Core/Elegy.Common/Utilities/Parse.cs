@@ -79,6 +79,22 @@ namespace Elegy.Common.Utilities
 
 			return 0.0f;
 		}
+
+		/// <summary>
+		/// Parses a <see cref="System.Numerics.Vector2"/> from a string.
+		/// </summary>
+		/// <param name="token">A string like "10 20".</param>
+		public static Vector2 Vector2( string token )
+		{
+			ReadOnlySpan<char> xstring = token.AsSpan( 0, token.IndexOf( ' ' ) );
+			ReadOnlySpan<char> ystring = token.AsSpan( token.IndexOf( ' ' ) + 1 );
+
+			return new()
+			{
+				X = Float( xstring ),
+				Y = Float( ystring )
+			};
+		}
 		// TODO: DateOnly instead of DateTime?
 
 		/// <summary>
