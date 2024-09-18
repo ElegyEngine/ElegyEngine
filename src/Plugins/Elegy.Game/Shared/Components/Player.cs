@@ -19,25 +19,33 @@ namespace Game.Shared.Components
 
 		public IPlayerControllable Controller { get; set; } = new BasicController();
 
-		[EntityEvent<Entity.SpawnEvent>]
-		public void Spawn()
+		[Event]
+		public void Spawn( Entity.SpawnEvent data )
 		{
-			
+			// Notify entities that a player has spawned
+			data.Self.World.Dispatch<PlayerSpawnedEvent>( new( this ) );
+
+			// Set up the controller so that it can
+			// collide against the world and so on
+			Controller.Setup( data.Self.World );
 		}
 
-		// This event attrib doesn't do anything at the moment,
-		// ServerUpdate and ClientUpdate are called manually elsewhere
-		[SystemEvent<Entity.ServerUpdateEvent>]
-		public static void ServerUpdate( EntityWorld world, float delta )
+		// Updates all players on the server
+		[GroupEvent]
+		public static void ServerUpdate( Entity.ServerUpdateEvent data, ref Player player )
 		{
-			// Update all player comps on the server
-			//world.Query( ... );
+			if ( player.IsLocal )
+			{
+				return;
+			}
+
+			player.Controller.Update( data.Delta );
 		}
 
-		[EntityEvent<Entity.ClientUpdateEvent>]
-		public void ClientUpdate( GameClient client, float delta )
+		[Event]
+		public void OnClientPossess( Entity.ClientPossessedEvent data )
 		{
-
+			IsLocal = true;
 		}
 	}
 }
