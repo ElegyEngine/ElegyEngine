@@ -28,7 +28,7 @@ function Build-Project {
 Build-Project Launchers Elegy.Launcher2
 Build-Project Modules Elegy.RenderWorld
 Build-Project Plugins Elegy.DevConsole
-Build-Project Plugins Elegy.TestGame
+Build-Project Plugins Elegy.Game
 Write-Host ""
 
 ## Step 2: Copy all the DLLs into the right place
