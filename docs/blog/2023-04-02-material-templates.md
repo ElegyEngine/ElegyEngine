@@ -30,14 +30,14 @@ How do we do that though?
 
 Well first, we need to know what we want:
 * All shaders must be precompiled!
-	* No runtime anything. It bloats the filesize of the engine and game, and it makes for massive potential runtime costs. Big no.
-	* Shader permutations are okay **in moderation.**
+    * No runtime anything. It bloats the filesize of the engine and game, and it makes for massive potential runtime costs. Big no.
+    * Shader permutations are okay **in moderation.**
 * Simple runtime code.
-	* Simple runtime = good performance, also easy to maintain.
+    * Simple runtime = good performance, also easy to maintain.
 * A fixed number of pipelines per common material properties, e.g. 4.
-	* If 500 materials are twosided, yeah, that's probably a pipeline or so.
+    * If 500 materials are twosided, yeah, that's probably a pipeline or so.
 * A degree of customisability for modders.
-	* Your mod may have custom post-processing shaders, or perhaps introduce a special terrain shader. I'd like to support this.
+    * Your mod may have custom post-processing shaders, or perhaps introduce a special terrain shader. I'd like to support this.
 
 # Initial thought
 
@@ -98,21 +98,21 @@ Shader templates:
 
 So now we have a hierarchy:
 * `DecalST` (2 PSOs)
-	* `DecalAlphatested`
-	* `DecalTransparent`
+    * `DecalAlphatested`
+    * `DecalTransparent`
 * `ParticleST` (4 PSOs)
-	* `ParticleAdditive`
-	* `ParticleTransparent`
+    * `ParticleAdditive`
+    * `ParticleTransparent`
 * `StandardST` (4 PSOs)
-	* `Standard`
-	* `StandardTwoSidedAlphatested`
-	* `StandardTransparent`
+    * `Standard`
+    * `StandardTwoSidedAlphatested`
+    * `StandardTransparent`
 * `VegetationST` (3 PSOs)
-	* `Vegetation`
+    * `Vegetation`
 * `WaterST` (2 PSOs)
-	* `Water`
+    * `Water`
 * `UIST` (2 PSOs)
-	* `UI`
+    * `UI`
 
 So, in total, we're gonna have about 30 pipelines. 2 for `DecalAlphatested`, 2 for `DecalTransparent`, 4 for `ParticleAdditive` etc.
 
@@ -129,14 +129,14 @@ So here are its shaders: (actually the wireframe one is not included here)
 ```glsl
 uniform PerFrameBuffer
 {
-	mat4 ProjectionMatrix;
-	mat4 ViewMatrix;
+    mat4 ProjectionMatrix;
+    mat4 ViewMatrix;
 };
 
 uniform PerEntityBuffer
 {
-	mat4 EntityMatrix;
-	// We'll omit skeletal animation here for simplicity's sake
+    mat4 EntityMatrix;
+    // We'll omit skeletal animation here for simplicity's sake
 }
 
 in vec3 vPosition;
@@ -164,18 +164,18 @@ out vec2 pLightmappedUv;
 
 void main_vs()
 {
-	POSITION = vPosition;
-	POSITION_WORLD = (EntityMatrix * vec4( POSITION, 1.0 )).xyz;
-	NORMAL = vNormal;
-	UV = vUv;
-	COLOUR = vColour;
+    POSITION = vPosition;
+    POSITION_WORLD = (EntityMatrix * vec4( POSITION, 1.0 )).xyz;
+    NORMAL = vNormal;
+    UV = vUv;
+    COLOUR = vColour;
 
-	// Invoke the polyshader
-	polyshader_vertex();
+    // Invoke the polyshader
+    polyshader_vertex();
 
-	gl_Position = ProjectionMatrix * ViewMatrix * POSITION_WORLD;
+    gl_Position = ProjectionMatrix * ViewMatrix * POSITION_WORLD;
 #if SHADERTYPE == LIGHTMAPPED
-	pLightmappedUv = vLightmappedUv;
+    pLightmappedUv = vLightmappedUv;
 #endif
 }
 
@@ -194,28 +194,28 @@ out vec4 outColour;
 
 void main_ps()
 {
-	DIFFUSE = vec3( 1.0 );
-	ALPHA = 1.0;
+    DIFFUSE = vec3( 1.0 );
+    ALPHA = 1.0;
 
 #if SHADERTYPE != DEPTH
-	// Invoke the polyshader's pixel & opacity routines
-	polyshader_pixel();
+    // Invoke the polyshader's pixel & opacity routines
+    polyshader_pixel();
 #else
-	polyshader_alpha();
+    polyshader_alpha();
 #endif
 
 #if SHADERTYPE == GENERAL
-	outColour.rgb = DIFFUSE;
+    outColour.rgb = DIFFUSE;
 
 #elif SHADERTYPE == LIGHTMAPPED
-	vec3 lightmapColour = texture( LightmapTexture, pLightmapUv ).rgb;
-	outColour.rgb = HardLight( DIFFUSE, lightmapColour );
+    vec3 lightmapColour = texture( LightmapTexture, pLightmapUv ).rgb;
+    outColour.rgb = HardLight( DIFFUSE, lightmapColour );
 
 #elif SHADERTYPE == DEPTH
-	outColour.rgb = vec3( ALPHA );
+    outColour.rgb = vec3( ALPHA );
 
 #endif
-	outColour.a = ALPHA;
+    outColour.a = ALPHA;
 }
 ```
 
@@ -226,19 +226,19 @@ uniform texture2D DiffuseTexture;
 
 void vertex()
 {
-	// Can be omitted
+    // Can be omitted
 }
 
 void pixel()
 {
-	vec4 colour = texture( DiffuseTexture, UV );
-	DIFFUSE = colour.rgb;
-	ALPHA = colour.a;
+    vec4 colour = texture( DiffuseTexture, UV );
+    DIFFUSE = colour.rgb;
+    ALPHA = colour.a;
 }
 
 void alpha()
 {
-	ALPHA = texture( DiffuseTexture, UV ).a;
+    ALPHA = texture( DiffuseTexture, UV ).a;
 }
 ```
 
@@ -255,17 +255,17 @@ void vertex()
 
 void pixel()
 {
-	vec3 colourA = texture( DiffuseTextureA, UV ) * COLOUR.r;
-	vec3 colourB = texture( DiffuseTextureB, UV ) * COLOUR.g;
-	vec3 colourC = texture( DiffuseTextureC, UV ) * COLOUR.b;
-	// There are waaaaaay better ways to do this,
-	// but but, just to get the idea across
-	DIFFUSE = colourA + colourB + colourC;
+    vec3 colourA = texture( DiffuseTextureA, UV ) * COLOUR.r;
+    vec3 colourB = texture( DiffuseTextureB, UV ) * COLOUR.g;
+    vec3 colourC = texture( DiffuseTextureC, UV ) * COLOUR.b;
+    // There are waaaaaay better ways to do this,
+    // but but, just to get the idea across
+    DIFFUSE = colourA + colourB + colourC;
 }
 
 void alpha()
 {
-	ALPHA = 1.0;
+    ALPHA = 1.0;
 }
 ```
 
@@ -284,90 +284,90 @@ Let's focus on one shader template, with one material template, and one material
 Starting off with `materials/stemplates/standard.json`:
 ```jsonc
 {
-	"name": "StandardST",
-	"shaderFile": "materials/stemplates/standard_template.glsl",
+    "name": "StandardST",
+    "shaderFile": "materials/stemplates/standard_template.glsl",
 
-	// This here expands to:
-	// #define GENERAL 1
-	// #define LIGHTMAPPED 2
-	// #define DEPTH 3
-	"shaderTypes": [ "GENERAL", "LIGHTMAPPED," "DEPTH" ],
-	"shaders":
-	[
-		// General shader, for general usecases
-		{
-			"shaderTypeDefine": "GENERAL", // #define SHADERTYPE GENERAL
-			"vertexLayout":
-			[
-				{ "name": "Position", "type": "vec3" },
-				{ "name": "Uv", "type": "vec2" },
-				{ "name": "Normal", "type": "vec3" },
-				{ "name": "Colour", "type": "vec4" }
-			],
-			"resourceLayout":
-			[
-				// Projection matrix, view matrix etc. change per frame and go here
-				{ "elements": [ { "name": "PerFrameBuffer", "type": "buffer" } ] },
-				// Model matrix, with the addition of bone transformation matrices elsewhere
-				{ "elements": [ { "name": "PerEntityBuffer", "type": "buffer" } ] }
-			]
-		},
-		// Lightmapped shader, for lightmapped surfaces
-		{
-			"shaderTypeDefine": "LIGHTMAPPED", // #define SHADERTYPE LIGHTMAPPED
-			"vertexLayout":
-			[
-				{ "name": "Position", "type": "vec3" },
-				{ "name": "Uv", "type": "vec2" },
-				{ "name": "Normal", "type": "vec3" },
-				{ "name": "Colour", "type": "vec4" }
-				{ "name": "LightmapUv", "type": "vec2" },
-			],
-			"resourceLayout":
-			[
-				// Projection matrix, view matrix etc. change per frame and go here
-				{ "elements": [ { "name": "PerFrameBuffer", "type": "buffer" } ] },
-				// Model matrix, with the addition of bone transformation matrices elsewhere
-				{ "elements": [ { "name": "PerEntityBuffer", "type": "buffer" } ] },
-				// Lightmap texture
-				{ "elements": [ { "name": "LightmapTexture", "type": "texture" } ] }
-			]
-		},
-		// Depth prepass shader
-		{
-			"shaderTypeDefine": "DEPTH", // #define SHADERTYPE DEPTH
-			"vertexLayout":
-			[
-				{ "name": "Position", "type": "vec3" },
-				{ "name": "Uv", "type": "vec2" }
-			],
-			"resourceLayout":
-			[
-				// Projection matrix, view matrix etc. change per frame and go here
-				{ "elements": [ { "name": "PerFrameBuffer", "type": "buffer" } ] },
-				// Model matrix, with the addition of bone transformation matrices elsewhere
-				{ "elements": [ { "name": "PerEntityBuffer", "type": "buffer" } ] }
-			]
-		}
-	]
+    // This here expands to:
+    // #define GENERAL 1
+    // #define LIGHTMAPPED 2
+    // #define DEPTH 3
+    "shaderTypes": [ "GENERAL", "LIGHTMAPPED," "DEPTH" ],
+    "shaders":
+    [
+        // General shader, for general usecases
+        {
+            "shaderTypeDefine": "GENERAL", // #define SHADERTYPE GENERAL
+            "vertexLayout":
+            [
+                { "name": "Position", "type": "vec3" },
+                { "name": "Uv", "type": "vec2" },
+                { "name": "Normal", "type": "vec3" },
+                { "name": "Colour", "type": "vec4" }
+            ],
+            "resourceLayout":
+            [
+                // Projection matrix, view matrix etc. change per frame and go here
+                { "elements": [ { "name": "PerFrameBuffer", "type": "buffer" } ] },
+                // Model matrix, with the addition of bone transformation matrices elsewhere
+                { "elements": [ { "name": "PerEntityBuffer", "type": "buffer" } ] }
+            ]
+        },
+        // Lightmapped shader, for lightmapped surfaces
+        {
+            "shaderTypeDefine": "LIGHTMAPPED", // #define SHADERTYPE LIGHTMAPPED
+            "vertexLayout":
+            [
+                { "name": "Position", "type": "vec3" },
+                { "name": "Uv", "type": "vec2" },
+                { "name": "Normal", "type": "vec3" },
+                { "name": "Colour", "type": "vec4" }
+                { "name": "LightmapUv", "type": "vec2" },
+            ],
+            "resourceLayout":
+            [
+                // Projection matrix, view matrix etc. change per frame and go here
+                { "elements": [ { "name": "PerFrameBuffer", "type": "buffer" } ] },
+                // Model matrix, with the addition of bone transformation matrices elsewhere
+                { "elements": [ { "name": "PerEntityBuffer", "type": "buffer" } ] },
+                // Lightmap texture
+                { "elements": [ { "name": "LightmapTexture", "type": "texture" } ] }
+            ]
+        },
+        // Depth prepass shader
+        {
+            "shaderTypeDefine": "DEPTH", // #define SHADERTYPE DEPTH
+            "vertexLayout":
+            [
+                { "name": "Position", "type": "vec3" },
+                { "name": "Uv", "type": "vec2" }
+            ],
+            "resourceLayout":
+            [
+                // Projection matrix, view matrix etc. change per frame and go here
+                { "elements": [ { "name": "PerFrameBuffer", "type": "buffer" } ] },
+                // Model matrix, with the addition of bone transformation matrices elsewhere
+                { "elements": [ { "name": "PerEntityBuffer", "type": "buffer" } ] }
+            ]
+        }
+    ]
 }
 ```
 
 Then moving to `materials/mtemplates/standard_twosided_alphatested.json`:
 ```jsonc
 {
-	"name": "StandardTwoSidedAlphatested",
-	"shaderTemplate": "StandardST",
-	"polyshaderFile": "materials/shaders/standard_polyshader.glsl",
-	"pipelineInfo":
-	{
-		"faceCulling": "back",
-		"blending": "opaque"
-	},
-	"parameters":
-	[
-		{ "name": "diffuse", "type": "texture", "boundResource": "DiffuseTexture" }
-	]
+    "name": "StandardTwoSidedAlphatested",
+    "shaderTemplate": "StandardST",
+    "polyshaderFile": "materials/shaders/standard_polyshader.glsl",
+    "pipelineInfo":
+    {
+        "faceCulling": "back",
+        "blending": "opaque"
+    },
+    "parameters":
+    [
+        { "name": "diffuse", "type": "texture", "boundResource": "DiffuseTexture" }
+    ]
 }
 ```
 
