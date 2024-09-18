@@ -91,5 +91,11 @@ namespace Elegy.Common.Extensions
 			onRemove( element );
 			return true;
 		}
+
+		public static T Random<T>( this IList<T> list )
+		{
+			int index = System.Random.Shared.Next() % list.Count;
+			return list[index];
+		}
 	}
 }
