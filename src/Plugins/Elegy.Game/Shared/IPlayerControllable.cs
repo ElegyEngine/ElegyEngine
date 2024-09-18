@@ -10,6 +10,7 @@ namespace Game.Shared
 	{
 		public Vector3 Position;
 		public Vector3 Angles; // mmm not actually needed but oh well
+		public Vector3 Velocity;
 	}
 
 	/// <summary>
