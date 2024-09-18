@@ -1,7 +1,6 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Common.Extensions;
 using Elegy.Common.Maths;
 using System.Numerics;
 using Xunit.Sdk;
