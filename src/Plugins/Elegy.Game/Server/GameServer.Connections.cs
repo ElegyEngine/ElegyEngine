@@ -35,7 +35,8 @@ namespace Game.Server
 			{
 				Address = clientAddress,
 				Id = Connections.Count,
-				State = Session.GameSessionState.Connecting
+				State = GameSessionState.Connecting,
+				Bridge = clientBridge
 			} );
 		}
 
