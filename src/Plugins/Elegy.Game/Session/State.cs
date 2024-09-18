@@ -24,6 +24,13 @@ namespace Game.Session
 		Authenticating,
 
 		/// <summary>
+		/// Client has some missing assets, so they are being
+		/// downloaded, either directly from the server or
+		/// via a UGC platform (e.g. Steam Workshop).
+		/// </summary>
+		Downloading,
+
+		/// <summary>
 		/// Client is loading assets and joining the game session.
 		/// </summary>
 		Joining,
