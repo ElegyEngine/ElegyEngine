@@ -15,6 +15,8 @@ namespace Game.Shared.Components
 
 		public Player() { }
 
+		public bool IsLocal { get; set; }
+
 		public IPlayerControllable Controller { get; set; } = new BasicController();
 
 		[EntityEvent<Entity.SpawnEvent>]
