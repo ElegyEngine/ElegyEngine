@@ -28,6 +28,9 @@ namespace Game
 		private GameSession? mSession; // Clientside game state
 		private GameServer? mServer; // Serverside entities etc.
 		private ISessionBridge? mSessionBridge; // Bridge between server and session
+		// Clientside and/or serverside game entities. In singleplayer, it is shared
+		// between GameSession and GameServer, in multiplayer it is only in GameSession.
+		private EntityWorld mEntityWorld = new();
 
 		private bool mUserWantsToExit = false;
 
