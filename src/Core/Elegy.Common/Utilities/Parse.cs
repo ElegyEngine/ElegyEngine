@@ -43,6 +43,14 @@ namespace Elegy.Common.Utilities
 		}
 
 		/// <summary>
+		/// Attempts to parse a float from a string, modifying <paramref name="result"/> upon success.
+		/// </summary>
+		public static bool TryFloat( ReadOnlySpan<char> token, out float result )
+		{
+			return float.TryParse( token, NumberStyles.Float, CultureInfo.InvariantCulture, out result );
+		}
+
+		/// <summary>
 		/// Parses a float from a string.
 		/// </summary>
 		/// <param name="token">Something like "20.05".</param>
