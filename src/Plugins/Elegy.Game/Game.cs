@@ -104,13 +104,13 @@ namespace Game
 			mClient?.Update( delta );
 
 			// Send client state to server
-			//mSession?.SendClientState( delta );
+			mSession?.SendClientState();
 
 			// Entity simulation on the server, sending data to clients etc.
 			mServer?.Update( delta );
 
 			// Receive entity state from server, predict & simulate clientside entities
-			//mSession?.Update( delta );
+			mSession?.Update( delta );
 
 			// Update camera, HUD etc. Rendering is handled elsewhere
 			//mPresentation?.Update( delta );
