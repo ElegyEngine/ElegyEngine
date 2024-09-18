@@ -3,15 +3,43 @@
 
 namespace Elegy.ECS
 {
-	public abstract class BaseRequiresAttribute : Attribute
+	[AttributeUsage( AttributeTargets.Struct, AllowMultiple = true )]
+	public class RequiresAttribute<T> : Attribute
+		where T : struct
 	{
-		public abstract Type ComponentType { get; }
 	}
 
 	[AttributeUsage( AttributeTargets.Struct, AllowMultiple = true )]
-	public class RequiresAttribute<T> : BaseRequiresAttribute
-		where T : struct
+	public class RequiresAttribute<T1, T2> : Attribute
+		where T1 : struct
+		where T2 : struct
 	{
-		public override Type ComponentType => typeof( T );
+	}
+
+	[AttributeUsage( AttributeTargets.Struct, AllowMultiple = true )]
+	public class RequiresAttribute<T1, T2, T3> : Attribute
+		where T1 : struct
+		where T2 : struct
+		where T3 : struct
+	{
+	}
+
+	[AttributeUsage( AttributeTargets.Struct, AllowMultiple = true )]
+	public class RequiresAttribute<T1, T2, T3, T4> : Attribute
+		where T1 : struct
+		where T2 : struct
+		where T3 : struct
+		where T4 : struct
+	{
+	}
+
+	[AttributeUsage( AttributeTargets.Struct, AllowMultiple = true )]
+	public class RequiresAttribute<T1, T2, T3, T4, T5> : Attribute
+		where T1 : struct
+		where T2 : struct
+		where T3 : struct
+		where T4 : struct
+		where T5 : struct
+	{
 	}
 }
