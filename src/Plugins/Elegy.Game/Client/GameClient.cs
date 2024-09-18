@@ -24,7 +24,6 @@ namespace Game.Client
 		private Vector3 mMovementDirection = Vector3.Zero;
 		private Vector3 mAngles = Vector3.Zero;
 
-		public IPlayerControllable? Controller { get; set; }
 		public ClientCommands Commands => mCommands;
 
 		public bool Init()
@@ -95,7 +94,7 @@ namespace Game.Client
 			}
 			mCommands.ViewAngles = mAngles;
 
-			var state = Controller.GenerateControllerState();
+			//var state = Controller.GenerateControllerState();
 			//mPresentation.Position = state.Position;
 			//mPresentation.Angles = mAngles;
 			//mPresentation.Update();
@@ -104,18 +103,7 @@ namespace Game.Client
 			mOldMousePosition = Input.Mouse.Position;
 		}
 
-		public void UpdateController()
-		{
-			Controller.HandleClientInput( Commands );
-		}
-
-		// TODO: move over to the Session layer
-		public void UpdateMovement( float deltaTime )
-		{
-			Controller?.Update( deltaTime );
-		}
-
-		// TODO:
+		// TODO: delegate to the input system
 		private ClientActions GrabActionStates()
 		{
 			ClientActions actionStates = 0;
