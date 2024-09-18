@@ -197,7 +197,8 @@ namespace Game
 		/// </summary>
 		private bool StartServer( string path, int maxPlayers = 1 )
 		{
-			mLogger.Log( "StartLevel" );
+			mLogger.Log( $"StartServer [map: '{path}', clients: {maxPlayers}]" );
+
 			ElegyMapDocument? level = LoadLevel( $"maps/{path}" );
 			if ( level is null )
 			{
