@@ -16,5 +16,6 @@ namespace Game.Shared
 		public Dictionary<string, Material?> Materials { get; private set; } = new();
 		public Dictionary<string, string?> Sounds { get; private set; } = new();
 		public Dictionary<string, string?> OtherFiles { get; private set; } = new();
+		public string LevelName { get; init; } = string.Empty;
 	}
 }
