@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Assets;
+using Game.Server.Bridges;
+using Game.Session;
 using Game.Shared;
 using System.Net;
 
@@ -11,14 +13,20 @@ namespace Game.Server
 	{
 		public List<ClientConnection> Connections { get; }
 		
-		public void ClientStartedConnecting( IPAddress clientAddress )
+		public void ConnectionStart( IPAddress clientAddress, IClientBridge? clientBridge = null )
 		{
+			if ( clientBridge is null )
+			{
+				clientBridge = new RemoteClientBridge( this, clientAddress );
+			}
+
+			mLogger.Log( $"New connection! ({clientAddress}, {clientBridge.GetType()})" );
+
 			foreach ( var connection in Connections )
 			{
-				if ( connection.State == Session.GameSessionState.Disconnected )
+				if ( connection.State == GameSessionState.Disconnected )
 				{
-					connection.Address = clientAddress;
-					connection.State = Session.GameSessionState.Connecting;
+					connection.Renew( clientAddress, clientBridge );
 					return;
 				}
 			}
