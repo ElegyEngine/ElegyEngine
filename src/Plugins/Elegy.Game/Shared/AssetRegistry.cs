@@ -12,10 +12,10 @@ namespace Game.Shared
 	/// </summary>
 	public class AssetRegistry
 	{
-		public Dictionary<string, Model?> Models { get; private set; } = new();
-		public Dictionary<string, Material?> Materials { get; private set; } = new();
-		public Dictionary<string, string?> Sounds { get; private set; } = new();
-		public Dictionary<string, string?> OtherFiles { get; private set; } = new();
 		public string LevelName { get; init; } = string.Empty;
+		public Dictionary<string, Model?> Models { get; } = new();
+		public Dictionary<string, Material?> Materials { get; } = new();
+		public Dictionary<string, string?> Sounds { get; } = new();
+		public Dictionary<string, string?> OtherFiles { get; } = new();
 	}
 }
