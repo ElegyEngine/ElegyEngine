@@ -33,9 +33,8 @@ namespace Elegy.Common.Utilities
 			return 0;
 		}
 
-
 		/// <summary>
-		/// Attempts to parse a float from a string, modifying <c>result</c> upon success.
+		/// Attempts to parse a float from a string, modifying <paramref name="result"/> upon success.
 		/// </summary>
 		public static bool TryFloat( string token, out float result )
 		{
