@@ -18,6 +18,12 @@ namespace Game.Server
 		public int Id { get; set; } = 0;
 
 		/// <summary>
+		/// Communication bridge with the client, either a direct in-memory
+		/// link or one established by network packets.
+		/// </summary>
+		public IClientBridge Bridge { get; set; }
+
+		/// <summary>
 		/// The IP address of the client.
 		/// </summary>
 		public IPAddress Address { get; set; } = IPAddress.None;
