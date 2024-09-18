@@ -11,7 +11,7 @@ using Game.Client;
 using Game.Presentation;
 using Game.Server;
 using Game.Session;
-using Game.Shared.Bridges;
+using Game.Session.Bridges;
 
 using System.Diagnostics;
 using System.Net;
