@@ -14,6 +14,8 @@ Elegy's entity system could've directly copied Half-Life's, having a class hiera
 
 So, I've decided to research a bit and it seems with some clever design and an ECS library, we can reap the benefits of both approaches.
 
+<!-- truncate -->
+
 ## Entity system requirements
 
 Fundamentally, entities can undergo the following interactions:

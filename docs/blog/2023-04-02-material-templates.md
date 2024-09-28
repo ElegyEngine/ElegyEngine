@@ -14,6 +14,8 @@ In this idea I'll talk about:
 
 Problem: modern rendering APIs (DirectX 12 and Vulkan) have something called pipeline state objects *(abbr. PSO)*, which I'll call "pipelines" from now on.
 
+<!-- truncate -->
+
 The idea is that various things you could dynamically configure in OpenGL (face culling mode, fill mode, blending mode, depth testing, the shader program etc.) are known in advance. In the world of dynamic shader generation from material node setups, this doesn't exactly fit so well:
 
 https://twitter.com/actualGraphite/status/1553590351218212865

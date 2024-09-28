@@ -9,6 +9,8 @@ tags: [idea]
 
 I'm cataloguing my thoughts here about VR integration in the future.
 
+<!-- truncate -->
+
 ## Goals
 
 * OpenXR integration

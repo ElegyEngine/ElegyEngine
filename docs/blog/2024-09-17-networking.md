@@ -9,6 +9,8 @@ tags: [idea]
 
 I've always envisioned multiplayer to be part of this story. Ever since I wrote the first design document for BurekTech X, and later for Elegy, I've viewed basic "multiplayer with friends" as something that should be an out-of-the-box feature. 
 
+<!-- truncate -->
+
 By this, I don't mean an MMO-scale thing or even support for an official-ish system involving a master server and whatnot, no no, I just want to provide very basic "join this IP address" multiplayer which could later be extended to support Steam's P2P thingy. Ultimately, those are the kinds of games I wanna make on this, a singleplayer + multiplayer experience, whether the latter is co-op or deathmatch or whatever gamemode.
 
 # Architecture
