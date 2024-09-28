@@ -6,3 +6,7 @@ idea:
   label: Idea
   permalink: /idea
   description: This is for development ideas and proposals
+news:
+  label: News
+  permalink: /news
+  description: Development, release etc. news
