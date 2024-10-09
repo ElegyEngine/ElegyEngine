@@ -3,15 +3,10 @@
   align-content: center;
   align-items: center;
   padding: 1rem 12rem;
-  width: 100%;
+  width: 75%;
 }
 
 .featureDescription {
   text-align: justify;
   padding-bottom: 2rem;
-}
-
-.featureSvg {
-  height: 200px;
-  width: 200px;
 }

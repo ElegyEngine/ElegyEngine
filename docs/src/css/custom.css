@@ -27,6 +27,9 @@
   /* Oddly enough, the default tab size is very wide! (8)
      So I am making it correct here. :) */
   tab-size: 4;
+
+  --ifm-container-width: 1220px;
+  --ifm-container-width-xl: 1400px;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
