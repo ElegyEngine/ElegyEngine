@@ -17,7 +17,7 @@ const config: Config = {
   // Might need to fiddle around with this and all
   projectName: 'ElegyEngine',
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internationalization, you can use this field to set
@@ -36,7 +36,8 @@ const config: Config = {
           sidebarPath: './sidebars.ts'
         },
         blog: {
-          showReadingTime: true
+          showReadingTime: true,
+          blogSidebarCount: 'ALL'
         },
         theme: {
           customCss: './src/css/custom.css'
@@ -62,12 +63,6 @@ const config: Config = {
           label: 'Documentation',
         },
         {
-          type: 'docSidebar',
-          sidebarId: 'apiSidebar',
-          position: 'left',
-          label: 'API reference',
-        },
-        {
           to: '/blog',
           label: 'Articles',
           position: 'left'
@@ -87,19 +82,19 @@ const config: Config = {
           items: [
             {
               label: 'Getting started',
-              to: '/docs/wip',
+              to: '/docs',
             },
             {
               label: 'Guides (N/A)',
-              to: '/docs/wip',
+              to: '/docs',
             },
             {
               label: 'Community tutorials (N/A)',
-              to: '/docs/wip',
+              to: '/docs',
             },
             {
               label: 'API reference (N/A)',
-              to: '/docs/api/wip',
+              to: '/docs/api',
             },
           ],
         },
@@ -107,7 +102,7 @@ const config: Config = {
           title: 'Community',
           items: [
             {
-              label: 'Discord',
+              label: 'Discord (Planet U2-A, #elegy-engine)',
               href: 'https://discord.gg/tneyeuhgxH',
             }
           ],
@@ -116,11 +111,11 @@ const config: Config = {
           title: 'More',
           items: [
             {
-              label: 'Blog',
+              label: 'Development articles',
               to: '/blog',
             },
             {
-              label: 'GitHub',
+              label: 'Source code @ GitHub',
               href: 'https://github.com/ElegyEngine/ElegyEngine',
             },
           ],

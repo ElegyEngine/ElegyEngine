@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import Link from '@docusaurus/Link';
 import Heading from '@theme/Heading';
 import styles from './styles.module.css';
 
@@ -74,6 +75,12 @@ export default function HomepageOverview(): JSX.Element {
   return (
     <section className={styles.features}>
       <div className="container">
+        <div className='row'>
+          <p className='col col--12 hero__subtitle text--center'>
+            Note: This engine is a very early work in progress! 🛠 <br/>
+            Check out the <Link to='/blog'>development articles</Link> in the meantime.
+          </p>
+        </div>
         <div className="row">
           {FeatureList.map((props, idx) => (
             <Feature key={idx} {...props} />

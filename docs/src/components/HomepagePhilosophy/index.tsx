@@ -4,7 +4,6 @@ import styles from './features.module.css';
 
 type WorkflowItem = {
   title: string;
-  //Svg: React.ComponentType<React.ComponentProps<'svg'>>;
   description: JSX.Element;
 };
 
@@ -23,12 +22,24 @@ const FeatureList: WorkflowItem[] = [
         in-editor. That is not the case here.
         <br /><br />
         Instead, you just place assets into directories, and run the game.
-        As you change the assets themselves, they get live-reloaded in-game.
         There's no import step either, simply export your glTF from Blender
         into a location like <code>mygame/models/</code> and you're done,
         it's ready to be used.
         <br /><br />
         In short, it's just you and the filesystem. No bloat in between.
+      </>
+    ),
+  },
+  {
+    title: 'Modding',
+    description: (
+      <>
+        It should never be the gamedev's job to have to explicitly add mod
+        support later on. That's why Elegy provides this out of the box, as
+        part of its virtual filesystem.
+        <br /><br />
+        Any game asset can be overridden by a mod, including code. Custom levels
+        can have their own custom shaders and all kinds of things.
       </>
     ),
   },
@@ -48,10 +59,6 @@ const FeatureList: WorkflowItem[] = [
         custom, community-made ones!), or write your own. In theory, if you want a
         completely modern PBR renderer, you can have it. Even a ray-tracer. Not that
         the engine is built for that, but I mean, who's going to stop you?
-        <br /><br />
-        In either case, the engine supports basically the same stuff other engines do:
-        static and animated 3D meshes, billboards/sprites/particles, decals, localised
-        volumetrics like fog and smoke, water and so on.
         <br /><br />
         There is also a data-driven shader system, so if you want to write a new shader,
         you don't have to touch any of the rendering code at all. Just write your GLSL
@@ -76,35 +83,10 @@ const FeatureList: WorkflowItem[] = [
         This approach is not too different from modern engines, except the level editor is
         independent of the game engine (a standalone app), and you already have an easy
         solution for level scripting with triggers. And with the Game SDK, you can already
-        start trying out ideas, playing with different
-        contraptions that come with the SDK.
+        start trying out ideas, playing with different contraptions that come with the SDK.
       </>
     ),
-  },
-  {
-    title: '2D and 3D art',
-    description: (
-      <>
-        Lorem ipsum bla bla bla.
-      </>
-    ),
-  },
-  {
-    title: 'Graphical user interfaces',
-    description: (
-      <>
-        Lorem ipsum bla bla bla.
-      </>
-    ),
-  },
-  {
-    title: 'Programming',
-    description: (
-      <>
-        Lorem ipsum bla bla bla.
-      </>
-    ),
-  },
+  }
 ];
 
 function Feature({title, description}: WorkflowItem) {
@@ -116,7 +98,7 @@ function Feature({title, description}: WorkflowItem) {
   );
 }
 
-export default function HomepageFeatures(): JSX.Element {
+export default function HomepagePhilosophy(): JSX.Element {
   return (
     <section className={clsx("container", styles.features)}>
       {FeatureList.map((props, idx) => (
