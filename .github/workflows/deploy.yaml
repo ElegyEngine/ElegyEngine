@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: 18
           cache: npm
-          path: ./docs
+          cache-dependency-path: ./docs/package-lock.json
 
       - name: Install dependencies
         run: npm ci
