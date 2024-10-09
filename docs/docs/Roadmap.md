@@ -1,21 +1,24 @@
+---
+sidebar_position: 2
+---
 
 # Roadmap
 
 Here you can read about the overall plans, long-term and short-term, for Elegy Engine and its plugins.
 
-# Short-term (until mid 2024)
+## Short-term (until 2025) 🛠
 
 The short-term plan is to get a basic thing up and running by mid 2024, so you can make Half-Life-style game prototypes.
 
 You can read about it [here (milestone for 0.1)](https://github.com/ElegyEngine/ElegyEngine/issues/1).
 
-## Workflow - mapping
+### Workflow - mapping 🛠
 You'd use TrenchBroom to make levels, and a custom compiler to compile these levels into an optimised format for Elegy.
 
-## Workflow - modelling
+### Workflow - modelling ✔
 You'd import models by... not importing them. Just place a GLTF somewhere in the models folder, and you're done. Same goes for textures.
 
-## Workflow - materials
+### Workflow - materials ✔
 To support TrenchBroom (and J.A.C.K.?) easily, materials would be written like Quake 3 shaders:
 ```
 textures/my_texture
@@ -27,24 +30,25 @@ textures/my_texture
 }
 ```
 
-## Workflow - scripting
+### Workflow - scripting ✔
 In terms of "dynamic" scripting, nothing at all at this moment. All game code is compiled into a DLL.
 
-## Workflow - UI
+### Workflow - UI 🛠
 This is a tricky one. UI would be code-only for now, probably ImGui or something just to get started.
 
-## Game SDK
+### Game SDK
 The game SDK will feature a few fundamental things:
-- Component system
-	- Quake-style trigger-target mechanism
-	- Component trait system
-- Basic weapon system
-- Basic player controller
-- Basic AI system
-- Basic [BepuPhysics](https://github.com/bepu/bepuphysics2) integration
-- Very crude main menu
+- Component system. ✔
+	- Source-style I/O. ✔
+	- Reactive component trait system. ✔
+- Basic weapon system.
+- Basic player controller.
+- Basic AI system.
+- Basic [BepuPhysics](https://github.com/bepu/bepuphysics2) integration.
+- Very crude main menu.
+- Client-server model. 🛠
 
-# Middle-term (mid 2024 - 2025)
+## Middle-term (until late 2025)
 Some notable things here include:
 - Game SDK will be more complete:
 	- Polished player movement
@@ -56,17 +60,16 @@ Some notable things here include:
 
 A couple milestones will be hit, 0.2 and potentially 0.3.
 
-## Workflow - scripting
+### Workflow - scripting
 Level scripts might be introduced as an alternative to scripting via map entities, useful for simplifying complicated entity setups and having something like gamemodes/minigames in custom maps.
 
-## Workflow - UI
+### Workflow - UI
 It will be a lot more iterative, as at this point, you'll be able to reload your GUI scripts/files, they are no longer code-only. RmlUI could be a very nice option for in-game GUIs and main menus.
 
-# Long-term (2025-2026)
+## Long-term (by mid 2026)
 
 Once everything settles, we may begin doing some more serious stuff:
 - [LoudPizza](https://github.com/TechPizzaDev/LoudPizza) backend with custom geometric accoustics tech, or alternatively Steam Audio/Phonon.
-- Networking/multiplayer.
 - GUI project wizard to easily create Elegy projects and download relevant code templates for game modules, plugin modules etc.
 - Vehicle system in the game SDK?
 - Documentation website with guides and an API reference.
