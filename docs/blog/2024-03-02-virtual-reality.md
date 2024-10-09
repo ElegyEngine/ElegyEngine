@@ -9,8 +9,6 @@ tags: [idea]
 
 I'm cataloguing my thoughts here about VR integration in the future.
 
-<!-- truncate -->
-
 ## Goals
 
 * OpenXR integration
@@ -21,6 +19,8 @@ I'm cataloguing my thoughts here about VR integration in the future.
     * This would be an optional plugin to the game SDK and shouldn't require too many modifications to the engine itself.
 * Mobile VR
     * Ideally this should run on standalone headsets like the Quest and Pico.
+
+<!-- truncate -->
 
 ## Design
 

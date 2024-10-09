@@ -9,11 +9,10 @@ tags: [idea]
 
 Elegy's designed to be pretty modular in some regard. If you don't need game-specific world rendering, you can still use the render backend. You can still use the shader templating system and all of that. That, at least, is the idea.
 
-<!-- truncate -->
 
 So I've decided to write a bit about rendering architecture here again and what I wanna have by the end of the year. Simply put, here are the layers:
 * `RenderBackend` - Vulkan stuff, shader templating business
-* `RenderSystem` - defines renderable object types (meshes, materials, lights, views etc.), provides facilities to actually use shader templates and generate resource sets for them and such, TL;DR handles "mid-level" rendering stuff
+* `RenderSystem` - defines renderable object types (meshes, materials, lights, views etc.), provides facilities to actually use shader templates and generate resource sets for them and such, TL;DR handles "mid-level" rendering stuff <!-- truncate -->
 * `RenderStyle` - defines how the renderable objects above are shaded, provides shader binaries and material templates
 * `RenderWorld` - uses all of the above to actually render a scene, handles occlusion culling, provides an API for the game to interact with renderable objects
 * `Game` - creates renderable objects, updates their transforms, and updates material parameters

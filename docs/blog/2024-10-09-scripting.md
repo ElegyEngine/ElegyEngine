@@ -9,14 +9,14 @@ I have been messing around with Roslyn's C# API lately, and I've found it to be 
 
 For years I've been observing a few C# scripting solutions like *CS-Script* and recently *Westwind.Scripting*, however those did not quite fit the bill.
 
-<!-- truncate -->
-
 ## Introduction
 
 In essence, from a gameplay programmer's POV, Elegy is structured like so:
 * Framework & launcher - the core/platform stuff, you would never touch this unless you're adding console support.
 * Engine - the engine modules, asset system, console system etc. You would also likely never touch this.
 * Game SDK - this hosts all the game systems, the client-server model, and other game things.
+
+<!-- truncate -->
 
 Here I propose a new layer at the end of this all, one about scripting. You can view it as an extension of the game SDK. Effectively, the game SDK would host systems and define a few core entity components, and scripts would provide data, behaviours and potentially extra entity components too.
 
