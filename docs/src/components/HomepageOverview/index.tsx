@@ -26,9 +26,9 @@ const FeatureList: FeatureItem[] = [
     Svg: require('@site/static/img/features_editor.svg').default,
     description: (
       <>
-        Elegy has a workflow very reminiscent of engines like idTech, GoldSRC and Source.
-        However, it <i>directly</i> uses widely-supported file formats like glTF 2.0, meaning
-        no complications when you're importing assets.
+        Elegy's workflow is quite similar to the likes of Quake and Source engine.
+        However, it uses widely-supported file formats (glTF 2.0...), meaning there are
+        no complications while importing assets.
       </>
     ),
   },
@@ -38,7 +38,7 @@ const FeatureList: FeatureItem[] = [
     description: (
       <>
         Written in high-performance C#, with a Vulkan backend and small filesize,
-        Elegy swiftly runs on hardware from 10 years ago. It also provides you
+        Elegy swiftly runs on hardware from 8 years ago. It also provides you
         with plenty tools to optimise your game!
       </>
     ),
@@ -48,13 +48,13 @@ const FeatureList: FeatureItem[] = [
     Svg: require('@site/static/img/features_batteries.svg').default,
     description: (
       <>
-        That's right! You don't have to come up with your own game systems.
-        The Elegy Game SDK has you covered, together with a
-        decent player controller and a main menu, all for you to make yours.
+        That's right! The Elegy Game SDK has you covered:
+        client-server model, weapon system, AI system,
+        player controllers, all out of the box.
         Make games by modding!
       </>
     ),
-  },
+  }
 ];
 
 function Feature({title, Svg, description}: FeatureItem) {
