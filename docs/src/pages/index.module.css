@@ -26,7 +26,7 @@
 }
 
 .description {
-  background-color: var(--ifm-desc-background-color);
+  background-color: var(--ifm-hero-background-color);
   padding: 1rem 20%;
   margin: 0;
   max-width: 100%;
@@ -54,6 +54,11 @@
 
 .buttonHomepage {
   margin: 0rem 1rem;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: var(--ifm-hero-text-color);
+  background-color: var(--ifm-herobutton-background-color);
+  color: var(--ifm-herobutton-color);
+}
+
+.buttonHomepage:hover {
+  background-color: var(--ifm-herobutton-background-hover-color);
+  color: var(--ifm-herobutton-hover-color);
 }
