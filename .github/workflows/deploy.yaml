@@ -12,6 +12,9 @@ jobs:
     name: Build Docusaurus
     runs-on: ubuntu-latest
     steps:
+      - name: Go to docs
+        run: cd docs/
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -20,8 +23,6 @@ jobs:
           node-version: 18
           cache: npm
 
-      - name: Go to docs
-        run: cd docs/
       - name: Install dependencies
         run: npm ci
       - name: Build website
@@ -48,6 +49,8 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+      - name: Go to docs
+        run: cd docs/
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
