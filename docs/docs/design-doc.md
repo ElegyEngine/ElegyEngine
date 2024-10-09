@@ -1,52 +1,63 @@
+---
+sidebar_position: 3
+---
 
 # Engine design document
 
 This is a rough sketch of the final engine. Treat this as some type of "this is how a 1.0 will look".
 
+Entries marked with ✔ are mostly or fully complete (are used widely throughout the engine and plugins), and 🛠 means this area needs quite a bit of work before it's usable or it's simply not implemented.
+
 ## Overall architecture
 
-- Elegy.Common - utility library
-- Elegy.Framework - engine core, handles engine configuration etc.
+- Elegy.Common - utility library ✔
+- Elegy.Framework - engine core, handles engine configuration etc. ✔
 - Engine modules
-- Elegy.GameSDK - the game SDK
-- Elegy.RenderBackend - Veldrid/Vulkan utilities
+- Elegy.GameSDK - the game SDK 🛠
+- Elegy.ECS - reactive entity component system library 🛠
+- Elegy.Scripting - dynamic C# scripting library 🛠
+- Elegy.RenderBackend - Veldrid/Vulkan utilities ✔
 
 ## Engine modules
 
-- Elegy.AssetSystem
-	- Quake 3-style materials
-	- Data-driven shaders
-	- Model asset loading (plugin-based)
-	- Texture asset loading (plugin-based)
+- Elegy.AssetSystem ✔
+	- Quake 3-style materials ✔
+	- Data-driven shaders ✔
+	- Model asset loading (plugin-based) ✔
+	- Texture asset loading (plugin-based) ✔
+	- Level loading (plugin-based) ✔
 - Elegy.AudioSystem (plugin-based)
 	- Sound sources, listener
 	- Sound FX
 	- Geometric acoustics
-- Elegy.ConsoleSystem
-	- Logging, console frontends, CVars, console commands
-- Elegy.FileSystem
-	- Mounting game/mod paths
-	- Mounting addon paths
-- Elegy.Input
-	- Keyboard, mouse input
-	- Gamepad & joysticks
+- Elegy.ConsoleSystem 🛠
+	- Logging ✔
+	- Console frontends ✔
+		- External developer console 🛠
+	- CVars 🛠
+	- Console commands ✔
+- Elegy.FileSystem ✔
+	- Mounting game/mod paths ✔
+	- Mounting addon paths 🛠
+- Elegy.Input ✔
+	- Keyboard, mouse input ✔
+	- Gamepad & joysticks 🛠
 - Elegy.NetworkSystem
 	- Utility layer on top of ENet or RiptideNetworking
-- Elegy.PlatformSystem
-	- Windowing (injected)
-	- Time
-	- Fundamental engine configuration, e.g. headless mode
-- Elegy.PluginSystem
-	- Full-blown dynamic plugin system
-- Elegy.RenderSystem
-	- Renderable objects (entities, batches, volumes, lights...)
-	- Views & rendering into windows
-	- Debug rendering
-	- Render styles (plugin-based)
-- Elegy.RenderWorld
-	- Occlusion culling (injected)
-	- Render loop
-	- High-level graphics API for games
+- Elegy.PlatformSystem ✔
+	- Windowing (injected) ✔
+	- Time 🛠
+	- Fundamental engine configuration, e.g. headless mode ✔
+- Elegy.PluginSystem ✔+🛠
+	- Flexible plugin system ✔
+	- Plugin dependencies 🛠
+	- Plugin reloading 🛠
+	- Plugin versioning 🛠
+- Elegy.RenderSystem 🛠
+	- Renderable objects (entities, batches, volumes, lights...) ✔
+	- Views & rendering into windows ✔
+	- Debug rendering 🛠
+	- Render styles (plugin-based) ✔+🛠
 
 Legend:
 - plugin-based: implemented in a plugin, engine just provides API
@@ -62,22 +73,23 @@ Legend:
 	- Animation blending
 	- Animation channels
 	- Inverse kinematics
-- Client
-	- Client controllers (handle input and interaction with the game world)
+- Client 🛠
+	- Client controllers (handle input and interaction with the game world) ✔
 	- Keybind system
 	- View bobbing and viewport management
-- Entity system
-	- Component system with “traits” and Quake-style triggering, later Source-style I/O
-	- Scripting
-- Game sessions
-	- Menu state, loading state, playing state, paused state etc.
-	- Linking a client into the game
+- Entity system ✔
+	- Reactive ECS ✔
+	- Source-style IO ✔
+	- Scripting 🛠
+- Game sessions ✔
+	- Menu state, loading state, playing state, paused state etc. ✔
+	- Linking a client into the game ✔
 - Gamemodes
 	- Campaign, deathmatch, team deathmatch, co-op etc.
-- Netcode
+- Netcode 🛠
 	- Mainly intended for LAN co-op
-	- Quake-style client-server with prediction and rollback
-	- Singleplayer bridge
+	- Quake-style client-server with prediction and rollback 🛠
+	- Singleplayer bridge ✔
 - Particles
 - Physics
 	- Rigid bodies
@@ -85,7 +97,7 @@ Legend:
 - Save-load system
 - UI
 	- ImGui for quick'n'easy stuff
-	- Custom game UI system or Squid (*todo: R&D this*)
+	- Custom game UI system for everything else
 
 Optional modules:
 - Vehicle system
