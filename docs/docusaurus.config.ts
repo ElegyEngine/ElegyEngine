@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'Elegy Engine',
   tagline: 'A love letter to the 90s, gamedev and modding~',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/FoxEarLogo_NoText_128.png',
 
   url: 'https://ElegyEngine.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
@@ -48,7 +48,7 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    image: 'img/social-card.png',
     navbar: {
       title: 'Elegy Engine',
       logo: {
@@ -126,7 +126,7 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
-      additionalLanguages: ['csharp'],
+      additionalLanguages: ['csharp']
     },
   } satisfies Preset.ThemeConfig,
 };
