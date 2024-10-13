@@ -19,7 +19,7 @@ using System.Net;
 
 namespace Game
 {
-	public class Game : IApplication
+	public class GameImplementation : IApplication
 	{
 		private TaggedLogger mLogger = new( "Game" );
 		private Stopwatch mStopwatch = new();
@@ -39,7 +39,7 @@ namespace Game
 		public string Error { get; private set; } = string.Empty;
 		public bool Initialised { get; private set; } = false;
 
-		public Game()
+		public GameImplementation()
 		{
 		}
 
