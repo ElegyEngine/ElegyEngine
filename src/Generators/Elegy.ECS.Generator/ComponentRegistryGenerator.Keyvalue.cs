@@ -35,7 +35,7 @@ namespace Elegy.ECS.Generator
 				_ => true
 			};
 
-		private string GetParser( in string datatype, IEnumerable<SimpleTypeInfo> customProperties )
+		private string GetParser( in string datatype, List<SimpleTypeInfo> customProperties )
 			=> datatype switch
 			{
 				"string" => "value",
@@ -60,7 +60,7 @@ namespace Elegy.ECS.Generator
 				_ => "default"
 			};
 
-		private string GenerateParser( SimpleTypeInfo component, SimplePropertyInfo property, IEnumerable<SimpleTypeInfo> entityProperties )
+		private string GenerateParser( SimpleTypeInfo component, SimplePropertyInfo property, List<SimpleTypeInfo> entityProperties )
 		{
 			StringBuilder sb = new();
 
@@ -99,7 +99,7 @@ namespace Elegy.ECS.Generator
 		}
 
 		private void GenerateKeyvalue( SourceProductionContext production, SimpleTypeInfo registry,
-			IEnumerable<SimpleTypeInfo> components, IEnumerable<SimpleTypeInfo> customEntityProperties )
+			List<SimpleTypeInfo> components, List<SimpleTypeInfo> customEntityProperties )
 		{
 			StringBuilder sb = new();
 			sb.AppendLine(

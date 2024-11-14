@@ -12,7 +12,7 @@ namespace Elegy.ECS.Generator
 {
 	public partial class ComponentRegistryGenerator
 	{
-		private void GenerateBaseApi( SourceProductionContext production, SimpleTypeInfo registry, IEnumerable<SimpleTypeInfo> components )
+		private void GenerateBaseApi( SourceProductionContext production, SimpleTypeInfo registry )
 		{
 			production.AddSource( $"{registry.Name}.Boilerplate.cs", SourceText.From(
 				$$"""

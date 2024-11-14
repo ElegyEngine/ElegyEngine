@@ -37,18 +37,18 @@ namespace Elegy.ECS.Generator
 
 			// Cache all these components early on
 			var components = types
-				.Where( t => t.HasAttribute( "Component" ) );
+				.Where( t => t.HasAttribute( "Component" ) ).ToList();
 
 			// Also cache info for event handling
 			var eventModels = types
-				.Where( t => t.HasAttribute( "EventModel" ) );
+				.Where( t => t.HasAttribute( "EventModel" ) ).ToList();
 
 			var customEntityProperties = types
-				.Where( t => t.Implements( "IEntityProperty", partial: true ) );
+				.Where( t => t.Implements( "IEntityProperty", partial: true ) ).ToList();
 
 			foreach ( var registry in registries )
 			{
-				GenerateBaseApi( production, registry, components );
+				GenerateBaseApi( production, registry );
 				GenerateComponentKinds( production, registry, components );
 				GeneratePerComponent( production, registry, components, eventModels );
 				GenerateCreate( production, registry, components );

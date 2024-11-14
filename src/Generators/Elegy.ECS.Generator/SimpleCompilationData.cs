@@ -231,7 +231,7 @@ namespace Elegy.ECS.Generator
 		/// </summary>
 		public Dictionary<string, SimpleTypeInfo> TypeDictionary { get; set; } = [];
 
-		public IEnumerable<SimpleTypeInfo> Types => TypeDictionary.Values;
+		public Dictionary<string, SimpleTypeInfo>.ValueCollection Types => TypeDictionary.Values;
 
 		/// <summary>
 		/// Expands current compilation data with data from another.

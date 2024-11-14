@@ -12,7 +12,7 @@ namespace Elegy.ECS.Generator
 	public partial class ComponentRegistryGenerator
 	{
 		private ComponentDependencyEntry ExtractComponentDependencyEntry(
-			IEnumerable<SimpleTypeInfo> allComponents,
+			List<SimpleTypeInfo> allComponents,
 			SimpleTypeInfo component )
 		{
 			SimpleTypeInfo? findDependency( string name )
@@ -50,7 +50,7 @@ namespace Elegy.ECS.Generator
 		}
 
 		private void GenerateCreate( SourceProductionContext production, SimpleTypeInfo registry,
-			IEnumerable<SimpleTypeInfo> components )
+			List<SimpleTypeInfo> components )
 		{
 			// Step 1: get a list of dependencies for each component
 			var componentsWithRequires = components

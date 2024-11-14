@@ -12,7 +12,7 @@ namespace Elegy.ECS.Generator
 	public partial class ComponentRegistryGenerator
 	{
 		private void GeneratePerComponent( SourceProductionContext production, SimpleTypeInfo registry,
-			IEnumerable<SimpleTypeInfo> components, IEnumerable<SimpleTypeInfo> eventModels )
+			List<SimpleTypeInfo> components, List<SimpleTypeInfo> eventModels )
 		{
 			string getFullNameByEventModelName( string name )
 			{

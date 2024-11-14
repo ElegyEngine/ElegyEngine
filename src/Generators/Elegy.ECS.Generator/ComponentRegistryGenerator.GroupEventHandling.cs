@@ -11,7 +11,7 @@ namespace Elegy.ECS.Generator
 	public partial class ComponentRegistryGenerator
 	{
 		private void GenerateGroupEventHandling( SourceProductionContext production, SimpleTypeInfo registry,
-			IEnumerable<SimpleTypeInfo> components, IEnumerable<SimpleTypeInfo> eventModels )
+			List<SimpleTypeInfo> components, List<SimpleTypeInfo> eventModels )
 		{
 			string findComponentFullName( string namePart )
 			{

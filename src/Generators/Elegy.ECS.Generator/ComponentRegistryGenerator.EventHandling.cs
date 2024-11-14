@@ -13,7 +13,7 @@ namespace Elegy.ECS.Generator
 	public partial class ComponentRegistryGenerator
 	{
 		private void GenerateEventHandling( SourceProductionContext production, SimpleTypeInfo registry,
-			IEnumerable<SimpleTypeInfo> components )
+			List<SimpleTypeInfo> components )
 		{
 			StringBuilder sb = new();
 			sb.AppendLine(
