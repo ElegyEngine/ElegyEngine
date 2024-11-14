@@ -60,7 +60,7 @@ namespace Elegy.AppTemplate
 
 			if ( Plugins.Applications.Count == 0 )
 			{
-				EngineSystem.Shutdown( "" );
+				EngineSystem.Shutdown();
 			}
 		}
 
@@ -83,7 +83,7 @@ namespace Elegy.AppTemplate
 			IWindow? window = Platform.GetCurrentWindow();
 			Debug.Assert( window is not null );
 
-			View renderView = Render.GetView( window );
+			View? renderView = Render.GetView( window );
 			Debug.Assert( renderView is not null );
 
 			window.Update += ( deltaTime ) =>
@@ -212,7 +212,7 @@ namespace Elegy.AppTemplate
 				return false;
 			}
 
-			mLogger.Success( string.Format( "Startup time: {0:F}s elapsed", (double)startupTimer.ElapsedTicks / Stopwatch.Frequency ) );
+			mLogger.Success( $"Startup time: {(double)startupTimer.ElapsedTicks / Stopwatch.Frequency:F}s elapsed" );
 
 			return true;
 		}
