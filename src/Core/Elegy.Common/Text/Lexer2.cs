@@ -8,11 +8,11 @@ namespace Elegy.Common.Text
 	/// Ported from adm-utils: https://github.com/Admer456/adm-utils/blob/master/src/Text/Lexer.hpp
 	/// </summary>
 	/// <remarks>Right now it works with <see cref="string"/>, it may be worth investigating a <see cref="ReadOnlySpan{T}"/> version.</remarks>
-	public class Lexer : ILexer
+	public class Lexer2 : ILexer
 	{
 		#region Constructors
 		/// <summary></summary>
-		public Lexer( string text, string delimiters = DelimitersSimple )
+		public Lexer2( string text, string delimiters = DelimitersSimple )
 		{
 			mText = text;
 			mDelimiters = delimiters;
@@ -52,109 +52,102 @@ namespace Elegy.Common.Text
 			mDelimiters = delimiters;
 		}
 
-		ReadOnlySpan<char> ILexer.Next()
-		{
-			return Next().AsSpan();
-		}
-		
 		/// <summary>
 		/// Continues parsing the string and extracts the next token from it.
 		/// </summary>
 		/// <returns>The next token in line, "" if EOF is reached.</returns>
-		public string Next()
+		public ReadOnlySpan<char> Next()
 		{
 			if ( IsEnd() )
 			{
 				return string.Empty;
 			}
 
-			string result = string.Empty;
-
-			// This do-while loop is responsible for skipping "empty" lines
-			// and advancing to the next ones, until we get a usable token
-			do
+			int GetNextValidCharacter( int i )
 			{
-				// Skip any whitespaces etc. after a token
-				while ( !IsEnd() && !CanAdvance() && !IsDelimiter()  )
+				// Situation: We have just started looking for tokens
+				// First, we gotta skip all passable characters until we get
+				// an alphanumerical or a quotation mark.
+				while ( !IsEnd() && !IsValidCharacter() )
 				{
+					// Special case: we may encounter a comment along the way
 					if ( IsComment() )
 					{
 						NewLine();
-						continue;
 					}
-
+					
 					IncrementPosition();
-
-					if ( IsEnd() )
-					{
-						return string.Empty;
-					}
 				}
-
-				// Can't go any further
+				
+				// Okay, we have stopped advancing. This means EOF was encountered,
+				// or a valid character was encountered, or a quotation mark.
 				if ( IsEnd() )
 				{
-					return string.Empty;
+					return mText.Length + 1;
 				}
 
-				// Check for delimiters
-				if ( IsDelimiter() )
+				if ( IsQuote() )
 				{
-					result += mText[mPosition];
-					IncrementPosition();
-
-					return result;
-				}
-
-				while ( CanAdvance() )
-				{
-					// We only support single-line comments, so
-					// if a comment is encountered, skip the whole line
-					if ( IsComment() )
-					{
-						NewLine();
-						continue;
-					}
-
-					// A quotation mark has been encountered while
-					// we weren't in quote mode - engage
-					if ( mText[mPosition] == '"' )
-					{
-						ToggleQuoteMode();
-						IncrementPosition();
-						continue;
-					}
-
-					// In quote mode, we add spaces and tabs too
-					if ( CanAdd() )
-					{
-						result += mText[mPosition];
-					}
-
-					// Safely increment the position so we don't go out of bounds
-					// Bumps up the line counter too, if we crossed a newline
+					ToggleQuoteMode();
 					IncrementPosition();
 				}
-			} while ( result == string.Empty );
-
-			// Escape from a quote
-			if ( mInQuote && mText[mPosition] == '"' )
-			{
-				ToggleQuoteMode();
-				IncrementPosition();
+				
+				return mPosition;
 			}
 
-			return result;
+			int GetLastValidCharacter( int i )
+			{
+				// Situation: We are looking for the tail of the token
+				// This means search until a whitespace, tab, newline or comment is found
+				while ( IsValidCharacter() )
+				{
+					IncrementPosition();
+					
+					// If we have encountered a quote along the way, make sure to remember it
+					if ( IsQuote() )
+					{
+						ToggleQuoteMode();
+						return mPosition - 1;
+					}
+				}
+				
+				return mPosition;
+			}
+			
+			int start = GetNextValidCharacter( mPosition );
+			// Special case: reached EOF
+			if ( start >= mText.Length )
+			{
+				return string.Empty;
+			}
+			
+			// Special case: it's a delimiter!
+			if ( IsDelimiter() )
+			{
+				IncrementPosition();
+				return mText.AsSpan().Slice( mPosition - 1, 1 );
+			}
+			
+			// This one will handle quote mode
+			int end = GetLastValidCharacter( start );
+			if ( start == end )
+			{
+				return string.Empty;
+			}
+			
+			// Nudge it forward a bit so the next token starts *after* this one
+			IncrementPosition();
+			return mText.AsSpan().Slice( start, end - start );
 		}
 
 		/// <summary>
 		/// Peeks at the next string.
 		/// </summary>
 		/// <returns>The next token in line, "" if EOF is reached.</returns>
-		public string Peek()
+		public ReadOnlySpan<char> Peek()
 		{
 			StashPosition();
-			string token = Next();
+			var token = Next();
 			StashPop();
 			return token;
 		}
@@ -164,15 +157,15 @@ namespace Elegy.Common.Text
 		/// and <paramref name="what"/>. If <paramref name="skipPeeked"/> is <c>true</c>,
 		/// the cursor will skip the result too.
 		/// </summary>
-		public string PeekUntil( string what, bool skipPeeked = false, bool skipWhatToo = true )
+		public ReadOnlySpan<char> PeekUntil( string what, bool skipPeeked = false, bool skipWhatToo = true )
 		{
 			StashPosition();
 			SkipUntil( what, skipWhatToo );
 
-			string result = string.Empty;
+			ReadOnlySpan<char> result = string.Empty;
 			if ( mPositionStash != mPosition )
 			{
-				result = mText.Substring( mPositionStash, mPosition - mPositionStash );
+				result = mText.AsSpan().Slice( mPositionStash, mPosition - mPositionStash );
 			}
 
 			if ( !skipPeeked )
@@ -184,19 +177,6 @@ namespace Elegy.Common.Text
 		}
 
 		/// <summary>
-		/// Returns a string of tokens until the newline.
-		/// </summary>
-		public string TokensBeforeNewline()
-		{
-			string result = string.Empty;
-			while ( ExpectAnythingUntilNewline() )
-			{
-				result = Next();
-			}
-			return result;
-		}
-
-		/// <summary>
 		/// An array of tokens until the newline.
 		/// </summary>
 		public IList<string> TokenListBeforeNewline()
@@ -204,7 +184,7 @@ namespace Elegy.Common.Text
 			List<string> strings = new();
 			while ( ExpectAnythingUntilNewline() )
 			{
-				strings.Add( Next() );
+				strings.Add( Next().ToString() );
 			}
 			return strings;
 		}
@@ -215,11 +195,11 @@ namespace Elegy.Common.Text
 		/// <param name="expectedToken">The token to expect.</param>
 		/// <param name="advanceIfTrue">Advance the seeking upon success? Behaves about the same as Next then.</param>
 		/// <returns>true if the next token and expectedToken match.</returns>
-		public bool Expect( string expectedToken, bool advanceIfTrue = false )
+		public bool Expect( ReadOnlySpan<char> expectedToken, bool advanceIfTrue = false )
 		{
 			StashPosition();
 
-			string token = Next();
+			var token = Next();
 			bool equal = token == expectedToken;
 
 			// The only situation where you don't want mPosition = oldPosition is when both advanceIfTrue and equal are true, ergo the !().
@@ -261,12 +241,12 @@ namespace Elegy.Common.Text
 		/// </summary>
 		/// <param name="what"></param>
 		/// <param name="skipThatToo"></param>
-		public void SkipUntil( string what, bool skipThatToo = false )
+		public void SkipUntil( ReadOnlySpan<char> what, bool skipThatToo = false )
 		{
 			while ( !IsEnd() )
 			{
 				IncrementPosition();
-				if ( mText.AsSpan().Slice( mPosition ).StartsWith( what.AsSpan() ) )
+				if ( mText.AsSpan().Slice( mPosition ).StartsWith( what ) )
 				{
 					if ( skipThatToo )
 					{
@@ -341,35 +321,37 @@ namespace Elegy.Common.Text
 		#endregion
 
 		#region Private methods
-		bool CanAdd()
-		{
-			char c = mText[mPosition];
-			return CanAdvance() && c != '"';
-		}
-
-		bool CanAdvance()
+		private bool IsValidCharacter()
 		{
 			if ( IsEnd() )
 			{
 				return false;
 			}
-
-			char c = mText[mPosition];
-
+			
+			// Anything is valid within quotes
 			if ( mInQuote )
 			{
-				return !IsEnd() && c != '"';
+				return true;
 			}
 
-			if ( IsDelimiter() )
-			{
-				return false;
-			}
-
-			return c != ' ' && c != '\t' && c != '\0' && !IsEndOfLine();
+			return !CanSkipCharacter();
 		}
 
-		void IncrementPosition()
+		private bool CanSkipCharacter()
+		{
+			// Whitespace, tabs and newlines can be skipped
+			char c = mText[mPosition];
+			if ( c is ' ' or '\t' or '\n' or '\r' )
+			{
+				return true;
+			}
+			
+			// Everything else: alphanumerical, delimiters, quotes etc. are implied
+			// Comments are also meant to be skipped
+			return IsComment();
+		}
+		
+		private void IncrementPosition()
 		{
 			if ( !IsEnd() )
 			{
@@ -384,7 +366,7 @@ namespace Elegy.Common.Text
 			}
 		}
 
-		bool IsComment()
+		private bool IsComment()
 		{
 			if ( mInQuote )
 			{
@@ -405,7 +387,12 @@ namespace Elegy.Common.Text
 			return false;
 		}
 
-		bool IsDelimiter()
+		private bool IsQuote()
+		{
+			return mText[mPosition] == '"';
+		}
+		
+		private bool IsDelimiter()
 		{
 			if ( IgnoreDelimiters )
 			{
@@ -426,17 +413,17 @@ namespace Elegy.Common.Text
 			return mDelimiters.IndexOf( mText[mPosition] ) != -1;
 		}
 
-		bool IsEndOfLine()
+		private bool IsEndOfLine()
 		{
 			return mText[mPosition] == '\n' || mText[mPosition] == '\r';
 		}
 
-		void ToggleQuoteMode()
+		private void ToggleQuoteMode()
 		{
 			mInQuote = !mInQuote;
 		}
 
-		void StashPosition()
+		private void StashPosition()
 		{
 			mPositionStash = mPosition;
 			mLineNumberStash = mLineNumber;
@@ -444,7 +431,7 @@ namespace Elegy.Common.Text
 			mInQuoteStash = mInQuote;
 		}
 
-		void StashPop()
+		private void StashPop()
 		{
 			mPosition = mPositionStash;
 			mLineNumber = mLineNumberStash;
