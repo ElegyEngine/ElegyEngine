@@ -91,6 +91,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.ECS", "Core\Elegy.ECS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.Game.Tests", "Tests\Elegy.Game.Tests\Elegy.Game.Tests.csproj", "{C0B1B5CD-83CA-44DF-BDA1-A7A9E6C84946}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elegy.Common.Benchmarks", "Tests\Elegy.Common.Benchmarks\Elegy.Common.Benchmarks.csproj", "{51BD5EEE-A5E8-40C4-8753-4CECA0CD7D5A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -233,6 +235,10 @@ Global
 		{C0B1B5CD-83CA-44DF-BDA1-A7A9E6C84946}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0B1B5CD-83CA-44DF-BDA1-A7A9E6C84946}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0B1B5CD-83CA-44DF-BDA1-A7A9E6C84946}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51BD5EEE-A5E8-40C4-8753-4CECA0CD7D5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51BD5EEE-A5E8-40C4-8753-4CECA0CD7D5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51BD5EEE-A5E8-40C4-8753-4CECA0CD7D5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51BD5EEE-A5E8-40C4-8753-4CECA0CD7D5A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -273,6 +279,7 @@ Global
 		{1BDA4FBB-7006-434F-80C2-F0A45E011F4A} = {5961BB45-8060-4916-A0AB-D2922BB693D7}
 		{7334C3E7-D1FC-4885-8954-DBC9E1BDE017} = {F41FE246-7C7B-450A-8210-75069071CCAD}
 		{C0B1B5CD-83CA-44DF-BDA1-A7A9E6C84946} = {C1767200-D5C3-4650-9346-4E0E2CE2EA74}
+		{51BD5EEE-A5E8-40C4-8753-4CECA0CD7D5A} = {C1767200-D5C3-4650-9346-4E0E2CE2EA74}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2F37BB09-DC21-4691-83D8-55A741939103}
