@@ -4,10 +4,8 @@
 using Elegy.Common.Assets;
 using Elegy.Common.Utilities;
 using Elegy.ConsoleSystem;
-
 using Game.Shared;
 using Game.Shared.Components;
-
 using System.Net;
 
 namespace Game.Server
@@ -24,6 +22,7 @@ namespace Game.Server
 		/// How often (per second) to send game state packets to clients.
 		/// </summary>
 		public int GameSnapshotRate { get; set; } = 10;
+
 		public float GameSnapshotTime => 1.0f / GameSnapshotRate;
 
 		/// <summary>

@@ -6,14 +6,12 @@ using Elegy.Common.Assets;
 using Elegy.Common.Interfaces;
 using Elegy.ConsoleSystem;
 using Elegy.FileSystem.API;
-
 using Game.Client;
 using Game.Presentation;
 using Game.Server;
 using Game.Session;
 using Game.Session.Bridges;
 using Game.Shared;
-
 using System.Diagnostics;
 using System.Net;
 
@@ -119,6 +117,7 @@ namespace Game
 		}
 
 		#region Server and client initialisation
+
 		private bool StartClient()
 		{
 			mClient = new();
@@ -190,6 +189,7 @@ namespace Game
 			// the session bridge will take care of it all.
 			return true;
 		}
+
 		#endregion
 
 		/// <summary>

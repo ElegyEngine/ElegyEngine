@@ -48,7 +48,6 @@ namespace Game.Shared
 
 		public void Shutdown()
 		{
-
 		}
 
 		public EntityBuilder CreateEntity()

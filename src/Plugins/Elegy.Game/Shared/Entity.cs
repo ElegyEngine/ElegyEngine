@@ -124,6 +124,7 @@ namespace Game.Shared
 						{
 							mLogger.Warning( $"Unknown keyvalue '{pair.Key}'!" );
 						}
+
 						break;
 				}
 			}

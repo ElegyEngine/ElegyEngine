@@ -66,14 +66,17 @@ namespace Game.Client
 			{
 				mMovementDirection += viewForward;
 			}
+
 			if ( Input.Keyboard.IsKeyPressed( Key.A ) )
 			{
 				mMovementDirection -= viewRight;
 			}
+
 			if ( Input.Keyboard.IsKeyPressed( Key.S ) )
 			{
 				mMovementDirection -= viewForward;
 			}
+
 			if ( Input.Keyboard.IsKeyPressed( Key.D ) )
 			{
 				mMovementDirection += viewRight;
@@ -83,6 +86,7 @@ namespace Game.Client
 			{
 				mMovementDirection += Vector3.UnitZ;
 			}
+
 			if ( Input.Keyboard.IsKeyPressed( Key.ControlLeft ) )
 			{
 				mMovementDirection -= Vector3.UnitZ;
@@ -100,6 +104,7 @@ namespace Game.Client
 				mAngles.Y += mMousePositionDeltaSmooth.X * 0.06f;
 				mAngles.X -= mMousePositionDeltaSmooth.Y * 0.06f;
 			}
+
 			mCommands.ViewAngles = mAngles;
 
 			//var state = Controller.GenerateControllerState();

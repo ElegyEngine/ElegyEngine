@@ -7,7 +7,6 @@ using Elegy.Common.Extensions;
 using Elegy.PlatformSystem.API;
 using Elegy.RenderSystem.Objects;
 using Elegy.RenderSystem.Resources;
-
 using Silk.NET.Windowing;
 using System.Diagnostics;
 
