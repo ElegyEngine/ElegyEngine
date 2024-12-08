@@ -4,6 +4,8 @@
 using Elegy.Common.Maths;
 using Elegy.ConsoleSystem;
 using Elegy.InputSystem.API;
+using Elegy.RenderSystem.API;
+using Elegy.RenderSystem.Objects;
 using Game.Shared;
 using Silk.NET.Input;
 
@@ -15,7 +17,7 @@ namespace Game.Client
 		private InputSystem mInput = new();
 		private MainMenu mMenu = new();
 
-		private ClientCommands mCommands = new();
+		private ClientCommands mCommands;
 
 		private Vector2 mOldMousePosition = Vector2.Zero;
 		private Vector2 mMousePositionDelta = Vector2.Zero;
@@ -24,11 +26,17 @@ namespace Game.Client
 		private Vector3 mMovementDirection = Vector3.Zero;
 		private Vector3 mAngles = Vector3.Zero;
 
+		private View? mRenderView;
+
 		public ClientCommands Commands => mCommands;
+		public View RenderView => mRenderView;
 
 		public bool Init()
 		{
 			mLogger.Log( "Init" );
+
+			mRenderView = Render.GetCurrentWindowView();
+			Debug.Assert( mRenderView is not null );
 
 			if ( !mInput.Init() )
 			{
