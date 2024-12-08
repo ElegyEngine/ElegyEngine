@@ -72,21 +72,50 @@ namespace Game.Shared
 		}
 	}
 
-	public partial struct Entity
+	public struct Entity
 	{
 		private static TaggedLogger mLogger = new( "Entity" );
 
-		[EventModel] public record struct TouchEvent( Entity Self, Entity Other );
-		[EventModel] public record struct TouchHoldEvent( Entity Self, Entity Other );
-		[EventModel] public record struct TouchEndEvent( Entity Self, Entity Other );
-		[EventModel] public record struct ClientPossessedEvent( Entity Self );
-		[EventModel] public record struct SpawnEvent( Entity Self );
-		[EventModel] public record struct PostSpawnEvent( Entity Self );
-		[EventModel] public record struct PrecacheEvent( Entity Self );
-		[EventModel] public record struct ClientUpdateEvent( Entity Self, GameClient Client, float Delta );
-		[EventModel] public record struct ServerUpdateEvent( GameServer Server, float Delta );
-		[EventModel] public record struct OnMapLoadEvent( Entity Self );
-		
+		#region Events
+
+		[EventModel]
+		public record struct TouchEvent( Entity Self, Entity Other );
+
+		[EventModel]
+		public record struct TouchHoldEvent( Entity Self, Entity Other );
+
+		[EventModel]
+		public record struct TouchEndEvent( Entity Self, Entity Other );
+
+		[EventModel]
+		public record struct ClientPossessedEvent( Entity Self );
+
+		[EventModel]
+		public record struct SpawnEvent( Entity Self );
+
+		[EventModel]
+		public record struct ClientSpawnEvent( Entity Self );
+
+		[EventModel]
+		public record struct PostSpawnEvent( Entity Self );
+
+		[EventModel]
+		public record struct DespawnEvent( Entity Self );
+
+		[EventModel]
+		public record struct ClientDespawnEvent( Entity Self );
+
+		[EventModel]
+		public record struct ClientUpdateEvent( Entity Self, GameClient Client, float Delta );
+
+		[EventModel]
+		public record struct ServerUpdateEvent( GameServer Server, float Delta );
+
+		[EventModel]
+		public record struct OnMapLoadEvent( ElegyMapDocument MapDocument );
+
+		#endregion
+
 		public int Id { get; }
 		public EcsEntity EcsObject => EntityWorld.GetEcsObject( Id );
 		public ref EcsEntity EcsObjectRef => ref EntityWorld.GetEcsObjectRef( Id );
