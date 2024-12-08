@@ -18,7 +18,12 @@ namespace Elegy.ECS.Generator
 			{
 				foreach ( var model in eventModels )
 				{
-					if ( name.EndsWith( model.Name ) )
+					if ( !name.Contains( '.' ) && name == model.Name )
+					{
+						return model.FullName;
+					}
+					
+					if ( name.EndsWith( $".{model.Name}" ) )
 					{
 						return model.FullName;
 					}
