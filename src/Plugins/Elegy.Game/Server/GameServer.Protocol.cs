@@ -44,7 +44,7 @@ namespace Game.Server
 
 			// TODO: password protection
 
-			client.Bridge.SendAssetInfoRequest( AssetRegistry );
+			client.Bridge.SendAssetInfoRequest( AssetCache.Registry );
 		}
 
 		/// <summary>
@@ -73,7 +73,7 @@ namespace Game.Server
 			int entityId = SpawnClientEntity( clientId );
 
 			ConnectionModify( clientId, GameSessionState.Joining );
-			Connections[clientId].Bridge.SendSpawnResponse( entityId, EntityWorld );
+			Connections[clientId].Bridge.SendSpawnResponse( entityId );
 		}
 
 		/// <summary>

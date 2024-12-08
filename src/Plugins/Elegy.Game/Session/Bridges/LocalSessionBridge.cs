@@ -4,6 +4,7 @@
 using Game.Server.Bridges;
 using Game.Shared;
 using System.Net;
+using Game.Server;
 
 namespace Game.Session.Bridges
 {
@@ -20,7 +21,7 @@ namespace Game.Session.Bridges
 		}
 
 		public AssetRegistry AssetRegistry
-			=> mServer.AssetRegistry;
+			=> AssetCache.Registry;
 
 		public GameSessionState ConnectionState
 			=> GetConnectionState();

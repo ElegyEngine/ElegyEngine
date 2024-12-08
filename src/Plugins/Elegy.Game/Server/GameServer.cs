@@ -7,15 +7,15 @@ using Elegy.ConsoleSystem;
 using Game.Shared;
 using Game.Shared.Components;
 using System.Net;
+using Game.Session;
 
 namespace Game.Server
 {
 	public partial class GameServer
 	{
 		private TaggedLogger mLogger = new( "Server" );
+		private GameSession? mGameSession;
 
-		public AssetRegistry AssetRegistry { get; } = new();
-		public EntityWorld EntityWorld { get; }
 		public int MaxPlayers => Connections.Capacity;
 
 		/// <summary>
@@ -29,20 +29,21 @@ namespace Game.Server
 		/// How often to update serverside entities.
 		/// </summary>
 		public int ServerUpdateRate { get; set; } = 40;
+
 		public float ServerUpdateTime => 1.0f / ServerUpdateRate;
 
-		public GameServer( EntityWorld world, int maxPlayers )
+		public GameServer( int maxPlayers, GameSession? gameSession = null )
 		{
-			EntityWorld = world;
 			Connections = new( maxPlayers );
+			mGameSession = gameSession;
 		}
 
 		public void Shutdown()
 		{
 		}
 
-		private DeltaTimer mSnapshotTimer = new();
-		private DeltaTimer mUpdateTimer = new();
+		private DeltaTimer mSnapshotTimer;
+		private DeltaTimer mUpdateTimer;
 
 		public void Update( float delta )
 		{
@@ -70,13 +71,7 @@ namespace Game.Server
 			{
 				foreach ( var client in Connections )
 				{
-					// Skip the local client
-					if ( IPAddress.IsLoopback( client.Address ) )
-					{
-						continue;
-					}
-
-					//EmitGameState( client );
+					client.Bridge.SendGameStatePayload();
 				}
 			} );
 		}
@@ -84,25 +79,22 @@ namespace Game.Server
 		public bool Setup( ElegyMapDocument level )
 		{
 			// Step 1: Create entities
+			Entity.OnMapLoadEvent mapLoadEvent = new( level );
 			foreach ( var entityEntry in level.Entities )
 			{
 				EntityWorld.CreateEntity()
 					.LoadKeyvalues( entityEntry.Attributes )
-					.FinishSpawning();
+					.BuildArchetypes()
+					.Dispatch( mapLoadEvent )
+					.FinishSpawning(); // Dispatches Entity.SpawnEvent
 			}
 
-			// Step 2: Let entities load all their stuff
-			foreach ( var entity in EntityWorld.AliveEntities )
-			{
-				entity.Dispatch<Entity.SpawnEvent>( new( entity ) );
-			}
-
-			// Step 3: Now that everybody has spawned, do another
+			// Step 2: Now that everybody has spawned, do another
 			// run, e.g. accumulating spawnPointEntity links etc.
-			foreach ( var entity in EntityWorld.AliveEntities )
+			EntityWorld.ForEachEntity( static entity =>
 			{
 				entity.Dispatch<Entity.PostSpawnEvent>( new( entity ) );
-			}
+			} );
 
 			return true;
 		}
@@ -114,10 +106,8 @@ namespace Game.Server
 			Entity playerEntity = EntityWorld
 				.CreateEntity()
 				.With<Player>()
+				.BuildArchetypes()
 				.FinishSpawning();
-
-			// TODO: defer this to later when the client fully joins?
-			playerEntity.Dispatch<Entity.SpawnEvent>( new( playerEntity ) );
 
 			SelectSpawnPoint( playerEntity );
 

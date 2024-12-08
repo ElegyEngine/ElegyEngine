@@ -8,6 +8,8 @@ using Game.Client;
 using Game.Server;
 using Game.Shared.Components;
 using System.Runtime.CompilerServices;
+using Elegy.Common.Assets;
+using Game.Session;
 using EcsEntity = fennecs.Entity;
 
 namespace Game.Shared
@@ -15,46 +17,58 @@ namespace Game.Shared
 	public struct EntityHandle
 	{
 		public int EntityId { get; }
-		public EntityWorld World { get; }
 
 		public EntityHandle( Entity entity )
 		{
 			EntityId = entity.Id;
-			World = entity.World;
 		}
 
 		public Entity Entity
-			=> World.Entities[EntityId];
+			=> EntityWorld.Entities[EntityId];
 
 		public bool Alive
-			=> World.Entities[EntityId].Alive;
+			=> EntityWorld.Entities[EntityId].Alive;
 	}
 
 	public ref struct EntityBuilder
 	{
-		ref Entity mEntity;
+		private int mId;
 
 		public EntityBuilder( ref Entity entity )
 		{
-			mEntity = ref entity;
+			mId = entity.Id;
 		}
 
 		public EntityBuilder LoadKeyvalues( Dictionary<string, string> properties )
 		{
-			mEntity.LoadFromKeyvalues( properties );
+			EntityWorld.GetEntityRef( mId ).LoadFromKeyvalues( properties );
 			return this;
 		}
 
 		public EntityBuilder With<T>() where T : notnull, new()
 		{
-			mEntity.RefOrCreate<T>();
+			EntityWorld.GetEntityRef( mId ).RefOrCreate<T>();
+			return this;
+		}
+
+		public EntityBuilder BuildArchetypes()
+		{
+			EntityUtilities.FinishSpawningEntity( ref EntityWorld.GetEntityRef( mId ) );
+			return this;
+		}
+
+		public EntityBuilder Dispatch<T>( T data ) where T : notnull
+		{
+			EntityWorld.GetEntityRef( mId ).Dispatch( data );
 			return this;
 		}
 
 		public ref Entity FinishSpawning()
 		{
-			EntityUtilities.FinishSpawningEntity( mEntity.EcsObject );
-			return ref mEntity;
+			EntityWorld.FinishSpawning( mId );
+			// Can't really return mEntity directly here, because there's now
+			// two different copies of it, so we return the newer one
+			return ref EntityWorld.GetEntityRef( mId );
 		}
 	}
 
@@ -107,18 +121,18 @@ namespace Game.Shared
 				{
 					case "targetname":
 						//EntityUtilities
-						//	.CreateOrRef<Target>( EcsObject )
+						//	.CreateOrRef<Target>( ref EcsObjectRef )
 						//	.Name = pair.Value;
 						break;
 
 					case "origin":
 						EntityUtilities
-							.CreateOrRef<Transform>( EcsObject )
+							.CreateOrRef<Transform>( ref EcsObjectRef )
 							.Position = Parse.Vector3( pair.Value );
 						break;
 
 					default:
-						if ( !EntityUtilities.ParseComponentKeyvalue( EcsObject, pair.Key, pair.Value ) )
+						if ( !EntityUtilities.ParseComponentKeyvalue( ref EcsObjectRef, pair.Key, pair.Value ) )
 						{
 							mLogger.Warning( $"Unknown keyvalue '{pair.Key}'!" );
 						}
@@ -130,7 +144,7 @@ namespace Game.Shared
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public ref T RefOrCreate<T>() where T : notnull, new()
-			=> ref EntityUtilities.CreateOrRef<T>( EcsObject );
+			=> ref EntityUtilities.CreateOrRef<T>( ref EcsObjectRef );
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public bool Has<T>() where T : notnull
@@ -145,9 +159,6 @@ namespace Game.Shared
 			=> EntityUtilities.DispatchEvent<T>( EcsObject, param );
 
 		public void DispatchNamed( ReadOnlySpan<char> name )
-			=> EntityUtilities.DispatchNamedEvent( EcsObject, name, static message =>
-			{
-				mLogger.Warning( message );
-			} );
+			=> EntityUtilities.DispatchNamedEvent( EcsObject, name, static message => { mLogger.Warning( message ); } );
 	}
 }
