@@ -72,7 +72,7 @@ namespace Elegy.ECS.Generator
 			{
 				sb.AppendLine(
 			$$"""
-						CreateOrRef<global::{{component.FullName}}>( entity )
+						CreateOrRef<global::{{component.FullName}}>( ref entity )
 							.{{property.Name}}
 							.ParseEntityProperty( entity, key, value );
 			"""	
@@ -88,7 +88,7 @@ namespace Elegy.ECS.Generator
 
 				sb.AppendLine(
 			$$"""
-						CreateOrRef<global::{{component.FullName}}>( entity )
+						CreateOrRef<global::{{component.FullName}}>( ref entity )
 							.{{property.Name}} = {{GetParser( property.Datatype, entityProperties )}};
 			"""
 				);
@@ -117,7 +117,7 @@ namespace Elegy.ECS.Generator
 				/// Deserialises an entity from text data embedded in the level.
 				/// Also creates components ad-hoc.
 				/// </summary>
-				public static bool ParseComponentKeyvalue( fennecs.Entity entity, ReadOnlySpan<char> key, string value )
+				public static bool ParseComponentKeyvalue( ref fennecs.Entity entity, ReadOnlySpan<char> key, string value )
 				{
 					switch ( key )
 					{

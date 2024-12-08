@@ -77,7 +77,7 @@ namespace Elegy.ECS.Generator
 				/// <summary>
 				/// Creates a component, keeping in mind <see cref="RequiresAttribute{T}"/> i.e. component dependencies.
 				/// </summary>
-				public static ref T CreateOrRef<T>( fennecs.Entity entity )
+				public static ref T CreateOrRef<T>( ref fennecs.Entity entity )
 					where T: new()
 				{
 					var typeOfT = typeof( T );
@@ -100,7 +100,7 @@ namespace Elegy.ECS.Generator
 			$$"""
 						if ( !entity.Has<global::{{dependency.FullName}}>() )
 						{
-							CreateOrRef<global::{{dependency.FullName}}>( entity );
+							CreateOrRef<global::{{dependency.FullName}}>( ref entity );
 						}
 			""" );
 				}

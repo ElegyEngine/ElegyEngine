@@ -56,9 +56,9 @@ namespace Game.Shared
 
 		private static List<Archetype> mArchetypes = [];
 
-		public static void FinishSpawningEntity( fennecs.Entity entity )
+		public static void FinishSpawningEntity( ref Entity entity )
 		{
-			var components = entity.Components;
+			var components = entity.EcsObject.Components;
 
 			List<int> componentIds = new( components.Count );
 			foreach ( var component in components )
@@ -76,7 +76,7 @@ namespace Game.Shared
 			{
 				if ( archetype.Matches( componentMask ) )
 				{
-					entity.Add( archetype );
+					entity.EcsObjectRef.Add( archetype );
 					break;
 				}
 			}
@@ -90,7 +90,7 @@ namespace Game.Shared
 					ComplexEventHandlers = GeneratedGroupEventHandlers( componentMask )
 				} );
 
-				entity.Add( mArchetypes.Last() );
+				entity.EcsObjectRef.Add( mArchetypes.Last() );
 			}
 		}
 	}
