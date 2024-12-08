@@ -113,7 +113,7 @@ namespace Game
 			mSession?.Update( delta );
 
 			// Update camera, HUD etc. Rendering is handled elsewhere
-			//mPresentation?.Update( delta );
+			mPresentation?.Update( delta );
 
 			return !mUserWantsToExit;
 		}

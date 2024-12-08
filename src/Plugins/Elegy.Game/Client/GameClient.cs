@@ -1,6 +1,8 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Elegy.Common.Maths;
 using Elegy.ConsoleSystem;
 using Elegy.InputSystem.API;
