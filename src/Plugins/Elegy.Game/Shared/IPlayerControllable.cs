@@ -20,7 +20,7 @@ namespace Game.Shared
 	/// </summary>
 	public interface IPlayerControllable
 	{
-		void Setup( EntityWorld world );
+		void Setup();
 		void Update( float delta );
 		void HandleClientInput( ClientCommands commands );
 		PlayerControllerState GenerateControllerState();
