@@ -16,6 +16,9 @@ using ITexture = Elegy.AssetSystem.Interfaces.Rendering.ITexture;
 
 namespace Elegy.RenderSystem.Objects
 {
+	/// <summary>
+	/// A renderable view.
+	/// </summary>
 	public class View : IDisposable
 	{
 		[StructLayout( LayoutKind.Sequential )]
@@ -115,9 +118,24 @@ namespace Elegy.RenderSystem.Objects
 			};
 		}
 
-		public int Mask { get; set; } = int.MinValue;
+		/// <summary>
+		/// Called when this view is being rendered.
+		/// </summary>
+		public Action<CommandList> OnRender;
 
-		public IWindow? Window { get; private set; } = null;
+		/// <summary>
+		/// The render mask.
+		/// </summary>
+		public int Mask { get; set; } = int.MinValue;
+		
+		/// <summary>
+		/// The native window associated with this view.
+		/// </summary>
+		public IWindow? Window { get; private set; }
+		
+		/// <summary>
+		/// Render output size in pixels.
+		/// </summary>
 		public Vector2I RenderSize { get; set; }
 
 		/// <summary>
@@ -130,12 +148,12 @@ namespace Elegy.RenderSystem.Objects
 		/// The texture associated with either the <see cref="Window"/> or a custom render target.
 		/// Doesn't have a depth buffer, meant to be a target of post-processing.
 		/// </summary>
-		public Texture? TargetTexture { get; private set; } = null;
+		public Texture? TargetTexture { get; private set; }
 
 		/// <summary>
 		/// The swapchain associated with the <see cref="Window"/>. If that is null, this is null too.
 		/// </summary>
-		public Swapchain? TargetSwapchain { get; private set; } = null;
+		public Swapchain? TargetSwapchain { get; private set; }
 
 		/// <summary>
 		/// Framebuffer associated with <see cref="ViewTexture"/> and <see cref="DepthTexture"/> for rendering.
@@ -157,6 +175,9 @@ namespace Elegy.RenderSystem.Objects
 		/// </summary>
 		public ResourceSet WindowSet { get; set; }
 
+		/// <summary>
+		/// Transformation matrix of this view.
+		/// </summary>
 		public Matrix4x4 Transform
 		{
 			get => mCameraData.Transform;
@@ -167,6 +188,9 @@ namespace Elegy.RenderSystem.Objects
 			}
 		}
 
+		/// <summary>
+		/// Projection matrix of this view.
+		/// </summary>
 		public Matrix4x4 Projection
 		{
 			get => mCameraData.Projection;
@@ -181,6 +205,9 @@ namespace Elegy.RenderSystem.Objects
 		public DeviceBuffer CameraBuffer { get; private set; }
 		public ResourceSet PerViewSet { get; private set; }
 
+		/// <summary>
+		/// Updates buffers on the GPU.
+		/// </summary>
 		public void UpdateBuffers( GraphicsDevice device )
 		{
 			if ( TransformOrProjectionChanged )
@@ -189,6 +216,9 @@ namespace Elegy.RenderSystem.Objects
 			}
 		}
 
+		/// <summary>
+		/// Disposes of all resources.
+		/// </summary>
 		public void Dispose()
 		{
 			PerViewSet.Dispose();
