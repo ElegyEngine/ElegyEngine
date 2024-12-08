@@ -16,14 +16,36 @@ namespace Elegy.Common.Utilities
 {
 	public static class GltfHelpers
 	{
-		public static Vector3 TransformYUp( Vector3 yup )
+		/// <summary>
+		/// Transforms (1,2,3) into (1,3,-2).
+		/// </summary>
+		public static Vector3 TransformToYUp( Vector3 zup )
 		{
-			return new( yup.X, yup.Z, -yup.Y );
+			return new( zup.X, zup.Z, -zup.Y );
 		}
 
-		public static Vector4 TransformYUp( Vector4 yup )
+		/// <summary>
+		/// Transforms (1,3,-2) into (1,2,3).
+		/// </summary>
+		public static Vector3 TransformFromYUp( Vector3 yup )
 		{
-			return new( yup.X, yup.Z, -yup.Y, yup.W );
+			return new( yup.X, -yup.Z, yup.Y );
+		}
+
+		/// <summary>
+		/// Transforms (1,2,3,4) into (1,3,-2,4).
+		/// </summary>
+		public static Vector4 TransformToYUp( Vector4 zup )
+		{
+			return new( zup.X, zup.Z, -zup.Y, zup.W );
+		}
+		
+		/// <summary>
+		/// Transforms (1,2,3,4) into (1,3,-2,4).
+		/// </summary>
+		public static Vector4 TransformFromYUp( Vector4 yup )
+		{
+			return new( yup.X, -yup.Z, yup.Y, yup.W );
 		}
 
 		public static Vector3[] LoadPositions( Accessor value )
@@ -86,9 +108,9 @@ namespace Elegy.Common.Utilities
 
 			if ( yIntoZ )
 			{
-				engineMesh.Positions = engineMesh.Positions.Select( TransformYUp ).ToArray();
-				engineMesh.Normals = engineMesh.Normals.Select( TransformYUp ).ToArray();
-				engineMesh.Tangents = engineMesh.Tangents.Select( TransformYUp ).ToArray();
+				engineMesh.Positions = engineMesh.Positions.Select( TransformFromYUp ).ToArray();
+				engineMesh.Normals = engineMesh.Normals.Select( TransformFromYUp ).ToArray();
+				engineMesh.Tangents = engineMesh.Tangents.Select( TransformFromYUp ).ToArray();
 			}
 
 			engineMesh.Indices = LoadIndices( primitive.IndexAccessor );
@@ -205,9 +227,9 @@ namespace Elegy.Common.Utilities
 					}
 				}
 
-				Vector3[] positionsYUp = mesh.Positions.Select( TransformYUp ).ToArray();
-				Vector3[] normalsYUp = mesh.Normals.Select( TransformYUp ).ToArray();
-				Vector4[] tangentsYUp = mesh.Tangents.Select( TransformYUp ).ToArray();
+				Vector3[] positionsYUp = mesh.Positions.Select( TransformToYUp ).ToArray();
+				Vector3[] normalsYUp = mesh.Normals.Select( TransformToYUp ).ToArray();
+				Vector4[] tangentsYUp = mesh.Tangents.Select( TransformToYUp ).ToArray();
 
 				tryAppendAccessor( MeshVertexFlags.Positions, positionsYUp );
 				tryAppendAccessor( MeshVertexFlags.Positions2D, mesh.Positions2D );
