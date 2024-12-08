@@ -201,7 +201,7 @@ namespace Elegy.RenderSystem.Objects
 			}
 		}
 
-		public bool TransformOrProjectionChanged { get; set; } = false;
+		internal bool TransformOrProjectionChanged { get; set; }
 		public DeviceBuffer CameraBuffer { get; private set; }
 		public ResourceSet PerViewSet { get; private set; }
 
