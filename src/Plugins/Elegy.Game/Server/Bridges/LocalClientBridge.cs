@@ -38,15 +38,15 @@ namespace Game.Server.Bridges
 			// Bypassed
 		}
 
-		public void SendSpawnResponse( int clientEntityId, EntityWorld world )
+		public void SendSpawnResponse( int clientEntityId )
 			=> mSession.ReceiveSpawnResponse( clientEntityId );
 
 		public void SendSpawnCompleteAck()
 			=> mSession.ReceiveSpawnCompleteAck();
 
-		public void SendGameStatePayload( EntityWorld world )
+		public void SendGameStatePayload()
 		{
-			// Nothing, we already have the latest game state
+			// TODO: 
 		}
 
 		public void SendGameEventPayload( int eventId, object[]? args )

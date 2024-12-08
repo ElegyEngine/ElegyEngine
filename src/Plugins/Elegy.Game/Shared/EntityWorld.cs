@@ -5,74 +5,101 @@ using System.Runtime.CompilerServices;
 
 namespace Game.Shared
 {
-	public class EntityWorld
+	public static class EntityWorld
 	{
-		public bool AllSpawned { get; set; } = false;
+		private static int mNumEntitySlots = 0;
 
-		public fennecs.World EcsWorld { get; }
+		public static bool AllSpawned { get; set; } = false;
+		public static fennecs.World EcsWorld { get; private set; }
+		public static Entity[] Entities { get; private set; }
+		public static fennecs.Entity[] EcsObjects { get; private set; }
 
-		public Entity[] Entities { get; }
+		public static event Action<Entity> OnSpawned = delegate { };
+		public static event Action<Entity> OnPreSpawned = delegate { };
+		public static event Action<Entity> OnDestroyed = delegate { };
+		public static event Action<Entity> OnPreDestroyed = delegate { };
 
-		public IEnumerable<Entity> AliveEntities
-		{
-			get
-			{
-				for ( int i = 0; i < Entities.Length; i++ )
-				{
-					if ( Entities[i].Alive )
-					{
-						yield return Entities[i];
-					}
-				}
-			}
-		}
-
-		public EntityWorld( int capacity = 4096 )
+		public static void Init( int capacity = 4096 )
 		{
 			EcsWorld = new( capacity )
 			{
 				Name = "SharedEntityEcsWorld",
 				GCBehaviour = fennecs.World.GCAction.ManualOnly
-						| fennecs.World.GCAction.CompactStagnantArchetypes
-						| fennecs.World.GCAction.DisposeEmptyArchetypes
-						| fennecs.World.GCAction.DisposeEmptyRelationArchetypes
+							  | fennecs.World.GCAction.CompactStagnantArchetypes
+							  | fennecs.World.GCAction.DisposeEmptyArchetypes
+							  | fennecs.World.GCAction.DisposeEmptyRelationArchetypes
 			};
 
 			Entities = new Entity[capacity];
-
-			foreach ( var index in Enumerable.Range( 0, Entities.Length ) )
-			{
-				Entities[index] = new( index );
-			}
+			EcsObjects = new fennecs.Entity[capacity];
 		}
 
-		public void Shutdown()
+		public static void Shutdown()
 		{
 		}
 
-		public EntityBuilder CreateEntity()
+		public static EntityBuilder CreateEntity()
 		{
-			int newEntityId = 0;
-			foreach ( var entity in Entities.AsSpan() )
+			int newEntityId = -1;
+			for ( int i = 0; i < mNumEntitySlots; i++ )
 			{
-				if ( !entity.Alive )
+				if ( !EcsObjects[i].Alive )
 				{
-					newEntityId = entity.Id;
+					newEntityId = i;
 					break;
 				}
 			}
 
-			Entities[newEntityId] = new( this, newEntityId );
+			if ( newEntityId < 0 )
+			{
+				newEntityId = mNumEntitySlots;
+			}
+			mNumEntitySlots++;
+			
+			EcsObjects[newEntityId] = EcsWorld.Spawn();
+			Entities[newEntityId] = new( newEntityId );
+			OnPreSpawned( Entities[newEntityId] );
 			return new( ref Entities[newEntityId] );
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Entity GetEntity( int id )
+		public static void FinishSpawning( int entityId )
+			=> OnSpawned( Entities[entityId] );
+
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static Entity GetEntity( int id )
+			=> Entities[id];
+
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static ref Entity GetEntityRef( int id )
+			=> ref Entities[id];
+
+		public static void DestroyEntity( int id )
 		{
-			return Entities[id];
+			OnPreDestroyed( Entities[id] );
+			Entities[id].EcsObject.Despawn();
+			OnDestroyed( Entities[id] );
 		}
 
-		public void Dispatch<T>( T data ) where T : notnull
-			=> EntityUtilities.DispatchGroup<T>( EcsWorld, data );
+		public static fennecs.Entity GetEcsObject( int id )
+			=> EcsObjects[id];
+
+		public static ref fennecs.Entity GetEcsObjectRef( int id )
+			=> ref EcsObjects[id];
+
+		public static void ForEachEntity( Action<Entity> action )
+		{
+			for ( int i = 0; i < mNumEntitySlots; i++ )
+			{
+				if ( !Entities[i].Alive )
+				{
+					continue;
+				}
+
+				action( Entities[i] );
+			}
+		}
+
+		public static void Dispatch<T>( T data ) where T : notnull
+			=> EntityUtilities.DispatchGroup( EcsWorld, data );
 	}
 }

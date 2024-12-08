@@ -60,7 +60,7 @@ namespace Game.Server.Bridges
 			//mConnection.Send( new Packets.AssetPayloadPacket( payload ) );
 		}
 
-		public void SendSpawnResponse( int clientEntityId, EntityWorld world )
+		public void SendSpawnResponse( int clientEntityId )
 		{
 			//mConnection.Send( new Packets.SpawnResponsePacket( clientEntityId, world ) );
 		}
@@ -70,7 +70,7 @@ namespace Game.Server.Bridges
 			//mConnection.Send( new Packets.SpawnCompleteAck() );
 		}
 
-		public void SendGameStatePayload( EntityWorld world )
+		public void SendGameStatePayload()
 		{
 			//mConnection.Send( new Packets.GameStatePayloadPacket( world ) );
 		}

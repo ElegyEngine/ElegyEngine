@@ -74,30 +74,28 @@ namespace Game.Shared
 		[EventModel] public record struct OnMapLoadEvent( Entity Self );
 		
 		public int Id { get; }
-		public EntityWorld World { get; }
-		public EcsEntity EcsObject { get; }
+		public EcsEntity EcsObject => EntityWorld.GetEcsObject( Id );
+		public ref EcsEntity EcsObjectRef => ref EntityWorld.GetEcsObjectRef( Id );
 		public Archetype Archetype => EcsObject.Ref<Archetype>();
 		public bool Alive => EcsObject.Alive;
 
 		public Entity( int id )
 		{
 			Id = id;
-		}
-
-		public Entity( EntityWorld world, int id )
-		{
-			Id = id;
-			World = world;
-
-			EcsObject = world.EcsWorld.Spawn();
-			EcsObject.Add( this );
+			EcsObjectRef.Add( this );
 		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public void PreDestroyServer()
+			=> Dispatch( new DespawnEvent( this ) );
+
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public void PreDestroyClient()
+			=> Dispatch( new ClientDespawnEvent( this ) );
+
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public void Destroy()
-		{
-			EcsObject.Despawn();
-		}
+			=> EcsObjectRef.Despawn();
 
 		public void LoadFromKeyvalues( Dictionary<string, string> keys )
 		{

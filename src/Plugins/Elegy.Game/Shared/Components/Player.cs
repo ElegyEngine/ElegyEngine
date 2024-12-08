@@ -21,11 +21,11 @@ namespace Game.Shared.Components
 		public void Spawn( Entity.SpawnEvent data )
 		{
 			// Notify entities that a player has spawned
-			data.Self.World.Dispatch<PlayerSpawnedEvent>( new( this ) );
+			EntityWorld.Dispatch<PlayerSpawnedEvent>( new( this ) );
 
 			// Set up the controller so that it can
 			// collide against the world and so on
-			Controller.Setup( data.Self.World );
+			Controller.Setup();
 		}
 
 		// Updates all players on the server

@@ -14,6 +14,8 @@ using Game.Session.Bridges;
 using Game.Shared;
 using System.Diagnostics;
 using System.Net;
+using Elegy.RenderSystem.API;
+using Elegy.RenderSystem.Objects;
 
 namespace Game
 {
@@ -22,14 +24,10 @@ namespace Game
 		private TaggedLogger mLogger = new( "Game" );
 		private Stopwatch mStopwatch = new();
 
-		private GameClient? mClient; // User input handling, main menu etc.
+		private GameClient? mClient;             // User input handling, main menu etc.
 		private GamePresentation? mPresentation; // Rendering, HUD etc.
-		private GameSession? mSession; // Clientside game state
-		private GameServer? mServer; // Serverside entities etc. null when connecting to a server
-
-		// Clientside and/or serverside game entities. In singleplayer, it is shared
-		// between GameSession and GameServer, in multiplayer it is only in GameSession.
-		private EntityWorld mEntityWorld = new();
+		private GameSession? mSession;           // Clientside game state
+		private GameServer? mServer;             // Serverside entities etc. null when connecting to a server
 
 		private bool mUserWantsToExit = false;
 
@@ -64,6 +62,8 @@ namespace Game
 			string mapName = Console.Arguments.GetValueOrDefault( "+map", "test2" );
 			int maxPlayers = Console.Arguments.GetInt( "+maxplayers", 16 );
 
+			EntityWorld.Init();
+
 			bool headlessMode = Console.Arguments.ContainsKey( "-headless" );
 			if ( headlessMode )
 			{
@@ -94,6 +94,8 @@ namespace Game
 
 			mServer?.Shutdown();
 			mServer = null;
+
+			EntityWorld.Shutdown();
 		}
 
 		public bool RunFrame( float delta )
@@ -134,6 +136,9 @@ namespace Game
 				return false;
 			}
 
+			EntityWorld.OnSpawned += static entity => entity.Dispatch( new Entity.ClientSpawnEvent( entity ) );
+			EntityWorld.OnPreDestroyed += static entity => entity.Dispatch( new Entity.ClientDespawnEvent( entity ) );
+
 			return true;
 		}
 
@@ -168,7 +173,7 @@ namespace Game
 				return false;
 			}
 
-			mSession = new( mClient, mEntityWorld );
+			mSession = new( mClient );
 
 			// In singleplayer, don't waste time on sending & receiving your own packets.
 			// But also take into account that a headless server may run on the same machine!
@@ -206,7 +211,10 @@ namespace Game
 				return false;
 			}
 
-			mServer = new( mEntityWorld, maxPlayers );
+			mServer = new( maxPlayers );
+
+			EntityWorld.OnSpawned += static entity => entity.Dispatch( new Entity.SpawnEvent( entity ) );
+			EntityWorld.OnPreDestroyed += static entity => entity.Dispatch( new Entity.DespawnEvent( entity ) );
 
 			if ( !mServer.Setup( level ) )
 			{

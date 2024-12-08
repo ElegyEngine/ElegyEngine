@@ -12,24 +12,16 @@ namespace Game.Session
 	public partial class GameSession
 	{
 		public GameClient Client { get; }
-
-		// TODO: For clientside prediction we should have
-		// a couple copies of the entity world:
-		// * the old snapshot
-		// * the new snapshot
-		// * currently predicted and interpolated state
-		public EntityWorld EntityWorld { get; }
-
+		
 		public ref Entity ClientEntity => ref EntityWorld.Entities[ClientEntityId];
 		public IPlayerControllable PlayerController => ClientEntity.Ref<Player>().Controller;
 
 		public IServerBridge Bridge { get; set; }
 		public AssetRegistry AssetRegistry => Bridge.AssetRegistry;
 
-		public GameSession( GameClient client, EntityWorld world )
+		public GameSession( GameClient client )
 		{
 			Client = client;
-			EntityWorld = world;
 
 			Client.RenderView.Projection = Coords.CreatePerspectiveMatrix( MathF.PI / 2.0f, 16.0f / 9.0f, 0.01f, 4096.0f );
 			Client.RenderView.Transform = Coords.CreateViewMatrix( Vector3.Zero, Coords.Forward, Coords.Up );

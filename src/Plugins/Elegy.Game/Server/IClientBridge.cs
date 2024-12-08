@@ -52,7 +52,7 @@ namespace Game.Server
 		/// been spawned in the world, and sends the latest
 		/// game state snapshot.
 		/// </summary>
-		void SendSpawnResponse( int clientEntityId, EntityWorld world );
+		void SendSpawnResponse( int clientEntityId );
 
 		/// <summary>
 		/// Maps to <see cref="Packets.ServerPacketType.SpawnCompleteAck"/>.
@@ -64,7 +64,7 @@ namespace Game.Server
 		/// 
 		/// Maps to <see cref="Packets.ServerPacketType.GameStatePayload"/>.
 		/// </summary>
-		void SendGameStatePayload( EntityWorld world );
+		void SendGameStatePayload();
 
 		/// <summary>
 		/// Not implemented.
