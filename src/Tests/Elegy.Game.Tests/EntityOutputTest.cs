@@ -18,9 +18,9 @@ public static class EntityOutputTest
 	[Fact]
 	public static void TestParsing()
 	{
-		EntityWorld world = new( 16 );
+		EntityWorld.Init( 16 );
 
-		var entity = world.CreateEntity().FinishSpawning();
+		var entity = EntityWorld.CreateEntity().FinishSpawning();
 
 		EntityOutput entityOutput = new();
 		entityOutput.ParseEntityProperty( entity.EcsObject, "Component.Output",
@@ -34,6 +34,6 @@ public static class EntityOutputTest
 		AssertEntityOutputEntry( entityOutput.Entries[0], new( "some_entity", "Breakable.Break", 2.0f, "1" ) );
 		AssertEntityOutputEntry( entityOutput.Entries[1], new( "some_entity", "Breakable.Break", 3.0f, "" ) );
 
-		world.Shutdown();
+		EntityWorld.Shutdown();
 	}
 }
