@@ -5,7 +5,7 @@
         "commandLine": "-verbose",
         "environment": [
         ],
-        "executable": "E:\\Workfolders\\Elegy\\SourceCodes\\Elegy.Engine2\\testgame\\Elegy.Launcher2.exe",
+        "executable": "A:\\Workfolders\\Elegy\\SourceCodes\\Elegy.Engine\\testgame\\Elegy.Launcher2.exe",
         "inject": false,
         "numQueuedFrames": 10,
         "options": {
