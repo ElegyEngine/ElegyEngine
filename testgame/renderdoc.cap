@@ -5,7 +5,7 @@
         "commandLine": "-verbose",
         "environment": [
         ],
-        "executable": "A:\\Workfolders\\Elegy\\SourceCodes\\Elegy.Engine\\testgame\\Elegy.Launcher2.exe",
+        "executable": "./Elegy.Launcher2.exe",
         "inject": false,
         "numQueuedFrames": 10,
         "options": {
@@ -16,12 +16,12 @@
             "captureCallstacks": false,
             "captureCallstacksOnlyDraws": false,
             "debugOutputMute": true,
-            "delayForDebugger": 0,
+            "delayForDebugger": 5,
             "hookIntoChildren": false,
             "refAllResources": false,
             "verifyBufferAccess": false
         },
-        "queuedFrameCap": 0,
-        "workingDir": ""
+        "queuedFrameCap": 1,
+        "workingDir": "./"
     }
 }
