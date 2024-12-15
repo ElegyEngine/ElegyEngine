@@ -8,6 +8,9 @@ using System.Diagnostics;
 
 namespace Elegy.RenderSystem.API
 {
+	/// <summary>
+	/// The rendering system.
+	/// </summary>
 	public static partial class Render
 	{
 		public static bool Init( in LaunchConfig config )
