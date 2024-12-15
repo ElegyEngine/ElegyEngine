@@ -8,29 +8,30 @@ namespace Elegy.RenderBackend.Extensions
 {
 	public static class DeviceExtensions
 	{
-		public static DeviceBuffer CreateBufferFromList<T>( this GraphicsDevice device, BufferUsage usage, List<T> list )
-			where T: unmanaged
-		{
-			ReadOnlySpan<T> span = CollectionsMarshal.AsSpan( list );
-			var buffer = device.ResourceFactory.CreateBufferForList( usage, list );
-			device.UpdateBuffer( buffer, 0, span );
-			return buffer;
-		}
-
+		/// <summary> Creates a GPU buffer from the provided <paramref name="obj"/>.</summary>
 		public static DeviceBuffer CreateBufferFromStruct<T>( this GraphicsDevice device, BufferUsage usage, in T obj )
 			where T: unmanaged
 		{
-			var buffer = device.ResourceFactory.CreateBufferForStruct<T>( usage );
+			DeviceBuffer buffer = device.ResourceFactory.CreateBufferForStruct<T>( usage );
 			device.UpdateBuffer( buffer, 0, obj );
 			return buffer;
 		}
 
-		public static DeviceBuffer CreateBufferFromSpan<T>( this GraphicsDevice device, BufferUsage usage, ReadOnlySpan<T> span )
+		/// <summary> Creates a GPU buffer from a span, optionally with only the first <paramref name="numElementsToUpdate"/> elements.</summary>
+		public static DeviceBuffer CreateBufferFromSpan<T>( this GraphicsDevice device, BufferUsage usage, ReadOnlySpan<T> span, int numElementsToUpdate = -1 )
 			where T: unmanaged
 		{
-			var buffer = device.ResourceFactory.CreateBufferForSpan( usage, span );
-			device.UpdateBuffer( buffer, 0, span );
+			DeviceBuffer buffer = device.ResourceFactory.CreateBufferForSpan( usage, span );
+			device.UpdateBufferFromSpan( buffer, span, numElementsToUpdate );
 			return buffer;
+		}
+
+		/// <summary> Updates a GPU buffer optionally with only the first <paramref name="numElementsToUpdate"/> elements.</summary>
+		public static void UpdateBufferFromSpan<T>( this GraphicsDevice device, DeviceBuffer buffer, ReadOnlySpan<T> span, int numElementsToUpdate = -1 )
+			where T: unmanaged
+		{
+			ReadOnlySpan<T> updateSpan = numElementsToUpdate == -1 ? span : span.Slice( 0, numElementsToUpdate );
+			device.UpdateBuffer( buffer, 0, updateSpan );
 		}
 	}
 }
