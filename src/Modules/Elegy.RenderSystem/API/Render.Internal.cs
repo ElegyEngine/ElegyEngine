@@ -8,6 +8,7 @@ using Elegy.RenderBackend.Extensions;
 using Elegy.RenderSystem.Objects;
 using Elegy.RenderSystem.Resources;
 using System.Text;
+using Elegy.RenderBackend;
 using Veldrid;
 
 namespace Elegy.RenderSystem.API
@@ -87,6 +88,8 @@ namespace Elegy.RenderSystem.API
 
 		private static void InitialiseBuiltinMeshes()
 		{
+			InitialiseDebugMeshes();
+
 			Meshes.FullscreenQuad = CreateMesh( new()
 			{
 				Name = "Fullscreen quad",
@@ -195,6 +198,7 @@ namespace Elegy.RenderSystem.API
 
 			mRenderCommands = Factory.CreateCommandList();
 			mWindowMaterial = LoadMaterial( "materials/builtin/window_default" );
+			mDebugLineMaterial = LoadMaterial( "materials/builtin/debug_line" );
 
 			return true;
 		}

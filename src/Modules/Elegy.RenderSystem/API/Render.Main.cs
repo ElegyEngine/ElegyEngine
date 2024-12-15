@@ -74,6 +74,8 @@ namespace Elegy.RenderSystem.API
 		/// </summary>
 		public static void UpdateBuffers()
 		{
+			RebuildDebugMeshes();
+			
 			foreach ( var meshEntity in mEntitySet )
 			{
 				meshEntity.UpdateBuffers( mDevice );
