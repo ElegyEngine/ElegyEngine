@@ -11,9 +11,9 @@ namespace Elegy.RenderSystem.API
 {
 	public static partial class Render
 	{
-		private static double mCpuTime = 0.0;
-		private static double mGpuTime = 0.0;
-		private static double mPresentTime = 0.0;
+		private static double mCpuTime;
+		private static double mGpuTime;
+		private static double mPresentTime;
 		private static Stopwatch mStopwatch = new();
 
 		private static double GetSeconds() => (double)mStopwatch.ElapsedTicks / Stopwatch.Frequency;
