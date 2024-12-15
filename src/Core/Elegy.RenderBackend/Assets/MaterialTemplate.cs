@@ -20,6 +20,8 @@ namespace Elegy.RenderBackend.Assets
 
 		public Blending BlendMode { get; set; } = Blending.Opaque;
 
+		public bool DepthTest { get; set; } = true;
+		
 		public bool AlphaTest { get; set; } = false;
 
 		public float AlphaTestThreshold { get; set; } = 0.5f;

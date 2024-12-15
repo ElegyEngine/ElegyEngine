@@ -48,28 +48,34 @@ namespace Elegy.RenderBackend
 
 		public static VertexElementFormat ShaderTypeToVertexElementFormat( string name, ShaderDataType type )
 		{
-			string nameLower = name.ToLower();
-			if ( nameLower.Contains( "normal" ) || nameLower.Contains( "tangent" ) )
+			VertexSemantic semantic = GetVertexSemantic( name );
+			return semantic switch
 			{
-				return type switch
+				VertexSemantic.Normal or VertexSemantic.Tangent => type switch
 				{
 					ShaderDataType.Vec2 => VertexElementFormat.SByte2_Norm,
 					ShaderDataType.Vec3 => VertexElementFormat.SByte4_Norm,
 					ShaderDataType.Vec4 => VertexElementFormat.SByte4_Norm,
-					_ => throw new NotSupportedException( "Normals and tangents can only do vec2/3/4" )
-				};
-			}
+					_                   => throw new NotSupportedException( "Normals and tangents can only be vec2/4" )
+				},
 
-			return type switch
-			{
-				ShaderDataType.Short => VertexElementFormat.Byte2,
-				ShaderDataType.Int => VertexElementFormat.Int1,
-				ShaderDataType.Vec2 => VertexElementFormat.Float2,
-				ShaderDataType.Vec2Byte => VertexElementFormat.Byte2,
-				ShaderDataType.Vec3 => VertexElementFormat.Float3,
-				ShaderDataType.Vec4 => VertexElementFormat.Float4,
-				ShaderDataType.Vec4Byte => VertexElementFormat.Byte4,
-				_ => VertexElementFormat.Int4
+				VertexSemantic.Colour or VertexSemantic.BoneIndex or VertexSemantic.BoneWeight => type switch
+				{
+					ShaderDataType.Vec4 => VertexElementFormat.Byte4_Norm,
+					_                   => throw new NotSupportedException( "Colours, bone indices and weights can only be vec4" )
+				},
+
+				_ => type switch
+				{
+					ShaderDataType.Short    => VertexElementFormat.Byte2,
+					ShaderDataType.Int      => VertexElementFormat.Int1,
+					ShaderDataType.Vec2     => VertexElementFormat.Float2,
+					ShaderDataType.Vec2Byte => VertexElementFormat.Byte2,
+					ShaderDataType.Vec3     => VertexElementFormat.Float3,
+					ShaderDataType.Vec4     => VertexElementFormat.Float4,
+					ShaderDataType.Vec4Byte => VertexElementFormat.Byte4,
+					_                       => VertexElementFormat.Int4
+				}
 			};
 		}
 
@@ -157,7 +163,7 @@ namespace Elegy.RenderBackend
 				CullMode = materialTemplate.PipelineInfo.FaceCulling,
 				FillMode = PolygonFillMode.Solid,
 				// TODO: depth testing in the material template errr maybe?
-				DepthClipEnabled = materialTemplate.PipelineInfo.BlendMode == Blending.Opaque
+				DepthClipEnabled = materialTemplate.PipelineInfo.DepthTest
 			};
 
 		public static DepthStencilStateDescription ExtractDepthStencilState( MaterialTemplate materialTemplate )
@@ -206,12 +212,18 @@ namespace Elegy.RenderBackend
 				_ => 0U
 			};
 
-		public static uint StrideOf<T>( BufferUsage usage )
+		public static int StrideOf<T>()
+			where T : unmanaged
+		{
+			return Marshal.SizeOf<T>();
+		}
+
+		public static uint StrideIfStructured<T>( BufferUsage usage )
 			where T : unmanaged
 		{
 			if ( usage.HasFlag( BufferUsage.StructuredBufferReadOnly | BufferUsage.StructuredBufferReadWrite ) )
 			{
-				return (uint)Marshal.SizeOf<T>();
+				return (uint)StrideOf<T>();
 			}
 
 			return 0U;
@@ -287,92 +299,6 @@ namespace Elegy.RenderBackend
 			}
 
 			return VertexSemantic.Position;
-		}
-
-		public static VertexElementSemantic GetVertexElementSemantic( PropertyInfo propertyInfo )
-		{
-			return GetVertexElementSemantic( propertyInfo.Name );
-		}
-
-		public static VertexElementFormat GetVertexElementFormat( PropertyInfo propertyInfo )
-		{
-			return propertyInfo.PropertyType.Name switch
-			{
-				"Vector4I" => VertexElementFormat.Int4,
-				"Vector3I" => VertexElementFormat.Int3,
-				"Vector2I" => VertexElementFormat.Int2,
-				"int" => VertexElementFormat.Int1,
-
-				"Vector4" => VertexElementFormat.Float4,
-				"Vector3" => VertexElementFormat.Float3,
-				"Vector2" => VertexElementFormat.Float2,
-				"float" => VertexElementFormat.Float1,
-
-				_ => throw new NotSupportedException(
-					$"Unsupported format of vertex element '{propertyInfo.DeclaringType?.Name ?? "unknown"}.{propertyInfo.Name}'" )
-			};
-		}
-
-		public static VertexLayoutDescription GenerateStandardVertexLayoutElement( VertexSemantic semantic )
-			=> new()
-			{
-				Stride = semantic switch
-				{
-					VertexSemantic.Position => 3 * sizeof( float ),
-					VertexSemantic.Normal => 4 * sizeof( byte ),
-					VertexSemantic.Tangent => 4 * sizeof( byte ),
-					VertexSemantic.Uv => 2 * sizeof( float ),
-					VertexSemantic.Colour => 4 * sizeof( byte ),
-					VertexSemantic.BoneWeight => 4 * sizeof( byte ),
-					VertexSemantic.BoneIndex => 4 * sizeof( byte ),
-					_ => throw new ArgumentException()
-				},
-
-				Elements =
-				[
-					new VertexElementDescription()
-					{
-						Name = semantic.ToString(),
-						Offset = 0,
-						Format = semantic switch
-						{
-							VertexSemantic.Position => VertexElementFormat.Float3,
-							VertexSemantic.Normal => VertexElementFormat.Byte4,
-							VertexSemantic.Tangent => VertexElementFormat.Byte4,
-							VertexSemantic.Uv => VertexElementFormat.Float2,
-							VertexSemantic.Colour => VertexElementFormat.Byte4,
-							VertexSemantic.BoneWeight => VertexElementFormat.Byte4,
-							VertexSemantic.BoneIndex => VertexElementFormat.Byte4,
-							_ => throw new ArgumentException()
-						}
-					}
-				]
-			};
-
-		public static VertexLayoutDescription[] GenerateVertexLayoutFor<TVertex>() where TVertex : struct
-		{
-			Type vertexType = typeof( TVertex );
-			var properties = vertexType.GetProperties();
-			List<VertexElementDescription> elements = new( properties.Length );
-
-			foreach ( var property in properties )
-			{
-				elements.Add( new()
-				{
-					Name = $"v{property.Name}",
-					Format = GetVertexElementFormat( property ),
-					Semantic = GetVertexElementSemantic( property )
-				} );
-			}
-
-			return
-			[
-				new()
-				{
-					Elements = elements.ToArray(),
-					Stride = (uint)Marshal.SizeOf<TVertex>()
-				}
-			];
 		}
 		#endregion
 	}
