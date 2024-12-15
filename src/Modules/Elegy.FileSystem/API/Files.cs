@@ -5,6 +5,9 @@ using Elegy.Common.Assets;
 
 namespace Elegy.FileSystem.API
 {
+	/// <summary>
+	/// Elegy filesystem interface.
+	/// </summary>
 	public static partial class Files
 	{
 		public static bool Init( in LaunchConfig config )

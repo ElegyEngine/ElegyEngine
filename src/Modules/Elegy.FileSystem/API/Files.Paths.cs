@@ -35,9 +35,6 @@ namespace Elegy.FileSystem.API
 		All = File | Directory
 	}
 
-	/// <summary>
-	/// Elegy filesystem interface.
-	/// </summary>
 	public static partial class Files
 	{
 		/// <summary>
