@@ -14,3 +14,11 @@ materials/builtin/window_default
 		map null
 	}
 }
+
+materials/builtin/debug_line
+{
+	materialTemplate DebugLine
+	{
+		map null
+	}
+}

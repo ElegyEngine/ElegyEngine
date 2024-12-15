@@ -1,0 +1,11 @@
+
+{
+	"name": "DebugLine",
+	"shaderTemplate": "DebugLineST",
+	"pipelineInfo":
+	{
+		"alphaTest": false,
+		"faceCulling": "None",
+		"blending": "Opaque"
+	}
+}

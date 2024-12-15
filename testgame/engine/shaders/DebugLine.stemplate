@@ -1,0 +1,78 @@
+{
+  "name": "DebugLineST",
+  "shaderBinaryBasePath": "DebugLine",
+  "postprocessHint": false,
+  "parameterSets": [
+    {
+      "level": 0,
+      "parameters": [
+        {
+          "name": "ViewData",
+          "shaderName": "uView",
+          "type": 13,
+          "resourceBindingId": 0
+        }
+      ]
+    }
+  ],
+  "shaderVariants": [
+    {
+      "shaderDefine": "GENERAL",
+      "shaderBinaryPath": "DebugLine.GENERAL",
+      "vertexLayouts": [
+        {
+          "name": "vPosition",
+          "type": 2,
+          "id": 0
+        },
+        {
+          "name": "vNormal",
+          "type": 10,
+          "id": 1
+        },
+        {
+          "name": "vUv",
+          "type": 1,
+          "id": 2
+        },
+        {
+          "name": "vColour",
+          "type": 6,
+          "id": 3
+        }
+      ],
+      "parameterSetIds": [
+        0
+      ]
+    },
+    {
+      "shaderDefine": "SCREEN",
+      "shaderBinaryPath": "DebugLine.SCREEN",
+      "vertexLayouts": [
+        {
+          "name": "vPosition",
+          "type": 2,
+          "id": 0
+        },
+        {
+          "name": "vNormal",
+          "type": 10,
+          "id": 1
+        },
+        {
+          "name": "vUv",
+          "type": 1,
+          "id": 2
+        },
+        {
+          "name": "vColour",
+          "type": 6,
+          "id": 3
+        }
+      ],
+      "parameterSetIds": [
+        0
+      ]
+    }
+  ]
+}
