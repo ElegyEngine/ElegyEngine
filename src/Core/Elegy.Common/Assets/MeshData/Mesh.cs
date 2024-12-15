@@ -43,6 +43,15 @@ namespace Elegy.Common.Assets.MeshData
 		/// </summary>
 		public string MaterialName { get; set; } = string.Empty;
 
+		/// <summary> Number of dynamic vertices. -1 if it's not a dynamic mesh. </summary>
+		public int NumDynamicVertices { get; set; } = -1;
+
+		/// <summary> Number of dynamic indices. -1 if it's not a dynamic mesh. </summary>
+		public int NumDynamicIndices { get; set; } = -1;
+
+		/// <summary> Whether this is a dynamic mesh. </summary>
+		public bool IsDynamic => NumDynamicVertices is not -1;
+
 		/// <summary> Vertex positions. </summary>
 		public Vector3[] Positions { get; set; } = Array.Empty<Vector3>();
 
