@@ -194,15 +194,8 @@ namespace Elegy.RenderSystem.API
 			}
 
 			mRenderCommands = Factory.CreateCommandList();
+			mWindowMaterial = LoadMaterial( "materials/builtin/window_default" );
 
-			var windowMaterial = LoadMaterial( "materials/builtin/window_default" );
-			if ( windowMaterial is null )
-			{
-				mLogger.Error( "Cannot load the default view material" );
-				return false;
-			}
-
-			mWindowMaterial = windowMaterial;
 			return true;
 		}
 	}

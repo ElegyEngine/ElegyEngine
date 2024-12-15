@@ -2,9 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.RenderSystem.Objects;
-using Elegy.RenderSystem.Resources;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using Veldrid;
 
 namespace Elegy.RenderSystem.API
