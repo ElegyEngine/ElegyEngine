@@ -24,15 +24,20 @@ namespace Elegy.RenderSystem.API
 		private static PooledSet<View> mViews = new( 32 );
 
 		private static RenderMaterial mWindowMaterial;
-
 		private static CommandList mRenderCommands;
-		private static GraphicsDevice? mDevice = null;
+		private static GraphicsDevice mDevice;
 
 		private static bool InitialiseGraphicsDevice()
 		{
 			// RenderStyle is guaranteed to be non-null here, you can ignore what Intelli(Non)Sense says
-			mDevice = CreateGraphicsDevice( RenderStyle.InstanceExtensions, RenderStyle.DeviceExtensions );
-			return mDevice is not null;
+			var device = CreateGraphicsDevice( RenderStyle.InstanceExtensions, RenderStyle.DeviceExtensions );
+			if ( device is null )
+			{
+				return false;
+			}
+
+			mDevice = device;
+			return true;
 		}
 
 		private static Sampler CreateSampler( SamplerFilter filter, SamplerAddressMode addressMode, uint anisoSamples = 0U )
