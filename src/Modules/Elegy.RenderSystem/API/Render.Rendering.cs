@@ -25,7 +25,8 @@ namespace Elegy.RenderSystem.API
 
 			mDevice.WaitForIdle();
 
-			mGpuTime = GetSeconds() - mGpuTime;
+			mLastFrameTime = GetSeconds();
+			mGpuTime = mLastFrameTime - mGpuTime;
 		}
 
 		/// <summary>Draws a view to the backbuffer.</summary>

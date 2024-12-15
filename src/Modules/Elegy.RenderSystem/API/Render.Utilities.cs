@@ -15,6 +15,7 @@ namespace Elegy.RenderSystem.API
 		private static double mGpuTime;
 		private static double mPresentTime;
 		private static Stopwatch mStopwatch = new();
+		private static double mLastFrameTime;
 
 		private static double GetSeconds() => (double)mStopwatch.ElapsedTicks / Stopwatch.Frequency;
 
