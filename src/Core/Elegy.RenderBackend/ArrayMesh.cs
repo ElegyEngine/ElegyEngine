@@ -1,6 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using System.Diagnostics;
 using Elegy.Common.Assets.MeshData;
 using Elegy.Common.Extensions;
 using Elegy.Common.Maths;
@@ -35,174 +36,124 @@ namespace Elegy.RenderBackend
 			return new Vector4SB( (sbyte)input.X, (sbyte)input.Y, (sbyte)input.Z, (sbyte)input.W );
 		}
 
-		private void LoadChannel<T>( ref DeviceBuffer? buffer, GraphicsDevice device, T[] source )
-			where T: unmanaged
+		private void LoadOrUpdateChannel<T>( ref DeviceBuffer? buffer, T[] source, int numVertices = -1 )
+			where T : unmanaged
 		{
-			if ( source.Length > 0 )
+			if ( source.Length == 0 )
 			{
-				buffer = device.CreateBufferFromSpan<T>( BufferUsage.VertexBuffer, source );
+				return;
 			}
+
+			if ( buffer is null )
+			{
+				buffer = mDevice.CreateBufferFromSpan<T>( BufferUsage.VertexBuffer, source, numVertices );
+				return;
+			}
+
+			mDevice.UpdateBufferFromSpan<T>( buffer, source, numVertices );
 		}
 
-		private void LoadChannelTransformed<TSource, TDestination>( ref DeviceBuffer? buffer, GraphicsDevice device, TSource[] source, Func<TSource, TDestination> transform )
-			where TSource: unmanaged
-			where TDestination: unmanaged
+		private void LoadOrUpdateChannelTransformed<TSource, TDestination>(
+			ref DeviceBuffer? buffer, TSource[] source, Func<TSource, TDestination> transform, int numVertices = -1 )
+			where TSource : unmanaged
+			where TDestination : unmanaged
 		{
-			if ( source.Length > 0 )
+			if ( source.Length == 0 )
 			{
-				buffer = device.CreateBufferFromSpan<TDestination>( BufferUsage.VertexBuffer, Mesh.Transform( source, transform ) );
+				return;
 			}
+
+			var transformedSource = Mesh.Transform( source, transform );
+			LoadOrUpdateChannel( ref buffer, transformedSource, numVertices );
 		}
+
+		private void LoadOrUpdateIndices( ref DeviceBuffer? buffer, uint[] source, int numIndices = -1 )
+		{
+			if ( source.Length == 0 )
+			{
+				return;
+			}
+
+			if ( buffer is null )
+			{
+				buffer = mDevice.CreateBufferFromSpan<uint>( BufferUsage.IndexBuffer, source, numIndices );
+				return;
+			}
+
+			mDevice.UpdateBufferFromSpan<uint>( buffer, source, numIndices );
+		}
+
+		private readonly int mMaxDynamicVertices;
+		private readonly int mMaxDynamicIndices;
+		private GraphicsDevice mDevice;
 
 		public ArrayMesh( GraphicsDevice device, Mesh meshData )
 		{
-			NumIndices = (uint)meshData.Indices.Length;
-			if ( meshData.Positions.Length > 0 )
+			mDevice = device;
+
+			DynamicVertices = meshData.NumDynamicVertices;
+			NumIndices = meshData.NumDynamicIndices == -1 ? (uint)meshData.Indices.Length : (uint)meshData.NumDynamicIndices;
+
+			mMaxDynamicVertices = meshData.Positions.Length > 0 ? meshData.Positions.Length : meshData.Positions2D.Length;
+			mMaxDynamicIndices = meshData.Indices.Length;
+
+			Update( meshData, mMaxDynamicVertices, mMaxDynamicIndices );
+		}
+
+		private void Update( Mesh data, int numVertices, int numIndices )
+		{
+			if ( data.Positions.Length > 0 )
 			{
-				PositionBuffer = device.CreateBufferFromSpan<Vector3>( BufferUsage.VertexBuffer, meshData.Positions );
-				LoadChannelTransformed( ref NormalBuffer, device, meshData.Normals, ConvertVec3ToVec4SB );
+				LoadOrUpdateChannel( ref PositionBuffer, data.Positions, numVertices );
+				LoadOrUpdateChannelTransformed( ref NormalBuffer, data.Normals, ConvertVec3ToVec4SB, numVertices );
 			}
 			else
 			{
-				PositionBuffer = device.CreateBufferFromSpan<Vector2>( BufferUsage.VertexBuffer, meshData.Positions2D );
-				LoadChannelTransformed( ref NormalBuffer, device, meshData.Normals2D, ConvertVec2ToVec2SB );
+				LoadOrUpdateChannel( ref PositionBuffer, data.Positions2D, numVertices );
+				LoadOrUpdateChannelTransformed( ref NormalBuffer, data.Normals2D, ConvertVec2ToVec2SB, numVertices );
 			}
-			IndexBuffer = device.CreateBufferFromSpan<uint>( BufferUsage.IndexBuffer, meshData.Indices );
 
-			LoadChannelTransformed( ref TangentBuffer, device, meshData.Tangents, ConvertVec4ToVec4SB );
-			
-			LoadChannel( ref Uv0Buffer, device, meshData.Uv0 );
-			LoadChannel( ref Uv1Buffer, device, meshData.Uv1 );
-			LoadChannel( ref Uv2Buffer, device, meshData.Uv2 );
-			LoadChannel( ref Uv3Buffer, device, meshData.Uv3 );
+			LoadOrUpdateIndices( ref IndexBuffer, data.Indices, numIndices );
 
-			LoadChannel( ref Color0Buffer, device, meshData.Color0 );
-			LoadChannel( ref Color1Buffer, device, meshData.Color1 );
-			LoadChannel( ref Color2Buffer, device, meshData.Color2 );
-			LoadChannel( ref Color3Buffer, device, meshData.Color3 );
-			
-			LoadChannel( ref BoneIndexBuffer, device, meshData.BoneIndices );
-			LoadChannelTransformed( ref BoneWeightBuffer, device, meshData.BoneWeights, ConvertVec4ToVec4SB );
+			LoadOrUpdateChannelTransformed( ref TangentBuffer, data.Tangents, ConvertVec4ToVec4SB, numVertices );
+
+			LoadOrUpdateChannel( ref Uv0Buffer, data.Uv0, numVertices );
+			LoadOrUpdateChannel( ref Uv1Buffer, data.Uv1, numVertices );
+			LoadOrUpdateChannel( ref Uv2Buffer, data.Uv2, numVertices );
+			LoadOrUpdateChannel( ref Uv3Buffer, data.Uv3, numVertices );
+
+			LoadOrUpdateChannel( ref Color0Buffer, data.Color0, numVertices );
+			LoadOrUpdateChannel( ref Color1Buffer, data.Color1, numVertices );
+			LoadOrUpdateChannel( ref Color2Buffer, data.Color2, numVertices );
+			LoadOrUpdateChannel( ref Color3Buffer, data.Color3, numVertices );
+
+			LoadOrUpdateChannel( ref BoneIndexBuffer, data.BoneIndices, numVertices );
+			// TODO: use Vector4B for bone weights
+			LoadOrUpdateChannelTransformed( ref BoneWeightBuffer, data.BoneWeights, ConvertVec4ToVec4SB, numVertices );
 		}
 
-		public bool IsCompatible2DOr3D( VertexElementFormat format )
+		/// <summary> Updates the GPU buffers with the new mesh data. </summary>
+		public void UpdateDynamic( Mesh data, int numVertices, int numIndices )
 		{
-			if ( format == VertexElementFormat.Float3 && Is2D )
+			Debug.Assert( IsDynamic );
+
+			if ( numVertices >= mMaxDynamicVertices || numIndices >= mMaxDynamicIndices )
 			{
-				return false;
+				return;
 			}
 
-			if ( format == VertexElementFormat.Float2 && !Is2D )
-			{
-				return false;
-			}
-
-			return true;
+			DynamicVertices = numVertices;
+			NumIndices = (uint)numIndices;
+			Update( data, numVertices, numIndices );
 		}
 
-		public bool IsCompatibleWith( in ShaderVariantEntry shaderTemplateEntry, StringBuilder? errorStringBuilder = null )
-		{
-			bool compatible = true;
-			int numUvBuffersRequired = 0, numColourBuffersRequired = 0;
-
-			ReadOnlySpan<VertexLayoutEntry> span = shaderTemplateEntry.VertexLayouts.AsSpan();
-			for ( int i = 0; i < span.Length; i++ )
-			{
-				switch ( Utils.GetVertexSemantic( span[i].Name ) )
-				{
-					case VertexSemantic.Position:
-						if ( IsCompatible2DOr3D( span[i].Type ) )
-						{
-							errorStringBuilder.AppendLine( "* Position (2D-3D mismatch)" );
-							compatible = false;
-						}
-						break;
-					case VertexSemantic.Normal:
-						if ( NormalBuffer is null )
-						{
-							errorStringBuilder.AppendLine( "* Normal" );
-							compatible = false;
-						}
-						else if ( IsCompatible2DOr3D( span[i].Type ) )
-						{
-							errorStringBuilder.AppendLine( "* Normal (2D-3D mismatch)" );
-							compatible = false;
-						}
-						break;
-					case VertexSemantic.Tangent:
-						if ( TangentBuffer is null )
-						{
-							errorStringBuilder.AppendLine( "* Tangent" );
-							compatible = false;
-						}
-						break;
-					case VertexSemantic.Uv:
-						numUvBuffersRequired++;
-						break;
-					case VertexSemantic.Colour:
-						numColourBuffersRequired++;
-						break;
-					case VertexSemantic.BoneWeight:
-						if ( BoneWeightBuffer is null )
-						{
-							errorStringBuilder.AppendLine( "* BoneWeight" );
-							compatible = false;
-						}
-						break;
-					case VertexSemantic.BoneIndex:
-						if ( BoneIndexBuffer is null )
-						{
-							errorStringBuilder.AppendLine( "* BoneIndex" );
-							compatible = false;
-						}
-						break;
-				}
-			}
-
-			int numUvBuffers = 0;
-			if ( Uv0Buffer is not null ) { numUvBuffers++; }
-			if ( Uv1Buffer is not null ) { numUvBuffers++; }
-			if ( Uv2Buffer is not null ) { numUvBuffers++; }
-			if ( Uv3Buffer is not null ) { numUvBuffers++; }
-			if ( numUvBuffers != numUvBuffersRequired )
-			{
-				errorStringBuilder.AppendLine( $"* Need {numUvBuffersRequired} UV buffers, have {numUvBuffers}" );
-			}
-
-			int numColourBuffers = 0;
-			if ( Color0Buffer is not null ) { numColourBuffers++; }
-			if ( Color1Buffer is not null ) { numColourBuffers++; }
-			if ( Color2Buffer is not null ) { numColourBuffers++; }
-			if ( Color3Buffer is not null ) { numColourBuffers++; }
-			if ( numColourBuffers != numColourBuffersRequired )
-			{
-				errorStringBuilder.AppendLine( $"* Need {numColourBuffersRequired} colour buffers, have {numColourBuffers}" );
-			}
-
-			return compatible;
-		}
-
-		public bool IsCompatibleWith( in ShaderTemplate shaderTemplate, StringBuilder? errorStringBuilder = null )
-		{
-			bool compatible = true;
-			foreach ( var item in shaderTemplate.ShaderVariants )
-			{
-				if ( !IsCompatibleWith( item, errorStringBuilder ) )
-				{
-					errorStringBuilder?.AppendLine( $" ^ in shader variant '{item.ShaderDefine}'" );
-					compatible = false;
-				}
-			}
-
-			return compatible;
-		}
-
-		public DeviceBuffer? GetBuffer( VertexSemantic semantic, int channel )
+		/// <summary> Obtains a GPU buffer from the given vertex semantic and optionally channel. </summary>
+		public DeviceBuffer? GetBuffer( VertexSemantic semantic, int channel = 0 )
 			=> semantic switch
 			{
 				VertexSemantic.Position => PositionBuffer,
-				VertexSemantic.Normal => NormalBuffer,
-				VertexSemantic.Tangent => TangentBuffer,
+				VertexSemantic.Normal   => NormalBuffer,
+				VertexSemantic.Tangent  => TangentBuffer,
 				VertexSemantic.Uv => channel switch
 				{
 					0 => Uv0Buffer,
@@ -220,7 +171,7 @@ namespace Elegy.RenderBackend
 					_ => throw new NotSupportedException()
 				},
 				VertexSemantic.BoneWeight => BoneWeightBuffer,
-				VertexSemantic.BoneIndex => BoneIndexBuffer,
+				VertexSemantic.BoneIndex  => BoneIndexBuffer,
 
 				_ => throw new NotSupportedException()
 			};
@@ -229,7 +180,7 @@ namespace Elegy.RenderBackend
 		public void Dispose()
 		{
 			IndexBuffer?.Dispose();
-			PositionBuffer.Dispose();
+			PositionBuffer?.Dispose();
 			NormalBuffer?.Dispose();
 			TangentBuffer?.Dispose();
 			Uv0Buffer?.Dispose();
@@ -243,6 +194,8 @@ namespace Elegy.RenderBackend
 			BoneIndexBuffer?.Dispose();
 			BoneWeightBuffer?.Dispose();
 
+			IndexBuffer = null;
+			PositionBuffer = null;
 			NormalBuffer = null;
 			TangentBuffer = null;
 			Uv0Buffer = null;
@@ -257,37 +210,61 @@ namespace Elegy.RenderBackend
 			BoneWeightBuffer = null;
 		}
 
+		/// <summary> Whether this mesh is dynamic. </summary>
+		public bool IsDynamic => DynamicVertices is not -1;
+
+		/// <summary> Whether this mesh has nothing to render. </summary>
+		public bool IsLogicallyEmpty => NumIndices == 0;
+
 		/// <summary> Whether this has 2D position vertices or not. </summary>
 		public bool Is2D = false;
+
+		/// <summary> The number of dynamic vertices. </summary>
+		public int DynamicVertices;
+
 		/// <summary> Number of indices. Determining it from <see cref="IndexBuffer"/> is not reliable. </summary>
 		public uint NumIndices;
+
 		/// <summary> Vertex index buffer. </summary>
-		public DeviceBuffer IndexBuffer;
+		public DeviceBuffer? IndexBuffer;
+
 		/// <summary> Position buffer. </summary>
-		public DeviceBuffer PositionBuffer;
+		public DeviceBuffer? PositionBuffer;
+
 		/// <summary> Normal buffer. </summary>
-		public DeviceBuffer? NormalBuffer = null;
+		public DeviceBuffer? NormalBuffer;
+
 		/// <summary> Tangent buffer. </summary>
-		public DeviceBuffer? TangentBuffer = null;
+		public DeviceBuffer? TangentBuffer;
+
 		/// <summary> UV buffer, channel 0. </summary>
-		public DeviceBuffer? Uv0Buffer = null;
+		public DeviceBuffer? Uv0Buffer;
+
 		/// <summary> UV buffer, channel 1. </summary>
-		public DeviceBuffer? Uv1Buffer = null;
+		public DeviceBuffer? Uv1Buffer;
+
 		/// <summary> UV buffer, channel 2. </summary>
-		public DeviceBuffer? Uv2Buffer = null;
+		public DeviceBuffer? Uv2Buffer;
+
 		/// <summary> UV buffer, channel 3. </summary>
-		public DeviceBuffer? Uv3Buffer = null;
+		public DeviceBuffer? Uv3Buffer;
+
 		/// <summary> Colour buffer, channel 0. </summary>
-		public DeviceBuffer? Color0Buffer = null;
+		public DeviceBuffer? Color0Buffer;
+
 		/// <summary> Colour buffer, channel 1. </summary>
-		public DeviceBuffer? Color1Buffer = null;
+		public DeviceBuffer? Color1Buffer;
+
 		/// <summary> Colour buffer, channel 2. </summary>
-		public DeviceBuffer? Color2Buffer = null;
+		public DeviceBuffer? Color2Buffer;
+
 		/// <summary> Colour buffer, channel 3. </summary>
-		public DeviceBuffer? Color3Buffer = null;
+		public DeviceBuffer? Color3Buffer;
+
 		/// <summary> Bone index buffer. </summary>
-		public DeviceBuffer? BoneIndexBuffer = null;
+		public DeviceBuffer? BoneIndexBuffer;
+
 		/// <summary> Bone weight buffer. </summary>
-		public DeviceBuffer? BoneWeightBuffer = null;
+		public DeviceBuffer? BoneWeightBuffer;
 	}
 }
