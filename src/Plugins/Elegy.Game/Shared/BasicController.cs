@@ -5,9 +5,9 @@ namespace Game.Shared
 {
 	public class BasicController : IPlayerControllable
 	{
-		Vector3 mPosition = new();
-		Vector3 mDirection = new();
-		Vector3 mViewAngles = new();
+		Vector3 mPosition;
+		Vector3 mDirection;
+		Vector3 mViewAngles;
 
 		public void Setup()
 		{
