@@ -46,7 +46,7 @@ namespace Elegy.PluginSystem
 		public Assembly Assembly { get; }
 		public PluginLibraryMetadata Metadata { get; }
 		public string MetadataPath { get; }
-		public PluginFactory? Factory { get; private set; } = null;
-		public bool LoadedSuccessfully { get; private set; } = false;
+		public PluginFactory? Factory { get; private set; }
+		public bool LoadedSuccessfully { get; private set; }
 	}
 }

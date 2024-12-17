@@ -1,6 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using System.Diagnostics;
 using Elegy.Common.Extensions;
 using Elegy.ConsoleSystem;
 using System.Reflection;
@@ -25,7 +26,7 @@ namespace Elegy.PluginSystem
 
 		public void RegisterDependency( string name, Assembly assembly )
 		{
-			if ( mDependencies.Any( ( pair ) => pair.Item1 == name ) )
+			if ( mDependencies.Any( pair => pair.Item1 == name ) )
 			{
 				mLogger.Warning( $"Tried registering an existing dependency '{name}.dll'" );
 				return;
@@ -114,6 +115,7 @@ namespace Elegy.PluginSystem
 			{
 				foreach ( var searchPath in plugin.Value )
 				{
+					Debug.Assert( assemblyName.Name is not null );
 					Assembly? assembly = TryLoadingAssemblyInDirectory( searchPath, assemblyName.Name );
 					if ( assembly is not null )
 					{

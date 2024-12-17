@@ -68,7 +68,7 @@ namespace Elegy.PluginSystem.API
 			mPluginLibraries.ForEach( library =>
 			{
 				string pluginIdentifier = $"'{library.Metadata.AssemblyName}' at '{library.MetadataPath}'";
-				IPlugin? plugin = null;
+				IPlugin? plugin;
 
 				try
 				{
@@ -166,7 +166,7 @@ namespace Elegy.PluginSystem.API
 			mPluginLibraries.Clear();
 			try
 			{
-				mLoadContext.Unload();
+				mLoadContext?.Unload();
 			}
 			catch ( Exception ex )
 			{

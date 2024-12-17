@@ -1,6 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using System.Diagnostics;
 using Elegy.Common.Assets;
 using Elegy.Common.Interfaces;
 using Elegy.ConsoleSystem;
@@ -21,13 +22,13 @@ namespace Elegy.PluginSystem.API
 		private static List<PluginLibrary> mPluginLibraries = new();
 		private static List<IPluginCollector> mPluginCollectors = new();
 
-		private static PluginLoadContext? mLoadContext = null;
+		private static PluginLoadContext? mLoadContext;
 
 		private static string EngineVersionString => $"v{mEngineMajorVersion}.{mEngineMinorVersion}";
 		private static int mEngineMajorVersion;
 		private static int mEngineMinorVersion;
-		private static string mEnginePath;
-		private static string[] mEnginePlugins;
+		private static string mEnginePath = string.Empty;
+		private static string[] mEnginePlugins = [];
 		private static bool mToolMode;
 
 		private static PluginLibrary? LoadLibrary( string path )
@@ -61,6 +62,7 @@ namespace Elegy.PluginSystem.API
 			string assemblyPath = $"{pluginDirectory}/{pluginConfig.AssemblyName}.dll";
 			string fullAssemblyPath = $"{Directory.GetCurrentDirectory()}/{assemblyPath}";
 
+			Debug.Assert( mLoadContext is not null );
 			mLoadContext.AddPluginSearchPaths( path, fullPluginDirectory );
 
 			Assembly assembly;

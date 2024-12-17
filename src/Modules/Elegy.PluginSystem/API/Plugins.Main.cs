@@ -1,6 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using System.Diagnostics;
 using Elegy.Common.Interfaces;
 using System.Reflection;
 
@@ -28,12 +29,17 @@ namespace Elegy.PluginSystem.API
 			}
 
 			PluginLibrary? library = LoadLibrary( $"{path}/pluginConfig.json" );
-			if ( library is null )
+			if ( library?.Factory is null )
 			{
 				return null;
 			}
 
 			plugin = library.Factory();
+			if ( plugin is null )
+			{
+				return null;
+			}
+			
 			if ( !RegisterPlugin( plugin, library.Assembly, path ) )
 			{
 				mLogger.Warning( $"LoadPlugin: failed to load plugin '{path}'" );
@@ -182,6 +188,7 @@ namespace Elegy.PluginSystem.API
 		/// </summary>
 		public static void RegisterDependency( string name, Assembly assembly )
 		{
+			Debug.Assert( mLoadContext is not null );
 			mLoadContext.RegisterDependency( name, assembly );
 		}
 
@@ -190,6 +197,7 @@ namespace Elegy.PluginSystem.API
 		/// </summary>
 		public static bool UnregisterDependency( string name )
 		{
+			Debug.Assert( mLoadContext is not null );
 			return mLoadContext.UnregisterDependency( name );
 		}
 

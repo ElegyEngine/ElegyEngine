@@ -25,13 +25,13 @@ namespace Elegy.PluginSystem
 			}
 		}
 
-		public string AssemblyName { get; } = string.Empty;
-		public string Description { get; } = string.Empty;
-		public string Author { get; } = string.Empty;
-		public DateTime VersionDate { get; } = DateTime.UnixEpoch;
+		public string AssemblyName { get; }
+		public string Description { get; }
+		public string Author { get; }
+		public DateTime VersionDate { get; }
 		public int EngineVersionMajor { get; } = -1;
 		public int EngineVersionMinor { get; } = -1;
-		public string ImplementedInterface { get; } = string.Empty;
+		public string ImplementedInterface { get; }
 
 		public string EngineVersionString => $"{EngineVersionMajor}.{EngineVersionMinor}";
 
