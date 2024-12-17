@@ -12,12 +12,12 @@ namespace Game.Server
 	/// </summary>
 	public class ClientConnection
 	{
-		private int mConnectionRingIndex = 0;
+		private int mConnectionRingIndex;
 
 		/// <summary>
 		/// ID of the client. Client 0 is typically a host in a LAN game.
 		/// </summary>
-		public int Id { get; set; } = 0;
+		public int Id { get; set; }
 
 		/// <summary>
 		/// Communication bridge with the client, either a direct in-memory

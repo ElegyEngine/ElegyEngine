@@ -8,7 +8,7 @@ namespace Game.Server.Bridges
 {
 	public class LocalClientBridge : IClientBridge
 	{
-		GameSession mSession;
+		private readonly GameSession mSession;
 
 		public LocalClientBridge( GameSession session )
 		{

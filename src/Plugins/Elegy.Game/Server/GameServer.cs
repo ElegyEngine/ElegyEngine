@@ -6,7 +6,6 @@ using Elegy.Common.Utilities;
 using Elegy.ConsoleSystem;
 using Game.Shared;
 using Game.Shared.Components;
-using System.Net;
 using Game.Session;
 
 namespace Game.Server
@@ -14,7 +13,6 @@ namespace Game.Server
 	public partial class GameServer
 	{
 		private TaggedLogger mLogger = new( "Server" );
-		private GameSession? mGameSession;
 
 		public int MaxPlayers => Connections.Capacity;
 
@@ -32,10 +30,9 @@ namespace Game.Server
 
 		public float ServerUpdateTime => 1.0f / ServerUpdateRate;
 
-		public GameServer( int maxPlayers, GameSession? gameSession = null )
+		public GameServer( int maxPlayers )
 		{
 			Connections = new( maxPlayers );
-			mGameSession = gameSession;
 		}
 
 		public void Shutdown()
@@ -49,7 +46,7 @@ namespace Game.Server
 		{
 			foreach ( var connection in Connections )
 			{
-				if ( connection.State == Session.GameSessionState.Disconnected )
+				if ( connection.State == GameSessionState.Disconnected )
 				{
 					continue;
 				}
