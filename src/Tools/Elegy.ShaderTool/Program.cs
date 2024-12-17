@@ -6,7 +6,7 @@ using Elegy.RenderBackend.Assets;
 
 namespace Elegy.ShaderTool
 {
-	public class Program
+	public static class Program
 	{
 		internal static string ShaderDirectory { get; set; } = string.Empty;
 
@@ -203,7 +203,7 @@ namespace Elegy.ShaderTool
 
 		private static void CreateDirectoriesAdHoc( string path )
 		{
-			string pathDirectoryOnly = path[0..path.LastIndexOf( '/' )];
+			string pathDirectoryOnly = path[..path.LastIndexOf( '/' )];
 			Directory.CreateDirectory( pathDirectoryOnly );
 		}
 
@@ -227,6 +227,8 @@ namespace Elegy.ShaderTool
 					Thread.Sleep( 500 );
 					return;
 				}
+
+				quarterSecondCounter--;
 			}
 
 			Console.WriteLine( "Welp, no debugger was attached, moving on!" );

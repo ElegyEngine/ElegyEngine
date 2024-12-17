@@ -83,7 +83,7 @@ namespace Elegy.MapCompiler
 				return;
 			}
 
-			ElegyMapDocument? outputData = null;
+			ElegyMapDocument? outputData;
 
 			// TODO: GeometryProcessor could just be a static method that calls all these other ones
 			// ProcessingData data = GeometryProcessor.Process( document, mParameters );
@@ -129,7 +129,7 @@ namespace Elegy.MapCompiler
 			// TODO: LightProcessor.Process( outputData, mParameters );
 			if ( !mParameters.WithoutLighting )
 			{
-				LightProcessor lp = new( outputData, mParameters );
+				LightProcessor light = new( outputData, mParameters );
 				//light.GenerateLightmapUvs();
 				//light.GenerateLightmapImages();
 				//light.ProcessLighting();
@@ -239,7 +239,7 @@ namespace Elegy.MapCompiler
 				mParameters.OutputPath = Path.Join( Path.GetDirectoryName( mapPath ) ?? "", Path.ChangeExtension( mParameters.OutputPath, ".elf" ) );
 			}
 
-			BrushMapDocument? document = null;
+			BrushMapDocument? document;
 			try
 			{
 				document = BrushMapDocument.FromValve220MapFile( mapPath );

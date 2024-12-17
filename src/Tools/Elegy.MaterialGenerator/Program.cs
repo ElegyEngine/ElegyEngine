@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Elegy.MaterialGenerator
 {
-	internal class Program
+	public static class Program
 	{
-		static void Main( string[] args )
+		public static void Main( string[] args )
 		{
 			if ( args.Length == 0 )
 			{
@@ -44,7 +44,7 @@ namespace Elegy.MaterialGenerator
 						continue;
 					}
 
-					StringBuilder sb = new StringBuilder();
+					StringBuilder sb = new();
 					Console.Write( $"Processing textures for: {materialDirectoryRelative}" );
 
 					var imageEntries = Directory.GetFiles( Path.Combine( rootPath, materialDirectoryRelative ), "*" );
