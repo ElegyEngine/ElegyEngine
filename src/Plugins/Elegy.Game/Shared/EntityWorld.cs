@@ -7,7 +7,7 @@ namespace Game.Shared
 {
 	public static class EntityWorld
 	{
-		private static int mNumEntitySlots = 0;
+		private static int mNumEntitySlots;
 
 		public static bool AllSpawned { get; set; } = false;
 		public static fennecs.World EcsWorld { get; private set; }

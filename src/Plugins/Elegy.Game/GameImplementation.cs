@@ -33,7 +33,7 @@ namespace Game
 
 		public string Name => "Elegy test game";
 		public string Error { get; private set; } = string.Empty;
-		public bool Initialised { get; private set; } = false;
+		public bool Initialised { get; private set; }
 
 		public GameImplementation()
 		{

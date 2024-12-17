@@ -64,10 +64,7 @@ namespace Game.Shared
 			}
 
 			// Outputs should be sorted by time of execution, shortest to longest
-			result.Sort( ( e1, e2 ) =>
-			{
-				return (int)(e1.FireDelay - e2.FireDelay);
-			} );
+			result.Sort( static ( e1, e2 ) => (int)(e1.FireDelay - e2.FireDelay) );
 
 			return result;
 		}
@@ -93,7 +90,7 @@ namespace Game.Shared
 		{
 			foreach ( var entry in Entries.AsSpan() )
 			{
-				//Entity.World.QueueNamedEvent( entry );
+				//EntityWorld.QueueNamedEvent( entry );
 			}
 		}
 

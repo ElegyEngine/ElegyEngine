@@ -10,9 +10,9 @@ namespace Game.Session.Bridges
 {
 	public class LocalSessionBridge : IServerBridge
 	{
-		private Server.GameServer mServer;
+		private readonly GameServer mServer;
+		private readonly int mClientId;
 		private IPAddress Address => IPAddress.IPv6Loopback;
-		private int mClientId = 0;
 
 		private GameSessionState GetConnectionState()
 		{
@@ -26,7 +26,7 @@ namespace Game.Session.Bridges
 		public GameSessionState ConnectionState
 			=> GetConnectionState();
 
-		public LocalSessionBridge( Server.GameServer server, GameSession session )
+		public LocalSessionBridge( GameServer server, GameSession session )
 		{
 			mServer = server;
 			mServer.ConnectionStart( Address, new LocalClientBridge( session ) );

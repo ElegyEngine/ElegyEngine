@@ -7,7 +7,7 @@ namespace Game.Session
 {
 	public partial class GameSession
 	{
-		public bool FullyJoined { get; private set; } = false;
+		public bool FullyJoined { get; private set; }
 		public int ClientEntityId { get; private set; } = -1;
 		public bool ClientEntityValid => ClientEntityId > 0 && ClientEntity.Alive;
 
