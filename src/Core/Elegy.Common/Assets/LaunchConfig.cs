@@ -25,5 +25,11 @@ namespace Elegy.Common.Assets
 
 		/// <summary>If set to <c>true</c>, will not load application plugins.</summary>
 		public bool ToolMode { get; set; }
+		
+		/// <summary> Additional Vulkan instance extensions. </summary>
+		public string[] VulkanInstanceExtensions { get; set; } = [];
+		
+		/// <summary> Additional Vulkan device extensions. </summary>
+		public string[] VulkanDeviceExtensions { get; set; } = [];
 	}
 }

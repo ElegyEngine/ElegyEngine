@@ -128,6 +128,12 @@ namespace Elegy.RenderSystem.API
 		{
 			GraphicsDevice? device = null;
 
+			// Combine the launch config's extensions with the render style's
+			List<string> instanceExtensions = mAdditionalInstanceExtensions.ToList();
+			List<string> deviceExtensions = mAdditionalDeviceExtensions.ToList();
+			instanceExtensions.AddRange( extraInstanceExtensions );
+			deviceExtensions.AddRange( extraDeviceExtensions );
+			
 			try
 			{
 				device = GraphicsDevice.CreateVulkan( new()
@@ -152,8 +158,8 @@ namespace Elegy.RenderSystem.API
 				{
 					// Nothing in here for now, though we may want
 					// Vulkan 1.3 dynamic state extensions at some point
-					InstanceExtensions = extraInstanceExtensions,
-					DeviceExtensions = extraDeviceExtensions
+					InstanceExtensions = instanceExtensions.ToArray(),
+					DeviceExtensions = deviceExtensions.ToArray()
 				} );
 
 			}

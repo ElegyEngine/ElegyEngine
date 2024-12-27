@@ -13,9 +13,15 @@ namespace Elegy.RenderSystem.API
 	/// </summary>
 	public static partial class Render
 	{
+		private static string[] mAdditionalInstanceExtensions = [];
+		private static string[] mAdditionalDeviceExtensions = [];
+		
 		public static bool Init( in LaunchConfig config )
 		{
 			mLogger.Log( "Init" );
+
+			mAdditionalInstanceExtensions = config.VulkanInstanceExtensions;
+			mAdditionalDeviceExtensions = config.VulkanDeviceExtensions;
 
 			Plugins.RegisterDependency( "Elegy.RenderBackend", typeof( RenderBackend.Utils ).Assembly );
 			Plugins.RegisterDependency( "Elegy.RenderSystem", typeof( Render ).Assembly );
