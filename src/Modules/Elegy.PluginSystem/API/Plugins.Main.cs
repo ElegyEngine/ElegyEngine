@@ -191,6 +191,12 @@ namespace Elegy.PluginSystem.API
 			Debug.Assert( mLoadContext is not null );
 			mLoadContext.RegisterDependency( name, assembly );
 		}
+		
+		/// <summary>
+		/// Registers a dependency so that plugins can use the same.
+		/// </summary>
+		public static void RegisterDependency<T>( string name )
+			=> RegisterDependency( name, typeof( T ).Assembly );
 
 		/// <summary>
 		/// Unregisters a dependency.
