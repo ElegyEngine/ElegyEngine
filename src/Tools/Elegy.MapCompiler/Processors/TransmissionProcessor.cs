@@ -5,7 +5,6 @@ using Elegy.ConsoleSystem;
 using Elegy.Common.Assets;
 using Elegy.MapCompiler.Assets;
 using Elegy.MapCompiler.Data.Processing;
-
 using CollisionMeshlet = Elegy.Common.Assets.ElegyMapData.CollisionMeshlet;
 using RenderSurface = Elegy.Common.Assets.ElegyMapData.RenderSurface;
 using RenderMesh = Elegy.Common.Assets.ElegyMapData.RenderMesh;
@@ -71,10 +70,11 @@ namespace Elegy.MapCompiler.Processors
 			// A triangle mesh would be added quite differently.
 			for ( int i = 2; i < vertices.Count; i++ )
 			{
-				surface.Indices.Add( surface.VertexCount + i );
+				surface.Indices.Add( surface.VertexCount     + i );
 				surface.Indices.Add( surface.VertexCount + i - 1 );
 				surface.Indices.Add( surface.VertexCount );
 			}
+
 			surface.VertexCount += vertices.Count;
 
 			surface.BoundingBox = new( vertices[0].Position, Vector3.Zero );
@@ -154,7 +154,7 @@ namespace Elegy.MapCompiler.Processors
 
 		private static int TryAddUniqueVertex( RenderSurface optimisedSurface, RenderSurface originalSurface, int vertexIndex, float scale )
 		{
-			float radiusTolerance = (1.0f / 128.0f); // This is effectively like compressing the normals into bytes
+			float radiusTolerance = (1.0f / 128.0f);               // This is effectively like compressing the normals into bytes
 			float radiusTolerancePosition = (1.0f / 5.0f) * scale; // Fifth of a TrenchBroom unit, just about half a centimetre
 
 			if ( optimisedSurface.VertexCount == 0 )
@@ -170,7 +170,8 @@ namespace Elegy.MapCompiler.Processors
 				bool samePositions = positionA.IsEqualApprox( positionB, radiusTolerancePosition );
 				bool sameNormals = optimisedSurface.Normals[i].IsEqualApprox( originalSurface.Normals[vertexIndex], radiusTolerance );
 				bool sameUvs = optimisedSurface.Uvs[i].IsEqualApprox( originalSurface.Uvs[vertexIndex], radiusTolerance );
-				bool sameLightmapUvs = optimisedSurface.LightmapUvs[i].IsEqualApprox( originalSurface.LightmapUvs[vertexIndex], radiusTolerance );
+				bool sameLightmapUvs = optimisedSurface.LightmapUvs[i]
+					.IsEqualApprox( originalSurface.LightmapUvs[vertexIndex], radiusTolerance );
 				bool sameColours = optimisedSurface.Colours[i] == originalSurface.Colours[vertexIndex];
 
 				// Usually this condition will happen on duplicated vertices, and that's what we're optimising for.
@@ -248,6 +249,7 @@ namespace Elegy.MapCompiler.Processors
 						continue;
 					}
 
+					optimisedSurface.Material = surface.Material;
 					optimisedRenderSurfaces.Add( optimisedSurface );
 				}
 
