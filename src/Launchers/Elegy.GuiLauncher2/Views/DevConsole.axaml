@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Elegy.GuiLauncher2.Views.DevConsole">
+    <Border BorderThickness="1" BorderBrush="LightGray">
+        <DockPanel LastChildFill="True">
+            <DockPanel DockPanel.Dock="Bottom" LastChildFill="True">
+                <Button DockPanel.Dock="Right">Submit</Button>
+                <TextBox></TextBox>
+            </DockPanel>
+
+            <Border BorderThickness="1" BorderBrush="LightGray" VerticalAlignment="Stretch">
+                <StackPanel VerticalAlignment="Center">
+                    <Label VerticalAlignment="Center" HorizontalAlignment="Center">
+                        Engine instance not detected.
+                    </Label>
+                    <Label VerticalAlignment="Center" HorizontalAlignment="Center">
+                        No console log available.
+                    </Label>
+                </StackPanel>
+            </Border>
+        </DockPanel>
+    </Border>
+</UserControl>

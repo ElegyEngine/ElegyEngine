@@ -1,0 +1,14 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:Elegy.GuiLauncher2.Views"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Elegy.GuiLauncher2.MainWindow"
+        Title="Elegy.GuiLauncher2">
+        <Grid ColumnDefinitions="*, 4, 3*">
+                <views:DevConsole Grid.Column="0" />
+                <GridSplitter Grid.Column="1" />
+                <views:ElegyViewControl Grid.Column="2" />
+        </Grid>
+</Window>
