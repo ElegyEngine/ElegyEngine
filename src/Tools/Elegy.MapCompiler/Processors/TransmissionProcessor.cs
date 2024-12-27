@@ -242,7 +242,11 @@ namespace Elegy.MapCompiler.Processors
 						optimisedSurface.AddTriangle( a, b, c );
 					}
 
-					optimisedSurface.Material = surface.Material;
+					// Skip empty surfaces
+					if ( optimisedSurface.Indices.Count == 0 )
+					{
+						continue;
+					}
 
 					optimisedRenderSurfaces.Add( optimisedSurface );
 				}
