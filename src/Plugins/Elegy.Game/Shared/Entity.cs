@@ -160,12 +160,17 @@ namespace Game.Shared
 							.Position = Parse.Vector3( pair.Value );
 						break;
 
+					case "model":
+						EntityUtilities
+							.CreateOrRef<StaticModel>( ref EcsObjectRef )
+							.Model.ParseEntityProperty( EcsObject, pair.Key, pair.Value );
+						break;
+
 					default:
 						if ( !EntityUtilities.ParseComponentKeyvalue( ref EcsObjectRef, pair.Key, pair.Value ) )
 						{
 							mLogger.Warning( $"Unknown keyvalue '{pair.Key}'!" );
 						}
-
 						break;
 				}
 			}

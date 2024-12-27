@@ -3,7 +3,10 @@
 
 using Elegy.AssetSystem.API;
 using Elegy.Common.Assets;
+using Elegy.Common.Assets.ElegyMapData;
 using Elegy.Common.Assets.MeshData;
+using Elegy.Common.Maths;
+using Elegy.Common.Utilities;
 using Elegy.ConsoleSystem;
 using Game.Shared;
 
@@ -14,6 +17,8 @@ namespace Game.Server
 	/// </summary>
 	public static class AssetCache
 	{
+		private static TaggedLogger mLogger = new( "AssetCache" );
+
 		public static AssetRegistry Registry { get; } = new();
 		public static ElegyMapDocument MapDocument { get; private set; }
 
@@ -21,6 +26,42 @@ namespace Game.Server
 		public static Dictionary<string, int> MaterialRefs { get; } = new();
 		public static Dictionary<string, int> SoundRefs { get; } = new();
 		public static Dictionary<string, int> OtherFileRefs { get; } = new();
+
+		private static Model CreateBrushModel( int meshId )
+		{
+			Mesh RenderSurfaceToMesh( RenderSurface surface )
+				=> new()
+				{
+					Indices = surface.Indices.Select( i => (uint)i ).ToArray(),
+					Positions = surface.Positions.ToArray(),
+					Normals = surface.Normals.ToArray(),
+					Uv0 = surface.Uvs.ToArray(),
+					Uv1 = surface.LightmapUvs.ToArray(),
+					Color0 = surface.Colours.Select( v => (Vector4B)v ).ToArray(),
+					MaterialName = surface.Material
+				};
+
+			Model result = new();
+
+			result.Name = $"*{meshId}";
+			foreach ( var renderSurface in MapDocument.RenderMeshes[meshId].Surfaces )
+			{
+				result.Meshes.Add( RenderSurfaceToMesh( renderSurface ) );
+			}
+
+			return result;
+		}
+
+		private static Model? LoadModelInternal( string name )
+		{
+			if ( name.StartsWith( '*' ) )
+			{
+				int meshId = Parse.Int( name[1..] );
+				return CreateBrushModel( meshId );
+			}
+
+			return Assets.LoadModel( name );
+		}
 
 		public static void InitLevel( ElegyMapDocument mapDocument )
 		{
@@ -37,7 +78,7 @@ namespace Game.Server
 				}
 			}
 
-			model = Assets.LoadModel( name );
+			model = LoadModelInternal( name );
 			Registry.Models[name] = model;
 			return model;
 		}
