@@ -15,11 +15,17 @@ namespace Game.Server
 	public static class AssetCache
 	{
 		public static AssetRegistry Registry { get; } = new();
+		public static ElegyMapDocument MapDocument { get; private set; }
 
 		public static Dictionary<string, int> ModelRefs { get; } = new();
 		public static Dictionary<string, int> MaterialRefs { get; } = new();
 		public static Dictionary<string, int> SoundRefs { get; } = new();
 		public static Dictionary<string, int> OtherFileRefs { get; } = new();
+
+		public static void InitLevel( ElegyMapDocument mapDocument )
+		{
+			MapDocument = mapDocument;
+		}
 
 		public static Model? LoadModel( string name )
 		{
@@ -43,7 +49,7 @@ namespace Game.Server
 				ModelRefs[name] = count + 1;
 			}
 		}
-		
+
 		public static void UnlinkModel( string name )
 		{
 			if ( ModelRefs.TryGetValue( name, out int count ) )

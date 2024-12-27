@@ -75,6 +75,8 @@ namespace Game.Server
 
 		public bool Setup( ElegyMapDocument level )
 		{
+			AssetCache.InitLevel( level );
+			
 			// Step 1: Create entities
 			Entity.OnMapLoadEvent mapLoadEvent = new( level );
 			foreach ( var entityEntry in level.Entities )
