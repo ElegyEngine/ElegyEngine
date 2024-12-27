@@ -102,6 +102,7 @@ namespace Elegy.MapCompiler
 				TransmissionProcessor transmission = new( data, mParameters );
 				transmission.GenerateOutputData();
 				transmission.OptimiseRenderSurfaces();
+				transmission.LinkEmbeddedMeshes();
 
 				outputData = transmission.GetOutputData();
 			}

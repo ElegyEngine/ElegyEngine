@@ -273,9 +273,25 @@ namespace Elegy.MapCompiler.Processors
 			mLogger.Log( $"  * Occl. meshes:  {mOutput.OccluderMeshes.Count}" );
 		}
 
-		public ElegyMapDocument GetOutputData()
+		public void LinkEmbeddedMeshes()
 		{
-			return mOutput;
+			mLogger.Log( "LinkEmbeddedMeshes" );
+
+			foreach ( var entity in mOutput.Entities )
+			{
+				if ( entity.RenderMeshId >= 0 )
+				{
+					entity.Attributes.TryAdd( "model", $"*{entity.RenderMeshId}" );
+				}
+
+				if ( entity.CollisionMeshId >= 0 )
+				{
+					entity.Attributes.TryAdd( "cmodel", $"*{entity.CollisionMeshId}" );
+				}
+			}
 		}
+
+		public ElegyMapDocument GetOutputData()
+			=> mOutput;
 	}
 }
