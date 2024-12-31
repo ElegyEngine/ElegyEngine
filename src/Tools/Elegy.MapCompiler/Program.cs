@@ -92,9 +92,9 @@ namespace Elegy.MapCompiler
 				ProcessingData data = new();
 				GeometryProcessor geometry = new( data, mParameters );
 				geometry.GenerateGeometryFromMap( document );
-				geometry.Scale( mParameters.GlobalScale );
 				geometry.FixCoordinateSystem();
 				geometry.FixBrushOrigins();
+				geometry.Scale( mParameters.GlobalScale );
 				geometry.UpdateBoundaries();
 				//geometry.SmoothenNormals();
 				//geometry.GenerateDualGrid();
