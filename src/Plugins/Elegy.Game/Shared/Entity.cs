@@ -91,6 +91,9 @@ namespace Game.Shared
 		public record struct ClientPossessedEvent( Entity Self );
 
 		[EventModel]
+		public record struct DebugDrawEvent;
+		
+		[EventModel]
 		public record struct SpawnEvent( Entity Self );
 
 		[EventModel]

@@ -60,6 +60,7 @@ namespace Game.Session
 			Vector3 end = basePosition   + Coords.Forward + Coords.Up * MathF.Cos( mCycle ) * 0.1f;
 
 			Render.DebugLine( start, end, colour: new( 1.0f, 0.8f, 0.5f, 1.0f ) );
+			EntityWorld.Dispatch( new Entity.DebugDrawEvent() );
 		}
 	}
 }
