@@ -70,21 +70,19 @@ namespace Game.Shared
 		}
 	}
 
-	public struct EntityOutput : IEntityProperty
+	public struct EntityOutput : IEntityProperty<EntityOutput>
 	{
 		public EntityOutput() { }
 
-		public EntityOutput( Entity entity, string name, List<EntityOutputEntry> entries )
+		public EntityOutput( ref fennecs.Entity entity, string name, List<EntityOutputEntry> entries )
 		{
 			Name = name;
-			Entity = entity;
+			Entity = entity.Ref<Entity>();
 			Entries = entries;
 		}
 
-		public void ParseEntityProperty( fennecs.Entity entity, ReadOnlySpan<char> key, ReadOnlySpan<char> value )
-		{
-			this = new( entity.Ref<Entity>(), key.ToString(), EntityOutputEntry.ParseOutput( value ) );
-		}
+		public static EntityOutput ParseEntityProperty( ref fennecs.Entity entity, ReadOnlySpan<char> key, ReadOnlySpan<char> value )
+			=> new( ref entity, key.ToString(), EntityOutputEntry.ParseOutput( value ) );
 
 		public void Fire()
 		{

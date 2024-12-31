@@ -53,6 +53,7 @@ namespace Elegy.ECS.Generator
 				GeneratePerComponent( production, registry, components, eventModels );
 				GenerateCreate( production, registry, components );
 				GenerateKeyvalue( production, registry, components, customEntityProperties );
+				GeneratePreKeyvalue( production, registry, components, customEntityProperties );
 				GenerateEventHandling( production, registry, components );
 				GenerateGroupEventHandling( production, registry, components, eventModels );
 				GenerateNamedEventHandling( production, registry, components );

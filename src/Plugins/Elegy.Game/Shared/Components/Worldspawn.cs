@@ -33,7 +33,5 @@ namespace Game.Shared.Components
 		{
 			mLogger.Log( "OnClientSpawn" );
 		}
-
-		
 	}
 }

@@ -16,8 +16,13 @@ namespace Game.Shared.Components
 	[Requires<Transform>]
 	public partial struct StaticModel
 	{
-		public MeshEntity? MeshEntity { get; set; } // not null on clientside
-		[Property] public ModelProperty Model { get; set; } // smart keyvalue that loads models
+		private static TaggedLogger mLogger = new( "StaticModel" );
+
+		// Not null on clientside
+		public MeshEntity? MeshEntity { get; set; }
+
+		// Smart keyvalue that loads models
+		[Property] public ModelProperty Model { get; set; }
 
 		[Event]
 		public void ClientSpawn( Entity.ClientSpawnEvent data )

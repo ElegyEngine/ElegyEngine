@@ -39,6 +39,12 @@ namespace Game.Shared
 			mId = entity.Id;
 		}
 
+		public EntityBuilder PrepareForKeyvalues( Dictionary<string, string> properties )
+		{
+			EntityWorld.GetEntityRef( mId ).CreateComponentsFromKeyvalues( properties );
+			return this;
+		}
+
 		public EntityBuilder LoadKeyvalues( Dictionary<string, string> properties )
 		{
 			EntityWorld.GetEntityRef( mId ).LoadFromKeyvalues( properties );
@@ -143,6 +149,35 @@ namespace Game.Shared
 		public void Destroy()
 			=> EcsObjectRef.Despawn();
 
+		public void CreateComponentsFromKeyvalues( Dictionary<string, string> keys )
+		{
+			foreach ( var pair in keys )
+			{
+				switch ( pair.Key )
+				{
+					case "targetname":
+						//RefOrCreate<Target>();
+						break;
+
+					case "origin":
+						RefOrCreate<Transform>();
+						break;
+
+					case "model":
+						RefOrCreate<StaticModel>();
+						break;
+
+					default:
+						if ( !EntityUtilities.PrepareComponentForKeyvalue( ref EcsObjectRef, pair.Key ) )
+						{
+							mLogger.Warning( $"Unknown keyvalue '{pair.Key}'!" );
+						}
+
+						break;
+				}
+			}
+		}
+
 		public void LoadFromKeyvalues( Dictionary<string, string> keys )
 		{
 			foreach ( var pair in keys )
@@ -158,22 +193,17 @@ namespace Game.Shared
 						break;
 
 					case "origin":
-						EntityUtilities
-							.CreateOrRef<Transform>( ref EcsObjectRef )
-							.Position = Parse.Vector3( pair.Value );
+						Ref<Transform>().Position = Parse.Vector3( pair.Value );
 						break;
 
 					case "model":
-						EntityUtilities
-							.CreateOrRef<StaticModel>( ref EcsObjectRef )
-							.Model.ParseEntityProperty( EcsObject, pair.Key, pair.Value );
+						Ref<StaticModel>().Model = new( pair.Value );
+						break;
+
 						break;
 
 					default:
-						if ( !EntityUtilities.ParseComponentKeyvalue( ref EcsObjectRef, pair.Key, pair.Value ) )
-						{
-							mLogger.Warning( $"Unknown keyvalue '{pair.Key}'!" );
-						}
+						EntityUtilities.ParseComponentKeyvalue( ref EcsObjectRef, pair.Key, pair.Value );
 						break;
 				}
 			}
@@ -185,11 +215,11 @@ namespace Game.Shared
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public bool Has<T>() where T : notnull
-			=> EcsObject.Has<T>();
+			=> EcsObjectRef.Has<T>();
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public ref T Ref<T>()
-			=> ref EcsObject.Ref<T>();
+			=> ref EcsObjectRef.Ref<T>();
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public bool Dispatch<T>( T param ) where T : notnull

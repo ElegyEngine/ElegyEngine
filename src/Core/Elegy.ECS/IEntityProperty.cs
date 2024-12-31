@@ -3,11 +3,11 @@
 
 namespace Elegy.ECS
 {
-	public interface IEntityProperty
+	public interface IEntityProperty<out T>
 	{
 		/// <summary>
 		/// Modifies itself with the parsed data.
 		/// </summary>
-		void ParseEntityProperty( fennecs.Entity entity, ReadOnlySpan<char> key, ReadOnlySpan<char> value );
+		static abstract T ParseEntityProperty( ref fennecs.Entity entity, ReadOnlySpan<char> key, ReadOnlySpan<char> value );
 	}
 }
