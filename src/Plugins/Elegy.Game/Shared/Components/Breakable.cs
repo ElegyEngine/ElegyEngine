@@ -8,10 +8,13 @@ namespace Game.Shared.Components
 	[Component]
 	public partial struct Breakable
 	{
+		[Property]
+		public int Health { get; set; }
+		
 		[Input]
 		public void Break()
 		{
-
+			Health = -1;
 		}
 	}
 }
