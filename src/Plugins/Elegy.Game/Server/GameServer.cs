@@ -61,6 +61,12 @@ namespace Game.Server
 			{
 				EntityWorld.Dispatch(
 					new Entity.ServerUpdateEvent( this, ServerUpdateTime ) );
+
+				// This one will listen to the changed transforms
+				EntityWorld.Dispatch( new Entity.ServerTransformListenEvent( this, ServerUpdateTime ) );
+
+				// Finally, this query clears them all
+				EntityWorld.EcsWorld.Stream<Transform>().For( static ( ref Transform t ) => { t.TransformDirty = false; } );
 			} );
 
 			mSnapshotTimer.Seconds = GameSnapshotTime;

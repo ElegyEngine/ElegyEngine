@@ -119,6 +119,9 @@ namespace Game.Shared
 
 		[EventModel]
 		public record struct ServerUpdateEvent( GameServer Server, float Delta );
+		
+		[EventModel]
+		public record struct ServerTransformListenEvent( GameServer Server, float Delta );
 
 		[EventModel]
 		public record struct OnMapLoadEvent( ElegyMapDocument MapDocument );
