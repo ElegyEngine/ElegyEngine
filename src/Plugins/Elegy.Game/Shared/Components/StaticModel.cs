@@ -1,14 +1,13 @@
 // SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.AssetSystem.API;
 using Elegy.Common.Assets;
 using Elegy.Common.Maths;
+using Elegy.ConsoleSystem;
 using Elegy.ECS;
 using Elegy.RenderSystem.API;
 using Elegy.RenderSystem.Objects;
 using Game.Presentation;
-using Game.Server;
 
 namespace Game.Shared.Components
 {
@@ -33,9 +32,38 @@ namespace Game.Shared.Components
 			}
 
 			ref var transform = ref data.Self.Ref<Transform>();
-			MeshEntity = CreateMeshEntity( false, Model.Data, transform.Position, Vector3.Zero );
+			MeshEntity = CreateMeshEntity( false, Model.Data, transform.Position, transform.Orientation );
 		}
 
+		[GroupEvent]
+		public static void ClientUpdate( Entity.ClientUpdateEvent data, ref StaticModel model, ref Transform transform )
+		{
+			if ( !transform.TransformDirty )
+			{
+				//return;
+			}
+
+			//model.MeshEntity.Transform = Coords.CreateWorldMatrixQuaternion( transform.Position, Quaternion.Identity );
+			model.MeshEntity.Transform = Coords.CreateWorldMatrixQuaternion( transform.Position, transform.Orientation );
+		}
+
+		[GroupEvent]
+		public static void OnDebugDraw( Entity.DebugDrawEvent data, ref StaticModel model, ref Transform transform )
+		{
+			Vector3 start = transform.Position;
+			Vector3 up = start + Coords.Up * 0.33f;
+			Vector3 down = start + Coords.Down * 0.33f;
+			Vector3 forward = start + Coords.Forward * 0.33f;
+			Vector3 back = start + Coords.Back * 0.33f;
+			Vector3 left = start + Coords.Left * 0.33f;
+			Vector3 right = start + Coords.Right * 0.33f;
+			Vector4 colour = new( 0.33f, 0.7f, 0.33f, 1.0f );
+			
+			Render.DebugLine( up, down, colour );
+			Render.DebugLine( forward, back, colour );
+			Render.DebugLine( left, right, colour );
+		}
+		
 		[Event]
 		public void OnRender( Renderer.RenderEvent data )
 		{
@@ -45,13 +73,13 @@ namespace Game.Shared.Components
 		public void SetModel( string name )
 			=> Model.SetModel( name );
 
-		public static MeshEntity CreateMeshEntity( bool animated, Model modelData, Vector3 position, Vector3 angles )
+		public static MeshEntity CreateMeshEntity( bool animated, Model modelData, Vector3 position, Quaternion angles )
 		{
 			// TODO: Reuse meshes
 			var renderEntity = Render.CreateEntity( animated );
 			renderEntity.Mesh = Render.CreateMesh( modelData );
 
-			renderEntity.Transform = Coords.CreateWorldMatrixDegrees( position, angles );
+			renderEntity.Transform = Coords.CreateWorldMatrixQuaternion( position, angles );
 
 			return renderEntity;
 		}
