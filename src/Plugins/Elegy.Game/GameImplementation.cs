@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Net;
 using Elegy.RenderSystem.API;
 using Elegy.RenderSystem.Objects;
+using Game.Shared.Physics;
 
 namespace Game
 {
@@ -63,6 +64,7 @@ namespace Game
 			int maxPlayers = Console.Arguments.GetInt( "+maxplayers", 16 );
 
 			EntityWorld.Init();
+			PhysicsWorld.Init();
 
 			bool headlessMode = Console.Arguments.ContainsKey( "-headless" );
 			if ( headlessMode )
@@ -95,6 +97,7 @@ namespace Game
 			mServer?.Shutdown();
 			mServer = null;
 
+			PhysicsWorld.Shutdown();
 			EntityWorld.Shutdown();
 		}
 

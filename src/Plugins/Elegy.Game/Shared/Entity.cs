@@ -170,6 +170,10 @@ namespace Game.Shared
 						RefOrCreate<StaticModel>();
 						break;
 
+					case "cmodel":
+						RefOrCreate<Body>();
+						break;
+
 					default:
 						if ( !EntityUtilities.PrepareComponentForKeyvalue( ref EcsObjectRef, pair.Key ) )
 						{
@@ -203,6 +207,8 @@ namespace Game.Shared
 						Ref<StaticModel>().Model = new( pair.Value );
 						break;
 
+					case "cmodel":
+						Ref<Body>().CollisionModel = new( pair.Value );
 						break;
 
 					default:

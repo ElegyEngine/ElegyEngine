@@ -7,6 +7,7 @@ using Elegy.ConsoleSystem;
 using Game.Shared;
 using Game.Shared.Components;
 using Game.Session;
+using Game.Shared.Physics;
 
 namespace Game.Server
 {
@@ -59,8 +60,9 @@ namespace Game.Server
 			mUpdateTimer.Seconds = ServerUpdateTime;
 			mUpdateTimer.Update( delta, () =>
 			{
-				EntityWorld.Dispatch(
-					new Entity.ServerUpdateEvent( this, ServerUpdateTime ) );
+				// These two will make transforms dirty
+				PhysicsWorld.UpdateSimulation( ServerUpdateTime );
+				EntityWorld.Dispatch( new Entity.ServerUpdateEvent( this, ServerUpdateTime ) );
 
 				// This one will listen to the changed transforms
 				EntityWorld.Dispatch( new Entity.ServerTransformListenEvent( this, ServerUpdateTime ) );
@@ -97,10 +99,10 @@ namespace Game.Server
 
 			// Step 2: Now that everybody has spawned, do another
 			// run, e.g. accumulating spawnPointEntity links etc.
-			EntityWorld.ForEachEntity( static entity =>
-			{
-				entity.Dispatch<Entity.PostSpawnEvent>( new( entity ) );
-			} );
+			EntityWorld.ForEachEntity( static entity => { entity.Dispatch<Entity.PostSpawnEvent>( new( entity ) ); } );
+
+			// Just to kick things off a little bit
+			PhysicsWorld.UpdateSimulation( 0.01f );
 
 			return true;
 		}
