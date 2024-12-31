@@ -50,11 +50,12 @@ namespace Elegy.MaterialGenerator
 					var imageEntries = Directory.GetFiles( Path.Combine( rootPath, materialDirectoryRelative ), "*" );
 					foreach ( var imageEntry in imageEntries )
 					{
-						string imagePath = Path.ChangeExtension( Path.GetRelativePath( entry, imageEntry ), null );
-						Console.WriteLine( $"  * {imagePath}" );
+						string imagePath = Path.GetRelativePath( entry, imageEntry );
+						string imagePathNoExt = Path.ChangeExtension( imagePath, null );
+						Console.WriteLine( $"  * {imagePathNoExt}" );
 						sb.AppendLine(
 							$$"""
-							materials/{{materialDirectoryRelative}}/{{imagePath}}
+							materials/{{materialDirectoryRelative}}/{{imagePathNoExt}}
 							{
 								materialTemplate Standard
 								{
