@@ -67,7 +67,7 @@ namespace Elegy.RenderSystem.API
 			{
 				span[i].ExpireTime = -1.0f;
 			}
-			
+
 			mDebugLineMesh = CreateMesh( mDebugLinesWorldModel );
 		}
 
@@ -93,7 +93,7 @@ namespace Elegy.RenderSystem.API
 
 				Vector3 direction = (span[i].End - span[i].Start).Normalized();
 				int vertexIndex = lineIndex * 4;
-				int indexIndex = lineIndex * 6;
+				int indexIndex = lineIndex  * 6;
 
 				mesh.Positions[vertexIndex] = span[i].Start;
 				mesh.Positions[vertexIndex + 1] = span[i].Start;
@@ -249,7 +249,8 @@ namespace Elegy.RenderSystem.API
 		/// <summary>
 		/// Submits a 2D debug line for debug rendering.
 		/// </summary>
-		public static void DebugLineScreen( Vector2 start, Vector2 end, Vector4 colour, float lifetime = float.MinValue, float thickness = 1.0f )
+		public static void DebugLineScreen(
+			Vector2 start, Vector2 end, Vector4 colour, float lifetime = float.MinValue, float thickness = 1.0f )
 			=> SubmitLine( mDebugLinesScreen, new()
 			{
 				ExpireTime = (float)mLastFrameTime + lifetime,
