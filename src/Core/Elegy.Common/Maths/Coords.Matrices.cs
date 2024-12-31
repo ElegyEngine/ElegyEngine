@@ -98,6 +98,12 @@ namespace Elegy.Common.Maths
 			return mat.AsM4x4();
 		}
 
+		public static Matrix4x4 CreateWorldMatrixQuaternion( Vector3 position, Quaternion orientation )
+		{
+			DirectionsFromQuaternion( orientation, out var forward, out var up );
+			return CreateWorldMatrix( position, forward, up );
+		}
+
 		public static Matrix4x4 CreateWorldMatrixDegrees( Vector3 position, Vector3 angles )
 		{
 			DirectionsFromDegrees( angles, out var forward, out var up );
