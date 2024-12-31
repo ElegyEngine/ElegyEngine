@@ -2,7 +2,7 @@ materials/water/scrollwater1
 {
 	materialTemplate Standard
 	{
-		map materials/textures/water/scrollwater1
+		map materials/textures/water/scrollwater1.png
 	}
 }
 
@@ -10,7 +10,7 @@ materials/water/scrollwater2
 {
 	materialTemplate Standard
 	{
-		map materials/textures/water/scrollwater2
+		map materials/textures/water/scrollwater2.png
 	}
 }
 
@@ -18,7 +18,7 @@ materials/water/scrollwater2a
 {
 	materialTemplate Standard
 	{
-		map materials/textures/water/scrollwater2a
+		map materials/textures/water/scrollwater2a.png
 	}
 }
 
@@ -26,7 +26,7 @@ materials/water/scrollwater2b
 {
 	materialTemplate Standard
 	{
-		map materials/textures/water/scrollwater2b
+		map materials/textures/water/scrollwater2b.png
 	}
 }
 
@@ -34,7 +34,7 @@ materials/water/water1
 {
 	materialTemplate Standard
 	{
-		map materials/textures/water/water1
+		map materials/textures/water/water1.png
 	}
 }
 
@@ -42,7 +42,7 @@ materials/water/water1a
 {
 	materialTemplate Standard
 	{
-		map materials/textures/water/water1a
+		map materials/textures/water/water1a.png
 	}
 }
 
