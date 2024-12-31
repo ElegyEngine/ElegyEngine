@@ -159,7 +159,7 @@ namespace Elegy.MapCompiler.Processors
 				// Shift the entity's centre + all other geometry so that the world position of
 				// the vertices stays the same, just different relative to the entity's origin
 				Vector3 originDelta = entity.Centre - brushOrigin;
-				entity.MoveFaces( -originDelta );
+				entity.MoveFaces( originDelta );
 
 				entity.Centre = brushOrigin;
 				entity.Pairs.SetVector3( "origin", entity.Centre );
