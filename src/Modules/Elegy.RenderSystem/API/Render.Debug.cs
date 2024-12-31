@@ -185,6 +185,12 @@ namespace Elegy.RenderSystem.API
 			{
 				float expireTime = list[i].ExpireTime;
 
+				// Single-frame entries are avoided
+				if ( expireTime == float.MinValue )
+				{
+					continue;
+				}
+
 				if ( expireTime < lastFrameTime )
 				{
 					list[i] = entry;
