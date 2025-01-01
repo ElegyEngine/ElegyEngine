@@ -5,6 +5,8 @@
 // https://github.com/bepu/bepuphysics2/blob/master/BepuUtilities/QuaternionEx.cs
 // In particular, the methods: TransformUnitX, TransformUnitY and TransformUnitZ.
 
+using System.Runtime.CompilerServices;
+
 namespace Elegy.Common.Maths
 {
 	/// <summary>
@@ -56,12 +58,14 @@ namespace Elegy.Common.Maths
 			);
 		}
 
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static void DirectionsFromQuaternion( Quaternion orientation, out Vector3 outForward, out Vector3 outUp )
 		{
 			outForward = QuaternionUnitY( orientation );
 			outUp = QuaternionUnitZ( orientation );
 		}
 
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static Vector3 QuaternionUnitX( Quaternion orientation )
 		{
 			Vector3 result;
@@ -79,6 +83,7 @@ namespace Elegy.Common.Maths
 			return result;
 		}
 
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static Vector3 QuaternionUnitY( Quaternion orientation )
 		{
 			Vector3 result;
@@ -97,6 +102,7 @@ namespace Elegy.Common.Maths
 			return result;
 		}
 
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static Vector3 QuaternionUnitZ( Quaternion orientation )
 		{
 			Vector3 result;
@@ -115,41 +121,40 @@ namespace Elegy.Common.Maths
 			return result;
 		}
 
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static Quaternion QuaternionFromAxisAngle( Vector3 axis, float angle )
 		{
 			double halfAngle = angle * 0.5;
-			double s = Math.Sin( halfAngle );
+			(double s, double c) = Math.SinCos( halfAngle );
 			Quaternion q;
 			q.X = (float)(axis.X * s);
 			q.Y = (float)(axis.Y * s);
 			q.Z = (float)(axis.Z * s);
-			q.W = (float)Math.Cos( halfAngle );
+			q.W = (float)c;
 			return q;
 		}
 
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static Quaternion QuaternionFromDegrees( Vector3 eulerAngles )
 			=> QuaternionFromRadians( eulerAngles * Deg2Rad );
 
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static Quaternion QuaternionFromRadians( Vector3 eulerAngles )
 		{
-			Quaternion q;
 			double halfRoll = eulerAngles.Z  * 0.5;
 			double halfPitch = eulerAngles.X * 0.5;
 			double halfYaw = eulerAngles.Y   * 0.5;
 
-			double sinRoll = Math.Sin( halfRoll );
-			double sinPitch = Math.Sin( halfPitch );
-			double sinYaw = Math.Sin( halfYaw );
-
-			double cosRoll = Math.Cos( halfRoll );
-			double cosPitch = Math.Cos( halfPitch );
-			double cosYaw = Math.Cos( halfYaw );
+			(double sinRoll, double cosRoll) = Math.SinCos( halfRoll );
+			(double sinPitch, double cosPitch) = Math.SinCos( halfPitch );
+			(double sinYaw, double cosYaw) = Math.SinCos( halfYaw );
 
 			double cosYawCosPitch = cosYaw * cosPitch;
 			double cosYawSinPitch = cosYaw * sinPitch;
 			double sinYawCosPitch = sinYaw * cosPitch;
 			double sinYawSinPitch = sinYaw * sinPitch;
 
+			Quaternion q;
 			q.X = (float)(cosYawSinPitch * cosRoll + sinYawCosPitch * sinRoll);
 			q.Y = (float)(sinYawCosPitch * cosRoll - cosYawSinPitch * sinRoll);
 			q.Z = (float)(cosYawCosPitch * sinRoll - sinYawSinPitch * cosRoll);
@@ -157,9 +162,11 @@ namespace Elegy.Common.Maths
 			return q;
 		}
 
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static Quaternion WorldQuaternionFromDegrees( Vector3 eulerAngles )
 			=> WorldQuaternionFromRadians( eulerAngles * Deg2Rad );
 
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static Quaternion WorldQuaternionFromRadians( Vector3 eulerAngles )
 		{
 			Quaternion qyaw = QuaternionFromAxisAngle( Up, -eulerAngles.Y );
