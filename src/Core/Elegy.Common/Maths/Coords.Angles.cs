@@ -1,9 +1,8 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-// NOTE: This contains code from BepuUtilities:
+// NOTE: This contains code adapted from BepuUtilities:
 // https://github.com/bepu/bepuphysics2/blob/master/BepuUtilities/QuaternionEx.cs
-// In particular, the methods: TransformUnitX, TransformUnitY and TransformUnitZ.
 
 using System.Runtime.CompilerServices;
 
@@ -68,6 +67,7 @@ namespace Elegy.Common.Maths
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static Vector3 RightFromQuat( Quaternion orientation )
 		{
+			// https://github.com/bepu/bepuphysics2/blob/master/BepuUtilities/QuaternionEx.cs#L430
 			Vector3 result;
 			float y2 = orientation.Y + orientation.Y;
 			float z2 = orientation.Z + orientation.Z;
@@ -86,6 +86,7 @@ namespace Elegy.Common.Maths
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static Vector3 ForwardFromQuat( Quaternion orientation )
 		{
+			// https://github.com/bepu/bepuphysics2/blob/master/BepuUtilities/QuaternionEx.cs#L456
 			Vector3 result;
 			float x2 = orientation.X + orientation.X;
 			float y2 = orientation.Y + orientation.Y;
@@ -105,6 +106,7 @@ namespace Elegy.Common.Maths
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static Vector3 UpFromQuat( Quaternion orientation )
 		{
+			// https://github.com/bepu/bepuphysics2/blob/master/BepuUtilities/QuaternionEx.cs#L482
 			Vector3 result;
 			float x2 = orientation.X + orientation.X;
 			float y2 = orientation.Y + orientation.Y;
@@ -124,6 +126,7 @@ namespace Elegy.Common.Maths
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static Quaternion QuatFromAxisAngle( Vector3 axis, float angle )
 		{
+			// https://github.com/bepu/bepuphysics2/blob/master/BepuUtilities/QuaternionEx.cs#L509
 			double halfAngle = angle * 0.5;
 			(double s, double c) = Math.SinCos( halfAngle );
 			Quaternion q;
@@ -180,6 +183,7 @@ namespace Elegy.Common.Maths
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static Quaternion LocalQuatFromRadians( Vector3 eulerAngles )
 		{
+			// https://github.com/bepu/bepuphysics2/blob/master/BepuUtilities/QuaternionEx.cs#L560
 			double halfRoll = eulerAngles.Z  * 0.5;
 			double halfPitch = eulerAngles.X * 0.5;
 			double halfYaw = eulerAngles.Y   * 0.5;
