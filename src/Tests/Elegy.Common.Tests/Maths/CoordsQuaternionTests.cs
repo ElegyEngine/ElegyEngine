@@ -29,8 +29,8 @@ public class CoordsQuaternionsTests
 	internal void SimpleAnglesTest(
 		Vector3 angles, Vector3 expectedForward, Vector3? expectedUp = null, Vector3? expectedRight = null )
 	{
-		Quaternion q = Coords.WorldQuaternionFromDegrees( angles );
-		Coords.DirectionsFromQuaternion( q, out var forward, out var up );
+		Quaternion q = Coords.WorldQuatFromDegrees( angles );
+		Coords.DirectionsFromQuat( q, out var forward, out var up );
 		Vector3 right = Vector3.Cross( forward, up );
 
 		RoughlyEqual( forward, expectedForward );
@@ -64,20 +64,20 @@ public class CoordsQuaternionsTests
 	[Fact]
 	public void ConversionDebug()
 	{
-		Quaternion q = Coords.WorldQuaternionFromDegrees( Vector3.Zero );
-		mLogger.WriteLine( $"0 0 0 X: {Coords.QuaternionUnitX( q )}" );
-		mLogger.WriteLine( $"0 0 0 Y: {Coords.QuaternionUnitY( q )}" );
-		mLogger.WriteLine( $"0 0 0 Z: {Coords.QuaternionUnitZ( q )}" );
+		Quaternion q = Coords.WorldQuatFromDegrees( Vector3.Zero );
+		mLogger.WriteLine( $"0 0 0 X: {Coords.RightFromQuat( q )}" );
+		mLogger.WriteLine( $"0 0 0 Y: {Coords.ForwardFromQuat( q )}" );
+		mLogger.WriteLine( $"0 0 0 Z: {Coords.UpFromQuat( q )}" );
 		mLogger.WriteLine( "" );
-		q = Coords.WorldQuaternionFromDegrees( new( 90.0f, 0.0f, 0.0f ) );
-		mLogger.WriteLine( $"0 0 0 X: {Snap( Coords.QuaternionUnitX( q ) )}" );
-		mLogger.WriteLine( $"0 0 0 Y: {Snap( Coords.QuaternionUnitY( q ) )}" );
-		mLogger.WriteLine( $"0 0 0 Z: {Snap( Coords.QuaternionUnitZ( q ) )}" );
+		q = Coords.WorldQuatFromDegrees( new( 90.0f, 0.0f, 0.0f ) );
+		mLogger.WriteLine( $"0 0 0 X: {Snap( Coords.RightFromQuat( q ) )}" );
+		mLogger.WriteLine( $"0 0 0 Y: {Snap( Coords.ForwardFromQuat( q ) )}" );
+		mLogger.WriteLine( $"0 0 0 Z: {Snap( Coords.UpFromQuat( q ) )}" );
 		mLogger.WriteLine( "" );
-		q = Coords.WorldQuaternionFromDegrees( new( 0.0f, 90.0f, 0.0f ) );
-		mLogger.WriteLine( $"0 0 0 X: {Snap( Coords.QuaternionUnitX( q ) )}" );
-		mLogger.WriteLine( $"0 0 0 Y: {Snap( Coords.QuaternionUnitY( q ) )}" );
-		mLogger.WriteLine( $"0 0 0 Z: {Snap( Coords.QuaternionUnitZ( q ) )}" );
+		q = Coords.WorldQuatFromDegrees( new( 0.0f, 90.0f, 0.0f ) );
+		mLogger.WriteLine( $"0 0 0 X: {Snap( Coords.RightFromQuat( q ) )}" );
+		mLogger.WriteLine( $"0 0 0 Y: {Snap( Coords.ForwardFromQuat( q ) )}" );
+		mLogger.WriteLine( $"0 0 0 Z: {Snap( Coords.UpFromQuat( q ) )}" );
 		mLogger.WriteLine( "" );
 	}
 

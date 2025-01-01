@@ -100,7 +100,7 @@ namespace Elegy.Common.Maths
 
 		public static Matrix4x4 CreateWorldMatrixQuaternion( Vector3 position, Quaternion orientation )
 		{
-			DirectionsFromQuaternion( orientation, out var forward, out var up );
+			DirectionsFromQuat( orientation, out var forward, out var up );
 			return CreateWorldMatrix( position, forward, up );
 		}
 
