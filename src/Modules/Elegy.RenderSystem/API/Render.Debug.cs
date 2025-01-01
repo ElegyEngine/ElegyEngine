@@ -24,7 +24,7 @@ namespace Elegy.RenderSystem.API
 			public float Thickness;
 		}
 
-		private const int MaxDebugLines = 2048;
+		private const int MaxDebugLines = 8192;
 		private static DebugLineEntry[] mDebugLinesWorld = new DebugLineEntry[MaxDebugLines];
 		private static DebugLineEntry[] mDebugLinesScreen = new DebugLineEntry[MaxDebugLines];
 		private static bool mDebugLinesWorldActive;

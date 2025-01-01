@@ -162,15 +162,13 @@ namespace Game.Shared.Physics
 
 		public static unsafe void DebugDrawBody( PhysicsBody body )
 		{
-			return;
-			
 			Vector3 position = body.IsStatic ? body.PositionStatic : body.Position;
 			Quaternion orientation = body.IsStatic ? body.OrientationStatic : body.Orientation;
 
 			int shapeIndex = body.Shape.ShapeIndex.Index;
 			int shapeTypeId = body.Shape.ShapeIndex.Type;
 
-			Coords.DirectionsFromQuaternion( orientation, out var forward, out var up );
+			Coords.DirectionsFromQuat( orientation, out var forward, out var up );
 			Render.DebugLine( position, position + forward             * 2.0f, Vector4.UnitY );
 			Render.DebugLine( position, position + up                  * 2.0f, Vector4.UnitZ );
 			Render.DebugLine( position, position + forward.Cross( up ) * 2.0f, Vector4.UnitX );
