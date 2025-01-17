@@ -33,7 +33,6 @@ if ( $plugin = "none" )
 	Copy-Item "$input_dir/src/Plugins/Elegy.Game/bin/$build_config/net8.0/Bepu*"							-Destination "$output_dir/game/plugins/Game"
 	Copy-Item "$input_dir/src/Plugins/Elegy.Game/bin/$build_config/net8.0/fennecs.*" 						-Destination "$output_dir/game/plugins/Game"
 	Copy-Item "$input_dir/src/Plugins/Elegy.Game/bin/$build_config/net8.0/Elegy.ECS.*" 						-Destination "$output_dir/game/plugins/Game"
-	Copy-Item "$input_dir/src/Plugins/Elegy.Game/bin/$build_config/net8.0/Elegy.RenderWorld.*" 				-Destination "$output_dir/game/plugins/Game"
 }
 else
 {

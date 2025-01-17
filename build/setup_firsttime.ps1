@@ -26,7 +26,6 @@ function Build-Project {
 
 ## Step 1: Build the launcher which will also drag all other core dependencies with it
 Build-Project Launchers Elegy.Launcher2
-Build-Project Modules Elegy.RenderWorld
 Build-Project Plugins Elegy.DevConsole
 Build-Project Plugins Elegy.Game
 Write-Host ""
@@ -64,4 +63,6 @@ Invoke-Expression "$PSScriptRoot/build_shaders.ps1"
 Write-Host ""
 
 Write-Host "Done!"
-Write-Host "You can launch testgame/Elegy.Launcher2 now!"
+Write-Host "In order to launch the test game project:"
+Write-Host " * 1: Change directory to testgame/"
+Write-Host " * 2: Run Elegy.Launcher2"
