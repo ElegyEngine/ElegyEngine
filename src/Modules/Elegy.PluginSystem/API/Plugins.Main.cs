@@ -188,7 +188,12 @@ namespace Elegy.PluginSystem.API
 		/// </summary>
 		public static void RegisterDependency( string name, Assembly assembly )
 		{
-			Debug.Assert( mLoadContext is not null );
+			if ( mLoadContext is null )
+			{
+				mLogger.Error( $"Tried registering a dependency '{name}' while the plugin system is not initialised" );
+				return;
+			}
+			
 			mLoadContext.RegisterDependency( name, assembly );
 		}
 		
@@ -203,7 +208,12 @@ namespace Elegy.PluginSystem.API
 		/// </summary>
 		public static bool UnregisterDependency( string name )
 		{
-			Debug.Assert( mLoadContext is not null );
+			if ( mLoadContext is null )
+			{
+				mLogger.Error( $"Tried registering a dependency '{name}' while the plugin system is not initialised" );
+				return false;
+			}
+			
 			return mLoadContext.UnregisterDependency( name );
 		}
 
