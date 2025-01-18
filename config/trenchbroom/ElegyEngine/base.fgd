@@ -19,14 +19,22 @@
 ]
 
 @SolidClass = worldspawn
-[]
+[
+	Worldspawn.Name(string) : "Level name" : "Unnamed level"
+]
 
 //---------------------------------------
 // Player spawns
 //---------------------------------------
 
 @BaseClass color( 32 220 32 ) size( -24 -24 0, 24 24 72 ) = PlayerSpawn
-[]
+[
+	SpawnPoint.Active(choices) : "Active" : 1 =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+]
 
 @PointClass base( PlayerSpawn ) = info_player_start : "Singleplayer player spawn"
 []
