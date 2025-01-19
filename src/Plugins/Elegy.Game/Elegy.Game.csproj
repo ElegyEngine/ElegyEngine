@@ -8,6 +8,7 @@
     <AssemblyName>Game</AssemblyName>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
