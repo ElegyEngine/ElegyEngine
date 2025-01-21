@@ -1,18 +1,17 @@
 
 # Elegy.Engine
 
-C# and Vulkan game engine, specialised for developing retro-style first-person shooters and similar games from the late 90s and early 2000s.  
+*Note: early WiP, not production-ready. You can track progress in ["Roadmap to 1.0"](https://github.com/ElegyEngine/ElegyEngine/issues/18).*  
 
-Check out [Elegy.TestGame](src/Elegy.TestGame) for an example game module, as well as the other tools and plugins:
-* [Elegy.DevConsole](src/Elegy.DevConsole) - external developer console plugin
-* [Elegy.MapCompiler](src/Elegy.MapCompiler) - level compiler tool for TrenchBroom and other Quake map editors
-* [Elegy.MaterialGenerator](src/Elegy.MaterialGenerator) - quickly generate materials from a folder full of texture images
-* [Elegy.ShaderTool](src/Elegy.ShaderTool) - generate shaders & shader templates from GLSL
+This is a C# and Vulkan game engine, specialising in the development of retro-style first-person shooters and similar games from the late 90s and early 2000s.  
+
+Check out [Elegy.Game](src/Plugins/Elegy.Game) for an example game module, as well as the other tools and plugins:
+* [Elegy.DevConsole](src/Plugins/Elegy.DevConsole) - external developer console plugin
+* [Elegy.MapCompiler](src/Tools/Elegy.MapCompiler) - level compiler tool for TrenchBroom and other Quake map editors
+* [Elegy.MaterialGenerator](src/Tools/Elegy.MaterialGenerator) - quickly generate materials from a folder full of texture images
+* [Elegy.ShaderTool](src/Tools/Elegy.ShaderTool) - generate shaders & shader templates from GLSL
 
 For level designers who use TrenchBroom, a [game config](config/trenchbroom) is provided. Other level editors are likely unsupported but could work depending on how well they do Quake 3.
-
-*Note: early WiP, check back in Q4 2024!*  
-*Right now the engine is not usable for gamedev of any kind.*
 
 # Building
 
@@ -23,7 +22,7 @@ For level designers who use TrenchBroom, a [game config](config/trenchbroom) is 
 		* Comes with Vulkan SDK
 		* Just make sure it's in your `PATH` variable
 		* i.e. you can just call `glslang` from the commandline
-	* a GPU that supports `VK_KHR_fragment_shader_barycentric` (find out if yours [supports it here](https://vulkan.gpuinfo.org/listdevicescoverage.php?extension=VK_KHR_fragment_shader_barycentric&platform=all))
+	* a GPU that supports `VK_KHR_fragment_shader_barycentric` (find out if yours [supports it here](https://vulkan.gpuinfo.org/listdevicescoverage.php?extension=VK_KHR_fragment_shader_barycentric&platform=all)) - this may not be a restriction [later on](https://github.com/ElegyEngine/ElegyEngine/issues/10)
 * PowerShell 7 ([link](https://github.com/PowerShell/PowerShell))
 
 ### Building the code
