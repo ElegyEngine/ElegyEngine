@@ -19,7 +19,7 @@ namespace Game.Session
 		public void ReceiveSpawnResponse( int entityId )
 		{
 			ClientEntityId = entityId;
-			PlayerController.Setup();
+			PlayerController.Setup( entityId );
 			ClientEntity.Dispatch<Entity.ClientPossessedEvent>( new( ClientEntity ) );
 
 			Bridge.SendSpawnComplete();

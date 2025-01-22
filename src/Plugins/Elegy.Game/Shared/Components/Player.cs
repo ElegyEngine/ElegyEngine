@@ -15,7 +15,7 @@ namespace Game.Shared.Components
 
 		public bool IsLocal { get; set; }
 
-		public IPlayerControllable Controller { get; set; } = new BasicController();
+		public IPlayerControllable Controller { get; set; } = new StandardPlayerController();
 
 		[Event]
 		public void Spawn( Entity.SpawnEvent data )
@@ -25,7 +25,7 @@ namespace Game.Shared.Components
 
 			// Set up the controller so that it can
 			// collide against the world and so on
-			Controller.Setup();
+			Controller.Setup( data.Self.Id );
 		}
 
 		// Updates all players on the server

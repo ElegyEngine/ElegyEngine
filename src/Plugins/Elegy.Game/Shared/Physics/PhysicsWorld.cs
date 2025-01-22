@@ -44,13 +44,35 @@ namespace Game.Shared.Physics
 
 		public static PhysicsBody CreateBody( in Transform worldTransform, PhysicsShape shape )
 		{
+			bool needsConversion = shape.ShapeIndex.Type != Mesh.Id;
+			Quaternion orientation = needsConversion ? PhysicsBody.ToBepu( worldTransform.Orientation ) : worldTransform.Orientation;
+			
 			PhysicsBody result = new(
 				shape: shape,
 				dynamicHandle: Simulation.Bodies.Add( BodyDescription.CreateDynamic(
-					pose: new( worldTransform.Position, worldTransform.Orientation ),
+					pose: new( worldTransform.Position, orientation ),
 					inertia: shape.Inertia,
 					collidable: shape.ShapeIndex,
-					activity: 0.01f ) ) );
+					activity: 0.01f ) ),
+				needsConversion: needsConversion );
+
+			return result;
+		}
+
+		public static PhysicsBody CreateKinematicBody( in Transform worldTransform, PhysicsShape shape )
+		{
+			bool needsConversion = shape.ShapeIndex.Type != Mesh.Id;
+			Quaternion orientation = needsConversion ? PhysicsBody.ToBepu( worldTransform.Orientation ) : worldTransform.Orientation;
+
+			PhysicsBody result = new(
+				shape: shape,
+				dynamicHandle: Simulation.Bodies.Add( BodyDescription.CreateDynamic(
+					pose: new( worldTransform.Position, orientation ),
+					// This type of inertia prevents unwanted rotations
+					inertia: new() { InverseMass = shape.Inertia.InverseMass },
+					collidable: new( shape.ShapeIndex, 0.1f, float.MaxValue, ContinuousDetection.Passive ),
+					activity: 0.02f ) ),
+				needsConversion: needsConversion );
 
 			return result;
 		}

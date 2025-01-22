@@ -3,15 +3,14 @@
 
 namespace Game.Shared
 {
-	public class BasicController : IPlayerControllable
+	public class FlyCamController : IPlayerControllable
 	{
 		Vector3 mPosition;
 		Vector3 mDirection;
 		Vector3 mViewAngles;
 
-		public void Setup()
+		public void Setup( int entityId )
 		{
-
 		}
 
 		public void Update( float dt )
@@ -30,6 +29,10 @@ namespace Game.Shared
 		{
 			mViewAngles = commands.ViewAngles;
 			mDirection = commands.MovementDirection;
+		}
+
+		public void OnDebugDraw()
+		{
 		}
 	}
 }
