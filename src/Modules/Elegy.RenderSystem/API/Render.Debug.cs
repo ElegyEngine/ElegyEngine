@@ -76,29 +76,31 @@ namespace Elegy.RenderSystem.API
 			var mesh = mDebugLinesWorldModel.Meshes[0];
 
 			int lineIndex = 0;
-			var span = mDebugLinesWorld;
+			var span = mDebugLinesWorld.AsSpan();
 			for ( int i = 0; i < span.Length; i++ )
 			{
-				if ( span[i].ExpireTime < mLastFrameTime )
+				ref var line = ref span[i];
+				
+				if ( line.ExpireTime < mLastFrameTime )
 				{
 					// Expiry times that are equal to float.MinValue are basically
 					// "this frame only, delete me next frame thanks"
-					if ( span[i].ExpireTime != float.MinValue )
+					if ( line.ExpireTime != float.MinValue )
 					{
 						continue;
 					}
 
-					span[i].ExpireTime = -1.0f;
+					line.ExpireTime = -1.0f;
 				}
 
-				Vector3 direction = (span[i].End - span[i].Start).Normalized();
+				Vector3 direction = (line.End - line.Start).Normalized();
 				int vertexIndex = lineIndex * 4;
 				int indexIndex = lineIndex  * 6;
 
-				mesh.Positions[vertexIndex] = span[i].Start;
-				mesh.Positions[vertexIndex + 1] = span[i].Start;
-				mesh.Positions[vertexIndex + 2] = span[i].End;
-				mesh.Positions[vertexIndex + 3] = span[i].End;
+				mesh.Positions[vertexIndex] = line.Start;
+				mesh.Positions[vertexIndex + 1] = line.Start;
+				mesh.Positions[vertexIndex + 2] = line.End;
+				mesh.Positions[vertexIndex + 3] = line.End;
 
 				mesh.Normals[vertexIndex] = direction;
 				mesh.Normals[vertexIndex + 1] = direction;
@@ -107,15 +109,15 @@ namespace Elegy.RenderSystem.API
 
 				// Each "line" is actually a thin quad in disguise, and this
 				// UV component is used to figure out left/right and thickness.
-				mesh.Uv0[vertexIndex] = new( -1.0f, span[i].Thickness );
-				mesh.Uv0[vertexIndex + 1] = new( 1.0f, span[i].Thickness );
-				mesh.Uv0[vertexIndex + 2] = new( 1.0f, span[i].Thickness );
-				mesh.Uv0[vertexIndex + 3] = new( -1.0f, span[i].Thickness );
+				mesh.Uv0[vertexIndex] = new( -1.0f, line.Thickness );
+				mesh.Uv0[vertexIndex + 1] = new( 1.0f, line.Thickness );
+				mesh.Uv0[vertexIndex + 2] = new( 1.0f, line.Thickness );
+				mesh.Uv0[vertexIndex + 3] = new( -1.0f, line.Thickness );
 
-				mesh.Color0[vertexIndex] = span[i].Colour;
-				mesh.Color0[vertexIndex + 1] = span[i].Colour;
-				mesh.Color0[vertexIndex + 2] = span[i].Colour;
-				mesh.Color0[vertexIndex + 3] = span[i].Colour;
+				mesh.Color0[vertexIndex] = line.Colour;
+				mesh.Color0[vertexIndex + 1] = line.Colour;
+				mesh.Color0[vertexIndex + 2] = line.Colour;
+				mesh.Color0[vertexIndex + 3] = line.Colour;
 
 				mesh.Indices[indexIndex] = (uint)vertexIndex;
 				mesh.Indices[indexIndex + 1] = (uint)vertexIndex + 1;

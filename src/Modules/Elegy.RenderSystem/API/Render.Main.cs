@@ -58,11 +58,11 @@ namespace Elegy.RenderSystem.API
 
 			// Render meshes, effects etc.
 			OnRender?.Invoke();
-			
+
 			// What was rendered above is now inside a framebuffer
 			// Render that framebuffer into one of the framebuffers in the swapchain
 			RenderView( view );
-			
+
 			// Finish stuff and present to the screen
 			EndFrame();
 			PresentView( view );
@@ -138,35 +138,33 @@ namespace Elegy.RenderSystem.API
 			List<string> deviceExtensions = mAdditionalDeviceExtensions.ToList();
 			instanceExtensions.AddRange( extraInstanceExtensions );
 			deviceExtensions.AddRange( extraDeviceExtensions );
-			
+
 			try
 			{
 				device = GraphicsDevice.CreateVulkan( new()
-				{
+					{
 #if DEBUG
 					Debug = true,
 #endif
-					ResourceBindingModel = ResourceBindingModel.Improved,
-					SyncToVerticalBlank = true,
+						ResourceBindingModel = ResourceBindingModel.Improved,
+						SyncToVerticalBlank = true,
 
-					SwapchainSrgbFormat = false,
-					SwapchainDepthFormat = null,
+						SwapchainSrgbFormat = false,
+						SwapchainDepthFormat = null,
 
-					//PreferDepthRangeZeroToOne = true,
-					//PreferStandardClipSpaceYDirection = true,
+						//PreferDepthRangeZeroToOne = true,
+						//PreferStandardClipSpaceYDirection = true,
 
-					// We are gonna create swapchains manually for IViews
-					HasMainSwapchain = false
-				},
-
-				new VulkanDeviceOptions()
-				{
-					// Nothing in here for now, though we may want
-					// Vulkan 1.3 dynamic state extensions at some point
-					InstanceExtensions = instanceExtensions.ToArray(),
-					DeviceExtensions = deviceExtensions.ToArray()
-				} );
-
+						// We are gonna create swapchains manually for IViews
+						HasMainSwapchain = false
+					},
+					new VulkanDeviceOptions()
+					{
+						// Nothing in here for now, though we may want
+						// Vulkan 1.3 dynamic state extensions at some point
+						InstanceExtensions = instanceExtensions.ToArray(),
+						DeviceExtensions = deviceExtensions.ToArray()
+					} );
 			}
 			catch ( Exception ex )
 			{

@@ -108,12 +108,6 @@ namespace Game.Client
 			}
 
 			mCommands.ViewAngles = mAngles;
-
-			//var state = Controller.GenerateControllerState();
-			//mPresentation.Position = state.Position;
-			//mPresentation.Angles = mAngles;
-			//mPresentation.Update();
-
 			mMousePositionDelta = Vector2.Zero;
 			mOldMousePosition = Input.Mouse.Position;
 		}
