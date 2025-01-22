@@ -67,17 +67,17 @@ namespace Elegy.RenderSystem.Objects
 			}
 		}
 
-		internal void UpdateBuffers( GraphicsDevice gd )
+		internal void UpdateBuffers( CommandList commands )
 		{
 			if ( TransformBufferDirty )
 			{
-				gd.UpdateBuffer( TransformBuffer, 0, mTransform );
+				commands.UpdateBuffer( TransformBuffer, 0, mTransform );
 				TransformBufferDirty = false;
 			}
 
 			if ( BoneTransformBufferDirty )
 			{
-				gd.UpdateBuffer( BoneTransformBuffer, 0, (Span<Matrix4x4>)mBoneBuffer );
+				commands.UpdateBuffer( BoneTransformBuffer, 0, (Span<Matrix4x4>)mBoneBuffer );
 				BoneTransformBufferDirty = false;
 			}
 		}
