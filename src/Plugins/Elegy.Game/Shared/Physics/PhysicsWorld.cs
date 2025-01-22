@@ -26,8 +26,8 @@ namespace Game.Shared.Physics
 
 			Simulation = Simulation.Create( mBufferPool,
 				new NarrowphaseCallbacks(),
-				new PoseIntegratorCallbacks( gravity: Coords.Down * 200.0f ),
-				new SolveDescription( 8, 1 ) );
+				new PoseIntegratorCallbacks( gravity: Coords.Down * 9.81f ),
+				new SolveDescription( 8, 1, 512 ) );
 		}
 
 		public static void Shutdown()

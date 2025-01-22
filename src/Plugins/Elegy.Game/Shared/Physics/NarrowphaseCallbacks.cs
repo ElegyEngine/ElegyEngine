@@ -48,9 +48,9 @@ namespace Game.Shared.Physics
 			int workerIndex, CollidablePair pair, ref TManifold manifold, out PairMaterialProperties pairMaterial )
 			where TManifold : unmanaged, IContactManifold<TManifold>
 		{
-			pairMaterial.FrictionCoefficient = 1f;
-			pairMaterial.MaximumRecoveryVelocity = 2f;
-			pairMaterial.SpringSettings = new SpringSettings( 30, 1 );
+			pairMaterial.FrictionCoefficient = 0.9f;
+			pairMaterial.MaximumRecoveryVelocity = 2.0f;
+			pairMaterial.SpringSettings = new SpringSettings( 60.0f, 0.1f );
 			return true;
 		}
 
