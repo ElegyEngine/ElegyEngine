@@ -22,7 +22,7 @@ namespace Game.Shared.Physics
 			StaticHandle = staticHandle;
 			StaticReference = PhysicsWorld.Simulation.Statics.GetStaticReference( staticHandle );
 		}
-		
+
 		public PhysicsShape Shape { get; }
 		public BodyHandle BodyHandle { get; }
 		public BodyReference BodyReference { get; }
@@ -37,7 +37,7 @@ namespace Game.Shared.Physics
 			get => BodyReference.Pose.Position;
 			set => BodyReference.Pose.Position = value;
 		}
-		
+
 		public Quaternion Orientation
 		{
 			get => NeedsConversion ? FromBepu( BodyReference.Pose.Orientation ) : BodyReference.Pose.Orientation;

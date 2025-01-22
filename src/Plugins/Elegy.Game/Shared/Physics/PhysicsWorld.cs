@@ -147,14 +147,6 @@ namespace Game.Shared.Physics
 
 		public static PhysicsShape CreateMeshShape( Elegy.Common.Assets.Model model, float mass = -1.0f )
 		{
-			// TEMP until meshes work again
-			//PhysicsShape result = new()
-			//{
-			//	ShapeIndex = Simulation.Shapes.Add( new Box( 20.0f, 20.0f, 0.5f ) ),
-			//	Inertia = new()
-			//};
-			//return result;
-
 			int triangleIndex = 0;
 			int numTriangles = 0;
 			foreach ( var mesh in model.Meshes )
@@ -208,7 +200,7 @@ namespace Game.Shared.Physics
 				Vector3 vertexA = Vector3.Transform( triangle->A, orientation );
 				Vector3 vertexB = Vector3.Transform( triangle->B, orientation );
 				Vector3 vertexC = Vector3.Transform( triangle->C, orientation );
-				
+
 				Render.DebugLine( position + vertexA, position + vertexB, Vector4.UnitX );
 				Render.DebugLine( position + vertexB, position + vertexC, Vector4.UnitX );
 				Render.DebugLine( position + vertexC, position + vertexA, Vector4.UnitX );
