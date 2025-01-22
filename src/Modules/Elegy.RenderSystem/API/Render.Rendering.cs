@@ -9,6 +9,15 @@ namespace Elegy.RenderSystem.API
 {
 	public static partial class Render
 	{
+		/// <summary> Last CPU frametime. </summary>
+		public static double CpuFrametime { get; private set; }
+
+		/// <summary> Last GPU frametime. </summary>
+		public static double GpuFrametime { get; private set; }
+
+		/// <summary> Point in time when the last frame was rendered. </summary>
+		public static double LastFrameTime => mLastFrameTime;
+
 		/// <summary>Starts the frame timers, clears stuff etc.</summary>
 		public static void BeginFrame()
 		{
@@ -19,12 +28,14 @@ namespace Elegy.RenderSystem.API
 		public static void EndFrame()
 		{
 			mCpuTime = GetSeconds() - mCpuTime;
+			CpuFrametime = mCpuTime;
 			mGpuTime = GetSeconds();
 
 			mDevice.WaitForIdle();
 
 			mLastFrameTime = GetSeconds();
 			mGpuTime = mLastFrameTime - mGpuTime;
+			GpuFrametime = mGpuTime;
 		}
 
 		/// <summary>Draws a view to the backbuffer.</summary>
