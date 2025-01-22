@@ -54,7 +54,8 @@ namespace Elegy.RenderBackend
 		}
 
 		private void LoadOrUpdateChannelTransformed<TSource, TDestination>(
-			ref DeviceBuffer? buffer, TSource[] source, Func<TSource, TDestination> transform, int numVertices = -1 )
+			ref DeviceBuffer? buffer, TSource[] source, ref TDestination[] destination, Func<TSource, TDestination> transform,
+			int numVertices = -1 )
 			where TSource : unmanaged
 			where TDestination : unmanaged
 		{
@@ -63,8 +64,13 @@ namespace Elegy.RenderBackend
 				return;
 			}
 
-			var transformedSource = Mesh.Transform( source, transform );
-			LoadOrUpdateChannel( ref buffer, transformedSource, numVertices );
+			if ( destination.Length != source.Length )
+			{
+				Array.Resize( ref destination, source.Length );
+			}
+
+			Mesh.Transform( source, destination, transform );
+			LoadOrUpdateChannel( ref buffer, destination, numVertices );
 		}
 
 		private void LoadOrUpdateIndices( ref DeviceBuffer? buffer, uint[] source, int numIndices = -1 )
@@ -82,6 +88,11 @@ namespace Elegy.RenderBackend
 
 			mDevice.UpdateBufferFromSpan<uint>( buffer, source, numIndices );
 		}
+
+		private Vector4SB[] mTransformedNormals = [];
+		private Vector4SB[] mTransformedTangents = [];
+		private Vector2SB[] mTransformedNormals2D = [];
+		private Vector4SB[] mTransformedWeights = [];
 
 		private readonly int mMaxDynamicVertices;
 		private readonly int mMaxDynamicIndices;
@@ -105,17 +116,17 @@ namespace Elegy.RenderBackend
 			if ( data.Positions.Length > 0 )
 			{
 				LoadOrUpdateChannel( ref PositionBuffer, data.Positions, numVertices );
-				LoadOrUpdateChannelTransformed( ref NormalBuffer, data.Normals, ConvertVec3ToVec4SB, numVertices );
+				LoadOrUpdateChannelTransformed( ref NormalBuffer, data.Normals, ref mTransformedNormals, ConvertVec3ToVec4SB, numVertices );
 			}
 			else
 			{
 				LoadOrUpdateChannel( ref PositionBuffer, data.Positions2D, numVertices );
-				LoadOrUpdateChannelTransformed( ref NormalBuffer, data.Normals2D, ConvertVec2ToVec2SB, numVertices );
+				LoadOrUpdateChannelTransformed( ref NormalBuffer, data.Normals2D, ref mTransformedNormals2D, ConvertVec2ToVec2SB, numVertices );
 			}
 
 			LoadOrUpdateIndices( ref IndexBuffer, data.Indices, numIndices );
 
-			LoadOrUpdateChannelTransformed( ref TangentBuffer, data.Tangents, ConvertVec4ToVec4SB, numVertices );
+			LoadOrUpdateChannelTransformed( ref TangentBuffer, data.Tangents, ref mTransformedTangents, ConvertVec4ToVec4SB, numVertices );
 
 			LoadOrUpdateChannel( ref Uv0Buffer, data.Uv0, numVertices );
 			LoadOrUpdateChannel( ref Uv1Buffer, data.Uv1, numVertices );
@@ -129,7 +140,7 @@ namespace Elegy.RenderBackend
 
 			LoadOrUpdateChannel( ref BoneIndexBuffer, data.BoneIndices, numVertices );
 			// TODO: use Vector4B for bone weights
-			LoadOrUpdateChannelTransformed( ref BoneWeightBuffer, data.BoneWeights, ConvertVec4ToVec4SB, numVertices );
+			LoadOrUpdateChannelTransformed( ref BoneWeightBuffer, data.BoneWeights, ref mTransformedWeights, ConvertVec4ToVec4SB, numVertices );
 		}
 
 		/// <summary> Updates the GPU buffers with the new mesh data. </summary>

@@ -133,12 +133,25 @@ namespace Elegy.Common.Assets.MeshData
 		}
 
 		/// <summary> Transforms a sequence of vertex data into another format, e.g. float3 into byte4. </summary>
-		public static TDestination[] Transform<TSource, TDestination>( IList<TSource> source, Func<TSource, TDestination> transform )
+		public static void Transform<TSource, TDestination>( IList<TSource> source, TDestination[] destination, Func<TSource, TDestination> transform )
 			where TSource : unmanaged
 			where TDestination : unmanaged
 		{
 			// Say no to LINQ !!!
+			for ( int i = 0; i < source.Count; i++ )
+			{
+				destination[i] = transform( source[i] );
+			}
+		}
+		
+		/// <summary> Transforms a sequence of vertex data into another format, e.g. float3 into byte4. </summary>
+		public static TDestination[] Transform<TSource, TDestination>( IList<TSource> source, Func<TSource, TDestination> transform )
+			where TSource : unmanaged
+			where TDestination : unmanaged
+		{
 			TDestination[] result = new TDestination[source.Count];
+			
+			// Say no to LINQ !!!
 			for ( int i = 0; i < source.Count; i++ )
 			{
 				result[i] = transform( source[i] );
