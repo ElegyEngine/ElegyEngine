@@ -52,8 +52,8 @@ namespace Elegy.RenderSystem.Objects
 			get => mTransform;
 			set
 			{
+				TransformBufferDirty = TransformBufferDirty || mTransform != value;
 				mTransform = value;
-				TransformBufferDirty = true;
 			}
 		}
 
