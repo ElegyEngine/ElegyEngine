@@ -145,9 +145,10 @@ namespace Elegy.AppTemplate
 					IWindow? window = Platform.CreateWindow( new()
 					{
 						API = GraphicsAPI.DefaultVulkan,
-						FramesPerSecond = 120.0,
-						UpdatesPerSecond = 120.0,
-						Size = new( 1600, 900 )
+						FramesPerSecond = 999.0,
+						UpdatesPerSecond = 999.0,
+						Size = new( 1600, 900 ),
+						VSync = true
 					} );
 
 					if ( window is null )

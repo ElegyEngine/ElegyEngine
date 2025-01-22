@@ -45,6 +45,12 @@ namespace Game.Server
 
 		public void Update( float delta )
 		{
+			if ( delta > 0.2f )
+			{
+				// Might as well discard the frame
+				return;
+			}
+			
 			foreach ( var connection in Connections )
 			{
 				if ( connection.State == GameSessionState.Disconnected )
@@ -60,12 +66,14 @@ namespace Game.Server
 			mUpdateTimer.Seconds = ServerUpdateTime;
 			mUpdateTimer.Update( delta, () =>
 			{
+				float updateDelta = MathF.Max( delta, ServerUpdateTime );
+				
 				// These two will make transforms dirty
-				PhysicsWorld.UpdateSimulation( ServerUpdateTime );
-				EntityWorld.Dispatch( new Entity.ServerUpdateEvent( this, ServerUpdateTime ) );
+				PhysicsWorld.UpdateSimulation( updateDelta );
+				EntityWorld.Dispatch( new Entity.ServerUpdateEvent( this, updateDelta ) );
 
 				// This one will listen to the changed transforms
-				EntityWorld.Dispatch( new Entity.ServerTransformListenEvent( this, ServerUpdateTime ) );
+				EntityWorld.Dispatch( new Entity.ServerTransformListenEvent( this, updateDelta ) );
 
 				// Finally, this query clears them all
 				EntityWorld.EcsWorld.Stream<Transform>().For( static ( ref Transform t ) => { t.TransformDirty = false; } );
