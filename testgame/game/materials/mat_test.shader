@@ -1,5 +1,5 @@
 
-textures/mat_test
+materials/mat_test
 {
 	materialTemplate Standard
 	{
