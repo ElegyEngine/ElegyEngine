@@ -1,0 +1,342 @@
+
+// FGD FILE FOR ELEGY ENGINE - v0.1.0 PROTOTYPE SAMPLE 1
+// Note that this is based on an FGD that I used in my 2021 game that ran on idTech 3.
+// You may see mentions of BSP in comments and properties, but feel free to ignore those!
+// Entities that are commented out will possibly get added in the following prototypes & milestones.
+
+//---------------------------------------
+// Base stuff
+//---------------------------------------
+
+@BaseClass = Name
+[
+	targetname(target_source) : "Name"
+]
+
+@BaseClass = Target
+[
+	target(target_destination) : "Target"
+]
+
+@SolidClass = worldspawn
+[
+	Worldspawn.Name(string) : "Level name" : "Unnamed level"
+]
+
+//---------------------------------------
+// Player spawns
+//---------------------------------------
+
+@BaseClass color( 32 220 32 ) size( -24 -24 0, 24 24 72 ) = PlayerSpawn
+[
+	SpawnPoint.Active(choices) : "Active" : 1 =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+]
+
+@PointClass base( PlayerSpawn ) = info_player_start : "Singleplayer player spawn"
+[]
+
+//@PointClass base( PlayerSpawn ) = info_player_multispawn : "Multiplayer map spawn"
+//[]
+
+//---------------------------------------
+// Audio
+//---------------------------------------
+
+@BaseClass base( Name ) color( 48 160 255 ) size( -8 -8 -4, 8 8 4 ) = Audio
+[]
+
+//@PointClass base( Name, Audio ) = audio_music_set
+//[
+//	label(string) : "Music label" : "" : "Music label, from [mapname].mus, to transition to"
+//] 
+
+//@PointClass base( Name, Audio ) = audio_ambient
+//[
+//	sound(string) : "Sound file" : "" : "Which sound to play"
+//
+//	spawnflags(flags) = 
+//	[
+//		1 : "Start off"
+//	]
+//]
+
+//---------------------------------------
+// Environmental
+//---------------------------------------
+
+@BaseClass base( Name ) color( 64 160 96 ) = Env
+[]
+
+//@PointClass base( Env ) = env_explosion
+//[
+//	damage(string) : "Damage" : "200"
+//	radius(string) : "Blast radius" : "200"
+//
+//	spawnflags(flags) =
+//	[
+//		1 : "Repeatable"
+//		2 : "No damage"
+//	]
+//]
+
+//@PointClass base( Env ) = env_sprite
+//[
+//	radius(string) : "Sprite size" : "64" : "In units, how big a sprite is"
+//	opacity(string) : "Sprite opacity" : "255" : "0 to 255, how opaque the sprite is"
+//
+//	spawnflags(flags) =
+//	[
+//		1 : "Start off" : 0
+//		2 : "Once" : 0
+//	]
+//]
+
+//---------------------------------------
+// Functional
+//---------------------------------------
+
+//@SolidClass = func_bobbing
+//[
+//	bobIntensity(string) : "Bob intensity" : "16" : "How far it goes"
+//	bobDuration(string) : "Bob duration" : "0.5" : "The inverse of frequency; how long it takes to perform a full bob"
+//	bobAxis(string) : "Bob axis" : "0 0 1" : "The bob axis. 1 0 0 is X, 0 1 0 is Y, and 0 0 1 is Z"
+//	bobPhase(string) : "Bob phase offset" : "0" : "Goes from 0.00 to 1.00, defines the offset from the start of bobbing"
+//]
+
+@SolidClass base( Name ) = func_breakable
+[
+//	material(choices) : "Material type" : 0 =
+//	[
+//		0 : "Glass"
+//		1 : "Wood"
+//		2 : "Concrete"
+//		3 : "Metal"
+//	]
+//
+//	spawnflags(flags) =
+//	[
+//		1 : "Trigger only" : 0
+//		2 : "Twitch" : 0
+//		4 : "Use attack dir for gibs" : 0
+//	]
+]
+
+//@SolidClass base( Name ) = func_button
+//[
+//	wait(string) : "Delay before reset"
+//
+//	spawnflags(flags) =
+//	[
+//		1 : "No touch" : 1
+//		2 : "No trigger" : 0
+//		4 : "Don't move" : 1
+//	]
+//]
+
+//@SolidClass base( Name ) = func_door
+//[
+//	expand(string) : "Expand hull" : "1.0" : "How much to expand so the player can trigger it from afar"
+//	distance(string) : "Travel distance" : "96" : "How far the door will go"
+//	axis(string) : "Travel axis" : "0 0 1" : "In which direction the door will go"
+//	speed(string) : "Travel speed" : "256"
+//
+//	spawnflags(flags) = 
+//	[
+//		1 : "Start open" : 0
+//		2 : "No touch" : 0
+//		4 : "No trigger" : 0
+//	]
+//]
+
+//@SolidClass base( Name ) = func_door_rotating
+//[
+//	speed(string) : "Rotation speed" : "15"
+//	distance(string) : "Rotation angle" : "90"
+//	dir(string) : "Rotation effect axis" : "0 1 0" : "0 1 0 = rotate yaw, 1 0 0 = rotate pitch, 0 0 1 = rotate roll"
+//
+//	spawnflags(flags) = 
+//	[
+//		1 : "Start open" : 0
+//		2 : "No touch" : 0
+//		4 : "Reverse" : 0
+//	]
+//]
+
+//@PointClass base( Name ) = func_dynamic
+//[
+//	model(studio) : "Model" : ""
+//	animAction(string) : "Action animation" : ""
+//	animIdle(string) : "Idle animation" : ""
+//]
+
+@SolidClass = func_rotating
+[
+//	speed(string) : "Rotation speed" : "15"
+//	dir(string) : "Rotation effect axis" : "0 1 0" : "0 1 0 = rotate yaw, 1 0 0 = rotate pitch, 0 0 1 = rotate roll"
+]
+
+//@SolidClass base( Name ) = func_toggle
+//[
+//	
+//]
+
+//---------------------------------------
+// Logic
+//---------------------------------------
+
+//@PointClass base( Name, Target ) = logic_timer
+//[
+//	delayMin(string) : "Base delay" : "1.0"
+//	delayMax(string) : "Maximum delay" : "" : "If maximum delay > base delay, then it will pick a random time between those two, otherwise it'll always use base delay"
+//
+//	spawnflags(flags) = 
+//	[
+//		1 : "Start on" : 0
+//		2 : "Impulse, do not toggle" : 0
+//	]
+//]
+
+//---------------------------------------
+// Triggers
+//---------------------------------------
+
+@BaseClass color( 255 160 64 ) = Trigger
+[
+	target(target_destination) : "Target" : "" : "Trigger target"
+	targetname(target_source) : "Name" : "" : "Name of this entity that others entities can refer to"
+]
+
+//@SolidClass base( Trigger ) = trigger_once
+//[
+//
+//]
+
+//@SolidClass base( Trigger ) = trigger_multiple
+//[
+//	delay(string) : "Delay before reset" : "0.5"
+//]
+
+//---------------------------------------
+// Weapon pickups
+//---------------------------------------
+
+@BaseClass color( 64 64 230 ) = Weapon
+[
+	ammo(integer) : "Ammo" : : "Ammo currently in magazine"
+]
+
+//@PointClass base( Weapon ) = weapon_pistol
+//[
+//	
+//]
+
+//---------------------------------------
+// Ammo pickups
+//---------------------------------------
+
+@BaseClass color( 50 50 180 ) = AmmoPickup
+[
+
+]
+
+//@PointClass base( AmmoPickup ) = ammo_pistol
+//[
+//
+//]
+
+//---------------------------------------
+// AI
+//---------------------------------------
+
+@BaseClass color( 210 80 80 ) size( -24 -24 0, 24 24 72 ) = AIBase
+[
+
+]
+
+// Characters are prefixed with char_
+// Characters can be anything that is alive and is more advanced than an animal/insect
+// Animals and insects typically have an animal_ prefix
+//@PointClass base( AIBase ) = char_mercenary
+//[
+//
+//]
+
+//---------------------------------------
+// AI nodes
+//---------------------------------------
+
+@BaseClass color( 255 220 0 ) size( -16 -16 -4, 16 16 4 ) = AINodeBase
+[
+	targetname(target_source) : "Name" : ""
+	target(target_destination) : "Link 1" : ""
+	target1(target_destination) : "Link 2" : ""
+	target2(target_destination) : "Link 3" : ""
+	target3(target_destination) : "Link 4" : ""
+]
+
+//@PointClass base( AINodeBase ) = ai_node_nav
+//[
+//]
+
+//---------------------------------------
+// Lights
+//---------------------------------------
+
+@BaseClass base( Name ) color( 255 220 90 ) size( -8 -8 -8, 8 8 8 ) = LightBase
+[
+	_light(color255) : "Light colour and strength" : "255 255 255 300" : "Red, green, blue, intensity"
+	_shadows(choices) : "Shadows" : 0 =
+	[
+		0 : "Disabled"
+		1 : "Enabled"
+	]
+]
+
+@PointClass base( LightBase ) = light : "Regular omni light"
+[
+	_pointsize(string) : "Light size"
+]
+
+@PointClass base( LightBase ) = light_environment : "Sun light"
+[]
+
+//---------------------------------------
+// Misc
+//---------------------------------------
+
+// Might as well be used for static models. I'm too lazy to write a func_static lol
+//@PointClass model( model ) = test_model
+//[
+//	model(string) : "Model" : "models/testmodel.iqm"
+//]
+
+//@PointClass model( model ) = misc_model : "Model that gets baked into the BSP. Can do MD3, ASE, 3DS, OBJ, FM, MD2, MDC, MS3D"
+//[
+//	model(string) : "Model"
+//	angles(string) : "Pitch yaw roll" : "0 0 0"
+//	modelscale(string) : "Model scale (uniform)"
+//	modelscale_vec(string) : "Model scale (vector)" : "" : "You can scale the model along each axis"
+//
+//	_lightmapscale(string) : "Lightmap scale" : ""
+//	_clipdepth(string) : "Autoclip thickness" : "2" : "Autoclip brushes thickness"
+//
+//	spawnflags(flags) =
+//	[
+//		2 : "Clip model" : 0
+//		4 : "Force meta" : 0
+//		8 : "Extrude along face normals" : 0
+//		16 : "Extrude along world planes" : 0
+//		32 : "Color to alpha (for terrain blending)" : 0
+//		64 : "No smooth" : 0
+//		128 : "Extrude along vertex normals" : 0
+//		256 : "Pyramidal clipping" : 0
+//		512 : "Extrude downwards" : 0
+//		1024 : "Extrude upwards" : 0
+//		2048 : "Extrude to the max" : 0
+//		4096 : "Use axial backplane" : 0
+//	]
+//]
