@@ -12,7 +12,7 @@
 # Elegy documentation
 Elegy*.xml
 Veldrid.xml
-
+fennecs.xml
 
 # Generated shaders
 */shaders/bin/
