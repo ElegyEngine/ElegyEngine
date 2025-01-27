@@ -1,6 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using System.Reflection;
 using Elegy.Common.Assets;
 using Elegy.Common.Interfaces;
 using Elegy.ConsoleSystem;
@@ -57,6 +58,69 @@ namespace Elegy.Framework
 		/// </summary>
 		public static DateTime StartupTime { get; private set; }
 
+		private static void SetupWorkingDirectory( string engineFolder )
+		{
+			bool VerifyDirectory( string path )
+			{
+				foreach ( var fullDirectory in Directory.GetDirectories( path ) )
+				{
+					string directory = Path.GetRelativePath( path, fullDirectory );
+
+					// If there's an 'engine' folder in there, then it's a safe guarantee
+					if ( directory == engineFolder )
+					{
+						return true;
+					}
+
+					// TODO: recognise applicationConfig.json and others
+				}
+
+				return false;
+			}
+
+			bool ScanUpward( string path )
+			{
+				// Situation when this works:
+				// testgame/Elegy.Launcher2.exe
+				// testgame/engine/
+				if ( VerifyDirectory( path ) )
+				{
+					Directory.SetCurrentDirectory( path );
+					return true;
+				}
+
+				// In case this didn't work out, we try moving up to 2 levels up
+				// testgame/bin/Elegy.Launcher2.exe
+				// testgame/engine/
+				// But also:
+				// testgame/game/bin/Elegy.Launcher2.exe
+				// testgame/engine/
+				for ( int i = 0; i < 2; i++ )
+				{
+					path = Path.Combine( path, ".." );
+
+					if ( VerifyDirectory( path ) )
+					{
+						Directory.SetCurrentDirectory( path );
+						return true;
+					}
+				}
+
+				return false;
+			}
+
+			if ( ScanUpward( Directory.GetCurrentDirectory() ) )
+			{
+				return;
+			}
+
+			// If moving up the working dir fails, then we
+			// can only really look from the DLL's location
+			Assembly currentAssembly = typeof( EngineSystem ).GetTypeInfo().Assembly;
+			string currentAssemblyDirectory = Directory.GetParent( currentAssembly.Location ).FullName;
+			ScanUpward( currentAssemblyDirectory );
+		}
+
 		/// <summary>
 		/// Initialises the engine's systems.
 		/// </summary>
@@ -76,6 +140,8 @@ namespace Elegy.Framework
 			{
 				return Shutdown( "Configuration failure" );
 			}
+
+			SetupWorkingDirectory( config.Engine.EngineFolder );
 
 			// Some apps will use all available engine subsystems,
 			// others might only need a couple, so prepare them right here.
