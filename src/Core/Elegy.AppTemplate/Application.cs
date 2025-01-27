@@ -11,10 +11,8 @@ using Elegy.PluginSystem.API;
 using Elegy.RenderBackend.Extensions;
 using Elegy.RenderSystem.API;
 using Elegy.RenderSystem.Objects;
-
 using Silk.NET.Windowing;
 using System.Diagnostics;
-
 using ElegyConsole = Elegy.ConsoleSystem.API.Console;
 
 namespace Elegy.AppTemplate
@@ -104,10 +102,7 @@ namespace Elegy.AppTemplate
 				}
 			};
 
-			window.Closing += () =>
-			{
-				EngineSystem.Shutdown();
-			};
+			window.Closing += () => { EngineSystem.Shutdown(); };
 
 			window.Run();
 		}
@@ -171,12 +166,12 @@ namespace Elegy.AppTemplate
 			Stopwatch startupTimer = Stopwatch.StartNew();
 
 			while ( !EngineSystem.Init( config,
-				// These four get filled in by Elegy.Framework.Generator,
-				// don't worry about them erroring out! It's a bit like magic
-				systemInitFunc: Init_Generated,
-				systemPostInitFunc: PostInit_Generated,
-				systemShutdownFunc: Shutdown_Generated,
-				systemErrorFunc: ErrorMessage_Generated ) )
+					   // These four get filled in by Elegy.Framework.Generator,
+					   // don't worry about them erroring out! It's a bit like magic
+					   systemInitFunc: Init_Generated,
+					   systemPostInitFunc: PostInit_Generated,
+					   systemShutdownFunc: Shutdown_Generated,
+					   systemErrorFunc: ErrorMessage_Generated ) )
 			{
 				if ( EngineSystem.ShutdownReason is null )
 				{
