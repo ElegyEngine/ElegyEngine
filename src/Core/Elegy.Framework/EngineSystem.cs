@@ -18,10 +18,12 @@ namespace Elegy.Framework
 		/// Elegy Engine major version, used for version checking against plugins.
 		/// </summary>
 		public const int MajorVersion = 0;
+
 		/// <summary>
 		/// Elegy Engine minor version, used for version checking against plugins.
 		/// </summary>
 		public const int MinorVersion = 1;
+
 		/// <summary>
 		/// Plugins built before this minor version will not work.
 		/// </summary>
@@ -29,8 +31,8 @@ namespace Elegy.Framework
 
 		private static TaggedLogger mLogger = new( "Engine" );
 
-		private static Action? mSystemShutdownFunc = null;
-		private static bool mHasShutdown = false;
+		private static Action? mSystemShutdownFunc;
+		private static bool mHasShutdown;
 		private static LaunchConfig mLaunchConfig;
 
 		private static EngineConfig EngineConfig => mLaunchConfig.Engine;
@@ -43,7 +45,7 @@ namespace Elegy.Framework
 		/// <summary>
 		/// The reason of shutdown. Might be an error.
 		/// </summary>
-		public static string? ShutdownReason { get; private set; } = null;
+		public static string? ShutdownReason { get; private set; }
 
 		/// <summary>
 		/// Is the engine running?
@@ -58,7 +60,8 @@ namespace Elegy.Framework
 		/// <summary>
 		/// Initialises the engine's systems.
 		/// </summary>
-		public static bool Init( LaunchConfig config,
+		public static bool Init(
+			LaunchConfig config,
 			Func<LaunchConfig, bool> systemInitFunc,
 			Func<bool> systemPostInitFunc,
 			Action systemShutdownFunc,
