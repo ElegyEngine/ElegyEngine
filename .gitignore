@@ -35,3 +35,6 @@ src/**/Properties/
 
 # Exception for testgame's bin folder, has a readme
 !testgame/bin
+
+# Rider files
+.idea
