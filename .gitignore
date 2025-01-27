@@ -32,3 +32,6 @@ _ReSharper*/
 packages/
 #Publishing profiles etc.
 src/**/Properties/
+
+# Exception for testgame's bin folder, has a readme
+!testgame/bin
