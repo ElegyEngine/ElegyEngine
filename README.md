@@ -11,7 +11,7 @@ Check out [Elegy.Game](src/Plugins/Elegy.Game) for an example game module, as we
 * [Elegy.MaterialGenerator](src/Tools/Elegy.MaterialGenerator) - quickly generate materials from a folder full of texture images
 * [Elegy.ShaderTool](src/Tools/Elegy.ShaderTool) - generate shaders & shader templates from GLSL
 
-For level designers who use TrenchBroom, a [game config](config) is provided. Other level editors are likely unsupported but could work depending on how well they do Quake 3.
+For level designers who use TrenchBroom, a [game config](config) is provided. Other level editors (J.A.C.K., gtkRadiant, NetRadiant-custom...) are likely unsupported but could work depending on how well they do Quake 3.
 
 # Building
 
