@@ -22,11 +22,17 @@ if ( !$release )
 	Write-Output "If you'd like to use the Release configuration, use the -release flag"
 }
 
+## Copy the launcher executable, engine DLL and its dependencies
+Copy-Item "$input_dir/src/Launchers/Elegy.Launcher2/bin/$build_config/net8.0/*.dll" 						-Destination "$output_dir/bin" -Recurse -Force
+Copy-Item "$input_dir/src/Launchers/Elegy.Launcher2/bin/$build_config/net8.0/*.json" 						-Destination "$output_dir/bin" -Recurse -Force
+Copy-Item "$input_dir/src/Launchers/Elegy.Launcher2/bin/$build_config/net8.0/*.exe" 						-Destination "$output_dir/bin" -Recurse -Force
+if ( !$release )
+{
+	Copy-Item "$input_dir/src/Launchers/Elegy.Launcher2/bin/$build_config/net8.0/*.pdb" 					-Destination "$output_dir/bin" -Recurse -Force
+}
+
 if ( $plugin = "none" )
 {
-	## Copy the launcher executable, engine DLL and its dependencies
-	Copy-Item "$input_dir/src/Launchers/Elegy.Launcher2/bin/$build_config/net8.0/*" 						-Destination "$output_dir" -Recurse -Force
-	
 	## Copy the plugin DLLs without their dependencies
 	Copy-Item "$input_dir/src/Plugins/Elegy.DevConsole/bin/$build_config/net8.0/Elegy.DevConsole.*"			-Destination "$output_dir/engine/plugins/DevConsole"
 	Copy-Item "$input_dir/src/Plugins/Elegy.Game/bin/$build_config/net8.0/Game.*"							-Destination "$output_dir/game/plugins/Game"

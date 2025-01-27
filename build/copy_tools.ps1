@@ -7,7 +7,7 @@ Write-Host "========= COPYING TOOLS ========="
 
 ## Put your own paths here
 $input_dir = "$PSScriptRoot/.."
-$output_dir = "$input_dir/testgame"
+$output_dir = "$input_dir/testgame/bin"
 
 $build_config = "Debug"
 if ( $release )
