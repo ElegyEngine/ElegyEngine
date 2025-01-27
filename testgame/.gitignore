@@ -17,3 +17,6 @@ fennecs.xml
 # Generated shaders
 */shaders/bin/
 */shaders/generated/
+
+# Map compiling temporaries
+*-compile.map
