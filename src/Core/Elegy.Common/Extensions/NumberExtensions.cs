@@ -25,5 +25,11 @@ namespace Elegy.Common.Extensions
 		/// <summary> Returns this degree angle in radians. </summary>
 		public static double ToRadians( this double x )
 			=> x * Coords.Deg2RadD;
+
+		/// <summary>
+		/// Acts like a switch for a flag, backed by a boolean.
+		/// </summary>
+		public static T Filter<T>( this T e, bool x ) where T : Enum
+			=> x ? e : default!;
 	}
 }
