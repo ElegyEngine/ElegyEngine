@@ -3,6 +3,8 @@
 
 using Elegy.Common.Interfaces;
 
+// TODO: Make this a record
+
 namespace Elegy.Common.Assets
 {
 	/// <summary></summary>

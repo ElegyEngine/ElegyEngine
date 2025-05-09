@@ -1,6 +1,8 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+// TODO: Make this a record struct
+
 namespace Elegy.Common.Assets
 {
 	/// <summary></summary>
@@ -26,5 +28,25 @@ namespace Elegy.Common.Assets
 			//"plugins/AudioStandard",
 			"plugins/DevConsole"
 		];
+
+		/// <summary>
+		/// Game with moddable game directory support.
+		/// </summary>
+		public static EngineConfig Game( string gameFolder, params string[] enginePlugins )
+			=> new()
+			{
+				BaseFolder = gameFolder,
+				EnginePlugins = enginePlugins
+			};
+
+		/// <summary>
+		/// Suitable for applications that don't need moddable game directories.
+		/// </summary>
+		public static EngineConfig App( params string[] enginePlugins )
+			=> new()
+			{
+				BaseFolder = "./",
+				EnginePlugins = enginePlugins
+			};
 	}
 }
