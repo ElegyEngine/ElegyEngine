@@ -277,12 +277,11 @@ namespace Elegy.RenderSystem.Resources
 				return false;
 			}
 
-			var texture = GetParameter( id ).Texture;
-			return GetParameter( id ).Texture.Type switch
+			return GetParameter( id ).Texture?.Type switch
 			{
-				TextureType.Texture1D => height == 0 && depth == 0,
-				TextureType.Texture2D => height > 0 && depth == 0,
-				TextureType.Texture3D => height > 0 && depth > 0,
+				TextureType.Texture1D => height == 0 && depth == 1,
+				TextureType.Texture2D => height > 0 && depth == 1,
+				TextureType.Texture3D => height > 0 && depth > 1,
 				_ => false
 			};
 		}

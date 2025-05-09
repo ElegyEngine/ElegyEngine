@@ -27,10 +27,10 @@ namespace Elegy.Common.Assets
 		public uint Width { get; init; }
 
 		/// <summary> Height in pixels. </summary>
-		public uint Height { get; init; }
+		public uint Height { get; init; } = 1;
 
 		/// <summary> Depth in pixels. </summary>
-		public uint Depth { get; init; }
+		public uint Depth { get; init; } = 1;
 
 		/// <summary> Components per pixel (RGB, grayscale, RGBA...) </summary>
 		public uint Components { get; init; } = 4;
@@ -39,7 +39,7 @@ namespace Elegy.Common.Assets
 		public uint BytesPerPixel { get; init; } = 1;
 
 		/// <summary> Is this a floating-point texture? </summary>
-		public bool Float { get; init; } = false;
+		public bool Float { get; init; }
 
 		/// <summary> Type of texture compression, if any. </summary>
 		public TextureCompression Compression { get; init; } = TextureCompression.None;
@@ -57,10 +57,10 @@ namespace Elegy.Common.Assets
 		public bool Srgb { get; init; } = true;
 
 		/// <summary> Is this a 1D texture? </summary>
-		public bool Is1D => Height == 0 && Depth == 0;
+		public bool Is1D => Height == 1 && Depth == 1;
 
 		/// <summary> Is this a 2D texture? </summary>
-		public bool Is2D => Depth == 0;
+		public bool Is2D => Depth == 1;
 		
 		/// <summary> Is this a 3D texture? </summary>
 		public bool Is3D => !Is1D && !Is2D;

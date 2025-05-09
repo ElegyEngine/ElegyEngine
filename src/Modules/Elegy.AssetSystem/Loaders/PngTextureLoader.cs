@@ -40,7 +40,7 @@ namespace Elegy.AssetSystem.Loaders
 				{
 					Width = (uint)info.Value.Width,
 					Height = (uint)info.Value.Height,
-					Depth = 0, // Is always a 2D texture
+					Depth = 1, // Is always a 2D texture
 					BytesPerPixel = (uint)info.Value.BitsPerChannel / 8,
 					Components = info.Value.ColorComponents switch
 					{

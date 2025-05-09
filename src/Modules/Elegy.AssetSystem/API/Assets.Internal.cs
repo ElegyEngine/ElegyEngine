@@ -120,7 +120,7 @@ namespace Elegy.AssetSystem.API
 				{
 					Width = 32,
 					Height = 32,
-					Depth = 0,
+					Depth = 1,
 					Components = 4,
 					BytesPerPixel = 1,
 					Srgb = false

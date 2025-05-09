@@ -22,23 +22,25 @@ namespace Elegy.RenderSystem.Resources
 
 		private GraphicsDevice mDevice;
 		public MaterialParameterLevel ParameterLevel { get; private set; }
-		public List<MaterialParameter> Parameters { get; private set; } = new();
+		public List<MaterialParameter> Parameters { get; private set; }
 
 		public ResourceLayout ResourceLayout { get; private set; }
-		public ResourceSet ResourceSet { get; private set; }
+		public ResourceSet? ResourceSet { get; private set; }
 
 		/// <summary>
 		/// Regenerates the resource set.
 		/// </summary>
 		public void RegenerateSet()
 		{
+			ResourceSet?.Dispose();
 			ResourceSet = Utils.GenerateResourceSet( mDevice, ResourceLayout, Parameters );
 		}
 
 		/// <inheritdoc/>
 		public void Dispose()
 		{
-			ResourceSet.Dispose();
+			ResourceSet?.Dispose();
+			ResourceSet = null;
 		}
 	}
 }

@@ -48,7 +48,7 @@ namespace Elegy.RenderSystem.API
 				// in shaderVariantSets, we can safely just use i directly here
 				commands.SetGraphicsResourceSet(
 					(uint)setId,
-					parameterSets[i].ResourceSet );
+					parameterSets[i].ResourceSet! );
 			}
 		}
 

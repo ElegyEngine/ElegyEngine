@@ -25,6 +25,6 @@ namespace Elegy.AssetSystem.Resources
 		public MaterialDefinition Data { get; }
 
 		/// <summary></summary>
-		public IMaterial? RenderMaterial { get; init; } = null;
+		public IMaterial? RenderMaterial { get; init; }
 	}
 }
