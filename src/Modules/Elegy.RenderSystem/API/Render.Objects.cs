@@ -92,7 +92,7 @@ namespace Elegy.RenderSystem.API
 
 		/// <summary>Creates a render texture.</summary>
 		public static RenderTexture CreateTexture( TextureMetadata metadata, Span<byte> data )
-			=> mTextureSet.AddAndGet( new( mDevice, metadata, data ) );
+			=> mTextureSet.AddAndGet( new( mDevice, metadata, data ) ); // TODO: make texture data optional, generate empty if null
 
 		/// <summary>Frees a render texture.</summary>
 		public static bool FreeTexture( ref RenderTexture? texture )

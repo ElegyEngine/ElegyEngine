@@ -3,6 +3,7 @@
 
 using Elegy.AssetSystem.Interfaces.Rendering;
 using Elegy.Common.Assets;
+using Elegy.Common.Extensions;
 using Veldrid;
 
 namespace Elegy.RenderSystem.Resources
@@ -75,7 +76,18 @@ namespace Elegy.RenderSystem.Resources
 						false => TextureType.Texture3D
 					}
 				},
-				Usage = TextureUsage.Sampled
+
+				Usage = data switch
+				{
+					// A texture needs to do at least something, it can't have no usage flags.
+					{ NoSampling: true, CpuAccess: false, ShaderWrite: false } => throw new ArgumentException(
+						"Tried to create a texture that cannot be sampled nor read/written by anything."
+					),
+
+					_ => TextureUsage.Sampled.Filter( !data.NoSampling )
+						 | TextureUsage.Staging.Filter( data.CpuAccess )
+						 | TextureUsage.Storage.Filter( data.ShaderWrite )
+				}	
 			} );
 
 			UpdatePixels( bytes );
@@ -95,6 +107,11 @@ namespace Elegy.RenderSystem.Resources
 		public void UpdatePixels( Span<byte> newPixels )
 		{
 			mDevice.UpdateTexture( DeviceTexture, newPixels, 0, 0, 0, DeviceTexture.Width, DeviceTexture.Height, DeviceTexture.Depth, 0, 0 );
+		}
+
+		public void BlitTo( CommandList commands, RenderTexture other )
+		{
+			commands.CopyTexture( DeviceTexture, other.DeviceTexture );
 		}
 
 		public void Dispose()

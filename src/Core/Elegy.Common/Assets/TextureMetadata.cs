@@ -43,6 +43,15 @@ namespace Elegy.Common.Assets
 
 		/// <summary> Type of texture compression, if any. </summary>
 		public TextureCompression Compression { get; init; } = TextureCompression.None;
+		
+		/// <summary> Whether it can be read from/written to by the CPU. </summary>
+		public bool CpuAccess { get; init; }
+		
+		/// <summary> Whether it can be written to by the shader. </summary>
+		public bool ShaderWrite { get; init; }
+		
+		/// <summary> Whether this doesn't need sampling. </summary>
+		public bool NoSampling { get; init; }
 
 		/// <summary> Is this an SRGB texture? </summary>
 		public bool Srgb { get; init; } = true;
