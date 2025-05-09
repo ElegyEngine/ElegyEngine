@@ -34,7 +34,7 @@ namespace Elegy.RenderBackend.Extensions
 			return factory.CreateBuffer( desc );
 		}
 
-		public static Shader LoadShaderDirect( this ResourceFactory factory, string path, ShaderStages stage )
+		public static Shader LoadShaderDirect( this ResourceFactory factory, string path, ShaderStages stage, bool debug = false )
 		{
 			string stageInfix = stage switch
 			{
@@ -47,8 +47,9 @@ namespace Elegy.RenderBackend.Extensions
 			{
 				EntryPoint = $"main_{stageInfix}",
 				ShaderBytes = Utils.LoadShaderBytes( $"{path}.{stageInfix}.spv" ),
-				Stage = stage
-			} ); ;
+				Stage = stage,
+				Debug = debug
+			} );
 		}
 
 		public static Pipeline CreatePipeline( this ResourceFactory factory, MaterialTemplate materialTemplate, ShaderVariantEntry shaderTemplateEntry,
