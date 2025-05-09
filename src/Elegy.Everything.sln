@@ -93,6 +93,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XrResearch", "scratchpad\Xr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OvrResearch", "scratchpad\OvrResearch\OvrResearch.csproj", "{716D4EB6-CB7D-4BBB-9D7D-3F42D5D26CA8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BufferMapping", "scratchpad\BufferMapping\BufferMapping.csproj", "{A8D67CEB-CD9C-4E3C-B0D6-1E1B514B4AF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
