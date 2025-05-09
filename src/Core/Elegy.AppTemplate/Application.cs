@@ -13,6 +13,7 @@ using Elegy.RenderSystem.API;
 using Elegy.RenderSystem.Objects;
 using Silk.NET.Windowing;
 using System.Diagnostics;
+using Elegy.Common.Interfaces;
 using ElegyConsole = Elegy.ConsoleSystem.API.Console;
 
 namespace Elegy.AppTemplate
@@ -27,7 +28,7 @@ namespace Elegy.AppTemplate
 	[WithRenderSystem]
 	public static partial class Application
 	{
-		private static View? mRenderView = null;
+		private static View? mRenderView;
 		private static TaggedLogger mLogger = new( "App" );
 		private static Stopwatch mStopwatch = new();
 		public static double GetSeconds() => (double)mStopwatch.ElapsedTicks / Stopwatch.Frequency;
@@ -84,7 +85,9 @@ namespace Elegy.AppTemplate
 			View? renderView = Render.GetView( window );
 			Debug.Assert( renderView is not null );
 
-			window.Update += ( deltaTime ) =>
+			// TODO: isolate the update loop into its own thing,
+			// but keep rendering to the window's render loop
+			window.Update += deltaTime =>
 			{
 				Update( deltaTime );
 
@@ -94,7 +97,7 @@ namespace Elegy.AppTemplate
 				}
 			};
 
-			window.Render += ( deltaTime ) =>
+			window.Render += _ =>
 			{
 				if ( window.CanSwap() )
 				{
@@ -161,7 +164,7 @@ namespace Elegy.AppTemplate
 		/// <summary>
 		/// Bootstraps all subsystems and starts the engine. Does not start the main loop.
 		/// </summary>
-		public static bool Init( LaunchConfig config, IWindowPlatform? windowPlatform )
+		public static bool Init( LaunchConfig config, IWindowPlatform? windowPlatform, IApplication? initialApp = null )
 		{
 			Stopwatch startupTimer = Stopwatch.StartNew();
 
@@ -201,6 +204,11 @@ namespace Elegy.AppTemplate
 				return false;
 			}
 
+			if ( initialApp is not null )
+			{
+				Plugins.RegisterPlugin( initialApp );
+			}
+			
 			if ( !Plugins.StartApps() )
 			{
 				mLogger.Error( "Failed to start app(s)" );
@@ -209,7 +217,6 @@ namespace Elegy.AppTemplate
 			}
 
 			mLogger.Success( $"Startup time: {(double)startupTimer.ElapsedTicks / Stopwatch.Frequency:F}s elapsed" );
-
 			return true;
 		}
 
@@ -219,6 +226,22 @@ namespace Elegy.AppTemplate
 		public static void Start( LaunchConfig config, IWindowPlatform windowPlatform )
 		{
 			if ( !Init( config, windowPlatform ) )
+			{
+				return;
+			}
+
+			Run();
+		}
+
+		/// <summary>
+		/// Bootstraps all subsystems and starts the engine. Also handles the main loop.
+		/// </summary>
+		public static void Start<T>( LaunchConfig config, IWindowPlatform windowPlatform )
+			where T : IApplication, new()
+		{
+			config.ToolMode = true;
+
+			if ( !Init( config, windowPlatform, new T() ) )
 			{
 				return;
 			}
