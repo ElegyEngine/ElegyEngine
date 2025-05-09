@@ -15,13 +15,13 @@ namespace Elegy.Common.Interfaces
 		/// Start up game/app systems after all plugins and systems have loaded.
 		/// </summary>
 		/// <returns></returns>
-		bool Start();
+		bool Start() => true;
 
 		/// <summary>
 		/// Execute a single game frame.
 		/// </summary>
 		/// <param name="delta"></param>
 		/// <returns></returns>
-		bool RunFrame( float delta );
+		bool RunFrame( float delta ) => false;
 	}
 }

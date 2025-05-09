@@ -11,12 +11,12 @@ namespace Elegy.Common.Interfaces
 		/// <summary>
 		/// Called when the plugin is being initialised.
 		/// </summary>
-		bool Init();
+		bool Init() => true;
 
 		/// <summary>
 		/// Called when the engine and plugins are shutting down.
 		/// </summary>
-		void Shutdown();
+		void Shutdown() {}
 
 		/// <summary>
 		/// The name of this plugin.
@@ -26,7 +26,7 @@ namespace Elegy.Common.Interfaces
 		/// <summary>
 		/// If <see cref="Init"/> returned <c>false</c>, the error message.
 		/// </summary>
-		string Error { get; }
+		string Error => string.Empty;
 
 		/// <summary>
 		/// Set by <see cref="Init"/> once initialisation succeeds.
