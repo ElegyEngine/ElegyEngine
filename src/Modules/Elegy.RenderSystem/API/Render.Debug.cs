@@ -71,7 +71,7 @@ namespace Elegy.RenderSystem.API
 			mDebugLineMesh = CreateMesh( mDebugLinesWorldModel );
 		}
 
-		private static void RebuildDebugMeshes()
+		private static void RebuildDebugMeshes( CommandList cmd )
 		{
 			var mesh = mDebugLinesWorldModel.Meshes[0];
 
@@ -132,7 +132,7 @@ namespace Elegy.RenderSystem.API
 			mDebugLinesWorldActive = lineIndex is not 0;
 			if ( mDebugLinesWorldActive )
 			{
-				DebugLineMesh.UpdateDynamic( mesh, lineIndex * 4, lineIndex * 6 );
+				DebugLineMesh.UpdateDynamic( mesh, lineIndex * 4, lineIndex * 6, cmd );
 			}
 		}
 

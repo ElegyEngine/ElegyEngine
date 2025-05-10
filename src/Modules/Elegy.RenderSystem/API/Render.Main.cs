@@ -74,10 +74,10 @@ namespace Elegy.RenderSystem.API
 		/// </summary>
 		public static void UpdateBuffers()
 		{
-			// TODO: rework how dynamic mesh building works, so it can use commands instead of the device
-			RebuildDebugMeshes();
-
 			mRenderCommands.Begin();
+
+			RebuildDebugMeshes( mRenderCommands );
+
 			foreach ( var meshEntity in mEntitySet )
 			{
 				meshEntity.UpdateBuffers( mRenderCommands );

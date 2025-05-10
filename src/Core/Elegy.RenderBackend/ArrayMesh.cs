@@ -18,25 +18,25 @@ namespace Elegy.RenderBackend
 	/// </summary>
 	public class ArrayMesh : IDisposable
 	{
-		private Vector2SB ConvertVec2ToVec2SB( Vector2 input )
+		private static Vector2SB ConvertVec2ToVec2SB( Vector2 input )
 		{
 			input *= 127.0f;
 			return new Vector2SB( (sbyte)input.X, (sbyte)input.Y );
 		}
 
-		private Vector4SB ConvertVec3ToVec4SB( Vector3 input )
+		private static Vector4SB ConvertVec3ToVec4SB( Vector3 input )
 		{
 			input *= 127.0f;
 			return new Vector4SB( (sbyte)input.X, (sbyte)input.Y, (sbyte)input.Z, sbyte.MaxValue );
 		}
 
-		private Vector4SB ConvertVec4ToVec4SB( Vector4 input )
+		private static Vector4SB ConvertVec4ToVec4SB( Vector4 input )
 		{
 			input *= 127.0f;
 			return new Vector4SB( (sbyte)input.X, (sbyte)input.Y, (sbyte)input.Z, (sbyte)input.W );
 		}
 
-		private void LoadOrUpdateChannel<T>( ref DeviceBuffer? buffer, T[] source, int numVertices = -1 )
+		private void LoadOrUpdateChannel<T>( ref DeviceBuffer? buffer, T[] source, int numVertices = -1, CommandList? commandList = null )
 			where T : unmanaged
 		{
 			if ( source.Length == 0 )
@@ -50,12 +50,19 @@ namespace Elegy.RenderBackend
 				return;
 			}
 
-			mDevice.UpdateBufferFromSpan<T>( buffer, source, numVertices );
+			if ( commandList is null )
+			{
+				mDevice.UpdateBufferFromSpan<T>( buffer, source, numVertices );
+			}
+			else
+			{
+				commandList.UpdateBufferFromSpan<T>( buffer, source, numVertices );
+			}
 		}
 
 		private void LoadOrUpdateChannelTransformed<TSource, TDestination>(
 			ref DeviceBuffer? buffer, TSource[] source, ref TDestination[] destination, Func<TSource, TDestination> transform,
-			int numVertices = -1 )
+			int numVertices = -1, CommandList? commandList = null )
 			where TSource : unmanaged
 			where TDestination : unmanaged
 		{
@@ -70,10 +77,10 @@ namespace Elegy.RenderBackend
 			}
 
 			Mesh.Transform( source, destination, transform );
-			LoadOrUpdateChannel( ref buffer, destination, numVertices );
+			LoadOrUpdateChannel( ref buffer, destination, numVertices, commandList );
 		}
 
-		private void LoadOrUpdateIndices( ref DeviceBuffer? buffer, uint[] source, int numIndices = -1 )
+		private void LoadOrUpdateIndices( ref DeviceBuffer? buffer, uint[] source, int numIndices = -1, CommandList? commandList = null )
 		{
 			if ( source.Length == 0 )
 			{
@@ -86,7 +93,14 @@ namespace Elegy.RenderBackend
 				return;
 			}
 
-			mDevice.UpdateBufferFromSpan<uint>( buffer, source, numIndices );
+			if ( commandList is null )
+			{
+				mDevice.UpdateBufferFromSpan<uint>( buffer, source, numIndices );
+			}
+			else
+			{
+				commandList.UpdateBufferFromSpan<uint>( buffer, source, numIndices );
+			}
 		}
 
 		private Vector4SB[] mTransformedNormals = [];
@@ -111,40 +125,40 @@ namespace Elegy.RenderBackend
 			Update( meshData, mMaxDynamicVertices, mMaxDynamicIndices );
 		}
 
-		private void Update( Mesh data, int numVertices, int numIndices )
+		private void Update( Mesh data, int numVertices, int numIndices, CommandList? commandList = null )
 		{
 			if ( data.Positions.Length > 0 )
 			{
-				LoadOrUpdateChannel( ref PositionBuffer, data.Positions, numVertices );
-				LoadOrUpdateChannelTransformed( ref NormalBuffer, data.Normals, ref mTransformedNormals, ConvertVec3ToVec4SB, numVertices );
+				LoadOrUpdateChannel( ref PositionBuffer, data.Positions, numVertices, commandList );
+				LoadOrUpdateChannelTransformed( ref NormalBuffer, data.Normals, ref mTransformedNormals, ConvertVec3ToVec4SB, numVertices, commandList );
 			}
 			else
 			{
-				LoadOrUpdateChannel( ref PositionBuffer, data.Positions2D, numVertices );
-				LoadOrUpdateChannelTransformed( ref NormalBuffer, data.Normals2D, ref mTransformedNormals2D, ConvertVec2ToVec2SB, numVertices );
+				LoadOrUpdateChannel( ref PositionBuffer, data.Positions2D, numVertices, commandList );
+				LoadOrUpdateChannelTransformed( ref NormalBuffer, data.Normals2D, ref mTransformedNormals2D, ConvertVec2ToVec2SB, numVertices, commandList );
 			}
 
-			LoadOrUpdateIndices( ref IndexBuffer, data.Indices, numIndices );
+			LoadOrUpdateIndices( ref IndexBuffer, data.Indices, numIndices, commandList );
 
-			LoadOrUpdateChannelTransformed( ref TangentBuffer, data.Tangents, ref mTransformedTangents, ConvertVec4ToVec4SB, numVertices );
+			LoadOrUpdateChannelTransformed( ref TangentBuffer, data.Tangents, ref mTransformedTangents, ConvertVec4ToVec4SB, numVertices, commandList );
 
-			LoadOrUpdateChannel( ref Uv0Buffer, data.Uv0, numVertices );
-			LoadOrUpdateChannel( ref Uv1Buffer, data.Uv1, numVertices );
-			LoadOrUpdateChannel( ref Uv2Buffer, data.Uv2, numVertices );
-			LoadOrUpdateChannel( ref Uv3Buffer, data.Uv3, numVertices );
+			LoadOrUpdateChannel( ref Uv0Buffer, data.Uv0, numVertices, commandList );
+			LoadOrUpdateChannel( ref Uv1Buffer, data.Uv1, numVertices, commandList );
+			LoadOrUpdateChannel( ref Uv2Buffer, data.Uv2, numVertices, commandList );
+			LoadOrUpdateChannel( ref Uv3Buffer, data.Uv3, numVertices, commandList );
 
-			LoadOrUpdateChannel( ref Color0Buffer, data.Color0, numVertices );
-			LoadOrUpdateChannel( ref Color1Buffer, data.Color1, numVertices );
-			LoadOrUpdateChannel( ref Color2Buffer, data.Color2, numVertices );
-			LoadOrUpdateChannel( ref Color3Buffer, data.Color3, numVertices );
+			LoadOrUpdateChannel( ref Color0Buffer, data.Color0, numVertices, commandList );
+			LoadOrUpdateChannel( ref Color1Buffer, data.Color1, numVertices, commandList );
+			LoadOrUpdateChannel( ref Color2Buffer, data.Color2, numVertices, commandList );
+			LoadOrUpdateChannel( ref Color3Buffer, data.Color3, numVertices, commandList );
 
-			LoadOrUpdateChannel( ref BoneIndexBuffer, data.BoneIndices, numVertices );
+			LoadOrUpdateChannel( ref BoneIndexBuffer, data.BoneIndices, numVertices, commandList );
 			// TODO: use Vector4B for bone weights
-			LoadOrUpdateChannelTransformed( ref BoneWeightBuffer, data.BoneWeights, ref mTransformedWeights, ConvertVec4ToVec4SB, numVertices );
+			LoadOrUpdateChannelTransformed( ref BoneWeightBuffer, data.BoneWeights, ref mTransformedWeights, ConvertVec4ToVec4SB, numVertices, commandList );
 		}
 
 		/// <summary> Updates the GPU buffers with the new mesh data. </summary>
-		public void UpdateDynamic( Mesh data, int numVertices, int numIndices )
+		public void UpdateDynamic( Mesh data, int numVertices, int numIndices, CommandList? commandList = null )
 		{
 			Debug.Assert( IsDynamic );
 
@@ -155,7 +169,7 @@ namespace Elegy.RenderBackend
 
 			DynamicVertices = numVertices;
 			NumIndices = (uint)numIndices;
-			Update( data, numVertices, numIndices );
+			Update( data, numVertices, numIndices, commandList );
 		}
 
 		/// <summary> Obtains a GPU buffer from the given vertex semantic and optionally channel. </summary>
