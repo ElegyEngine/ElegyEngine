@@ -39,8 +39,9 @@ namespace Game.Shared
 			{
 				PhysicsWorld.Simulation.Awakener.AwakenBody( Body.BodyHandle );
 			}
-			
-			motion.Velocity.Linear += mDirection;
+
+			// Quick hacky little approximation until we get a proper character controller
+			motion.Velocity.Linear += mDirection / (motion.Velocity.Linear.LengthSquared() + 0.25f);
 		}
 
 		public PlayerControllerState GenerateControllerState()
