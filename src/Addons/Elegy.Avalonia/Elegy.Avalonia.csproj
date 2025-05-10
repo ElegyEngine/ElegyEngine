@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.2.3"/>
+        <PackageReference Include="Avalonia.Skia" Version="11.2.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Modules\Elegy.InputSystem\Elegy.InputSystem.csproj" />
+      <ProjectReference Include="..\..\Modules\Elegy.PlatformSystem\Elegy.PlatformSystem.csproj" />
+      <ProjectReference Include="..\..\Modules\Elegy.RenderSystem\Elegy.RenderSystem.csproj" />
+    </ItemGroup>
+
+    <!--
+          Reference the Avalonia runtime assemblies (lib/) instead of the reference assemblies (ref/) from nuget packages.
+          The reference assemblies have patches to prevent using some platform interfaces we need :(
+          Read https://github.com/AvaloniaUI/Avalonia/pull/11062 for more information.
+      -->
+    <Target
+            Name="ElegyAvaloniaReferenceAvaloniaRuntimeAssemblies"
+            AfterTargets="ResolvePackageAssets"
+            BeforeTargets="ResolveLockFileReferences">
+
+        <ItemGroup>
+
+            <ResolvedCompileFileDefinitions
+                    Include="@(ResolvedCompileFileDefinitions->'%(Identity)'->Replace('/ref/', '/lib/')->Replace('\ref\', '\lib\'))"
+                    HintPath="$([System.String]::new('%(HintPath)').Replace('/ref/', '/lib/').Replace('\ref\', '\lib\'))"
+                    PathInPackage="lib/$([System.String]::new('%(PathInPackage)').Substring(4))"
+                    Condition="$([System.String]::new('%(PathInPackage)').StartsWith('ref/$(TargetFramework)/Avalonia'))"/>
+
+            <ResolvedCompileFileDefinitions
+                    Remove="@(ResolvedCompileFileDefinitions)"
+                    Condition="$([System.String]::new('%(PathInPackage)').StartsWith('ref/$(TargetFramework)/Avalonia'))"/>
+
+        </ItemGroup>
+
+    </Target>
+
+</Project>
