@@ -22,12 +22,12 @@ namespace Game.Shared.Physics
 		public static void Init()
 		{
 			mBufferPool = new( minimumBlockAllocationSize: 131072, expectedPooledResourceCount: 64 );
-			mThreadDispatcher = new( Environment.ProcessorCount );
+			mThreadDispatcher = new( Environment.ProcessorCount - 1 );
 
 			Simulation = Simulation.Create( mBufferPool,
 				new NarrowphaseCallbacks(),
 				new PoseIntegratorCallbacks( gravity: Coords.Down * 9.81f ),
-				new SolveDescription( 8, 1, 512 ) );
+				new SolveDescription( 8, 2, 128 ) );
 		}
 
 		public static void Shutdown()
