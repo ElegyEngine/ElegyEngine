@@ -111,7 +111,7 @@ namespace Elegy.RenderSystem.Objects
 
 			regenerateBuffers( false );
 
-			window.FramebufferResize += ( newSize ) =>
+			window.FramebufferResize += newSize =>
 			{
 				TargetSwapchain.Resize( (uint)newSize.X, (uint)newSize.Y );
 				regenerateBuffers( true );

@@ -233,6 +233,7 @@ namespace Elegy.Common.Assets
 		{
 			BrushMapDocument map = new();
 
+			// TODO: use the span-based lexer, will likely speed things up for larger maps
 			Lexer lex = new( File.ReadAllText( path ) );
 			while ( !lex.IsEnd() )
 			{
