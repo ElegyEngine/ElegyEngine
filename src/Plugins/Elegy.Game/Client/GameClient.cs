@@ -59,6 +59,10 @@ namespace Game.Client
 
 		public void Update( float delta )
 		{
+			mLogger.Log( $"Update: {delta * 1000.0f:F} ms" );
+			mLogger.Log( $"Draw CPU: {Render.CpuFrametime * 1000.0f:F} ms" );
+			mLogger.Log( $"Draw GPU: {Render.GpuFrametime * 1000.0f:F} ms" );
+			
 			Coords.DirectionsFromDegrees( mAngles, out var viewForward, out var viewUp );
 			Vector3 viewRight = viewForward.Cross( viewUp );
 

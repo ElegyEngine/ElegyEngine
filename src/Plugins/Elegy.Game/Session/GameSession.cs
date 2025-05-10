@@ -5,13 +5,17 @@ using Game.Client;
 using Game.Shared;
 using Game.Shared.Components;
 using System.Diagnostics;
+using BepuPhysics;
 using Elegy.Common.Maths;
+using Elegy.ConsoleSystem;
 using Elegy.RenderSystem.API;
 
 namespace Game.Session
 {
 	public partial class GameSession
 	{
+		private static TaggedLogger mLogger = new( "Session" );
+		
 		public GameClient Client { get; }
 
 		public ref Entity ClientEntity => ref EntityWorld.Entities[ClientEntityId];
@@ -26,6 +30,8 @@ namespace Game.Session
 
 			Client.RenderView.Projection = Coords.CreatePerspectiveMatrix( MathF.PI / 2.0f, 16.0f / 9.0f, 0.01f, 4096.0f );
 			Client.RenderView.Transform = Coords.CreateViewMatrix( Vector3.Zero, Coords.Forward, Coords.Up );
+
+			mStopwatch = Stopwatch.StartNew();
 		}
 
 		public void Shutdown()
@@ -33,6 +39,8 @@ namespace Game.Session
 		}
 
 		private float mCycle;
+		private Stopwatch mStopwatch;
+		private double CurrentSeconds => (double)mStopwatch.ElapsedTicks / Stopwatch.Frequency;
 
 		public void Update( float delta )
 		{
@@ -45,8 +53,12 @@ namespace Game.Session
 
 			Debug.Assert( ClientEntityValid );
 
+			double clientUpdateStart = CurrentSeconds;
 			Entity.ClientUpdateEvent data = new( ClientEntity, Client, delta );
 			EntityWorld.Dispatch( data );
+			double clientUpdateEnd = CurrentSeconds;
+
+			mLogger.Log( $"ClientUpdate: {(clientUpdateEnd - clientUpdateStart) * 1000.0:F3} ms" );
 
 			PlayerController.HandleClientInput( Client.Commands );
 			PlayerController.Update( delta );

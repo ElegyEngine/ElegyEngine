@@ -1,6 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using System.Diagnostics;
 using Elegy.Common.Assets;
 using Elegy.Common.Utilities;
 using Elegy.ConsoleSystem;
@@ -34,6 +35,7 @@ namespace Game.Server
 		public GameServer( int maxPlayers )
 		{
 			Connections = new( maxPlayers );
+			mStopwatch = Stopwatch.StartNew();
 		}
 
 		public void Shutdown()
@@ -42,6 +44,8 @@ namespace Game.Server
 
 		private DeltaTimer mSnapshotTimer;
 		private DeltaTimer mUpdateTimer;
+		private Stopwatch mStopwatch;
+		private double CurrentSeconds => (double)mStopwatch.ElapsedTicks / Stopwatch.Frequency;
 
 		public void Update( float delta )
 		{
@@ -66,22 +70,41 @@ namespace Game.Server
 			mUpdateTimer.Seconds = ServerUpdateTime;
 			mUpdateTimer.Update( delta, () =>
 			{
+				mLogger.Log( "ServerUpdate" );
+				
 				float updateDelta = MathF.Max( delta, ServerUpdateTime );
 				
 				// These two will make transforms dirty
+				double physicsStart = CurrentSeconds;
 				PhysicsWorld.UpdateSimulation( updateDelta );
+				
+				double serverUpdateStart = CurrentSeconds;
 				EntityWorld.Dispatch( new Entity.ServerUpdateEvent( this, updateDelta ) );
-
+				
 				// This one will listen to the changed transforms
+				double transformListenStart = CurrentSeconds; 
 				EntityWorld.Dispatch( new Entity.ServerTransformListenEvent( this, updateDelta ) );
 
 				// Finally, this query clears them all
+				double clearTransformsStart = CurrentSeconds;
 				EntityWorld.EcsWorld.Stream<Transform>().For( static ( ref Transform t ) => { t.TransformDirty = false; } );
+				double serverUpdateEnd = CurrentSeconds;
+				
+				double physicsMs = (serverUpdateStart - physicsStart) * 1000.0;
+				double serverUpdateMs = (transformListenStart - serverUpdateStart) * 1000.0;
+				double transformListenMs = (clearTransformsStart - transformListenStart) * 1000.0;
+				double clearTransformsMs = (serverUpdateEnd - clearTransformsStart) * 1000.0;
+				mLogger.Log( "Perf stats:" );
+				mLogger.Log( $"Physics:         {physicsMs:F3} ms" );
+				mLogger.Log( $"ServerUpdate:    {serverUpdateMs:F3} ms" );
+				mLogger.Log( $"TransformListen: {transformListenMs:F3} ms" );
+				mLogger.Log( $"ClearTransform:  {clearTransformsMs:F3} ms" );
 			} );
 
 			mSnapshotTimer.Seconds = GameSnapshotTime;
 			mSnapshotTimer.Update( delta, () =>
 			{
+				mLogger.Log( "GameSnapshot" );
 				foreach ( var client in Connections )
 				{
 					client.Bridge.SendGameStatePayload();
