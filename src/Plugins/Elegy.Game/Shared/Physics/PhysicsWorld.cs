@@ -109,8 +109,8 @@ namespace Game.Shared.Physics
 			{
 				ShapeIndex = Simulation.Shapes.Add( meshShape ),
 				Inertia = mass < 0.0f
-					? meshShape.ComputeOpenInertia( -mass )
-					: meshShape.ComputeClosedInertia( mass )
+					? meshShape.ComputeOpenInertia( MathF.Abs( mass ) )
+					: meshShape.ComputeClosedInertia( MathF.Abs( mass ) )
 			};
 
 			return result;

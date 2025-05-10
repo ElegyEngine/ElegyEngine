@@ -27,7 +27,7 @@ namespace Game.Shared.Components
 
 		[Property] public bool Static { get; set; } = true;
 
-		[Property] public float Mass { get; set; } = 1.0f;
+		[Property] public float Mass { get; set; } = -1.0f;
 
 		[Property] public ModelProperty CollisionModel { get; set; }
 
