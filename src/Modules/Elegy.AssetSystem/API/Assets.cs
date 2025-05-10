@@ -10,6 +10,8 @@ namespace Elegy.AssetSystem.API
 {
 	public static partial class Assets
 	{
+		private static bool mInitialised;
+		
 		public static bool Init( in LaunchConfig config )
 		{
 			mLogger.Log( "Init" );
@@ -23,6 +25,8 @@ namespace Elegy.AssetSystem.API
 			Plugins.RegisterPlugin( new ObjModelLoader() ); // it's not implemented but oh well
 			Plugins.RegisterPlugin( new PngTextureLoader() );
 
+			mInitialised = true;
+			
 			return InitMaterials();
 		}
 
@@ -40,6 +44,11 @@ namespace Elegy.AssetSystem.API
 
 		public static void Shutdown()
 		{
+			if ( !mInitialised )
+			{
+				return;
+			}
+			
 			mLogger.Log( "Shutdown" );
 
 			mRenderMaterialFactory = null;
@@ -47,9 +56,10 @@ namespace Elegy.AssetSystem.API
 
 			Plugins.UnregisterPluginCollector<AssetPluginCollector>();
 			Plugins.UnregisterDependency( "Elegy.AssetSystem" );
-
+			
 			mTextures.Clear();
 			mMaterialDefs.Clear();
+			mInitialised = false;
 		}
 	}
 }

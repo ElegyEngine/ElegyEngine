@@ -15,6 +15,7 @@ namespace Elegy.RenderSystem.API
 	{
 		private static string[] mAdditionalInstanceExtensions = [];
 		private static string[] mAdditionalDeviceExtensions = [];
+		private static bool mInitialised;
 		
 		public static bool Init( in LaunchConfig config )
 		{
@@ -28,6 +29,7 @@ namespace Elegy.RenderSystem.API
 			Plugins.RegisterPluginCollector( new RenderPluginCollector() );
 
 			mStopwatch = Stopwatch.StartNew();
+			mInitialised = true;
 
 			return true;
 		}
@@ -74,11 +76,18 @@ namespace Elegy.RenderSystem.API
 
 		public static void Shutdown()
 		{
+			if ( !mInitialised )
+			{
+				return;
+			}
+			
 			mLogger.Log( "Shutdown" );
 
 			Plugins.UnregisterPluginCollector<RenderPluginCollector>();
 			Plugins.UnregisterDependency( "Elegy.RenderSystem" );
 			Plugins.UnregisterDependency( "Elegy.RenderBackend" );
+			
+			mInitialised = false;
 		}
 	}
 }
