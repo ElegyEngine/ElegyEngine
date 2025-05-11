@@ -221,6 +221,9 @@ namespace Elegy.RenderSystem.Objects
 			PerInstanceParameterPools = new();
 		}
 
+		public ref MeshEntityChunk.MeshEntityBlock Block
+			=> ref System[ChunkIndex].Blocks[ElementIndex];
+
 		public int Mask
 		{
 			get => System[ChunkIndex].Blocks[ElementIndex].Mask;
