@@ -16,9 +16,10 @@ namespace Game.Shared.Components
 	public partial struct StaticModel
 	{
 		private static TaggedLogger mLogger = new( "StaticModel" );
+		private MeshEntity mMeshEntity;
 
 		// Not null on clientside
-		public MeshEntity? MeshEntity { get; set; }
+		public MeshEntity MeshEntity => mMeshEntity;
 
 		// Smart keyvalue that loads models
 		[Property] public ModelProperty Model { get; set; }
@@ -32,7 +33,7 @@ namespace Game.Shared.Components
 			}
 
 			ref var transform = ref data.Self.Ref<Transform>();
-			MeshEntity = CreateMeshEntity( false, Model.Data, transform.Position, transform.Orientation );
+			mMeshEntity = CreateMeshEntity( false, Model.Data, transform.Position, transform.Orientation );
 		}
 
 		[GroupEvent]
@@ -43,8 +44,7 @@ namespace Game.Shared.Components
 				//return;
 			}
 
-			//model.MeshEntity.Transform = Coords.CreateWorldMatrixQuaternion( transform.Position, Quaternion.Identity );
-			model.MeshEntity.Transform = Coords.CreateWorldMatrixQuaternion( transform.Position, transform.Orientation );
+			model.mMeshEntity.Transform = Coords.CreateWorldMatrixQuaternion( transform.Position, transform.Orientation );
 		}
 
 		[GroupEvent]
@@ -67,7 +67,7 @@ namespace Game.Shared.Components
 		[Event]
 		public void OnRender( Renderer.RenderEvent data )
 		{
-			data.RenderContext.QueueMeshEntity( MeshEntity );
+			data.RenderContext.QueueMeshEntity( mMeshEntity );
 		}
 
 		public void SetModel( string name )

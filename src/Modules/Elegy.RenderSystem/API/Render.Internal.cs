@@ -18,7 +18,7 @@ namespace Elegy.RenderSystem.API
 		private static TaggedLogger mLogger = new( "Render" );
 
 		// TODO: dynamic capacity configuration
-		private static PooledSet<MeshEntity> mEntitySet = new( 1024 );
+		private static MeshEntitySystem mEntitySystem = new( 1024 );
 		private static PooledSet<Mesh> mMeshSet = new( 1024 );
 		private static PooledSet<RenderMaterial> mMaterialSet = new( 2048 );
 		private static PooledSet<RenderTexture> mTextureSet = new( 4096 );
@@ -30,8 +30,7 @@ namespace Elegy.RenderSystem.API
 
 		private static bool InitialiseGraphicsDevice()
 		{
-			// RenderStyle is guaranteed to be non-null here, you can ignore what Intelli(Non)Sense says
-			var device = CreateGraphicsDevice( RenderStyle.InstanceExtensions, RenderStyle.DeviceExtensions );
+			var device = CreateGraphicsDevice( RenderStyle!.InstanceExtensions, RenderStyle.DeviceExtensions );
 			if ( device is null )
 			{
 				return false;

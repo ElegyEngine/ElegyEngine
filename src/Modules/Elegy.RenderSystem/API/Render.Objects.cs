@@ -40,15 +40,11 @@ namespace Elegy.RenderSystem.API
 
 		/// <summary>Creates a render entity.</summary>
 		public static MeshEntity CreateEntity( bool animated )
-			=> mEntitySet.AddAndGet( new( mDevice, animated, Layouts.PerEntity ) );
+			=> mEntitySystem.CreateEntity( animated, Layouts.PerEntity );
 
 		/// <summary>Frees a render entity.</summary>
-		public static bool FreeEntity( ref MeshEntity? entity )
-			=> mEntitySet.RemoveAndThen( entity, ( entity ) =>
-			{
-				entity.Dispose();
-				entity = null;
-			} );
+		public static bool FreeEntity( MeshEntity entity )
+			=> mEntitySystem.DestroyEntity( entity );
 
 		/// <summary>Creates a render light.</summary>
 		public static Light CreateLight()
