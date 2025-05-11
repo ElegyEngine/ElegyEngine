@@ -5,6 +5,8 @@ using Elegy.RenderSystem.Objects;
 using Elegy.RenderSystem.Resources;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Elegy.Common.Extensions;
+using Elegy.RenderBackend.Templating;
 using Veldrid;
 
 namespace Elegy.RenderSystem.API
@@ -28,8 +30,9 @@ namespace Elegy.RenderSystem.API
 		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public static void SetMaterialResourceSetsIndividual( CommandList commands, int[] mappings,
-			IReadOnlyList<MaterialParameterSet> parameterSets )
+		public static void SetMaterialResourceSetsIndividual(
+			CommandList commands, int[] mappings,
+			ReadOnlySpan<MaterialParameterSet> parameterSets )
 		{
 			for ( int i = 0; i < mappings.Length; i++ )
 			{
@@ -52,47 +55,48 @@ namespace Elegy.RenderSystem.API
 			}
 		}
 
-		public static void SetMaterialResourceSets( CommandList commands, RenderMaterial material, int variantIndex, MaterialParameterPool? perInstancePool = null )
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static void SetMaterialResourceSets( CommandList commands, RenderMaterial material, ShaderVariant shaderVariant )
 		{
-			var shaderVariant = material.Template.ShaderVariants.ElementAt( variantIndex ).Value;
-
 			// Set shader parametres used by this shader variant
 			// E.g. variant A might not use resource set 2, but variant B might
 			// Anything can happen after the first couple builtin sets
 			SetMaterialResourceSetsIndividual( commands,
 				shaderVariant.ResourceMappingsPerMaterial,
-				material.ParameterPool.ParameterSets );
+				material.ParameterPool.ParameterSets.AsSpan() );
 
 			// Same story as above, just on a global level
 			SetMaterialResourceSetsIndividual( commands,
 				shaderVariant.ResourceMappingsGlobal,
-				material.GlobalParameterPool.ParameterSets );
+				material.GlobalParameterPool.ParameterSets.AsSpan() );
+		}
 
-			// Same story as above, just on an instance level
-			if ( perInstancePool is not null )
-			{
-				SetMaterialResourceSetsIndividual( commands,
-					shaderVariant.ResourceMappingsPerInstance,
-					perInstancePool.ParameterSets );
-			}
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static void SetInstanceResourceSets(
+			CommandList commands, MaterialParameterPool perInstancePool, ShaderVariant shaderVariant )
+		{
+			SetMaterialResourceSetsIndividual( commands,
+				shaderVariant.ResourceMappingsPerInstance,
+				perInstancePool.ParameterSets.AsSpan() );
 		}
 
 		private static RenderBackend.ArrayMesh ViewMesh => Meshes.FullscreenQuad.Submeshes[0];
 
 		private static void RenderViewIntoBackbuffer( in View view )
 		{
+			var windowDefaultVariant = mWindowMaterial.Template.GetVariant( 0 );
+			mRenderCommands.SetPipeline( windowDefaultVariant.Pipeline );
 			mRenderCommands.SetFramebuffer( view.Framebuffer );
 			mRenderCommands.ClearColorTarget( 0, new( 0.02f, 0.10f, 0.12f, 1.0f ) );
 			mRenderCommands.SetViewport( 0, new( 0.0f, 0.0f, view.RenderSize.X, view.RenderSize.Y, 0.0f, 1.0f ) );
 
-			mRenderCommands.SetPipeline( mWindowMaterial.Template.GetVariant( 0 ).Pipeline );
 			mRenderCommands.SetGraphicsResourceSet( 0, view.WindowSet );
 
-			SetMaterialResourceSets( mRenderCommands, mWindowMaterial, 0 );
+			SetMaterialResourceSets( mRenderCommands, mWindowMaterial, windowDefaultVariant );
 
-			mRenderCommands.SetVertexBuffer( 0, ViewMesh.PositionBuffer );
-			mRenderCommands.SetVertexBuffer( 1, ViewMesh.Uv0Buffer );
-			mRenderCommands.SetIndexBuffer( ViewMesh.IndexBuffer, IndexFormat.UInt32 );
+			mRenderCommands.SetVertexBuffer( 0, ViewMesh.PositionBuffer! );
+			mRenderCommands.SetVertexBuffer( 1, ViewMesh.Uv0Buffer! );
+			mRenderCommands.SetIndexBuffer( ViewMesh.IndexBuffer!, IndexFormat.UInt32 );
 
 			mRenderCommands.DrawIndexed( ViewMesh.NumIndices );
 		}

@@ -52,13 +52,8 @@ namespace Game.Session
 			}
 
 			Debug.Assert( ClientEntityValid );
-
-			double clientUpdateStart = CurrentSeconds;
 			Entity.ClientUpdateEvent data = new( ClientEntity, Client, delta );
 			EntityWorld.Dispatch( data );
-			double clientUpdateEnd = CurrentSeconds;
-
-			mLogger.Log( $"ClientUpdate: {(clientUpdateEnd - clientUpdateStart) * 1000.0:F3} ms" );
 
 			PlayerController.HandleClientInput( Client.Commands );
 			PlayerController.Update( delta );
@@ -67,7 +62,7 @@ namespace Game.Session
 			var state = PlayerController.GenerateControllerState();
 			Client.RenderView.Transform = Coords.CreateViewMatrixDegrees( state.Position, state.Angles );
 
-			PlayerController.OnDebugDraw();
+			//PlayerController.OnDebugDraw();
 			//EntityWorld.Dispatch( new Entity.DebugDrawEvent() );
 		}
 	}

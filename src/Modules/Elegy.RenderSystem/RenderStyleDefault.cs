@@ -54,34 +54,35 @@ namespace Elegy.RenderSystem
 		public void RenderSurfaces( CommandList renderCommand, View view,
 			ReadOnlySpan<RenderSurface> surfaces, RenderMaterial material, ReadOnlySpan<Light> lights )
 		{
-			int variantIndex = material.ParameterPool.GetVariantIndex( "GENERAL" );
 			var shaderVariant = material.Template.ShaderVariants["GENERAL"];
 			
 			renderCommand.SetPipeline( shaderVariant.Pipeline );
 			renderCommand.SetGraphicsResourceSet( 0, view.PerViewSet );
 
+			// Set shader parametres used by this shader variant. This is done here to
+			// avoid tons of unnecessary bindings for surfaces that use the same material
+			Render.SetMaterialResourceSets( renderCommand, material, shaderVariant );
+
 			for ( int i = 0; i < surfaces.Length; i++ )
 			{
-				var surface = surfaces[i];
-
 				// We have a few hardcoded resource set IDs
 				// 0 is always per-frame/per-view data (all about the camera basically)
 				// 1 is always per-entity data (entity transform matrix, bone matrices etc.)
-				renderCommand.SetGraphicsResourceSet( 1, surface.PerEntitySet );
+				renderCommand.SetGraphicsResourceSet( 1, surfaces[i].PerEntitySet );
 
-				// Set shader parametres used by this shader variant
-				Render.SetMaterialResourceSets( renderCommand, material, variantIndex, surface.ParameterPool );
+				// Set per-instance resources too
+				Render.SetInstanceResourceSets( renderCommand, surfaces[i].ParameterPool, shaderVariant );
 
 				// Send vertex buffers used by this shader variant
 				foreach ( var vertexAttribute in shaderVariant.VertexAttributes.AsSpan() )
 				{
-					var buffer = surface.Mesh.GetBuffer( vertexAttribute.Semantic, vertexAttribute.Channel );
-					renderCommand.SetVertexBuffer( vertexAttribute.Id, buffer );
+					var buffer = surfaces[i].Mesh.GetBuffer( vertexAttribute.Semantic, vertexAttribute.Channel );
+					renderCommand.SetVertexBuffer( vertexAttribute.Id, buffer! );
 				}
 
 				// AT LAST, render the damn thing
-				renderCommand.SetIndexBuffer( surface.Mesh.IndexBuffer, IndexFormat.UInt32 );
-				renderCommand.DrawIndexed( surface.Mesh.NumIndices );
+				renderCommand.SetIndexBuffer( surfaces[i].Mesh.IndexBuffer!, IndexFormat.UInt32 );
+				renderCommand.DrawIndexed( surfaces[i].Mesh.NumIndices );
 			}
 		}
 

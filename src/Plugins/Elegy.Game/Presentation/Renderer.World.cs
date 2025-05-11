@@ -22,10 +22,7 @@ namespace Game.Presentation
 		public void SubmitSurfacesWorld( View view )
 		{
 			// Right now it's just a test: we draw anything and everything
-			EntityWorld.ForEachEntity( entity =>
-			{
-				entity.Dispatch( new RenderEvent( this ) );
-			} );
+			EntityWorld.Dispatch( new RenderEvent( this ) );
 		}
 	}
 }

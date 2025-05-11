@@ -74,17 +74,17 @@ namespace Elegy.RenderSystem.API
 		/// </summary>
 		public static void UpdateBuffers()
 		{
-			mRenderCommands.Begin();
-			RebuildDebugMeshes( mRenderCommands );
-			mEntitySystem.UpdateBuffers( mRenderCommands );
+			mUpdateBufferCommands.Begin();
+			RebuildDebugMeshes( mUpdateBufferCommands );
+			mEntitySystem.UpdateBuffers( mUpdateBufferCommands );
 
 			foreach ( var view in mViews )
 			{
-				view.UpdateBuffers( mRenderCommands );
+				view.UpdateBuffers( mUpdateBufferCommands );
 			}
 
-			mRenderCommands.End();
-			mDevice.SubmitCommands( mRenderCommands );
+			mUpdateBufferCommands.End();
+			mDevice.SubmitCommands( mUpdateBufferCommands );
 		}
 
 		/// <summary>

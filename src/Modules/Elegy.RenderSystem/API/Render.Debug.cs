@@ -149,8 +149,7 @@ namespace Elegy.RenderSystem.API
 			Debug.Assert( DebugLineMesh.Color0Buffer is not null );
 			Debug.Assert( DebugLineMesh.IndexBuffer is not null );
 
-			var worldVariantIndex = mDebugLineMaterial.ParameterPool.GetVariantIndex( "GENERAL" );
-			var worldVariant = mDebugLineMaterial.Template.GetVariant( worldVariantIndex );
+			var worldVariant = mDebugLineMaterial.Template.ShaderVariants["GENERAL"];
 
 			mRenderCommands.SetFramebuffer( view.RenderFramebuffer );
 			mRenderCommands.SetViewport( 0, new( 0.0f, 0.0f, view.RenderSize.X, view.RenderSize.Y, 0.0f, 1.0f ) );
@@ -158,7 +157,7 @@ namespace Elegy.RenderSystem.API
 			mRenderCommands.SetPipeline( worldVariant.Pipeline );
 			mRenderCommands.SetGraphicsResourceSet( 0, view.PerViewSet );
 
-			SetMaterialResourceSets( mRenderCommands, mDebugLineMaterial, worldVariantIndex );
+			SetMaterialResourceSets( mRenderCommands, mDebugLineMaterial, worldVariant );
 
 			mRenderCommands.SetVertexBuffer( 0, DebugLineMesh.PositionBuffer );
 			mRenderCommands.SetVertexBuffer( 1, DebugLineMesh.NormalBuffer );

@@ -26,6 +26,7 @@ namespace Elegy.RenderSystem.API
 
 		private static RenderMaterial mWindowMaterial;
 		private static CommandList mRenderCommands;
+		private static CommandList mUpdateBufferCommands;
 		private static GraphicsDevice mDevice;
 
 		private static bool InitialiseGraphicsDevice()
@@ -196,6 +197,7 @@ namespace Elegy.RenderSystem.API
 			}
 
 			mRenderCommands = Factory.CreateCommandList();
+			mUpdateBufferCommands = Factory.CreateCommandList();
 			mWindowMaterial = LoadMaterial( "materials/builtin/window_default" );
 			mDebugLineMaterial = LoadMaterial( "materials/builtin/debug_line" );
 

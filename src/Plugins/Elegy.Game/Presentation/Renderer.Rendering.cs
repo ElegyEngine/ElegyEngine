@@ -1,12 +1,11 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Collections.Pooled;
+using Elegy.ConsoleSystem;
 using Elegy.PlatformSystem.API;
 using Elegy.RenderBackend;
 using Elegy.RenderBackend.Assets;
 using Elegy.RenderSystem.API;
-using Elegy.RenderSystem.Interfaces;
 using Elegy.RenderSystem.Objects;
 using Elegy.RenderSystem.Resources;
 using Veldrid;
@@ -16,10 +15,11 @@ namespace Game.Presentation
 	public partial class Renderer
 	{
 		private CommandList mRenderCommands;
+		private static TaggedLogger mLogger = new( "WorldRender" );
 
-		public PooledDictionary<RenderMaterial, PooledList<RenderSurface>> mOpaqueMaterialMap = new( capacity: 512 );
-		public PooledDictionary<RenderMaterial, PooledList<RenderSurface>> mTransparentMaterialMap = new( capacity: 512 );
-
+		public SurfaceCache OpaqueCache { get; } = new();
+		public SurfaceCache TransparentCache { get; } = new();
+		
 		public Action<View> OnSubmitSurfaces { get; set; } = _ => { };
 		public Action<View, CommandList> OnFrameEnd { get; set; } = ( _, _ ) => { };
 
@@ -35,27 +35,32 @@ namespace Game.Presentation
 			ReadOnlySpan<Light> lights = [];
 
 			// Update all buffers at the start of the frame pretty please
-			Render.UpdateBuffers();
+			var updateBuffersTask = Task.Run( Render.UpdateBuffers );
 
 			// Begin rendering
 			mRenderCommands.Begin();
 			Render.SetRenderView( mRenderCommands, view );
 
 			// Opaque pass
-			foreach ( var item in mOpaqueMaterialMap )
+			foreach ( var item in OpaqueCache.Cache.Span )
 			{
-				Render.RenderStyle.RenderSurfaces( mRenderCommands, view, item.Value.Span, item.Key, lights );
+				Render.RenderStyle.RenderSurfaces( mRenderCommands, view, item.Surfaces.Span, item.Material, lights );
 			}
 
 			// Transparent pass
-			foreach ( var item in mTransparentMaterialMap )
+			foreach ( var item in TransparentCache.Cache.Span )
 			{
-				Render.RenderStyle.RenderSurfaces( mRenderCommands, view, item.Value.Span, item.Key, lights );
+				Render.RenderStyle.RenderSurfaces( mRenderCommands, view, item.Surfaces.Span, item.Material, lights );
 			}
 
 			// Draw UI etc.
 			OnFrameEnd( view, mRenderCommands );
 			mRenderCommands.End();
+
+			// Wait for the command buffers to be updated now, before we move on to actually drawing
+			updateBuffersTask.Wait();
+
+			// Finally, draw the scene
 			Render.Device.SubmitCommands( mRenderCommands );
 		}
 
@@ -86,14 +91,16 @@ namespace Game.Presentation
 
 		public void QueueMeshEntity( MeshEntity meshEntity )
 		{
-			var meshes = meshEntity.Mesh.Submeshes;
+			var dataBlock = meshEntity.System.Chunks[meshEntity.ChunkIndex].Blocks[meshEntity.ElementIndex];
+
+			var meshes = dataBlock.Mesh.Submeshes;
 			for ( int meshIndex = 0; meshIndex < meshes.Count; meshIndex++ )
 			{
 				QueueRenderSurface(
 					meshes[meshIndex],
-					meshEntity.PerEntitySet,
-					meshEntity.PerInstanceParameterPools[meshIndex],
-					meshEntity.Mesh.Materials[meshIndex] );
+					dataBlock.EntitySet,
+					dataBlock.InstanceParameterPool[meshIndex],
+					dataBlock.Mesh.Materials[meshIndex] );
 			}
 		}
 
@@ -101,12 +108,11 @@ namespace Game.Presentation
 		{
 			var materialMap = material.Template.Data.PipelineInfo.BlendMode switch
 			{
-				Blending.Opaque => mOpaqueMaterialMap,
-				_               => mTransparentMaterialMap
+				Blending.Opaque => OpaqueCache,
+				_               => TransparentCache
 			};
 
-			var surfaceList = materialMap.GetOrAdd( material, _ => new PooledList<RenderSurface>( 512 ) );
-			surfaceList.Add( new()
+			materialMap.GetOrAdd( material ).Add( new()
 			{
 				Mesh = mesh,
 				ParameterPool = pool,
@@ -116,15 +122,8 @@ namespace Game.Presentation
 
 		private void ClearRenderSurfaces()
 		{
-			foreach ( var surfaceList in mOpaqueMaterialMap.Values )
-			{
-				surfaceList.Clear();
-			}
-
-			foreach ( var surfaceList in mTransparentMaterialMap.Values )
-			{
-				surfaceList.Clear();
-			}
+			OpaqueCache.Clear();
+			TransparentCache.Clear();
 		}
 	}
 }
