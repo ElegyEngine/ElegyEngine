@@ -64,10 +64,10 @@ namespace Game.Shared.Components
 			Render.DebugLine( left, right, colour );
 		}
 		
-		[Event]
-		public void OnRender( Renderer.RenderEvent data )
+		[GroupEvent]
+		public static void OnRender( Renderer.RenderEvent data, ref StaticModel model )
 		{
-			data.RenderContext.QueueMeshEntity( mMeshEntity );
+			data.RenderContext.QueueMeshEntity( model.mMeshEntity );
 		}
 
 		public void SetModel( string name )
