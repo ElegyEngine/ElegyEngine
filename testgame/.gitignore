@@ -20,3 +20,6 @@ fennecs.xml
 
 # Map compiling temporaries
 *-compile.map
+
+# Ultra profiling data
+ultra*.json.gz
