@@ -38,3 +38,6 @@ src/**/Properties/
 
 # Rider files
 .idea
+
+# Ultra benchmarking sessions
+ultra*.json
