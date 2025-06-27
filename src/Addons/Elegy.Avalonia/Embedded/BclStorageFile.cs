@@ -1,11 +1,11 @@
 ﻿using System.Security;
 using Avalonia.Platform.Storage;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 internal sealed class BclStorageFile : IStorageBookmarkFile
 {
-	private Uri? _path;
+	private Uri? mPath;
 
 	public FileInfo FileInfo { get; }
 
@@ -16,7 +16,7 @@ internal sealed class BclStorageFile : IStorageBookmarkFile
 		=> true;
 
 	public Uri Path
-		=> _path ??= BuildPath();
+		=> mPath ??= BuildPath();
 
 	public BclStorageFile( FileInfo fileInfo )
 		=> FileInfo = fileInfo;
@@ -63,6 +63,7 @@ internal sealed class BclStorageFile : IStorageBookmarkFile
 		return Task.FromResult<IStorageFolder?>( storageFolder );
 	}
 
+	// TODO: Elegy.Avalonia: use VFS for these?
 	public Task<Stream> OpenReadAsync()
 		=> Task.FromResult<Stream>( FileInfo.OpenRead() );
 

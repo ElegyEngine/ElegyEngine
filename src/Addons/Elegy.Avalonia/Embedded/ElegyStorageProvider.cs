@@ -1,10 +1,7 @@
-﻿
-// TODO: use some kinda native file dialogue lib or spin up our own implementation
-
-using Avalonia.Platform.Storage;
+﻿using Avalonia.Platform.Storage;
 using Environment = System.Environment;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 /// <summary>Implementation of <see cref="IStorageProvider"/> for Elegy.</summary>
 internal sealed class ElegyStorageProvider : IStorageProvider
@@ -18,6 +15,7 @@ internal sealed class ElegyStorageProvider : IStorageProvider
 	public bool CanPickFolder
 		=> true;
 
+	// TODO: Elegy.Avalonia: do we need file browsers here?
 	public Task<IReadOnlyList<IStorageFile>> OpenFilePickerAsync( FilePickerOpenOptions options )
 		=> throw new NotImplementedException();
 

@@ -1,16 +1,15 @@
-﻿
-using System.Buffers;
+﻿using System.Buffers;
 using System.Text.Unicode;
 using Avalonia;
 using Avalonia.Platform;
 using Avalonia.Skia;
-using SkiaSharp;
-using Veldrid;
+using Elegy.Avalonia.Utilities;
 using Elegy.RenderSystem.API;
+using SkiaSharp;
 using TerraFX.Interop.Vulkan;
-using PixelFormat = Avalonia.Remote.Protocol.Viewport.PixelFormat;
+using Veldrid;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 /// <summary>Bridges the Elegy Vulkan renderer with a Skia context used by Avalonia.</summary>
 internal sealed class ElegySkiaGpu : ISkiaGpu
@@ -78,7 +77,7 @@ internal sealed class ElegySkiaGpu : ISkiaGpu
 	{
 		size = new PixelSize( Math.Max( size.Width, 1 ), Math.Max( size.Height, 1 ) );
 
-		var elTexture = mDevice.ResourceFactory.CreateTexture( new()
+		var elTexture = (Veldrid.Vulkan.VkTexture)mDevice.ResourceFactory.CreateTexture( new()
 		{
 			Format = Veldrid.PixelFormat.R8_G8_B8_A8_UNorm,
 			Type = TextureType.Texture2D,
@@ -91,18 +90,16 @@ internal sealed class ElegySkiaGpu : ISkiaGpu
 			Usage = TextureUsage.Sampled | TextureUsage.RenderTarget
 		} );
 
-		var vkImage = new VkImage( mDevice.GetDriverResource( RenderingDevice.DriverResource.Texture, gdRdTexture, 0UL ) );
-		if ( vkImage.Value == 0UL )
-			throw new InvalidOperationException( "Couldn't get Vulkan image from Elegy texture" );
-
-		var vkFormat = (uint)mDevice.GetDriverResource( RenderingDevice.DriverResource.TextureDataFormat, gdRdTexture, 0UL );
-		if ( vkFormat == 0U )
-			throw new InvalidOperationException( "Couldn't get Vulkan format from Elegy texture" );
+		var vkImage = elTexture.OptimalDeviceImage;
+		
+		//var vkImage = new VkImage( mDevice.GetDriverResource( RenderingDevice.DriverResource.Texture, gdRdTexture, 0UL ) );
+		//if ( vkImage.Value == 0UL )
+		//	throw new InvalidOperationException( "Couldn't get Vulkan image from Elegy texture" );
 
 		var grVkImageInfo = new GRVkImageInfo
 		{
 			CurrentQueueFamily = mQueueFamilyIndex,
-			Format = vkFormat,
+			Format = (uint)elTexture.VkFormat,
 			Image = vkImage.Value,
 			ImageLayout = (uint)VkImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
 			ImageTiling = (uint)VkImageTiling.VK_IMAGE_TILING_OPTIMAL,
@@ -136,7 +133,7 @@ internal sealed class ElegySkiaGpu : ISkiaGpu
 
 		var surface = new ElegySkiaSurface(
 			skSurface,
-			gdTexture,
+			elTexture,
 			vkImage,
 			VkImageLayout.VK_IMAGE_LAYOUT_UNDEFINED,
 			mDevice,

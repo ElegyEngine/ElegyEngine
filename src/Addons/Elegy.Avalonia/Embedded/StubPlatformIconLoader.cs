@@ -1,7 +1,6 @@
-﻿using System.IO;
-using Avalonia.Platform;
+﻿using Avalonia.Platform;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 /// <summary>An implementation of <see cref="IPlatformIconLoader"/> that provides fake icons (never displayed).</summary>
 internal sealed class StubPlatformIconLoader : IPlatformIconLoader

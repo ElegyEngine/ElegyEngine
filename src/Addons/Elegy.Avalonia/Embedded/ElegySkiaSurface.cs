@@ -1,10 +1,9 @@
-﻿using System;
-using Avalonia.Skia;
+﻿using Avalonia.Skia;
 using SkiaSharp;
-using Veldrid;
 using TerraFX.Interop.Vulkan;
+using Veldrid;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 /// <summary>Encapsulates a Skia surface along with the Elegy texture it comes from.</summary>
 internal sealed class ElegySkiaSurface : ISkiaSurface
@@ -44,8 +43,9 @@ internal sealed class ElegySkiaSurface : ISkiaSurface
 			_                                      => VkAccessFlags.VK_ACCESS_MEMORY_READ_BIT | VkAccessFlags.VK_ACCESS_MEMORY_WRITE_BIT
 		};
 
-		// TODO: transition image layout
+		// TODO: Elegy-Avalonia: transition image layout
 		//BarrierHelper.TransitionImageLayout( VkImage, LastLayout, sourceAccessMask, newLayout, destinationAccessMask );
+		RenderingDevice.GetVulkanInfo().TransitionImageLayout( GdTexture, (uint)newLayout );
 		LastLayout = newLayout;
 	}
 

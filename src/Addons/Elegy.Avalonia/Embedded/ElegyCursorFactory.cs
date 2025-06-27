@@ -1,9 +1,9 @@
-﻿using System;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Input;
 using Avalonia.Platform;
+using Elegy.Avalonia.Extensions;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 internal sealed class ElegyCursorFactory : ICursorFactory
 {

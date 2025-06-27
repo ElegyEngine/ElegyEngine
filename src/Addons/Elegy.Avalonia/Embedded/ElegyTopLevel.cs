@@ -2,7 +2,7 @@
 using Avalonia.Controls.Embedding;
 using Avalonia.Input;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 /// <summary>
 /// A <see cref="TopLevel"/> used with Elegy.

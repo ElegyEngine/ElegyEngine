@@ -1,5 +1,4 @@
-﻿
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls.Platform;
 using Avalonia.Dialogs;
@@ -11,7 +10,7 @@ using Avalonia.Threading;
 using Elegy.Avalonia.Input;
 using AvCompositor = Avalonia.Rendering.Composition.Compositor;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 /// <summary>Contains Elegy to Avalonia platform initialization.</summary>
 internal static class ElegyPlatform

@@ -2,28 +2,28 @@
 using Avalonia.Skia;
 using SkiaSharp;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 /// <summary>A render target that uses an underlying Skia surface.</summary>
 internal sealed class ElegySkiaRenderTarget : ISkiaGpuRenderTarget
 {
-	private readonly ElegySkiaSurface _surface;
-	private readonly GRContext _grContext;
-	private readonly double _renderScaling;
+	private readonly ElegySkiaSurface mSurface;
+	private readonly GRContext mGrContext;
+	private readonly double mRenderScaling;
 
 	[SuppressMessage( "ReSharper", "CompareOfFloatsByEqualityOperator", Justification = "Doesn't affect correctness" )]
 	public bool IsCorrupted
-		=> _surface.IsDisposed || _grContext.IsAbandoned || _renderScaling != _surface.RenderScaling;
+		=> mSurface.IsDisposed || mGrContext.IsAbandoned || mRenderScaling != mSurface.RenderScaling;
 
 	public ElegySkiaRenderTarget( ElegySkiaSurface surface, GRContext grContext )
 	{
-		_renderScaling = surface.RenderScaling;
-		_surface = surface;
-		_grContext = grContext;
+		mRenderScaling = surface.RenderScaling;
+		mSurface = surface;
+		mGrContext = grContext;
 	}
 
 	public ISkiaGpuRenderSession BeginRenderingSession()
-		=> new ElegySkiaGpuRenderSession( _surface, _grContext );
+		=> new ElegySkiaGpuRenderSession( mSurface, mGrContext );
 
 	public void Dispose()
 	{

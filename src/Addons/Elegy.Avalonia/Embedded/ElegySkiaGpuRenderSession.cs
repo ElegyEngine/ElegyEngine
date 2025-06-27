@@ -2,7 +2,7 @@
 using SkiaSharp;
 using TerraFX.Interop.Vulkan;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 /// <summary>A render session that uses an underlying Skia surface.</summary>
 internal sealed class ElegySkiaGpuRenderSession : ISkiaGpuRenderSession

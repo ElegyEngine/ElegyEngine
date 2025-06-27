@@ -1,7 +1,7 @@
 ﻿using Avalonia.Input;
 using Avalonia.Input.Platform;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 /// <summary>An implementation of <see cref="IClipboard"/> that uses Elegy clipboard methods.</summary>
 internal sealed class ElegyClipboard : IClipboard

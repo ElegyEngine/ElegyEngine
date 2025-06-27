@@ -1,33 +1,31 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using Avalonia.Platform;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 /// <summary>Elegy Vulkan-based <see cref="IPlatformGraphics"/> implementation.</summary>
 internal sealed class ElegyPlatformGraphics : IPlatformGraphics, IDisposable
 {
-	private ElegySkiaGpu? _context;
-	private int _refCount;
+	private ElegySkiaGpu? mContext;
+	private int mRefCount;
 
 	bool IPlatformGraphics.UsesSharedContext
 		=> true;
 
 	public ElegySkiaGpu GetSharedContext()
 	{
-		if ( Volatile.Read( ref _refCount ) == 0 )
+		if ( Volatile.Read( ref mRefCount ) == 0 )
 			ThrowDisposed();
 
-		if ( _context is null || _context.IsLost )
+		if ( mContext is null || mContext.IsLost )
 		{
-			_context?.Dispose();
-			_context = null;
-			_context = new ElegySkiaGpu();
+			mContext?.Dispose();
+			mContext = null;
+			mContext = new ElegySkiaGpu();
 		}
 
-		return _context;
+		return mContext;
 	}
 
 	[DoesNotReturn]
@@ -42,21 +40,21 @@ internal sealed class ElegyPlatformGraphics : IPlatformGraphics, IDisposable
 		=> GetSharedContext();
 
 	public void AddRef()
-		=> Interlocked.Increment( ref _refCount );
+		=> Interlocked.Increment( ref mRefCount );
 
 	public void Release()
 	{
-		if ( Interlocked.Decrement( ref _refCount ) == 0 )
+		if ( Interlocked.Decrement( ref mRefCount ) == 0 )
 			Dispose();
 	}
 
 
 	public void Dispose()
 	{
-		if ( _context is not null )
+		if ( mContext is not null )
 		{
-			_context.Dispose();
-			_context = null;
+			mContext.Dispose();
+			mContext = null;
 		}
 	}
 }

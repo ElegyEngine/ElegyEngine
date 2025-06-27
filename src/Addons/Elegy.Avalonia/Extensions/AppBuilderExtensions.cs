@@ -1,7 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Input;
+using Elegy.Avalonia.Embedded;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Extensions;
 
 /// <summary>Contains extensions methods for <see cref="AppBuilder"/> related to Elegy.</summary>
 public static class AppBuilderExtensions

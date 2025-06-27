@@ -1,5 +1,4 @@
-﻿
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Avalonia;
 using Avalonia.Controls;
@@ -7,29 +6,27 @@ using Avalonia.Input;
 using Avalonia.Input.Platform;
 using Avalonia.Input.Raw;
 using Avalonia.Platform;
+using Elegy.Avalonia.Extensions;
 using Elegy.Avalonia.Input;
 using AvCompositor = Avalonia.Rendering.Composition.Compositor;
-using AvKey = Avalonia.Input.Key;
 using GdCursorShape = Silk.NET.Input.StandardCursor;
-using ElMouseButton = Silk.NET.Input.MouseButton;
-using Vector = Avalonia.Vector;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
-/// <summary>Implementation of Avalonia <see cref="ITopLevelImpl"/> that renders to a Elegy texture.</summary>
+/// <summary>Implementation of Avalonia <see cref="ITopLevelImpl"/> that renders to an Elegy texture.</summary>
 internal sealed class ElegyTopLevelImpl : ITopLevelImpl
 {
 	private readonly ElegyPlatformGraphics mPlatformGraphics;
-	private readonly IClipboard _clipboard;
-	private readonly TouchDevice _touchDevice = new();
+	private readonly IClipboard mClipboard;
+	private readonly TouchDevice mTouchDevice = new();
 
-	private ElegySkiaSurface? _surface;
-	private WindowTransparencyLevel _transparencyLevel = WindowTransparencyLevel.Transparent;
-	private PixelSize _renderSize;
-	private IInputRoot? _inputRoot;
-	private GdCursorShape _cursorShape;
-	private bool _isDisposed;
-	private int _lastMouseDeviceId = ElegyDevices.EmulatedDeviceId;
+	private ElegySkiaSurface? mSurface;
+	private WindowTransparencyLevel mTransparencyLevel = WindowTransparencyLevel.Transparent;
+	private PixelSize mRenderSize;
+	private IInputRoot? mInputRoot;
+	private GdCursorShape mCursorShape;
+	private bool mIsDisposed;
+	private int mLastMouseDeviceId = ElegyDevices.EmulatedDeviceId;
 
 	public double RenderScaling { get; private set; } = 1.0;
 
@@ -45,13 +42,13 @@ internal sealed class ElegyTopLevelImpl : ITopLevelImpl
 
 	public WindowTransparencyLevel TransparencyLevel
 	{
-		get => _transparencyLevel;
+		get => mTransparencyLevel;
 		private set
 		{
-			if ( _transparencyLevel.Equals( value ) )
+			if ( mTransparencyLevel.Equals( value ) )
 				return;
 
-			_transparencyLevel = value;
+			mTransparencyLevel = value;
 			TransparencyLevelChanged?.Invoke( value );
 		}
 	}
@@ -81,7 +78,7 @@ internal sealed class ElegyTopLevelImpl : ITopLevelImpl
 	public ElegyTopLevelImpl( ElegyPlatformGraphics platformGraphics, IClipboard clipboard, AvCompositor compositor )
 	{
 		mPlatformGraphics = platformGraphics;
-		_clipboard = clipboard;
+		mClipboard = clipboard;
 		Compositor = compositor;
 
 		platformGraphics.AddRef();
@@ -89,17 +86,17 @@ internal sealed class ElegyTopLevelImpl : ITopLevelImpl
 
 	private ElegySkiaSurface CreateSurface()
 	{
-		if ( _isDisposed )
+		if ( mIsDisposed )
 			throw new ObjectDisposedException( nameof( ElegyTopLevelImpl ) );
 
-		return mPlatformGraphics.GetSharedContext().CreateSurface( _renderSize, RenderScaling );
+		return mPlatformGraphics.GetSharedContext().CreateSurface( mRenderSize, RenderScaling );
 	}
 
 	public ElegySkiaSurface? TryGetSurface()
-		=> _surface;
+		=> mSurface;
 
 	public ElegySkiaSurface GetOrCreateSurface()
-		=> _surface ??= CreateSurface();
+		=> mSurface ??= CreateSurface();
 
 	private IEnumerable<object> GetOrCreateSurfaces()
 		=> new object[] { GetOrCreateSurface() };
@@ -108,7 +105,7 @@ internal sealed class ElegyTopLevelImpl : ITopLevelImpl
 	public void SetRenderSize( PixelSize renderSize, double renderScaling )
 	{
 		var hasScalingChanged = RenderScaling != renderScaling;
-		if ( _renderSize == renderSize && !hasScalingChanged )
+		if ( mRenderSize == renderSize && !hasScalingChanged )
 			return;
 
 		var oldClientSize = ClientSize;
@@ -117,26 +114,26 @@ internal sealed class ElegyTopLevelImpl : ITopLevelImpl
 		ClientSize = new Size( Math.Max( unclampedClientSize.Width, 0.0 ), Math.Max( unclampedClientSize.Height, 0.0 ) );
 		RenderScaling = renderScaling;
 
-		if ( _renderSize != renderSize )
+		if ( mRenderSize != renderSize )
 		{
-			_renderSize = renderSize;
+			mRenderSize = renderSize;
 
-			if ( _surface is not null )
+			if ( mSurface is not null )
 			{
-				_surface.Dispose();
-				_surface = null;
+				mSurface.Dispose();
+				mSurface = null;
 			}
 
-			if ( _isDisposed )
+			if ( mIsDisposed )
 				return;
 
-			_surface = CreateSurface();
+			mSurface = CreateSurface();
 		}
 
 		if ( hasScalingChanged )
 		{
-			if ( _surface != null )
-				_surface.RenderScaling = RenderScaling;
+			if ( mSurface != null )
+				mSurface.RenderScaling = RenderScaling;
 			ScalingChanged?.Invoke( RenderScaling );
 		}
 
@@ -147,6 +144,8 @@ internal sealed class ElegyTopLevelImpl : ITopLevelImpl
 	public void OnDraw( Rect rect )
 		=> Paint?.Invoke( rect );
 
+	// TODO: Elegy-Avalonia: Handle input events
+	
 	/*
 	public bool OnMouseMotion( InputEventMouseMotion inputEvent, ulong timestamp )
 	{
@@ -208,7 +207,7 @@ internal sealed class ElegyTopLevelImpl : ITopLevelImpl
 			(ElMouseButton.Button4, false) => CreateButtonArgs( RawPointerEventType.XButton1Up ),
 			(ElMouseButton.Button5, true)  => CreateButtonArgs( RawPointerEventType.XButton2Down ),
 			(ElMouseButton.Button5, false) => CreateButtonArgs( RawPointerEventType.XButton2Up ),
-			// TODO: mouse wheel
+			// TODO: Elegy-Avalonia: mouse wheel
 			//(ElMouseButton.WheelUp, _)      => CreateWheelArgs( new Vector( 0.0, inputEvent.Factor ) ),
 			//(ElMouseButton.WheelDown, _)    => CreateWheelArgs( new Vector( 0.0, -inputEvent.Factor ) ),
 			//(ElMouseButton.WheelLeft, _)    => CreateWheelArgs( new Vector( inputEvent.Factor, 0.0 ) ),
@@ -303,7 +302,7 @@ internal sealed class ElegyTopLevelImpl : ITopLevelImpl
 				return true;
 		}
 
-		// TODO: pressed && IsKeycodeUnicode( keyCode )
+		// TODO: Elegy-Avalonia: pressed && IsKeycodeUnicode( keyCode )
 		if ( pressed )
 		{
 			var text = Char.ConvertFromUtf32( (int)inputEvent.Unicode );
@@ -319,7 +318,7 @@ internal sealed class ElegyTopLevelImpl : ITopLevelImpl
 	}
 	*/
 
-	// TODO: support joypads
+	// TODO: Elegy-Avalonia: support joypads
 	
 	/*
 	public bool OnJoypadButton( InputEventJoypadButton inputEvent, ulong timestamp )
@@ -364,13 +363,13 @@ internal sealed class ElegyTopLevelImpl : ITopLevelImpl
 
 	public bool OnMouseExited( ulong timestamp )
 	{
-		if ( _inputRoot is null || Input is not { } input )
+		if ( mInputRoot is null || Input is not { } input )
 			return false;
 
 		var args = new RawPointerEventArgs(
-			ElegyDevices.GetMouse( _lastMouseDeviceId ),
+			ElegyDevices.GetMouse( mLastMouseDeviceId ),
 			timestamp,
-			_inputRoot,
+			mInputRoot,
 			RawPointerEventType.LeaveWindow,
 			new Point( -1, -1 ),
 			InputModifiersProvider.GetRawInputModifiers()
@@ -382,7 +381,7 @@ internal sealed class ElegyTopLevelImpl : ITopLevelImpl
 	}
 
 	void ITopLevelImpl.SetInputRoot( IInputRoot inputRoot )
-		=> _inputRoot = inputRoot;
+		=> mInputRoot = inputRoot;
 
 	Point ITopLevelImpl.PointToClient( PixelPoint point )
 		=> point.ToPoint( RenderScaling );
@@ -393,10 +392,10 @@ internal sealed class ElegyTopLevelImpl : ITopLevelImpl
 	void ITopLevelImpl.SetCursor( ICursorImpl? cursor )
 	{
 		var cursorShape = (cursor as ElegyStandardCursorImpl)?.CursorShape ?? GdCursorShape.Arrow;
-		if ( _cursorShape == cursorShape )
+		if ( mCursorShape == cursorShape )
 			return;
 
-		_cursorShape = cursorShape;
+		mCursorShape = cursorShape;
 		CursorChanged?.Invoke( cursorShape );
 	}
 
@@ -422,22 +421,22 @@ internal sealed class ElegyTopLevelImpl : ITopLevelImpl
 	object? IOptionalFeatureProvider.TryGetFeature( Type featureType )
 	{
 		if ( featureType == typeof( IClipboard ) )
-			return _clipboard;
+			return mClipboard;
 
 		return null;
 	}
 
 	public void Dispose()
 	{
-		if ( _isDisposed )
+		if ( mIsDisposed )
 			return;
 
-		_isDisposed = true;
+		mIsDisposed = true;
 
-		if ( _surface is not null )
+		if ( mSurface is not null )
 		{
-			_surface.Dispose();
-			_surface = null;
+			mSurface.Dispose();
+			mSurface = null;
 		}
 
 		Closed?.Invoke();

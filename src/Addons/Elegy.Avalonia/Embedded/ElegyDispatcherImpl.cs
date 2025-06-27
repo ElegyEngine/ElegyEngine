@@ -1,12 +1,9 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
 using Avalonia.Threading;
-using GdDispatcher = Elegy.Dispatcher;
 using SysTimer = System.Threading.Timer;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 /// <summary>An implementation of <see cref="IDispatcherImpl"/> that uses the underlying Elegy dispatcher.</summary>
 [SuppressMessage(
@@ -50,13 +47,14 @@ internal sealed class ElegyDispatcherImpl : IDispatcherImpl
 		mTimer.Change( interval, Timeout.Infinite );
 	}
 
+	// TODO: Elegy.Avalonia: verify that this works
 	private void OnTimerTick( object? state )
 		//	=> GdDispatcher.SynchronizationContext.Post( mInvokeTimer, null );
-		=> SynchronizationContext.Current.Post( mInvokeTimer, null );
+		=> SynchronizationContext.Current!.Post( mInvokeTimer, null );
 
 	public void Signal()
 		//	=> GdDispatcher.SynchronizationContext.Post( mInvokeSignaled, this );
-		=> SynchronizationContext.Current.Post( mInvokeSignaled, this );
+		=> SynchronizationContext.Current!.Post( mInvokeSignaled, this );
 
 	private void InvokeSignaled( object? state )
 		=> Signaled?.Invoke();

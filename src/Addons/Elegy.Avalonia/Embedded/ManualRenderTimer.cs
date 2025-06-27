@@ -1,7 +1,6 @@
-using System;
 using Avalonia.Rendering;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 /// <summary>A <see cref="IRenderTimer"/> implementation that is only triggered manually.</summary>
 internal sealed class ManualRenderTimer : IRenderTimer

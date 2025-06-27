@@ -1,6 +1,6 @@
 ﻿using Avalonia.Input;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 /// <summary>
 /// An implementation of <see cref="IKeyboardNavigationHandler"/> that does NOT listen for tab.
@@ -8,12 +8,12 @@ namespace Elegy.Avalonia;
 /// </summary>
 internal sealed class ElegyKeyboardNavigationHandler : IKeyboardNavigationHandler
 {
-	private readonly KeyboardNavigationHandler _keyboardNavigationHandler = new();
+	private readonly KeyboardNavigationHandler mKeyboardNavigationHandler = new();
 
 	void IKeyboardNavigationHandler.SetOwner( IInputRoot owner )
 	{
 	}
 
 	public void Move( IInputElement element, NavigationDirection direction, KeyModifiers keyModifiers = KeyModifiers.None )
-		=> _keyboardNavigationHandler.Move( element, direction, keyModifiers );
+		=> mKeyboardNavigationHandler.Move( element, direction, keyModifiers );
 }

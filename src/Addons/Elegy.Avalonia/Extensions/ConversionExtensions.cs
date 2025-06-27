@@ -1,12 +1,11 @@
-﻿
-using System.Numerics;
+﻿using System.Numerics;
 using Avalonia;
 using Avalonia.Input;
 using AvKey = Avalonia.Input.Key;
 using ElKey = Silk.NET.Input.Key;
 using ElCursorShape = Silk.NET.Input.StandardCursor;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Extensions;
 
 /// <summary>Contains extensions methods to convert between Elegy and Avalonia types.</summary>
 public static class ConversionExtensions
@@ -306,7 +305,7 @@ public static class ConversionExtensions
 		[StandardCursorType.DragCopy] = ElCursorShape.Arrow,
 		[StandardCursorType.DragLink] = ElCursorShape.Arrow,
 		
-		// TODO: Silk.NET doesn't have diagonal drag icons
+		// TODO: Elegy-Avalonia: Silk.NET doesn't have diagonal drag icons
 		[StandardCursorType.SizeAll] = ElCursorShape.HResize,
 		[StandardCursorType.TopLeftCorner] = ElCursorShape.HResize,
 		[StandardCursorType.TopRightCorner] = ElCursorShape.HResize,

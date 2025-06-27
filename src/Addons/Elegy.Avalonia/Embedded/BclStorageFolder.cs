@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security;
-using System.Threading.Tasks;
+﻿using System.Security;
 using Avalonia.Platform.Storage;
+using Elegy.Avalonia.Utilities;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 internal sealed class BclStorageFolder : IStorageBookmarkFolder
 {
-	private Uri? _path;
+	private Uri? mPath;
 
 	public DirectoryInfo DirectoryInfo { get; }
 
@@ -21,7 +17,7 @@ internal sealed class BclStorageFolder : IStorageBookmarkFolder
 		=> true;
 
 	public Uri Path
-		=> _path ??= BuildPath();
+		=> mPath ??= BuildPath();
 
 	public BclStorageFolder( DirectoryInfo directoryInfo )
 		=> DirectoryInfo = directoryInfo;

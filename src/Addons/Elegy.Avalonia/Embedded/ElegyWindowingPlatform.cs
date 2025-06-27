@@ -1,7 +1,6 @@
-﻿using System;
-using Avalonia.Platform;
+﻿using Avalonia.Platform;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 internal sealed class ElegyWindowingPlatform : IWindowingPlatform
 {

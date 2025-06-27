@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Elegy.Avalonia;
+﻿namespace Elegy.Avalonia.Utilities;
 
 /// <summary>A reusable <see cref="IDisposable"/> implementation that does nothing when disposed.</summary>
 internal sealed class EmptyDisposable : IDisposable

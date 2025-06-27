@@ -1,7 +1,7 @@
 ﻿using Avalonia.Platform;
 using Silk.NET.Input;
 
-namespace Elegy.Avalonia;
+namespace Elegy.Avalonia.Embedded;
 
 /// <summary>A standard cursor, represented by a <see cref="GdCursorShape"/> enum value.</summary>
 internal sealed class ElegyStandardCursorImpl : ICursorImpl

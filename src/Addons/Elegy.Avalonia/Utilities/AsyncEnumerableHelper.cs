@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Elegy.Avalonia;
+﻿namespace Elegy.Avalonia.Utilities;
 
 internal static class AsyncEnumerableHelper
 {

@@ -9,6 +9,13 @@ using Elegy.Avalonia.Input;
 using AvControl = Avalonia.Controls.Control;
 namespace Elegy.Avalonia;
 
+// NOTE: "Embedded" is all the code for embedding Avalonia into Elegy,
+// while "Nested" is all the code for embedding Elegy into an Avalonia window.
+// It should also provide passthru so it can be both nested and embedded at the same time
+
+// TODO: Elegy.Avalonia: Implement top-level manager
+// TODO: Elegy.Avalonia: Passthrough mode, where Elegy is embedded into an Avalonia window, but there's also Avalonia inside Elegy
+
 /*
 /// <summary>Renders an Avalonia control and forwards input to it.</summary>
 public class AvaloniaControl : GdControl {
