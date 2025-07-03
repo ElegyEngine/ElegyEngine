@@ -12,7 +12,7 @@ namespace Elegy.RenderSystem.Resources
 	{
 		private GraphicsDevice mDevice;
 
-		public RenderTexture( GraphicsDevice device, in TextureMetadata data, in Span<byte> bytes )
+		public RenderTexture( GraphicsDevice device, in TextureMetadata data )
 		{
 			mDevice = device;
 			DeviceTexture = device.ResourceFactory.CreateTexture( new()
@@ -89,7 +89,10 @@ namespace Elegy.RenderSystem.Resources
 						 | TextureUsage.Storage.Filter( data.ShaderWrite )
 				}	
 			} );
-
+		}
+		
+		public RenderTexture( GraphicsDevice device, in TextureMetadata data, in Span<byte> bytes ) : this( device, data )
+		{
 			UpdatePixels( bytes );
 		}
 
