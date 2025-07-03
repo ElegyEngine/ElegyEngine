@@ -19,7 +19,7 @@ namespace Elegy.PlatformSystem.API
 				return false;
 			}
 
-			var doRegisterWindow = () =>
+			void DoRegisterWindow()
 			{
 				IInputContext inputContext = window.CreateInput();
 
@@ -29,7 +29,7 @@ namespace Elegy.PlatformSystem.API
 				mFocusWindow = window;
 				mFocusInputContext = inputContext;
 
-				window.FocusChanged += ( newState ) =>
+				window.FocusChanged += newState =>
 				{
 					if ( newState && HasWindow( window ) )
 					{
@@ -39,19 +39,19 @@ namespace Elegy.PlatformSystem.API
 				};
 
 				window.Closing += () => RemoveWindow( window );
-			};
+			}
 
 			// In case a window is not yet initialised (just created), create an
 			// input context etc. on load, when the window is actually ready to do so
 			if ( !window.IsInitialized )
 			{
-				window.Load += doRegisterWindow;
+				window.Load += DoRegisterWindow;
 				window.Initialize();
 				window.IsVisible = true;
 				return true;
 			}
 
-			doRegisterWindow();
+			DoRegisterWindow();
 			return true;
 		}
 
