@@ -41,9 +41,6 @@ namespace Elegy.RenderSystem.API
 		/// <summary>Draws a view to the backbuffer.</summary>
 		public static void RenderView( in View view )
 		{
-			Debug.Assert( view.Window is not null );
-			Debug.Assert( view.TargetSwapchain is not null );
-
 			mRenderCommands.Begin();
 
 			RenderDebugLines( view );
