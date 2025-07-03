@@ -1,20 +1,53 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿
 using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Input.Platform;
-using Avalonia.Platform;
-using Elegy.Avalonia.Input;
-using AvControl = Avalonia.Controls.Control;
+using Elegy.Avalonia.Platform;
+using SilkWindow = Silk.NET.Windowing.Window;
+using SilkInput = Silk.NET.Input.InputWindowExtensions;
+
 namespace Elegy.Avalonia;
 
 // NOTE: "Embedded" is all the code for embedding Avalonia into Elegy,
-// while "Nested" is all the code for embedding Elegy into an Avalonia window.
+// while "Platform" is all the code for embedding Elegy into an Avalonia window.
 // It should also provide passthru so it can be both nested and embedded at the same time
 
 // TODO: Elegy.Avalonia: Implement top-level manager
-// TODO: Elegy.Avalonia: Passthrough mode, where Elegy is embedded into an Avalonia window, but there's also Avalonia inside Elegy
+
+/// <summary>
+/// Handles Avalonia integration with Elegy.
+/// </summary>
+public static class AvaloniaManager
+{
+	private static Embedded.ElegyTopLevelImpl? mTopLevelImpl;
+	
+	/// <summary>
+	/// Initialises Avalonia as an in-game UI library. 
+	/// </summary>
+	public static void InitEmbedded()
+	{
+		var locator = AvaloniaLocator.Current;
+
+		// Passthrough mode, where Elegy (with embedded Avalonia) is itself embedded into an Avalonia window
+		bool passthrough = SilkWindow.GetWindowPlatform( viewOnly: false ) is AvaloniaWindowPlatform;
+		Embedded.ElegyPlatform.Initialize( passthrough );
+
+		mTopLevelImpl = new( Embedded.ElegyPlatform.Graphics, locator.GetService<IClipboard>()!, Embedded.ElegyPlatform.Compositor );
+	}
+
+	/// <summary>
+	/// Initialises Avalonia as a platform backend to be used by Elegy's platform system.
+	/// </summary>
+	/// <remarks>
+	/// Assumes there is already an Avalonia window up and running with the Vulkan Skia backend.
+	/// Call this before starting Elegy's app framework.
+	/// </remarks>
+	public static void InitPlatformBackend()
+	{
+		// TODO: Elegy.Avalonia platform mode
+		SilkWindow.Add( new AvaloniaWindowPlatform() );
+		SilkInput.Add( new AvaloniaInputPlatform() );
+	}
+}
 
 /*
 /// <summary>Renders an Avalonia control and forwards input to it.</summary>

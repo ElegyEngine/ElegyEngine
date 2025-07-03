@@ -11,7 +11,7 @@ public static class AppBuilderExtensions
 		=> builder
 			.UseStandardRuntimePlatformSubsystem()
 			.UseSkia()
-			.UseWindowingSubsystem( ElegyPlatform.Initialize )
+			.UseWindowingSubsystem( () => ElegyPlatform.Initialize(), "Elegy Avalonia Platform" )
 			.AfterSetup( _ =>
 				AvaloniaLocator.CurrentMutable
 					.Bind<IKeyboardNavigationHandler>()

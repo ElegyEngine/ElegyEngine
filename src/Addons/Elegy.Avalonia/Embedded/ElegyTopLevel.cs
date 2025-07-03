@@ -6,7 +6,7 @@ namespace Elegy.Avalonia.Embedded;
 
 /// <summary>
 /// A <see cref="TopLevel"/> used with Elegy.
-/// This is implicitly created by <see cref="AvaloniaControl"/>.
+/// This is implicitly created by <see cref="AvaloniaManager"/>.
 /// </summary>
 public sealed class ElegyTopLevel : EmbeddableControlRoot
 {

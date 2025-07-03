@@ -10,6 +10,7 @@
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="11.2.3"/>
         <PackageReference Include="Avalonia.Skia" Version="11.2.3" />
+        <PackageReference Include="Silk.NET.Windowing.Common" Version="2.22.0" />
     </ItemGroup>
 
     <ItemGroup>

@@ -18,7 +18,7 @@ internal sealed class ElegyTopLevelImpl : ITopLevelImpl
 {
 	private readonly ElegyPlatformGraphics mPlatformGraphics;
 	private readonly IClipboard mClipboard;
-	private readonly TouchDevice mTouchDevice = new();
+	//private readonly TouchDevice mTouchDevice = new();
 
 	private ElegySkiaSurface? mSurface;
 	private WindowTransparencyLevel mTransparencyLevel = WindowTransparencyLevel.Transparent;
@@ -99,7 +99,7 @@ internal sealed class ElegyTopLevelImpl : ITopLevelImpl
 		=> mSurface ??= CreateSurface();
 
 	private IEnumerable<object> GetOrCreateSurfaces()
-		=> new object[] { GetOrCreateSurface() };
+		=> [GetOrCreateSurface()];
 
 	[SuppressMessage( "ReSharper", "CompareOfFloatsByEqualityOperator", Justification = "Doesn't affect correctness" )]
 	public void SetRenderSize( PixelSize renderSize, double renderScaling )
