@@ -6,13 +6,28 @@ using System.Globalization;
 namespace Elegy.Common.Utilities
 {
 	/// <summary>
-	/// Numeric parsing utilities.
+	/// Numeric parsing utilities. Essentially a wrapper around .NET's numeric parsing that uses
+	/// <see cref="CultureInfo.InvariantCulture"/> and a particular <see cref="NumberStyles"/>.
 	/// </summary>
+	/// <example>
+	/// <code>
+	/// float example = Parse.Float( "1.23" );
+	/// Vector2 example2 = Parse.Vector2( "0.5 20.25" );
+	/// </code>
+	/// </example>
 	public static class Parse
 	{
 		/// <summary>
 		/// Attempts to parse an integer from a string, modifying <c>result</c> upon success.
 		/// </summary>
+		/// <example>
+		/// <code>
+		/// if ( Parse.TryInt( "950", out int result )
+		/// {
+		///   DoSomething( result );
+		/// }
+		/// </code>
+		/// </example>
 		public static bool TryInt( string token, out int result )
 		{
 			return int.TryParse( token, NumberStyles.Integer, CultureInfo.InvariantCulture, out result );
@@ -99,6 +114,7 @@ namespace Elegy.Common.Utilities
 		/// Parses a <see cref="System.Numerics.Vector3"/> from a string.
 		/// </summary>
 		/// <param name="token">A string like "10 20 30".</param>
+		/// <example><code>Vector3 example = Parse.Vector3( "64 128 255" );</code></example>
 		public static Vector3 Vector3( string token )
 		{
 			int firstSpace = token.IndexOf( ' ' );
