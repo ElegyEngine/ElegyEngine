@@ -24,6 +24,7 @@ namespace Elegy.RenderSystem.Objects
 		[StructLayout( LayoutKind.Sequential )]
 		private struct CameraData
 		{
+			// TODO: Handle multiview CameraData
 			public Matrix4x4 Transform;
 			public Matrix4x4 Projection;
 		}
