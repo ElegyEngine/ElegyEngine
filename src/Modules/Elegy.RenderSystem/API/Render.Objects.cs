@@ -87,8 +87,12 @@ namespace Elegy.RenderSystem.API
 			} );
 
 		/// <summary>Creates a render texture.</summary>
+		public static RenderTexture CreateTexture( TextureMetadata metadata )
+			=> mTextureSet.AddAndGet( new( mDevice, metadata ) );
+
+		/// <summary>Creates a render texture with an existing buffer of pixels.</summary>
 		public static RenderTexture CreateTexture( TextureMetadata metadata, Span<byte> data )
-			=> mTextureSet.AddAndGet( new( mDevice, metadata, data ) ); // TODO: make texture data optional, generate empty if null
+			=> mTextureSet.AddAndGet( new( mDevice, metadata, data ) );
 
 		/// <summary>Frees a render texture.</summary>
 		public static bool FreeTexture( ref RenderTexture? texture )
@@ -120,11 +124,19 @@ namespace Elegy.RenderSystem.API
 
 		/// <summary>Creates a render view from a window.</summary>
 		public static View CreateView( IWindow window )
-			=> mViews.AddAndGet( new( mDevice, window ) );
+			=> mViews.AddAndGet( new( mDevice, window, null ) );
 
-		/// <summary>Creates a render view from a render target texture.</summary>
+		/// <summary>Creates a render view from a window and an external swapchain.</summary>
+		public static View CreateView( IWindow window, Veldrid.Swapchain swapchain )
+			=> mViews.AddAndGet( new( mDevice, window, swapchain ) );
+
+		/// <summary>Creates a render view for a render target texture.</summary>
 		public static View CreateView( AssetSystem.Resources.Texture renderTarget )
-			=> mViews.AddAndGet( new( mDevice, renderTarget.RenderTexture ) );
+			=> mViews.AddAndGet( new( mDevice, renderTarget.RenderTexture! ) );
+
+		/// <summary>Creates a render view for a render backend texture.</summary>
+		public static View CreateView( RenderTexture renderTarget )
+			=> mViews.AddAndGet( new( mDevice, renderTarget ) );
 
 		/// <summary>Gets the current window's view, if any.</summary>
 		public static View? GetCurrentWindowView()
@@ -154,10 +166,9 @@ namespace Elegy.RenderSystem.API
 
 		/// <summary>Frees a view.</summary>
 		public static bool FreeView( ref View? view )
-			=> mViews.RemoveAndThen( view, ( view ) =>
+			=> mViews.RemoveAndThen( view, v =>
 			{
-				view.Dispose();
-				view = null;
+				v?.Dispose();
 			} );
 
 		/// <summary>Creates a renderable volume.</summary>

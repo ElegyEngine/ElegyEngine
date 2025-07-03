@@ -151,7 +151,7 @@ namespace Elegy.RenderSystem.API
 
 			var worldVariant = mDebugLineMaterial.Template.ShaderVariants["GENERAL"];
 
-			mRenderCommands.SetFramebuffer( view.RenderFramebuffer );
+			mRenderCommands.SetFramebuffer( view.RenderBuffer );
 			mRenderCommands.SetViewport( 0, new( 0.0f, 0.0f, view.RenderSize.X, view.RenderSize.Y, 0.0f, 1.0f ) );
 
 			mRenderCommands.SetPipeline( worldVariant.Pipeline );

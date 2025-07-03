@@ -23,7 +23,7 @@ namespace Elegy.RenderSystem.API
 
 		public static void SetRenderView( CommandList commands, in View view )
 		{
-			commands.SetFramebuffer( view.RenderFramebuffer );
+			commands.SetFramebuffer( view.RenderBuffer );
 			commands.ClearColorTarget( 0, new( 0.01f, 0.05f, 0.06f, 1.0f ) );
 			commands.ClearDepthStencil( 1.0f );
 			commands.SetViewport( 0, new( 0.0f, 0.0f, view.RenderSize.X, view.RenderSize.Y, 0.0f, 1.0f ) );
@@ -86,7 +86,7 @@ namespace Elegy.RenderSystem.API
 		{
 			var windowDefaultVariant = mWindowMaterial.Template.GetVariant( 0 );
 			mRenderCommands.SetPipeline( windowDefaultVariant.Pipeline );
-			mRenderCommands.SetFramebuffer( view.Framebuffer );
+			mRenderCommands.SetFramebuffer( view.BackBuffer );
 			mRenderCommands.ClearColorTarget( 0, new( 0.02f, 0.10f, 0.12f, 1.0f ) );
 			mRenderCommands.SetViewport( 0, new( 0.0f, 0.0f, view.RenderSize.X, view.RenderSize.Y, 0.0f, 1.0f ) );
 

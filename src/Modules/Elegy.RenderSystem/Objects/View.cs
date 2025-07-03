@@ -29,17 +29,22 @@ namespace Elegy.RenderSystem.Objects
 			public Matrix4x4 Projection;
 		}
 
+		private readonly GraphicsDevice mDevice;
+		private bool mHasExternalSwapchain;
 		private CameraData mCameraData;
 
 		private View( GraphicsDevice device )
 		{
-			CameraBuffer = device.ResourceFactory
+			mDevice = device;
+			CameraBuffer = mDevice.ResourceFactory
 				.CreateBufferForStruct<CameraData>( BufferUsage.UniformBuffer );
 
-			PerViewSet = device.ResourceFactory.CreateSet( Render.Layouts.PerView, CameraBuffer );
+			PerViewSet = mDevice.ResourceFactory.CreateSet( Render.Layouts.PerView, CameraBuffer );
 
-			device.UpdateBuffer( CameraBuffer, 0, mCameraData );
+			mDevice.UpdateBuffer( CameraBuffer, 0, mCameraData );
 		}
+
+		// TODO: View needs more clear constructors: window swapchains, composition swapchains, texture targets
 
 		internal View( GraphicsDevice device, ITexture renderTarget )
 			: this( device )
@@ -47,7 +52,7 @@ namespace Elegy.RenderSystem.Objects
 			Debug.Assert( renderTarget is RenderTexture );
 			TargetTexture = ((RenderTexture)renderTarget).DeviceTexture;
 
-			ViewTexture = device.ResourceFactory.CreateTexture( TextureDescription.Texture2D(
+			ViewTexture = mDevice.ResourceFactory.CreateTexture( TextureDescription.Texture2D(
 				width: (uint)renderTarget.Width,
 				height: (uint)renderTarget.Height,
 				mipLevels: 1,
@@ -55,7 +60,7 @@ namespace Elegy.RenderSystem.Objects
 				format: PixelFormat.B8_G8_R8_A8_UNorm,
 				usage: TextureUsage.RenderTarget | TextureUsage.Sampled ) );
 
-			DepthTexture = device.ResourceFactory.CreateTexture( TextureDescription.Texture2D(
+			DepthTexture = mDevice.ResourceFactory.CreateTexture( TextureDescription.Texture2D(
 				width: (uint)renderTarget.Width,
 				height: (uint)renderTarget.Height,
 				mipLevels: 1,
@@ -63,59 +68,26 @@ namespace Elegy.RenderSystem.Objects
 				format: PixelFormat.D32_Float_S8_UInt,
 				usage: TextureUsage.DepthStencil ) );
 
-			Framebuffer = device.ResourceFactory.CreateFramebuffer( new( null, TargetTexture ) );
+			BackBuffer = mDevice.ResourceFactory.CreateFramebuffer( new( null, TargetTexture ) );
+			RenderBuffer = mDevice.ResourceFactory.CreateFramebuffer( new( DepthTexture, ViewTexture ) );
 			RenderSize = new( renderTarget.Width, renderTarget.Height );
 
-			WindowSet = device.ResourceFactory.CreateSet( Render.Layouts.Window, ViewTexture, Render.Samplers.LinearBorder );
+			WindowSet = mDevice.ResourceFactory.CreateSet( Render.Layouts.Window, ViewTexture, Render.Samplers.LinearBorder );
 		}
 
-		internal View( GraphicsDevice device, IWindow window )
+		internal View( GraphicsDevice device, IWindow window, Swapchain? externalSwapchain )
 			: this( device )
 		{
 			Window = window;
-			TargetSwapchain = RenderBackend.WindowSurfaceHelper.CreateSwapchain( device, window );
+			TargetSwapchain = externalSwapchain ?? RenderBackend.WindowSurfaceHelper.CreateSwapchain( device, window );
+			mHasExternalSwapchain = externalSwapchain != null;
 
-			var regenerateBuffers = ( bool dispose ) =>
-			{
-				Framebuffer = TargetSwapchain.Framebuffer;
-				TargetTexture = Framebuffer.ColorTargets[0].Target;
-
-				if ( dispose )
-				{
-					WindowSet.Dispose();
-					RenderFramebuffer.Dispose();
-					DepthTexture.Dispose();
-					ViewTexture.Dispose();
-				}
-
-				ViewTexture = device.ResourceFactory.CreateTexture( TextureDescription.Texture2D(
-					width: TargetTexture.Width,
-					height: TargetTexture.Height,
-					mipLevels: 1,
-					arrayLayers: 1,
-					format: PixelFormat.B8_G8_R8_A8_UNorm,
-					usage: TextureUsage.RenderTarget | TextureUsage.Sampled ) );
-
-				DepthTexture = device.ResourceFactory.CreateTexture( TextureDescription.Texture2D(
-					width: TargetTexture.Width,
-					height: TargetTexture.Height,
-					mipLevels: 1,
-					arrayLayers: 1,
-					format: PixelFormat.D32_Float_S8_UInt,
-					usage: TextureUsage.DepthStencil ) );
-
-				RenderFramebuffer = device.ResourceFactory.CreateFramebuffer( new( DepthTexture, ViewTexture ) );
-				RenderSize = new( Window.Size.X, Window.Size.Y );
-
-				WindowSet = device.ResourceFactory.CreateSet( Render.Layouts.Window, ViewTexture, Render.Samplers.LinearBorder );
-			};
-
-			regenerateBuffers( false );
+			RegenerateWindowResources( false );
 
 			window.FramebufferResize += newSize =>
 			{
 				TargetSwapchain.Resize( (uint)newSize.X, (uint)newSize.Y );
-				regenerateBuffers( true );
+				RegenerateWindowResources( true );
 			};
 		}
 
@@ -143,7 +115,7 @@ namespace Elegy.RenderSystem.Objects
 		/// Framebuffer associated with <see cref="TargetSwapchain"/> for displaying the view onto the window.
 		/// In the case of a custom render target, it's just a framebuffer to perform post-processing on.
 		/// </summary>
-		public Framebuffer Framebuffer { get; private set; }
+		public Framebuffer BackBuffer { get; private set; }
 
 		/// <summary>
 		/// The texture associated with either the <see cref="Window"/> or a custom render target.
@@ -159,7 +131,7 @@ namespace Elegy.RenderSystem.Objects
 		/// <summary>
 		/// Framebuffer associated with <see cref="ViewTexture"/> and <see cref="DepthTexture"/> for rendering.
 		/// </summary>
-		public Framebuffer RenderFramebuffer { get; private set; }
+		public Framebuffer RenderBuffer { get; private set; }
 
 		/// <summary>
 		/// The texture to render into before post-processing and displaying it on the window.
@@ -219,13 +191,56 @@ namespace Elegy.RenderSystem.Objects
 		}
 
 		/// <summary>
+		/// Regenerates the view's resources.
+		/// </summary>
+		public void RegenerateWindowResources( bool dispose )
+		{
+			if ( Window is null || TargetSwapchain is null )
+			{
+				return;
+			}
+
+			BackBuffer = TargetSwapchain.Framebuffer;
+			TargetTexture = BackBuffer.ColorTargets[0].Target;
+
+			if ( dispose )
+			{
+				WindowSet.Dispose();
+				RenderBuffer.Dispose();
+				DepthTexture.Dispose();
+				ViewTexture.Dispose();
+			}
+
+			ViewTexture = mDevice.ResourceFactory.CreateTexture( TextureDescription.Texture2D(
+				width: TargetTexture.Width,
+				height: TargetTexture.Height,
+				mipLevels: 1,
+				arrayLayers: 1,
+				format: PixelFormat.B8_G8_R8_A8_UNorm,
+				usage: TextureUsage.RenderTarget | TextureUsage.Sampled ) );
+
+			DepthTexture = mDevice.ResourceFactory.CreateTexture( TextureDescription.Texture2D(
+				width: TargetTexture.Width,
+				height: TargetTexture.Height,
+				mipLevels: 1,
+				arrayLayers: 1,
+				format: PixelFormat.D32_Float_S8_UInt,
+				usage: TextureUsage.DepthStencil ) );
+
+			RenderBuffer = mDevice.ResourceFactory.CreateFramebuffer( new( DepthTexture, ViewTexture ) );
+			RenderSize = new( Window.Size.X, Window.Size.Y );
+
+			WindowSet = mDevice.ResourceFactory.CreateSet( Render.Layouts.Window, ViewTexture, Render.Samplers.LinearBorder );
+		}
+
+		/// <summary>
 		/// Disposes of all resources.
 		/// </summary>
 		public void Dispose()
 		{
 			PerViewSet.Dispose();
 			WindowSet.Dispose();
-			RenderFramebuffer.Dispose();
+			RenderBuffer.Dispose();
 
 			ViewTexture.Dispose();
 			DepthTexture.Dispose();
