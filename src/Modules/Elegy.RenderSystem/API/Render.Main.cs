@@ -110,18 +110,12 @@ namespace Elegy.RenderSystem.API
 				}
 			}
 
-			if ( GetView( window ) is View view )
+			if ( GetView( window ) is { } view )
 			{
 				return view;
 			}
 
-			View? renderView = CreateView( window );
-			if ( renderView is null )
-			{
-				mLogger.Error( "Cannot create renderview from window!" );
-			}
-
-			return renderView;
+			return CreateView( window );
 		}
 
 		public static GraphicsDevice? CreateGraphicsDevice( string[] extraInstanceExtensions, string[] extraDeviceExtensions )
