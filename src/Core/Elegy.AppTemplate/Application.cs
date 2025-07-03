@@ -16,6 +16,8 @@ using System.Diagnostics;
 using Elegy.Common.Interfaces;
 using ElegyConsole = Elegy.ConsoleSystem.API.Console;
 
+// TODO: Redo the app framework to use a builder pattern, so we can extend it for Avalonia etc.
+
 namespace Elegy.AppTemplate
 {
 	[ElegyBootstrap]
