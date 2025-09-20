@@ -13,7 +13,7 @@ namespace Elegy.Common.Assets
 		/// <summary>Path to engine configuration. Overrides <see cref="Engine"/>.</summary>
 		public string? EngineConfigName { get; set; }
 
-		/// <summary>Engine configuration. By default will load 'engineConfig.json'.</summary>
+		/// <summary>Engine configuration. By default, it will load 'engineConfig.json'.</summary>
 		public EngineConfig Engine { get; set; } = new();
 
 		/// <summary>Commandline arguments.</summary>
@@ -27,10 +27,10 @@ namespace Elegy.Common.Assets
 
 		/// <summary>If set to <c>true</c>, will not load application plugins.</summary>
 		public bool ToolMode { get; set; }
-		
+
 		/// <summary> Additional Vulkan instance extensions. </summary>
 		public string[] VulkanInstanceExtensions { get; set; } = [];
-		
+
 		/// <summary> Additional Vulkan device extensions. </summary>
 		public string[] VulkanDeviceExtensions { get; set; } = [];
 	}

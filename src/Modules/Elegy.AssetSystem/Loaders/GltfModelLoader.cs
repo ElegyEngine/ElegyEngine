@@ -4,7 +4,6 @@
 using Elegy.AssetSystem.Interfaces;
 using Elegy.Common.Assets;
 using Elegy.Common.Utilities;
-using Elegy.ConsoleSystem;
 
 using EngineMesh = Elegy.Common.Assets.MeshData.Mesh;
 

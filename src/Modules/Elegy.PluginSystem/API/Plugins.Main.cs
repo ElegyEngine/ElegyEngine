@@ -1,7 +1,6 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using System.Diagnostics;
 using Elegy.Common.Interfaces;
 using System.Reflection;
 
@@ -12,6 +11,13 @@ namespace Elegy.PluginSystem.API
 	/// </summary>
 	public static partial class Plugins
 	{
+		/// <summary>
+		/// Reads plugin metadata, and the plugin later gets instantiated in <see cref="ActivatePlugins"/>.
+		/// Calling this after plugins have been activated has no effect.
+		/// </summary>
+		public static bool ScanLibrary( string path )
+			=> LoadLibrary( path ) is not null;
+
 		/// <summary>
 		/// Reads plugin metadata, loads a plugin assembly and returns an instance of the plugin.
 		/// </summary>
@@ -39,7 +45,7 @@ namespace Elegy.PluginSystem.API
 			{
 				return null;
 			}
-			
+
 			if ( !RegisterPlugin( plugin, library.Assembly, path ) )
 			{
 				mLogger.Warning( $"LoadPlugin: failed to load plugin '{path}'" );
@@ -121,18 +127,20 @@ namespace Elegy.PluginSystem.API
 		/// </summary>
 		public static bool RegisterPlugin( IPlugin plugin, Assembly? assembly = null, string? metadataPath = null, List<string>? failedPlugins = null )
 		{
-			// Register CVars here so they can be tracked and unregistered when the plugin is unloaded
-			ConsoleSystem.Commands.ConVarRegistry cvarRegistry = new( assembly, plugin );
-			cvarRegistry.RegisterAll();
+			foreach ( var collector in mPluginCollectors )
+			{
+				collector.BeforePluginLoaded( assembly, plugin );
+			}
 
 			if ( !plugin.Init() )
 			{
 				failedPlugins?.Add( $"{plugin.Name} - failed to initialise (error message: '{plugin.Error}')" );
-				cvarRegistry.UnregisterAll();
+				foreach ( var collector in mPluginCollectors )
+				{
+					collector.OnPluginFailed( assembly, plugin );
+				}
 				return false;
 			}
-
-			mConsoleRegistries.Add( plugin, cvarRegistry );
 
 			if ( plugin is IApplication applicationPlugin )
 			{
@@ -152,6 +160,12 @@ namespace Elegy.PluginSystem.API
 		}
 
 		/// <summary>
+		/// Instantiates and registers a plugin collector of type <typeparamref name="T"/>.
+		/// </summary>
+		public static void RegisterPluginCollector<T>() where T : IPluginCollector, new()
+			=> RegisterPluginCollector( new T() );
+
+		/// <summary>
 		/// Registers a plugin collector.
 		/// </summary>
 		public static void RegisterPluginCollector( IPluginCollector collector )
@@ -166,7 +180,7 @@ namespace Elegy.PluginSystem.API
 		}
 
 		/// <summary>
-		/// Registers a plugin collector.
+		/// Unregisters a plugin collector.
 		/// </summary>
 		public static bool UnregisterPluginCollector<TCollector>() where TCollector : IPluginCollector
 		{

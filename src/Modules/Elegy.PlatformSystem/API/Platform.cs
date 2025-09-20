@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Assets;
-using Elegy.PluginSystem.API;
 using Silk.NET.Input;
 using Silk.NET.Windowing;
 
@@ -13,12 +12,11 @@ namespace Elegy.PlatformSystem.API
 	/// </summary>
 	public static partial class Platform
 	{
-		public static bool Init( in LaunchConfig config )
+		public static bool Init()
 		{
 			mWindowPlatform = null;
 
 			mLogger.Log( "Init" );
-			Plugins.RegisterDependency( "Elegy.PlatformSystem", typeof( Platform ).Assembly );
 
 			return true;
 		}
@@ -36,7 +34,9 @@ namespace Elegy.PlatformSystem.API
 		public static void Shutdown()
 		{
 			mLogger.Log( "Shutdown" );
-			Plugins.UnregisterDependency( "Elegy.PlatformSystem" );
+
+			Set( null );
+			OverrideInput( mDummyInput );
 		}
 	}
 }

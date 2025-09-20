@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Core\Elegy.Common\Elegy.Common.csproj" />
+      <ProjectReference Include="..\..\Modules\Elegy.AssetSystem\Elegy.AssetSystem.csproj" />
+      <ProjectReference Include="..\..\Modules\Elegy.CommandSystem\Elegy.CommandSystem.csproj" />
+      <ProjectReference Include="..\..\Modules\Elegy.FileSystem\Elegy.FileSystem.csproj" />
+      <ProjectReference Include="..\..\Modules\Elegy.LogSystem\Elegy.LogSystem.csproj" />
+      <ProjectReference Include="..\..\Modules\Elegy.PluginSystem\Elegy.PluginSystem.csproj" />
+    </ItemGroup>
+
+</Project>

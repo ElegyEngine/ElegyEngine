@@ -1,7 +1,10 @@
-﻿
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
+// SPDX-License-Identifier: MIT
+
 using Avalonia;
 using Avalonia.Input.Platform;
 using Elegy.Avalonia.Platform;
+using Silk.NET.Windowing;
 using SilkWindow = Silk.NET.Windowing.Window;
 using SilkInput = Silk.NET.Input.InputWindowExtensions;
 
@@ -19,7 +22,7 @@ namespace Elegy.Avalonia;
 public static class AvaloniaManager
 {
 	private static Embedded.ElegyTopLevelImpl? mTopLevelImpl;
-	
+
 	/// <summary>
 	/// Initialises Avalonia as an in-game UI library. 
 	/// </summary>
@@ -41,11 +44,14 @@ public static class AvaloniaManager
 	/// Assumes there is already an Avalonia window up and running with the Vulkan Skia backend.
 	/// Call this before starting Elegy's app framework.
 	/// </remarks>
-	public static void InitPlatformBackend()
+	public static IWindowPlatform InitPlatformBackend()
 	{
 		// TODO: Elegy.Avalonia platform mode
-		SilkWindow.Add( new AvaloniaWindowPlatform() );
+		IWindowPlatform windowPlatform = new AvaloniaWindowPlatform();
+		SilkWindow.Add( windowPlatform );
 		SilkInput.Add( new AvaloniaInputPlatform() );
+
+		return windowPlatform;
 	}
 }
 

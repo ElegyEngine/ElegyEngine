@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: MIT
 
 using Collections.Pooled;
-using Elegy.ConsoleSystem;
-using Elegy.FileSystem.API;
 using Elegy.RenderBackend.Extensions;
 using Elegy.RenderSystem.Objects;
 using Elegy.RenderSystem.Resources;
 using System.Text;
+using Elegy.Common.Interfaces.Services;
+using Elegy.Common.Utilities;
 using Elegy.RenderBackend;
 using Veldrid;
 
@@ -16,6 +16,7 @@ namespace Elegy.RenderSystem.API
 	public static partial class Render
 	{
 		private static TaggedLogger mLogger = new( "Render" );
+		private static IFileSystem mFileSystem => ElegyInterfaceLocator.GetFileSystem();
 
 		// TODO: dynamic capacity configuration
 		private static MeshEntitySystem mEntitySystem = new( 1024 );
@@ -71,13 +72,13 @@ namespace Elegy.RenderSystem.API
 
 		private static string? FindShaderBinaryPath( string path )
 		{
-			string? result = Files.PathTo( $"{path}.ps.spv", PathFlags.File );
+			string? result = mFileSystem.PathToFile( $"{path}.ps.spv" );
 			if ( result is not null )
 			{
 				return result.Replace( ".ps.spv", null );
 			}
 
-			result = Files.PathTo( $"{path}.cs.spv", PathFlags.File );
+			result = mFileSystem.PathToFile( $"{path}.cs.spv" );
 			if ( result is not null )
 			{
 				return result.Replace( ".cs.spv", null );

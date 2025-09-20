@@ -2,8 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Assets;
-using Elegy.ConsoleSystem;
-using Elegy.PluginSystem.API;
+using Elegy.Common.Utilities;
 
 namespace Elegy.InputSystem.API
 {
@@ -14,11 +13,9 @@ namespace Elegy.InputSystem.API
 	{
 		private static TaggedLogger mLogger = new( "Input" );
 
-		public static bool Init( in LaunchConfig config )
+		public static bool Init()
 		{
 			mLogger.Log( "Init" );
-
-			Plugins.RegisterDependency( "Elegy.InputSystem", typeof( Input ).Assembly );
 
 			return true;
 		}
@@ -31,7 +28,6 @@ namespace Elegy.InputSystem.API
 		public static void Shutdown()
 		{
 			mLogger.Log( "Shutdown" );
-			Plugins.UnregisterDependency( "Elegy.InputSystem" );
 		}
 	}
 }

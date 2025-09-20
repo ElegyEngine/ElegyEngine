@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Reflection;
+using Elegy.LogSystem.API;
 using Elegy.MapCompiler.Assets;
 
 namespace Elegy.MapCompiler.ConsoleArguments
@@ -48,8 +49,8 @@ namespace Elegy.MapCompiler.ConsoleArguments
 			}
 			catch ( Exception )
 			{
-				Console.Error( "Elegy.MapCompiler", $"Parameter '{argumentObject.Name}' has invalid value '{value}'" );
-				Console.Error( "Elegy.MapCompiler", $"This parameter can only be {argumentObject.GetPossibleValues()}" );
+				Log.Error( "Elegy.MapCompiler", $"Parameter '{argumentObject.Name}' has invalid value '{value}'" );
+				Log.Error( "Elegy.MapCompiler", $"This parameter can only be {argumentObject.GetPossibleValues()}" );
 				return true;
 			}
 
@@ -60,8 +61,8 @@ namespace Elegy.MapCompiler.ConsoleArguments
 			}
 			catch ( Exception ex )
 			{
-				Console.Error( "Elegy.MapCompiler", $"Internal error: failed to set parameter '{argumentObject.Name}'" );
-				Console.Error( "Elegy.MapCompiler", $"Message: {ex.Message}" );
+				Log.Error( "Elegy.MapCompiler", $"Internal error: failed to set parameter '{argumentObject.Name}'" );
+				Log.Error( "Elegy.MapCompiler", $"Message: {ex.Message}" );
 			}
 
 			return true;
@@ -73,6 +74,12 @@ namespace Elegy.MapCompiler.ConsoleArguments
 			for ( int i = 0; i < args.Length; i++ )
 			{
 				string argumentName = args[i];
+				// Skip these ones
+				if ( argumentName is "-verbose" or "-dev" )
+				{
+					continue;
+				}
+
 				string argumentValue = "1";
 				if ( i < args.Length - 1 )
 				{
@@ -82,7 +89,7 @@ namespace Elegy.MapCompiler.ConsoleArguments
 
 				if ( !ProcessSingleArgument( argumentName, argumentValue, parameters ) )
 				{
-					Console.Error( "Elegy.MapCompiler", $"Unknown parameter '{argumentName}' with value '{argumentValue}'" );
+					Log.Error( "Elegy.MapCompiler", $"Unknown parameter '{argumentName}' with value '{argumentValue}'" );
 				}
 			}
 		}

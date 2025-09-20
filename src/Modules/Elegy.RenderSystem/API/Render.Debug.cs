@@ -80,7 +80,7 @@ namespace Elegy.RenderSystem.API
 			for ( int i = 0; i < span.Length; i++ )
 			{
 				ref var line = ref span[i];
-				
+
 				if ( line.ExpireTime < mLastFrameTime )
 				{
 					// Expiry times that are equal to float.MinValue are basically

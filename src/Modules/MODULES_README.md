@@ -3,7 +3,7 @@
 
 You are reading the description for one of the following:
 * Elegy.AssetSystem
-* Elegy.ConsoleSystem
+* Elegy.LogSystem
 * Elegy.FileSystem
 * Elegy.InputSystem
 * Elegy.PlatformSystem

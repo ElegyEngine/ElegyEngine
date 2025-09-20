@@ -4,7 +4,7 @@ materials/tools/nodraw
 	materialTemplate NoDraw
 	{
 		// TrenchBroom dies upon encountering quotation marks here, so do not use them
-		map textures/tools/nodraw
+		map textures/tools/nodraw.png
 	}
 
 	compilerParams
@@ -24,7 +24,7 @@ materials/tools/blocklight
 {
 	materialTemplate NoDraw
 	{
-		map textures/tools/blocklight
+		map textures/tools/blocklight.png
 	}
 
 	compilerParams
@@ -39,7 +39,7 @@ materials/tools/trigger
 {
 	materialTemplate NoDraw
 	{
-		map textures/tools/trigger
+		map textures/tools/trigger.png
 	}
 
 	compilerParams

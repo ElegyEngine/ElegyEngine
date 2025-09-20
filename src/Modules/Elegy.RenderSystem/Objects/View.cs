@@ -12,7 +12,7 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using Veldrid;
 
-using ITexture = Elegy.AssetSystem.Interfaces.Rendering.ITexture;
+using ITexture = Elegy.Common.Interfaces.Rendering.ITexture;
 
 namespace Elegy.RenderSystem.Objects
 {

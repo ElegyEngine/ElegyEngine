@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Assets;
-using Elegy.ConsoleSystem;
+using Elegy.Common.Utilities;
 
 namespace Elegy.FileSystem.API
 {
@@ -13,9 +13,9 @@ namespace Elegy.FileSystem.API
 		private static string mRootPath = Directory.GetCurrentDirectory();
 		private static List<string> mOtherGamePaths = new();
 
-		private static ApplicationConfig mBaseGameConfig = default( ApplicationConfig );
+		private static ApplicationConfig mBaseGameConfig;
 		private static List<ApplicationConfig> mOtherGameConfigs = new();
-		private static EngineConfig mEngineConfig = default( EngineConfig );
+		private static EngineConfig mEngineConfig;
 
 		private static bool ExistsDirect( string destination, PathFlags flags )
 		{

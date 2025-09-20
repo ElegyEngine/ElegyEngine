@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.AppTemplate;
+using Elegy.App;
 using Silk.NET.Windowing;
 
 namespace Elegy.Launcher2
@@ -13,7 +13,7 @@ namespace Elegy.Launcher2
 			Console.Title = "Elegy.Launcher2";
 			Window.PrioritizeSdl();
 
-			Application.Start(
+			AppTemplate.Start(
 				config:
 					new()
 					{

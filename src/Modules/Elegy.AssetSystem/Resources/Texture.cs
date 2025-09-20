@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Assets;
-using Elegy.AssetSystem.Interfaces.Rendering;
+using Elegy.Common.Interfaces.Rendering;
 
 namespace Elegy.AssetSystem.Resources
 {

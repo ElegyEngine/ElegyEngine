@@ -1,4 +1,7 @@
-﻿using System.Numerics;
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
+// SPDX-License-Identifier: MIT
+
+using System.Numerics;
 using Avalonia;
 using Avalonia.Input;
 using AvKey = Avalonia.Input.Key;

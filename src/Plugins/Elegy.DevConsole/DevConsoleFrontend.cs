@@ -3,14 +3,14 @@
 
 using Elegy.Common.Utilities;
 using Elegy.Common.Interfaces;
-using Elegy.ConsoleSystem;
-using Elegy.ConsoleSystem.Frontends;
+using Elegy.LogSystem;
+using Elegy.LogSystem.Frontends;
 using System.Text;
+using Elegy.CommandSystem.API;
+using Elegy.LogSystem.API;
 
 namespace Elegy.DevConsole
 {
-	using Console = ConsoleSystem.API.Console;
-	
 	internal sealed class ConsoleMessage
 	{
 		//public byte[] Message { get; set; } = Array.Empty<byte>();
@@ -132,7 +132,7 @@ namespace Elegy.DevConsole
 
 			mLogger.Verbose( $"Received data: {receivedCommand} (raw: '{Encoding.ASCII.GetString( data )}')" );
 
-			Console.Execute( receivedCommand );
+			Commands.Execute( receivedCommand );
 		}
 
 		//private void LogEvent( Godot.Collections.Array? serviceResult )

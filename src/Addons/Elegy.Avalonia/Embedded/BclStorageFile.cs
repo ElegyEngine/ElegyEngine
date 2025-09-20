@@ -1,4 +1,7 @@
-﻿using System.Security;
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
+// SPDX-License-Identifier: MIT
+
+using System.Security;
 using Avalonia.Platform.Storage;
 
 namespace Elegy.Avalonia.Embedded;

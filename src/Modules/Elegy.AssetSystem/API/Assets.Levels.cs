@@ -3,7 +3,6 @@
 
 using Elegy.Common.Assets;
 using Elegy.AssetSystem.Interfaces;
-using Elegy.FileSystem.API;
 
 namespace Elegy.AssetSystem.API
 {
@@ -14,14 +13,14 @@ namespace Elegy.AssetSystem.API
 		/// </summary>
 		public static ElegyMapDocument? LoadLevel( string path )
 		{
-			string? fullPath = Files.PathTo( path, PathFlags.File );
+			string? fullPath = mFileSystem.PathToFile( path );
 			if ( fullPath is null )
 			{
 				mLogger.Error( $"LoadLevel: Can't find level '{path}'" );
 				return null;
 			}
 
-			string extension = Path.GetExtension( path ) ?? "";
+			string extension = Path.GetExtension( path );
 			ILevelLoader? levelLoader = FindLevelLoader( extension );
 			if ( levelLoader is null )
 			{
@@ -56,6 +55,36 @@ namespace Elegy.AssetSystem.API
 		}
 
 		/// <summary>
+		/// Registers a level loader plugin. If possible, you should prefer using Elegy.PluginSystem to
+		/// add level loaders, as they support automatic unloading too.
+		/// </summary>
+		public static bool RegisterLevelLoader( ILevelLoader levelLoader )
+		{
+			if ( mLevelLoaders.Contains( levelLoader ) )
+			{
+				return false;
+			}
+
+			mLevelLoaders.Add( levelLoader );
+			return true;
+		}
+
+		/// <summary>
+		/// Unregisters a level loader plugin. If possible, you should prefer Elegy.PluginSystem to
+		/// add/remove level loaders, as they support automatic unloading.
+		/// </summary>
+		public static bool UnregisterLevelLoader( ILevelLoader levelLoader )
+		{
+			if ( !mLevelLoaders.Contains( levelLoader ) )
+			{
+				return false;
+			}
+
+			mLevelLoaders.Remove( levelLoader );
+			return true;
+		}
+
+		/// <summary>
 		/// Finds an appropriate <see cref="ILevelLoader"/> according to one of the <paramref name="extensions"/>.
 		/// </summary>
 		public static ILevelLoader? FindLevelLoader( params string[] extensions )
@@ -72,6 +101,36 @@ namespace Elegy.AssetSystem.API
 			}
 
 			return null;
+		}
+
+		/// <summary>
+		/// Registers a level writer plugin. If possible, you should prefer using Elegy.PluginSystem to
+		/// add level writers, as they support automatic unloading too.
+		/// </summary>
+		public static bool RegisterLevelWriter( ILevelWriter levelWriter )
+		{
+			if ( mLevelWriters.Contains( levelWriter ) )
+			{
+				return false;
+			}
+
+			mLevelWriters.Add( levelWriter );
+			return true;
+		}
+
+		/// <summary>
+		/// Unregisters a level writer plugin. If possible, you should prefer Elegy.PluginSystem to
+		/// add/remove level writers, as they support automatic unloading.
+		/// </summary>
+		public static bool UnregisterLevelWriter( ILevelWriter levelWriter )
+		{
+			if ( !mLevelWriters.Contains( levelWriter ) )
+			{
+				return false;
+			}
+
+			mLevelWriters.Remove( levelWriter );
+			return true;
 		}
 
 		/// <summary>
@@ -94,5 +153,15 @@ namespace Elegy.AssetSystem.API
 		/// A collection of all loaded levels.
 		/// </summary>
 		public static IReadOnlyCollection<ElegyMapDocument> AllLevels => mLevels.Values;
+
+		/// <summary>
+		/// A collection of all level loaders.
+		/// </summary>
+		public static IReadOnlyList<ILevelLoader> LevelLoaders => mLevelLoaders;
+
+		/// <summary>
+		/// A collection of all level writers.
+		/// </summary>
+		public static IReadOnlyList<ILevelWriter> LevelWriters => mLevelWriters;
 	}
 }

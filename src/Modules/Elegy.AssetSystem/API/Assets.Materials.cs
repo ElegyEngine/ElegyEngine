@@ -4,7 +4,11 @@
 using Elegy.AssetSystem.Interfaces;
 using Elegy.AssetSystem.Resources;
 using Elegy.Common.Assets;
-using Elegy.FileSystem.API;
+
+// TODO: Material loader interface. Right now, materials are essentially
+// Quake 3 style documents describing multiple materials in one file. This
+// should be extendable to support different kinds of material libraries,
+// like WADs, plain texture images and so on
 
 namespace Elegy.AssetSystem.API
 {
@@ -63,9 +67,10 @@ namespace Elegy.AssetSystem.API
 			return true;
 		}
 
-		private static (TextureMetadata? textureMetadata, byte[]? data) LoadTextureInternal( string texturePath, bool withoutData, bool hintSrgb )
+		private static (TextureMetadata? textureMetadata, byte[]? data) LoadTextureInternal( string texturePath,
+			bool withoutData, bool hintSrgb )
 		{
-			string? fullPath = Files.PathTo( texturePath, PathFlags.File );
+			string? fullPath = mFileSystem.PathToFile( texturePath );
 			if ( fullPath is null )
 			{
 				mLogger.Error( $"LoadTexture: Can't find texture '{texturePath}'" );
@@ -80,7 +85,8 @@ namespace Elegy.AssetSystem.API
 				return (null, null);
 			}
 
-			(TextureMetadata? textureMetadata, byte[]? data) = textureLoader.LoadTexture( fullPath, withoutData, hintSrgb );
+			(TextureMetadata? textureMetadata, byte[]? data)
+				= textureLoader.LoadTexture( fullPath, withoutData, hintSrgb );
 			if ( data is null && !withoutData )
 			{
 				mLogger.Error( $"LoadTexture: Couldn't load data for texture '{texturePath}'" );
@@ -102,10 +108,11 @@ namespace Elegy.AssetSystem.API
 				return mTextures[texturePath];
 			}
 
-			(TextureMetadata? textureMetadata, byte[]? data) = LoadTextureInternal( texturePath, withoutData: false, hintSrgb );
+			(TextureMetadata? textureMetadata, byte[]? data)
+				= LoadTextureInternal( texturePath, withoutData: false, hintSrgb );
 			if ( textureMetadata is null || data is null )
 			{
-				return MissingTexture; 
+				return MissingTexture;
 			}
 
 			mTextures[texturePath] = CreateTexture( textureMetadata, data );
@@ -118,6 +125,36 @@ namespace Elegy.AssetSystem.API
 		/// </summary>
 		public static TextureMetadata? GetTextureMetadata( string texturePath )
 			=> LoadTextureInternal( texturePath, withoutData: true, hintSrgb: false ).textureMetadata;
+
+		/// <summary>
+		/// Registers a texture loader plugin. If possible, you should prefer using Elegy.PluginSystem to
+		/// add texture loaders, as they support automatic unloading too.
+		/// </summary>
+		public static bool RegisterTextureLoader( ITextureLoader textureLoader )
+		{
+			if ( mTextureLoaders.Contains( textureLoader ) )
+			{
+				return false;
+			}
+
+			mTextureLoaders.Add( textureLoader );
+			return true;
+		}
+
+		/// <summary>
+		/// Unregisters a texture loader plugin. If possible, you should prefer Elegy.PluginSystem to
+		/// add/remove texture loaders, as they support automatic unloading.
+		/// </summary>
+		public static bool UnregisterTextureLoader( ITextureLoader textureLoader )
+		{
+			if ( !mTextureLoaders.Contains( textureLoader ) )
+			{
+				return false;
+			}
+
+			mTextureLoaders.Remove( textureLoader );
+			return true;
+		}
 
 		/// <summary>
 		/// Finds an appropriate <see cref="ITextureLoader"/> according to one of the <paramref name="extensions"/>.
@@ -139,9 +176,27 @@ namespace Elegy.AssetSystem.API
 		}
 
 		/// <summary>
+		/// Adds a brand-new material document, describing one or more materials.
+		/// </summary>
+		public static void AddMaterialDocument( MaterialDocument materialDocument )
+		{
+			mMaterialDocuments.Add( materialDocument );
+			foreach ( var materialDef in materialDocument.Materials )
+			{
+				// This way materials will be overridden
+				mMaterialDefs[materialDef.Name] = new( materialDef, null );
+			}
+		}
+
+		/// <summary>
 		/// All the materials in the system.
 		/// </summary>
 		public static IEnumerable<Material> AllMaterials => GetMaterialList();
+
+		/// <summary>
+		/// A collection of all texture loaders.
+		/// </summary>
+		public static IReadOnlyList<ITextureLoader> TextureLoaders => mTextureLoaders;
 
 		/// <summary>
 		/// The "missing texture" texture.

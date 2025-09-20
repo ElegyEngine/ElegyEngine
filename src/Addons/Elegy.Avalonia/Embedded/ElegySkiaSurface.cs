@@ -1,4 +1,7 @@
-﻿using Avalonia.Skia;
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
+// SPDX-License-Identifier: MIT
+
+using Avalonia.Skia;
 using SkiaSharp;
 using TerraFX.Interop.Vulkan;
 using Veldrid;

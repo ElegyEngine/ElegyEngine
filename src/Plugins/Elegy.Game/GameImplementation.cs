@@ -4,7 +4,6 @@
 using Elegy.AssetSystem.API;
 using Elegy.Common.Assets;
 using Elegy.Common.Interfaces;
-using Elegy.ConsoleSystem;
 using Elegy.FileSystem.API;
 using Game.Client;
 using Game.Presentation;
@@ -14,6 +13,9 @@ using Game.Session.Bridges;
 using Game.Shared;
 using System.Diagnostics;
 using System.Net;
+using Elegy.CommandSystem.API;
+using Elegy.Common.Utilities;
+using Elegy.LogSystem.API;
 using Elegy.RenderSystem.API;
 using Elegy.RenderSystem.Objects;
 using Game.Shared.Physics;
@@ -60,13 +62,13 @@ namespace Game
 			mLogger.Log( "Start" );
 			mStopwatch.Restart();
 
-			string mapName = Console.Arguments.GetValueOrDefault( "+map", "test2" );
-			int maxPlayers = Console.Arguments.GetInt( "+maxplayers", 16 );
+			string mapName = Commands.Arguments.GetValueOrDefault( "+map", "test2" );
+			int maxPlayers = Commands.Arguments.GetInt( "+maxplayers", 16 );
 
 			EntityWorld.Init();
 			PhysicsWorld.Init();
 
-			bool headlessMode = Console.Arguments.ContainsKey( "-headless" );
+			bool headlessMode = Commands.Arguments.ContainsKey( "-headless" );
 			if ( headlessMode )
 			{
 				return StartServer( mapName, maxPlayers );

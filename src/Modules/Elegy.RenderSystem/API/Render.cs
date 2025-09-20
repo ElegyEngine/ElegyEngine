@@ -3,7 +3,6 @@
 
 using Elegy.AssetSystem.API;
 using Elegy.Common.Assets;
-using Elegy.PluginSystem.API;
 using System.Diagnostics;
 
 namespace Elegy.RenderSystem.API
@@ -16,17 +15,13 @@ namespace Elegy.RenderSystem.API
 		private static string[] mAdditionalInstanceExtensions = [];
 		private static string[] mAdditionalDeviceExtensions = [];
 		private static bool mInitialised;
-		
-		public static bool Init( in LaunchConfig config )
+
+		public static bool Init( LaunchConfig config )
 		{
 			mLogger.Log( "Init" );
 
 			mAdditionalInstanceExtensions = config.VulkanInstanceExtensions;
 			mAdditionalDeviceExtensions = config.VulkanDeviceExtensions;
-
-			Plugins.RegisterDependency( "Elegy.RenderBackend", typeof( RenderBackend.Utils ).Assembly );
-			Plugins.RegisterDependency( "Elegy.RenderSystem", typeof( Render ).Assembly );
-			Plugins.RegisterPluginCollector( new RenderPluginCollector() );
 
 			mStopwatch = Stopwatch.StartNew();
 			mInitialised = true;
@@ -34,7 +29,7 @@ namespace Elegy.RenderSystem.API
 			return true;
 		}
 
-		public static bool PostInit()
+		public static bool CreateGraphicsDevice( LaunchConfig config )
 		{
 			if ( !InitialiseGraphicsDevice() )
 			{
@@ -44,17 +39,11 @@ namespace Elegy.RenderSystem.API
 
 			// Builtin samplers, layouts etc.
 			InitialiseGraphicsConstants();
+			return true;
+		}
 
-			// Load material and shader templates
-			if ( !LoadMaterialTemplates() )
-			{
-				return false;
-			}
-
-			Assets.SetRenderFactories(
-				CreateMaterial,
-				( textureInfo, data ) => CreateTexture( textureInfo, data.AsSpan() ) );
-
+		public static bool CreateGraphics( LaunchConfig config )
+		{
 			if ( RenderStyle is null )
 			{
 				mLogger.Error( "No render style loaded, dunno how to render things without that" );
@@ -80,13 +69,8 @@ namespace Elegy.RenderSystem.API
 			{
 				return;
 			}
-			
-			mLogger.Log( "Shutdown" );
 
-			Plugins.UnregisterPluginCollector<RenderPluginCollector>();
-			Plugins.UnregisterDependency( "Elegy.RenderSystem" );
-			Plugins.UnregisterDependency( "Elegy.RenderBackend" );
-			
+			mLogger.Log( "Shutdown" );
 			mInitialised = false;
 		}
 	}

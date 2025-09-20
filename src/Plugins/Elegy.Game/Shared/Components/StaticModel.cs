@@ -3,7 +3,8 @@
 
 using Elegy.Common.Assets;
 using Elegy.Common.Maths;
-using Elegy.ConsoleSystem;
+using Elegy.Common.Utilities;
+using Elegy.LogSystem;
 using Elegy.ECS;
 using Elegy.RenderSystem.API;
 using Elegy.RenderSystem.Objects;
