@@ -1,13 +1,17 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Elegy.ConsoleSystem
+using Elegy.Common.Interfaces.Services;
+
+namespace Elegy.Common.Utilities
 {
 	/// <summary>
 	/// Scope-based tagged logger.
 	/// </summary>
 	public struct TaggedLogger
 	{
+		private ILogSystem LogSystem => ElegyInterfaceLocator.GetLogSystem();
+
 		/// <summary>
 		/// Constructor for simple tags.
 		/// </summary>
@@ -27,16 +31,16 @@ namespace Elegy.ConsoleSystem
 		/// <summary>
 		/// Tag to use when logging.
 		/// </summary>
-		public readonly string Tag { get; }
+		public string Tag { get; }
 
 		/// <summary>
-		/// See <see cref="Console.Log(string, ConsoleMessageType)"/>.
+		/// Prints a message.
 		/// </summary>
 		public void Log( string message )
-			=> Console.Log( Tag, message );
+			=> LogSystem.Log( Tag, message );
 
 		/// <summary>
-		/// See <see cref="Log(string)"/>.
+		/// Conditionally prints a message.
 		/// </summary>
 		public void LogIf( bool condition, string message )
 		{
@@ -47,13 +51,13 @@ namespace Elegy.ConsoleSystem
 		}
 
 		/// <summary>
-		/// See <see cref="Console.Warning(string)"/>.
+		/// Prints a warning message.
 		/// </summary>
 		public void Warning( string message )
-			=> Console.Warning( Tag, message );
+			=> LogSystem.Warning( Tag, message );
 
 		/// <summary>
-		/// See <see cref="Warning(string)"/>.
+		/// Conditionally prints a warning message.
 		/// </summary>
 		public void WarningIf( bool condition, string message )
 		{
@@ -64,33 +68,44 @@ namespace Elegy.ConsoleSystem
 		}
 
 		/// <summary>
-		/// See <see cref="Console.Error(string)"/>.
+		/// Prints an error message.
 		/// </summary>
 		public void Error( string message )
-			=> Console.Error( Tag, message );
+			=> LogSystem.Error( Tag, message );
 
 		/// <summary>
-		/// See <see cref="Console.Fatal(string)"/>.
+		/// Conditionally prints an error message.
+		/// </summary>
+		public void ErrorIf( bool condition, string message )
+		{
+			if ( condition )
+			{
+				Error( message );
+			}
+		}
+
+		/// <summary>
+		/// Prints a fatal error message.
 		/// </summary>
 		public void Fatal( string message )
-			=> Console.Fatal( Tag, message );
+			=> LogSystem.Fatal( Tag, message );
 
 		/// <summary>
-		/// See <see cref="ConsoleMessageType.Developer"/>.
+		/// Prints a developer-only message.
 		/// </summary>
 		public void Developer( string message )
-			=> Console.Log( Tag, message, ConsoleMessageType.Developer );
+			=> LogSystem.Developer( Tag, message );
 
 		/// <summary>
-		/// See <see cref="ConsoleMessageType.Verbose"/>.
+		/// Prints a verbose message.
 		/// </summary>
 		public void Verbose( string message )
-			=> Console.Log( Tag, message, ConsoleMessageType.Verbose );
+			=> LogSystem.Verbose( Tag, message );
 
 		/// <summary>
-		/// See <see cref="Console.Success(string)"/>.
+		/// Prints a success message.
 		/// </summary>
 		public void Success( string message )
-			=> Console.Success( Tag, message );
+			=> LogSystem.Success( Tag, message );
 	}
 }
