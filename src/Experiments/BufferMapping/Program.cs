@@ -1,5 +1,5 @@
 ﻿using System.Numerics;
-using Elegy.AppTemplate;
+using Elegy.App;
 using Elegy.AssetSystem.API;
 using Elegy.Common.Assets;
 using Elegy.Common.Interfaces;
@@ -102,7 +102,7 @@ static class Program
 				new byte[128 * 128 * 4] // Pixel data
 			);
 
-			mTexture = Render.CreateTexture( 
+			mTexture = Render.CreateTexture(
 				new()
 				{
 					Width = 128,
@@ -150,10 +150,10 @@ static class Program
 				for ( int x = 0; x < width; x++ )
 				{
 					Vector4 colour = transform( x, y );
-					buffer[y*width*4 + x*4 + 3] = (byte)(colour.X * 255.0f);
-					buffer[y*width*4 + x*4 + 2] = (byte)(colour.Y * 255.0f);
-					buffer[y*width*4 + x*4 + 1] = (byte)(colour.Z * 255.0f);
-					buffer[y*width*4 + x*4 + 0] = (byte)(colour.W * 255.0f);
+					buffer[y * width * 4 + x * 4 + 3] = (byte)(colour.X * 255.0f);
+					buffer[y * width * 4 + x * 4 + 2] = (byte)(colour.Y * 255.0f);
+					buffer[y * width * 4 + x * 4 + 1] = (byte)(colour.Z * 255.0f);
+					buffer[y * width * 4 + x * 4 + 0] = (byte)(colour.W * 255.0f);
 				}
 			}
 		}
@@ -242,7 +242,7 @@ static class Program
 		Console.Title = "Scratchpad/BufferMapping";
 		Window.PrioritizeSdl();
 
-		Application.Start<BufferMappingApp>(
+		AppTemplate.Start<BufferMappingApp>(
 			config:
 			new()
 			{

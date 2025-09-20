@@ -4,7 +4,8 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Elegy.Common.Maths;
-using Elegy.ConsoleSystem;
+using Elegy.Common.Utilities;
+using Elegy.LogSystem;
 using Elegy.InputSystem.API;
 using Elegy.RenderSystem.API;
 using Elegy.RenderSystem.Objects;

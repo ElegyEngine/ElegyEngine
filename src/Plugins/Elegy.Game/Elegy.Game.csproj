@@ -23,7 +23,8 @@
     <ProjectReference Include="..\..\Core\Elegy.Common\Elegy.Common.csproj" />
     <ProjectReference Include="..\..\Core\Elegy.ECS\Elegy.ECS.csproj" />
     <ProjectReference Include="..\..\Modules\Elegy.AssetSystem\Elegy.AssetSystem.csproj" />
-    <ProjectReference Include="..\..\Modules\Elegy.ConsoleSystem\Elegy.ConsoleSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.CommandSystem\Elegy.CommandSystem.csproj" />
+    <ProjectReference Include="..\..\Modules\Elegy.LogSystem\Elegy.LogSystem.csproj" />
     <ProjectReference Include="..\..\Modules\Elegy.FileSystem\Elegy.FileSystem.csproj" />
     <ProjectReference Include="..\..\Modules\Elegy.InputSystem\Elegy.InputSystem.csproj" />
     <ProjectReference Include="..\..\Modules\Elegy.PluginSystem\Elegy.PluginSystem.csproj" />

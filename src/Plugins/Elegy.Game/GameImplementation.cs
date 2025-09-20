@@ -4,7 +4,6 @@
 using Elegy.AssetSystem.API;
 using Elegy.Common.Assets;
 using Elegy.Common.Interfaces;
-using Elegy.ConsoleSystem;
 using Elegy.FileSystem.API;
 using Game.Client;
 using Game.Presentation;
@@ -14,6 +13,9 @@ using Game.Session.Bridges;
 using Game.Shared;
 using System.Diagnostics;
 using System.Net;
+using Elegy.CommandSystem.API;
+using Elegy.Common.Utilities;
+using Elegy.LogSystem.API;
 using Elegy.RenderSystem.API;
 using Elegy.RenderSystem.Objects;
 using Game.Shared.Physics;

@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Text;
-using Elegy.FileSystem.API;
 using Elegy.RenderBackend.Extensions;
 using Elegy.RenderBackend.Templating;
 using Elegy.RenderSystem.Resources;
@@ -20,143 +19,60 @@ namespace Elegy.RenderSystem.API
 
 		private static JsonSerializerOptions JsonOptions => RenderBackend.Text.MaterialTemplateJsonOptions.Instance;
 
-		static Dictionary<string, ShaderTemplate> mShaderTemplates = new();
-		static Dictionary<string, MaterialTemplate> mMaterialTemplates = new();
-		
-		internal static bool LoadMaterialTemplates()
+		private static Dictionary<string, ShaderTemplate> mShaderTemplates = new();
+		private static Dictionary<string, MaterialTemplate> mMaterialTemplates = new();
+
+		public static IReadOnlyCollection<MaterialTemplate> MaterialTemplates => mMaterialTemplates.Values;
+
+		public static void AddGlobalParameter( GlobalParameterSet parameterSetData )
 		{
-			bool anyFailed = false;
-			if ( !LoadMaterialTemplatesInDirectory( Files.EnginePath ) )
-			{
-				mLogger.Error( "Failed to load engine's material templates" );
-				anyFailed = true;
-			}
+			List<MaterialParameter> materialParameters = parameterSetData.Parameters
+				.Select( p => MaterialParameterUtils.CreateMaterialParameter( mDevice, p.Parameter.Name,
+					p.Parameter.Type, p.DefaultValue ) )
+				.ToList();
 
-			foreach ( var mount in Files.CurrentConfig.Mounts )
-			{
-				if ( !LoadMaterialTemplatesInDirectory( mount ) )
-				{
-					mLogger.Error( $"Failed to load material templates in '{mount}'" );
-					anyFailed = true;
-				}
-			}
+			Veldrid.ResourceLayout layout
+				= Factory.CreateLayout( parameterSetData.Parameters.Select( p => p.Parameter ).ToList() );
 
-			if ( anyFailed )
-			{
-				return false;
-			}
-
-			if ( !LoadMaterialTemplatesInDirectory( Files.CurrentGamePath ) )
-			{
-				return false;
-			}
-
-			return LoadGlobalParameters();
+			MaterialParameterSet set = new( mDevice, MaterialParameterLevel.Global, layout, materialParameters );
+			mGlobalParameters.Add( set );
 		}
 
-		internal static bool LoadGlobalParameters()
+		/// <summary>
+		/// Loads a <see cref="ShaderTemplate"/>. Note: <paramref name="path"/> doesn't go through the VFS!
+		/// </summary>
+		public static bool LoadShaderTemplate( string path )
 		{
-			string path = $"{ShaderTemplatesDirectory}/globalMaterialParams.json";
-			mLogger.Developer( $"Loading global material parameters: '{path}'" );
-
-			// TODO: Check all shader templates to see if any of them are using global parametres. If yes,
-			// make this file required, else don't worry about it.
-			string? fullPath = Files.PathTo( path, PathFlags.File );
-			if ( fullPath is null )
+			ShaderTemplate? template = JsonHelpers.LoadFrom<ShaderTemplate>( path, JsonOptions );
+			if ( template is null )
 			{
-				mLogger.Warning( $"Global material parameters file missing! ({path})'" );
-				return true;
-			}
-
-			List<GlobalParameterSet>? globalParams = JsonHelpers.LoadFrom<List<GlobalParameterSet>>( fullPath );
-			if ( globalParams is null )
-			{
-				mLogger.Error( $"Cannot load global material parameters! ({path})'" );
+				mLogger.Warning( $"Can't load shader template '{path}'" );
 				return false;
 			}
 
-			mGlobalParameters = globalParams.Select( globalParam =>
-			{
-				List<MaterialParameter> materialParameters = globalParam.Parameters
-					.Select( p => MaterialParameterUtils.CreateMaterialParameter( mDevice, p.Parameter.Name, p.Parameter.Type, p.DefaultValue ) )
-					.ToList();
-
-				Veldrid.ResourceLayout layout = Factory.CreateLayout( globalParam.Parameters.Select( p => p.Parameter ).ToList() );
-				
-				return new MaterialParameterSet( mDevice, MaterialParameterLevel.Global, layout, materialParameters );
-			} ).ToList();
-
-			mLogger.Verbose( "Loaded global material parameters!" );
+			mShaderTemplates[template.Name] = template;
 			return true;
 		}
 
-		internal static bool LoadMaterialTemplatesInDirectory( string directory )
+		public static bool LoadMaterialTemplate( string path )
 		{
-			mLogger.Developer( $"Loading shader & material templates: '{directory}'" );
-
-			// Load shader templates
-			var entries = Files.GetFiles( $"{directory}/{ShaderTemplatesDirectory}", "*.stemplate", recursive: true );
-			if ( entries is null || entries.Length == 0 )
+			var template = JsonHelpers.LoadFrom<RenderBackend.Assets.MaterialTemplate>( path, JsonOptions );
+			if ( template is null )
 			{
-				mLogger.WarningIf( directory == Files.EnginePath,
-					"There's no shader templates in the engine folder!" );
-				return true;
+				mLogger.Warning( $"Can't load material template '{path}'" );
+				return false;
 			}
 
-			int numFailedShaderTemplates = 0;
-			foreach ( var entry in entries )
+			if ( !mShaderTemplates.ContainsKey( template.ShaderTemplate ) )
 			{
-				ShaderTemplate? template = JsonHelpers.LoadFrom<ShaderTemplate>( entry, JsonOptions );
-				if ( template is null )
-				{
-					mLogger.Warning( $"Can't load shader template '{entry}'" );
-					numFailedShaderTemplates++;
-					continue;
-				}
-
-				mShaderTemplates[template.Name] = template;
+				mLogger.Warning(
+					$"Can't load material template '{path}', it's trying to use a non-existing shader template '{template.ShaderTemplate}'" );
+				return false;
 			}
 
-			// Load material templates
-			entries = Files.GetFiles( $"{directory}/{MaterialTemplatesDirectory}", "*.mtemplate", recursive: true );
-			if ( entries is null || entries.Length == 0 )
-			{
-				mLogger.WarningIf( directory == Files.EnginePath,
-					"There's no material templates in the engine folder!" );
-				return true;
-			}
-
-			int numFailedMaterialTemplates = 0;
-			foreach ( var entry in entries )
-			{
-				var template = JsonHelpers.LoadFrom<RenderBackend.Assets.MaterialTemplate>( entry, JsonOptions );
-				if ( template is null )
-				{
-					mLogger.Warning( $"Can't load material template '{entry}'" );
-					numFailedMaterialTemplates++;
-					continue;
-				}
-
-				if ( !mShaderTemplates.ContainsKey( template.ShaderTemplate ) )
-				{
-					mLogger.Warning( $"Can't load material template '{entry}', it's trying to use a non-existing shader template '{template.ShaderTemplate}'" );
-					numFailedMaterialTemplates++;
-					continue;
-				}
-
-				mMaterialTemplates[template.Name] = new( template, mShaderTemplates[template.ShaderTemplate] );
-			}
-
-			mLogger.WarningIf( numFailedShaderTemplates != 0,
-				$"Failed to load {numFailedShaderTemplates} shader templates" );
-
-			mLogger.WarningIf( numFailedMaterialTemplates != 0,
-				$"Failed to load {numFailedMaterialTemplates} material templates" );
-
-			return numFailedShaderTemplates == 0 && numFailedMaterialTemplates == 0;
+			mMaterialTemplates[template.Name] = new( template, mShaderTemplates[template.ShaderTemplate] );
+			return true;
 		}
-
-		public static IReadOnlyCollection<MaterialTemplate> MaterialTemplates => mMaterialTemplates.Values;
 
 		public static bool HasMaterialTemplate( string name )
 		{

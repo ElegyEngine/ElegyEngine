@@ -1,9 +1,9 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.AssetSystem.Interfaces.Rendering;
 using Elegy.Common.Assets;
 using Elegy.Common.Extensions;
+using Elegy.Common.Interfaces.Rendering;
 using Elegy.RenderBackend.Templating;
 using Elegy.RenderSystem.API;
 

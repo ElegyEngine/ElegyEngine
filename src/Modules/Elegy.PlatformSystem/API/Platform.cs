@@ -13,7 +13,7 @@ namespace Elegy.PlatformSystem.API
 	/// </summary>
 	public static partial class Platform
 	{
-		public static bool Init( in LaunchConfig config )
+		public static bool Init()
 		{
 			mWindowPlatform = null;
 

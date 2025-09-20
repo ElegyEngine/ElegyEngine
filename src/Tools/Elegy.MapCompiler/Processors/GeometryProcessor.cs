@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Assets;
-using Elegy.ConsoleSystem;
+using Elegy.LogSystem;
 using Elegy.MapCompiler.Assets;
 using Elegy.MapCompiler.Data.Processing;
 

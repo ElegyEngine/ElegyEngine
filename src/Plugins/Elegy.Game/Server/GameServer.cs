@@ -4,7 +4,7 @@
 using System.Diagnostics;
 using Elegy.Common.Assets;
 using Elegy.Common.Utilities;
-using Elegy.ConsoleSystem;
+using Elegy.LogSystem;
 using Game.Shared;
 using Game.Shared.Components;
 using Game.Session;

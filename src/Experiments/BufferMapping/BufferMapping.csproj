@@ -8,9 +8,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Core\Elegy.AppTemplate\Elegy.AppTemplate.csproj" />
       <ProjectReference Include="..\..\Core\Elegy.Common\Elegy.Common.csproj" />
       <ProjectReference Include="..\..\Core\Elegy.RenderBackend\Elegy.RenderBackend.csproj" />
+      <ProjectReference Include="..\..\Templates\Elegy.App\Elegy.App.csproj" />
     </ItemGroup>
 
     <ItemGroup>

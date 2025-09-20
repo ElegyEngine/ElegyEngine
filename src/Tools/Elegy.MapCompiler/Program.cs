@@ -23,20 +23,14 @@
 // 4. Update visual mesh with lightmap texture names
 
 using Elegy.Common.Assets;
-using Elegy.ConsoleSystem;
+using Elegy.Core;
 using Elegy.FileSystem.API;
-using Elegy.Framework;
-using Elegy.Framework.Bootstrap;
 using Elegy.MapCompiler.Assets;
 using Elegy.MapCompiler.Data.Processing;
 using Elegy.MapCompiler.Processors;
 
 namespace Elegy.MapCompiler
 {
-	[ElegyBootstrap]
-	[WithAssetSystem]
-	[WithConsoleSystem]
-	[WithFileSystem]
 	public static partial class Program
 	{
 		private static MapCompilerParameters mParameters = new();
@@ -57,26 +51,35 @@ namespace Elegy.MapCompiler
 
 			if ( mParameters.WithoutGeometry && mParameters.WithoutVisibility && mParameters.WithoutLighting )
 			{
-				System.Console.WriteLine( "You are using -nogeo, -novis and -nolight all at once." );
-				System.Console.WriteLine( "No work will be done on the map in this case." );
-				System.Console.WriteLine( "Just what on Earth do you expect? An eggless omelette?!" );
+				mLogger.Log( "You are using -nogeo, -novis and -nolight all at once." );
+				mLogger.Log( "No work will be done on the map in this case." );
+				mLogger.Log( "Just what on Earth do you expect? An eggless omelette?!" );
 				return;
 			}
 
-			System.Console.WriteLine( "Init" );
+			mLogger.Log( "Init" );
 
 			if ( !VerifyAndFixPaths() )
 			{
-				System.Console.WriteLine( "Failed to compile map: incorrect input paths" );
+				mLogger.Error( "Failed to compile map: incorrect input paths" );
 				return;
 			}
 
-			if ( !LaunchEngine() )
+			LaunchConfig config = new()
 			{
-				System.Console.WriteLine( "Failed to compile map: cannot launch engine" );
-				return;
-			}
+				Args = args,
+				ToolMode = true
+			};
 
+			if ( !CoreTemplate.Run( config, CompileMap ) )
+			{
+				mLogger.Error( "Failed to compile map. Check the compile log above." );
+				Environment.ExitCode = 1;
+			}
+		}
+
+		private static void CompileMap()
+		{
 			BrushMapDocument? document = LoadBrushMap();
 			if ( document is null )
 			{
@@ -112,8 +115,8 @@ namespace Elegy.MapCompiler
 				if ( outputData is null )
 				{
 					mLogger.Fatal( $"Cannot find '{mParameters.OutputPath}' for modification." );
-					mLogger.Log( $"             ^ It is needed since you are using '-nogeo', meaning the input" );
-					mLogger.Log( $"             ^ .map file is ignored; nothing is done with it." );
+					mLogger.Log( $"             ^ It is needed since you are using '-nogeo', meaning the" );
+					mLogger.Log( $"             ^ input .map file is ignored; nothing is done with it." );
 					return;
 				}
 			}
@@ -138,30 +141,8 @@ namespace Elegy.MapCompiler
 
 			AssetSystem.API.Assets.WriteLevel( $"{mParameters.RootPath}/{mParameters.OutputPath}", outputData );
 
-			mLogger.Success( $"Map compiled successfully. The result can be found at '{mParameters.OutputPath}'." );
-		}
-
-		private static bool LaunchEngine()
-		{
-			LaunchConfig config = new()
-			{
-				ToolMode = true
-			};
-
-			if ( !EngineSystem.Init( config,
-					   systemInitFunc: Init_Generated,
-					   systemPostInitFunc: PostInit_Generated,
-					   systemShutdownFunc: Shutdown_Generated,
-					   systemErrorFunc: ErrorMessage_Generated ) )
-			{
-				mLogger.Fatal(
-					EngineSystem.ShutdownReason is null
-					? "Engine failed to initialise: reason unknown"
-					: $"Engine failed to initialise: '{EngineSystem.ShutdownReason}'" );
-				return false;
-			}
-
-			return true;
+			mLogger.Success(
+				$"Map compiled successfully. The result can be found at '{mParameters.OutputPath}'." );
 		}
 
 		private static bool VerifyAndFixPaths()
@@ -169,7 +150,7 @@ namespace Elegy.MapCompiler
 			if ( mParameters.MapFile == string.Empty )
 			{
 				// The engine is still uninitialized, so we must use System.Console instead.
-				System.Console.WriteLine( "No map file was provided. Specify one with '-map path/to/file.map'." );
+				mLogger.Error( "No map file was provided. Specify one with '-map path/to/file.map'." );
 				return false;
 			}
 
@@ -192,15 +173,16 @@ namespace Elegy.MapCompiler
 					if ( dir != null )
 					{
 						Directory.SetCurrentDirectory( dir.FullName );
-						System.Console.WriteLine( $"No root folder specified: Guessing from the map file path that it is '{dir.FullName}'." );
+						mLogger.Warning(
+							$"No root folder specified: Guessing from the map file path that it is '{dir.FullName}'." );
 					}
 				}
 				else
 				{
 					mParameters.RootPath = Directory.GetCurrentDirectory();
 
-					System.Console.WriteLine( "No root folder specified. Using the current working directory as the root:" );
-					System.Console.WriteLine( mParameters.RootPath );
+					mLogger.Log( "No root folder specified. Using the current working directory as the root:" );
+					mLogger.Log( mParameters.RootPath );
 				}
 			}
 			else
@@ -224,10 +206,10 @@ namespace Elegy.MapCompiler
 			if ( mapPath == null )
 			{
 				mLogger.Error( $"""
-							   The specified map file '{mapPath}' does not exist or cannot be accessed.
-							   Please check that the path is correct and that you are in the correct root folder. (Currently: '{Directory.GetCurrentDirectory()}')
-							   You can specify a custom root folder with '-root path/to/root'.
-							   """ );
+				                The specified map file '{mapPath}' does not exist or cannot be accessed.
+				                Please check that the path is correct and that you are in the correct root folder. (Currently: '{Directory.GetCurrentDirectory()}')
+				                You can specify a custom root folder with '-root path/to/root'.
+				                """ );
 				return null;
 			}
 
@@ -238,7 +220,8 @@ namespace Elegy.MapCompiler
 			}
 			else
 			{
-				mParameters.OutputPath = Path.Join( Path.GetDirectoryName( mapPath ) ?? "", Path.ChangeExtension( mParameters.OutputPath, ".elf" ) );
+				mParameters.OutputPath = Path.Join( Path.GetDirectoryName( mapPath ) ?? "",
+					Path.ChangeExtension( mParameters.OutputPath, ".elf" ) );
 			}
 
 			BrushMapDocument? document;
@@ -249,17 +232,17 @@ namespace Elegy.MapCompiler
 			catch ( Exception ex )
 			{
 				mLogger.Error( $"""
-								An error occured while parsing the map file!
-								Message: {ex.Message}.
+				                An error occured while parsing the map file!
+				                Message: {ex.Message}.
 
-								An error while parsing the map means something went fundementally wrong.
-								You can try opening the map file in a text editor and checking that line & column for an anomaly.
+				                An error while parsing the map means something went fundamentally wrong.
+				                You can try opening the map file in a text editor and checking that line & column for an anomaly.
 
-								If this is a perfectly valid .map file (i.e. it is parsed fine by other compilers),
-								then please open an issue on our GitHub repository:
-								https://github.com/ElegyEngine/ElegyEngine/issues
-								Thank you for your patience. :3
-								""" );
+				                If this is a perfectly valid .map file (i.e. it is parsed fine by other compilers),
+				                then please open an issue on our GitHub repository:
+				                https://github.com/ElegyEngine/ElegyEngine/issues
+				                Thank you for your patience. :3
+				                """ );
 				return null;
 			}
 

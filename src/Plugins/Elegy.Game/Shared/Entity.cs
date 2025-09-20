@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Utilities;
-using Elegy.ConsoleSystem;
+using Elegy.LogSystem;
 using Elegy.ECS;
 using Game.Client;
 using Game.Server;
@@ -98,7 +98,7 @@ namespace Game.Shared
 
 		[EventModel]
 		public record struct DebugDrawEvent;
-		
+
 		[EventModel]
 		public record struct SpawnEvent( Entity Self );
 
@@ -119,7 +119,7 @@ namespace Game.Shared
 
 		[EventModel]
 		public record struct ServerUpdateEvent( GameServer Server, float Delta );
-		
+
 		[EventModel]
 		public record struct ServerTransformListenEvent( GameServer Server, float Delta );
 

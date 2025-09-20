@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Elegy.Common\Elegy.Common.csproj" />
-    <ProjectReference Include="..\Elegy.PluginSystem\Elegy.PluginSystem.csproj" />
   </ItemGroup>
 
   <ItemGroup>

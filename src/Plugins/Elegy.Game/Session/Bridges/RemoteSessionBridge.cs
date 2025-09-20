@@ -1,9 +1,10 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.ConsoleSystem;
+using Elegy.LogSystem;
 using Game.Shared;
 using System.Net;
+using Elegy.Common.Utilities;
 
 namespace Game.Session.Bridges
 {

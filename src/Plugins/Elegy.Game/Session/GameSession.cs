@@ -7,7 +7,8 @@ using Game.Shared.Components;
 using System.Diagnostics;
 using BepuPhysics;
 using Elegy.Common.Maths;
-using Elegy.ConsoleSystem;
+using Elegy.Common.Utilities;
+using Elegy.LogSystem;
 using Elegy.RenderSystem.API;
 
 namespace Game.Session
