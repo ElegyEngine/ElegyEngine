@@ -74,6 +74,12 @@ namespace Elegy.MapCompiler.ConsoleArguments
 			for ( int i = 0; i < args.Length; i++ )
 			{
 				string argumentName = args[i];
+				// Skip these ones
+				if ( argumentName is "-verbose" or "-dev" )
+				{
+					continue;
+				}
+
 				string argumentValue = "1";
 				if ( i < args.Length - 1 )
 				{
