@@ -5,7 +5,7 @@ using Elegy.Common.Interfaces;
 using Elegy.RenderSystem.API;
 using Elegy.RenderSystem.Interfaces;
 
-namespace Elegy.RenderSystem
+namespace Elegy.App
 {
 	internal class RenderPluginCollector : IPluginCollector
 	{
@@ -19,7 +19,15 @@ namespace Elegy.RenderSystem
 
 		public void OnPluginUnloaded( IPlugin plugin )
 		{
+			if ( plugin is not IRenderStyle renderStyle )
+			{
+				return;
+			}
 
+			if ( Render.RenderStyle == renderStyle )
+			{
+				Render.RenderStyle = null;
+			}
 		}
 	}
 }
