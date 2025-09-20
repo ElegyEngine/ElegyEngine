@@ -69,7 +69,7 @@ namespace Elegy.RenderSystem.API
 			{
 				return;
 			}
-			
+
 			mLogger.Log( "Shutdown" );
 			mInitialised = false;
 		}
