@@ -29,11 +29,13 @@ public partial class ElegyViewport : Control
 	private readonly Action mUpdate;
 	private bool mUpdateQueued;
 	private bool mInitialized;
+	private ElegyView? mEngineView;
 
 	public CompositionDrawingSurface? Surface { get; protected set; }
+	public ICompositionGpuInterop? GpuInterop { get; protected set; }
 	public ElegyWindow ParentWindow { get; }
 	public AvaloniaInputContext InputContext => ParentWindow.InputContext;
-	public ElegyView? EngineView { get; protected set; }
+	public ElegyView? EngineView { get => mEngineView; protected set => mEngineView = value; }
 	public string ErrorMessage { get; protected set; } = string.Empty;
 
 	public ElegyViewport()
@@ -59,7 +61,7 @@ public partial class ElegyViewport : Control
 		base.OnDetachedFromLogicalTree( e );
 	}
 
-	async void Initialize()
+	private async void Initialize()
 	{
 		try
 		{
@@ -72,7 +74,7 @@ public partial class ElegyViewport : Control
 			mVisual.Surface = Surface;
 			ElementComposition.SetElementChildVisual( this, mVisual );
 
-			var (res, info) = await DoInitialize( mCompositor, Surface );
+			(bool res, string info) = await DoInitialize( mCompositor, Surface );
 			ErrorMessage = info;
 			mInitialized = res;
 			QueueNextFrame();
@@ -83,7 +85,7 @@ public partial class ElegyViewport : Control
 		}
 	}
 
-	void UpdateFrame()
+	private void UpdateFrame()
 	{
 		mUpdateQueued = false;
 		var root = this.GetVisualRoot();
@@ -91,12 +93,12 @@ public partial class ElegyViewport : Control
 			return;
 
 		mVisual!.Size = new( Bounds.Width, Bounds.Height );
-		var size = PixelSize.FromSize( Bounds.Size, root.RenderScaling );
+		PixelSize size = PixelSize.FromSize( Bounds.Size, root.RenderScaling );
 		RenderFrame( size );
 		QueueNextFrame();
 	}
 
-	void QueueNextFrame()
+	private void QueueNextFrame()
 	{
 		if ( mInitialized && !mUpdateQueued && mCompositor != null )
 		{
@@ -115,17 +117,17 @@ public partial class ElegyViewport : Control
 		base.OnPropertyChanged( change );
 	}
 
-	async Task<(bool success, string info)> DoInitialize(
+	private async Task<(bool success, string info)> DoInitialize(
 		Compositor compositor,
 		CompositionDrawingSurface compositionDrawingSurface )
 	{
-		var interop = await compositor.TryGetCompositionGpuInterop();
-		if ( interop == null )
+		GpuInterop = await compositor.TryGetCompositionGpuInterop();
+		if ( GpuInterop == null )
 		{
 			return (false, "Compositor doesn't support interop for the current backend");
 		}
 
-		return InitializeGraphicsResources( compositor, compositionDrawingSurface, interop );
+		return InitializeGraphicsResources( compositor, compositionDrawingSurface, GpuInterop );
 	}
 
 	protected (bool success, string info) InitializeGraphicsResources(
@@ -147,6 +149,7 @@ public partial class ElegyViewport : Control
 
 	protected void FreeGraphicsResources()
 	{
+		ElegyRender.FreeView( ref mEngineView );
 	}
 
 	protected void RenderFrame( PixelSize pixelSize )
@@ -156,13 +159,30 @@ public partial class ElegyViewport : Control
 			return;
 		}
 
-		throw new NotImplementedException( "Elegy-Avalonia rendering is not implemented" );
-
+		// TODO: Refer to SwapchainBase for all this stuff perhaps
+		// https://github.com/AvaloniaUI/Avalonia/blob/master/src/Avalonia.Base/Rendering/SwapchainBase.cs
 		ElegyRender.RenderFrame( EngineView );
 
-		ICompositionImportedGpuImage importedImage = null!;
-		ICompositionImportedGpuSemaphore waitForSemaphore = null!;
-		ICompositionImportedGpuSemaphore signalSemaphore = null!;
-		Surface.UpdateWithSemaphoresAsync( importedImage, waitForSemaphore, signalSemaphore );
+		// TODO: Export Vulkan semaphores
+		// https://github.com/AvaloniaUI/Avalonia/blob/master/samples/GpuInterop/VulkanDemo/VulkanSemaphorePair.cs#L69-L75
+		ICompositionImportedGpuSemaphore renderCompletedSemaphore; //GpuInterop.ImportSemaphore( ...Export() );
+		ICompositionImportedGpuSemaphore availableSemaphore; //GpuInterop.ImportSemaphore( ...Export() );
+		// Notes: this interop.Import( object.Export() ) pattern can really just be:
+		// ConvertToAvaloniaCompositionObject( object );
+
+		// TODO: Export the Vulkan image:
+		// https://github.com/AvaloniaUI/Avalonia/blob/master/samples/GpuInterop/VulkanDemo/VulkanImage.cs#L213-L231
+		ICompositionImportedGpuImage importedImage; //GpuInterop.ImportImage( CurrentFrameTexture.Export() );
+		// Notes: lastPresent is basically a Task. It can tell us whether the image is ready or broken.
+		// One semaphore (availableSem.) is used to transition the image layout *when* the image is available,
+		// when beginning to draw. The other (renderCompletedSem.) is used when presenting, also to transition
+		// image layouts.
+		// Basically, UpdateWithSemaphoresAsync will read the image with respect to the semaphores. It'll wait
+		// until stuff is done rendering and will signal to us when the image is available.
+
+		// TODO: Wrap Veldrid Vulkan images, semaphores etc. for import/export:
+		// https://github.com/AvaloniaUI/Avalonia/blob/master/samples/GpuInterop/VulkanDemo/VulkanSwapchain.cs#L107-L145
+		throw new NotImplementedException( "Elegy-Avalonia rendering is not implemented" );
+		Task lastPresent = Surface.UpdateWithSemaphoresAsync( importedImage, renderCompletedSemaphore, availableSemaphore );
 	}
 }
