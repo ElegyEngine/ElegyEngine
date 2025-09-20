@@ -62,13 +62,13 @@ namespace Game
 			mLogger.Log( "Start" );
 			mStopwatch.Restart();
 
-			string mapName = Console.Arguments.GetValueOrDefault( "+map", "test2" );
-			int maxPlayers = Console.Arguments.GetInt( "+maxplayers", 16 );
+			string mapName = Commands.Arguments.GetValueOrDefault( "+map", "test2" );
+			int maxPlayers = Commands.Arguments.GetInt( "+maxplayers", 16 );
 
 			EntityWorld.Init();
 			PhysicsWorld.Init();
 
-			bool headlessMode = Console.Arguments.ContainsKey( "-headless" );
+			bool headlessMode = Commands.Arguments.ContainsKey( "-headless" );
 			if ( headlessMode )
 			{
 				return StartServer( mapName, maxPlayers );
