@@ -4,6 +4,7 @@
 using Avalonia;
 using Avalonia.Input.Platform;
 using Elegy.Avalonia.Platform;
+using Silk.NET.Windowing;
 using SilkWindow = Silk.NET.Windowing.Window;
 using SilkInput = Silk.NET.Input.InputWindowExtensions;
 
@@ -43,11 +44,14 @@ public static class AvaloniaManager
 	/// Assumes there is already an Avalonia window up and running with the Vulkan Skia backend.
 	/// Call this before starting Elegy's app framework.
 	/// </remarks>
-	public static void InitPlatformBackend()
+	public static IWindowPlatform InitPlatformBackend()
 	{
 		// TODO: Elegy.Avalonia platform mode
-		SilkWindow.Add( new AvaloniaWindowPlatform() );
+		IWindowPlatform windowPlatform = new AvaloniaWindowPlatform();
+		SilkWindow.Add( windowPlatform );
 		SilkInput.Add( new AvaloniaInputPlatform() );
+
+		return windowPlatform;
 	}
 }
 
