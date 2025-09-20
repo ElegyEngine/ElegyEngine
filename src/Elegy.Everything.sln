@@ -61,8 +61,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Veldrid", "..\extern\Elegy.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fennecs", "..\extern\fennecs\fennecs\fennecs.csproj", "{C556018C-65CB-4906-AD26-41F0B690170C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.AppTemplate", "Core\Elegy.AppTemplate\Elegy.AppTemplate.csproj", "{54FDFBD1-92FB-4202-B958-9D7718CE2F47}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.DevConsoleApp", "Tools\Elegy.DevConsoleApp\Elegy.DevConsoleApp.csproj", "{20B32B55-72CC-4F9E-841B-3DDFDB917A18}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.ECS.Generator", "Generators\Elegy.ECS.Generator\Elegy.ECS.Generator.csproj", "{1BDA4FBB-7006-434F-80C2-F0A45E011F4A}"
