@@ -50,7 +50,7 @@ namespace Elegy.MapCompiler
 				DebugFreeze();
 			}
 
-			if ( mParameters.WithoutGeometry && mParameters.WithoutVisibility && mParameters.WithoutLighting )
+			if ( mParameters is { WithoutGeometry: true, WithoutVisibility: true, WithoutLighting: true } )
 			{
 				mLogger.Log( "You are using -nogeo, -novis and -nolight all at once." );
 				mLogger.Log( "No work will be done on the map in this case." );
