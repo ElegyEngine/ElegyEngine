@@ -1,19 +1,19 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Elegy.ConsoleSystem.API
+namespace Elegy.LogSystem.API
 {
 	/// <summary>
 	/// Elegy console interface.
 	/// </summary>
-	public static partial class Console
+	public static partial class Log
 	{
 		#region Standard logging
 
 		/// <summary>
 		/// Logs a message into the console, with a newline at the end.
 		/// </summary>
-		public static void Log( string message = "", ConsoleMessageType type = ConsoleMessageType.Info )
+		public static void Submit( string message = "", ConsoleMessageType type = ConsoleMessageType.Info )
 			=> LogInternal( $"{message}\n", type );
 
 		/// <summary>
@@ -32,25 +32,25 @@ namespace Elegy.ConsoleSystem.API
 		/// Prints a success message.
 		/// </summary>
 		public static void Success( string message )
-			=> Log( $"{Green}{message}", ConsoleMessageType.Success );
+			=> Submit( $"{Green}{message}", ConsoleMessageType.Success );
 
 		/// <summary>
 		/// Prints a warning message.
 		/// </summary>
 		public static void Warning( string message )
-			=> Log( $"{message}", ConsoleMessageType.Warning );
+			=> Submit( $"{message}", ConsoleMessageType.Warning );
 
 		/// <summary>
 		/// Prints an error message.
 		/// </summary>
 		public static void Error( string message )
-			=> Log( $"{message}", ConsoleMessageType.Error );
+			=> Submit( $"{message}", ConsoleMessageType.Error );
 
 		/// <summary>
 		/// Prints a fatal error message.
 		/// </summary>
 		public static void Fatal( string message )
-			=> Log( $"{message}", ConsoleMessageType.Fatal );
+			=> Submit( $"{message}", ConsoleMessageType.Fatal );
 
 		#endregion
 
@@ -62,14 +62,14 @@ namespace Elegy.ConsoleSystem.API
 		/// <summary>
 		/// Prints a message with a tag. E.g. '[Game] Map loaded!'
 		/// </summary>
-		public static void Log( string tag, string message, ConsoleMessageType type = ConsoleMessageType.Info )
-			=> Log( $"{Yellow}[{tag}]{White} {message}", type );
+		public static void Submit( string tag, string message, ConsoleMessageType type = ConsoleMessageType.Info )
+			=> Submit( $"{Yellow}[{tag}]{White} {message}", type );
 
 		/// <summary>
 		/// Prints a success message with a tag. E.g. '[Game] Map loaded!'
 		/// </summary>
 		public static void Success( string tag, string message )
-			=> Log( $"{Yellow}[{tag}]{Green} {message}", ConsoleMessageType.Success );
+			=> Submit( $"{Yellow}[{tag}]{Green} {message}", ConsoleMessageType.Success );
 
 		/// <summary>
 		/// Prints a warning with a tag. E.g. '[ModelManager] Model has too many vertices!'
@@ -108,7 +108,7 @@ namespace Elegy.ConsoleSystem.API
 				arrayString += values[i];
 			}
 
-			Log( arrayString );
+			Submit( arrayString );
 		}
 
 		/// <summary>

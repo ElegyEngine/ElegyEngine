@@ -3,7 +3,6 @@
 
 using Elegy.Common.Assets;
 using Elegy.AssetSystem.Interfaces;
-using Elegy.FileSystem.API;
 
 namespace Elegy.AssetSystem.API
 {
@@ -14,7 +13,7 @@ namespace Elegy.AssetSystem.API
 		/// </summary>
 		public static ElegyMapDocument? LoadLevel( string path )
 		{
-			string? fullPath = Files.PathTo( path, PathFlags.File );
+			string? fullPath = mFileSystem.PathToFile( path );
 			if ( fullPath is null )
 			{
 				mLogger.Error( $"LoadLevel: Can't find level '{path}'" );

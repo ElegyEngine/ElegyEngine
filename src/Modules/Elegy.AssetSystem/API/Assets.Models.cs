@@ -3,7 +3,6 @@
 
 using Elegy.Common.Assets;
 using Elegy.AssetSystem.Interfaces;
-using Elegy.FileSystem.API;
 
 namespace Elegy.AssetSystem.API
 {
@@ -14,14 +13,14 @@ namespace Elegy.AssetSystem.API
 		/// </summary>
 		public static Model? LoadModel( string path )
 		{
-			string? fullPath = Files.PathTo( path, PathFlags.File );
+			string? fullPath = mFileSystem.PathToFile( path );
 			if ( fullPath is null )
 			{
 				mLogger.Error( $"LoadModel: Can't find model '{path}'" );
 				return null;
 			}
 
-			string extension = Path.GetExtension( path ) ?? "";
+			string extension = Path.GetExtension( path );
 			IModelLoader? modelLoader = FindModelLoader( extension );
 			if ( modelLoader is null )
 			{

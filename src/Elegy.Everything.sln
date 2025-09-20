@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.Launcher2", "Launcher
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.AssetSystem", "Modules\Elegy.AssetSystem\Elegy.AssetSystem.csproj", "{679DF686-55B4-49A5-AF8E-5EEA575F4143}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.ConsoleSystem", "Modules\Elegy.ConsoleSystem\Elegy.ConsoleSystem.csproj", "{F033AF50-692C-4AA9-B3FC-4F4D539CB414}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.LogSystem", "Modules\Elegy.LogSystem\Elegy.LogSystem.csproj", "{F033AF50-692C-4AA9-B3FC-4F4D539CB414}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.FileSystem", "Modules\Elegy.FileSystem\Elegy.FileSystem.csproj", "{696D4F76-EF71-4503-9281-33BF528816A4}"
 EndProject
@@ -88,6 +88,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisResearch", "Experiments\VisResearch\VisResearch.csproj", "{A033C8B1-858B-4E1D-9ABF-C5147454A5DF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XrResearch", "Experiments\XrResearch\XrResearch.csproj", "{CC91F05C-959E-4724-ACF7-676CCA23524B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elegy.CommandSystem", "Modules\Elegy.CommandSystem\Elegy.CommandSystem.csproj", "{5CE91AF8-31F8-433B-BD79-17E4619C739B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -235,6 +237,10 @@ Global
 		{CC91F05C-959E-4724-ACF7-676CCA23524B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC91F05C-959E-4724-ACF7-676CCA23524B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC91F05C-959E-4724-ACF7-676CCA23524B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CE91AF8-31F8-433B-BD79-17E4619C739B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CE91AF8-31F8-433B-BD79-17E4619C739B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CE91AF8-31F8-433B-BD79-17E4619C739B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CE91AF8-31F8-433B-BD79-17E4619C739B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -276,6 +282,7 @@ Global
 		{128323C2-5866-44C7-B3C4-80BE2DDDE1BB} = {C0BA5F51-56D0-448A-B627-AD6680A6B046}
 		{A033C8B1-858B-4E1D-9ABF-C5147454A5DF} = {C0BA5F51-56D0-448A-B627-AD6680A6B046}
 		{CC91F05C-959E-4724-ACF7-676CCA23524B} = {C0BA5F51-56D0-448A-B627-AD6680A6B046}
+		{5CE91AF8-31F8-433B-BD79-17E4619C739B} = {B8F09147-B990-45A7-96FF-725D665001AE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2F37BB09-DC21-4691-83D8-55A741939103}

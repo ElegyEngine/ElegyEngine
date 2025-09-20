@@ -3,9 +3,11 @@
 
 using Elegy.Common.Utilities;
 using Elegy.Common.Interfaces;
-using Elegy.ConsoleSystem;
-using Elegy.ConsoleSystem.Frontends;
+using Elegy.LogSystem;
+using Elegy.LogSystem.Frontends;
 using System.Text;
+using Elegy.CommandSystem.API;
+using Elegy.LogSystem.API;
 
 namespace Elegy.DevConsole
 {

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Assets;
-using Elegy.ConsoleSystem;
+using Elegy.Common.Utilities;
 
 namespace Elegy.FileSystem.API
 {

@@ -1,9 +1,11 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.ConsoleSystem.Commands.Helpers;
+using System.Reflection;
+using Elegy.CommandSystem.Helpers;
+using Elegy.Common.Utilities;
 
-namespace Elegy.ConsoleSystem.Commands
+namespace Elegy.CommandSystem
 {
 	/// <summary>
 	/// Manages instances of <see cref="IConsoleArgumentHelper"/>.

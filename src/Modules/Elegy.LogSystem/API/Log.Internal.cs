@@ -1,20 +1,17 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.ConsoleSystem.Commands;
-using Elegy.ConsoleSystem.Frontends;
 using System.Diagnostics;
+using Elegy.Common.Utilities;
+using Elegy.LogSystem.Frontends;
 
-namespace Elegy.ConsoleSystem.API
+namespace Elegy.LogSystem.API
 {
-	public static partial class Console
+	public static partial class Log
 	{
-		private static TaggedLogger mLogger = new( "Console" );
-		private static ConVarRegistry? mEngineConvarRegistry = null;
+		private static TaggedLogger mLogger = new( "Log" );
 		private static Stopwatch mTimer = Stopwatch.StartNew();
 		private static List<IConsoleFrontend> mFrontends = new();
-		private static Dictionary<string, string> mArguments = new();
-		private static Dictionary<string, ConsoleCommand> mCommands = new();
 		private static string mCurrentMessage = string.Empty;
 
 		internal static void LogInternal( string message, ConsoleMessageType type = ConsoleMessageType.Info )
@@ -82,35 +79,6 @@ namespace Elegy.ConsoleSystem.API
 			for ( int i = 0; i < mFrontends.Count; i++ )
 			{
 				mFrontends[i].OnLog( message, type, timeSubmitted );
-			}
-		}
-
-		private static void InitialiseArguments( string[] args )
-		{
-			if ( args.Length == 0 )
-			{
-				mLogger.Verbose( "Launch arguments: empty" );
-				return;
-			}
-
-			var isKey = ( string text ) => text.StartsWith( "-" ) || text.StartsWith( "+" );
-
-			mLogger.Verbose( "Launch arguments:" );
-
-			for ( int i = 0; i < args.Length; i++ )
-			{
-				if ( isKey( args[i] ) )
-				{
-					string value = "1";
-
-					if ( i < args.Length - 1 && !isKey( args[i + 1] ) )
-					{
-						value = args[i + 1];
-					}
-
-					mArguments[args[i]] = value;
-					mLogger.Verbose( $"   * '{args[i]}' = '{value}'" );
-				}
 			}
 		}
 	}

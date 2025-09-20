@@ -1,13 +1,18 @@
 // SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Elegy.ConsoleSystem.Commands
+using System.Reflection;
+using Elegy.Common.Utilities;
+
+namespace Elegy.CommandSystem
 {
 	/// <summary>
 	/// Provides utilities for static ConVars and ConCommands.
 	/// </summary>
 	public class ConVarRegistry
 	{
+		private static TaggedLogger mLogger = new( "ConVarRegistry" );
+
 		private const BindingFlags BaseBindingFlags =
 					BindingFlags.DeclaredOnly |
 					BindingFlags.Public |
@@ -54,7 +59,7 @@ namespace Elegy.ConsoleSystem.Commands
 						ConsoleCommand? consoleCommand = ConsoleCommand.FromMethod( method, attribute );
 						if ( consoleCommand is null )
 						{
-							Console.Warning( "ConVarRegistry", $"Cannot create console command '{attribute.Name}' ({method.DeclaringType.Name}.{method.Name})" );
+							mLogger.Warning( $"Cannot create console command '{attribute.Name}' ({method.DeclaringType.Name}.{method.Name})" );
 							continue;
 						}
 
@@ -78,7 +83,7 @@ namespace Elegy.ConsoleSystem.Commands
 					ConsoleCommand? consoleCommand = ConsoleCommand.FromMethod( method, attribute, instance );
 					if ( consoleCommand is null )
 					{
-						Console.Warning( "ConVarRegistry", $"Cannot create console command '{attribute.Name}' ({method.DeclaringType.Name}.{method.Name})" );
+						mLogger.Warning( $"Cannot create console command '{attribute.Name}' ({method.DeclaringType.Name}.{method.Name})" );
 						continue;
 					}
 
@@ -89,12 +94,12 @@ namespace Elegy.ConsoleSystem.Commands
 
 		public void RegisterAll()
 		{
-			Commands.ForEach( cmd => Console.RegisterCommand( cmd ) );
+			Commands.ForEach( cmd => API.Commands.RegisterCommand( cmd ) );
 		}
 
 		public void UnregisterAll()
 		{
-			Commands.ForEach( cmd => Console.UnregisterCommand( cmd ) );
+			Commands.ForEach( cmd => API.Commands.UnregisterCommand( cmd ) );
 		}
 	}
 }

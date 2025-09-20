@@ -22,10 +22,12 @@ From an inner workings POV, this is what's going on in the console system and he
    or if that is not available, by inspecting the method
 */
 
-using Elegy.ConsoleSystem.Commands.Helpers;
+using System.Reflection;
 using System.Text;
+using Elegy.CommandSystem.API;
+using Elegy.CommandSystem.Helpers;
 
-namespace Elegy.ConsoleSystem.Commands
+namespace Elegy.CommandSystem
 {
 	/// <summary>
 	/// Console command.
@@ -59,13 +61,13 @@ namespace Elegy.ConsoleSystem.Commands
 				ReadOnlySpan<char> arg = args[i];
 				if ( arg[0] != '-' )
 				{
-					Console.Warning( "ConsoleCommand", $"Unknown argument '-{arg}'" );
+					mLogger.Warning( $"Unknown argument '-{arg}'" );
 					continue;
 				}
 
 				if ( i == args.Length - 1 )
 				{
-					Console.Warning( "ConsoleCommand", $"Argument '{arg}' has no value after it" );
+					mLogger.Warning(  $"Argument '{arg}' has no value after it" );
 					continue;
 				}
 
@@ -113,17 +115,17 @@ namespace Elegy.ConsoleSystem.Commands
 		}
 
 		/// <summary>
-		/// Creates a <see cref="ConsoleCommand"/> from a provided <paramref name="method"/>, whose parametres
+		/// Creates a <see cref="CommandSystem.ConsoleCommand"/> from a provided <paramref name="method"/>, whose parametres
 		/// must be primitives (<see cref="int"/>, <see cref="float"/> etc.) or <see cref="string"/>.
 		/// If <paramref name="instance"/> is not provided, <paramref name="method"/> must be static.
 		/// </summary>
-		public static ConsoleCommand? FromMethod( MethodInfo method, ConsoleCommandAttribute attribute, object? instance = null )
+		public static CommandSystem.ConsoleCommand? FromMethod( MethodInfo method, ConsoleCommandAttribute attribute, object? instance = null )
 		{
 			bool isOkay = true;
 
 			if ( instance is null && !method.IsStatic )
 			{
-				Console.Error( "ConsoleCommand",
+				Commands.Log.Error( "ConsoleCommand",
 					$"Can't register instance method '{method.DeclaringType.Name}.{method.Name}' without an instance of {method.DeclaringType.Name}." );
 				isOkay = false;
 			}
@@ -131,7 +133,7 @@ namespace Elegy.ConsoleSystem.Commands
 			bool returnsBool = method.ReturnType == typeof( bool );
 			if ( !returnsBool && method.ReturnType != typeof( void ) )
 			{
-				Console.Error( "ConsoleCommand",
+				Commands.Log.Error( "ConsoleCommand",
 					$"Method '{method.Name}' returns {method.ReturnType.Name} when only bool and void are supported." );
 				isOkay = false;
 			}
@@ -156,19 +158,19 @@ namespace Elegy.ConsoleSystem.Commands
 
 			if ( sb.Length > 0 )
 			{
-				Console.Error( "ConsoleCommand", $"Method '{method.Name}'s parametres are not supported:{sb}" );
+				Commands.Log.Error( "ConsoleCommand", $"Method '{method.Name}'s parametres are not supported:{sb}" );
 				sb.Clear();
 				foreach ( var helper in HelperManager.Helpers.Values )
 				{
 					sb.Append( $"\n  * {helper.Type.Name}" );
 				}
-				Console.Warning( "ConsoleCommand", $"You can use any of the following without 'out', 'ref' and the like:{sb}" );
+				mLogger.Warning(  $"You can use any of the following without 'out', 'ref' and the like:{sb}" );
 				isOkay = false;
 			}
 
 			if ( !isOkay )
 			{
-				Console.Warning( "ConsoleCommand", $"Could not register console command '{attribute.Name}' for the reasons above." );
+				mLogger.Warning(  $"Could not register console command '{attribute.Name}' for the reasons above." );
 				return null;
 			}
 
@@ -180,7 +182,7 @@ namespace Elegy.ConsoleSystem.Commands
 			ValidateMethod validate = GetOrCreateValidate( dictionary, method );
 			CommandMethod commandMethod = GetOrCreateCommand( dictionary, method, instance );
 
-			return new ConsoleCommand( attribute.Name, commandMethod )
+			return new CommandSystem.ConsoleCommand( attribute.Name, commandMethod )
 			{
 				Autocomplete = autocomplete,
 				Validate = validate

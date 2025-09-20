@@ -10,15 +10,18 @@ public static ConsoleCommand cmdMap = new( "map", ( args ) => RunMap( args[0] ) 
  */
 
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
+using Elegy.Common.Extensions;
+using Elegy.Common.Utilities;
 
-namespace Elegy.ConsoleSystem.Commands
+namespace Elegy.CommandSystem
 {
 	/// <summary>
 	/// Console command.
 	/// </summary>
 	public partial class ConsoleCommand
 	{
+		private static TaggedLogger mLogger = new( "ConCommand" );
+
 		/// <summary>
 		/// Called when the user has typed this command's <see cref="Name"/> but is
 		/// probably missing parameters. Provides autocomplete suggestions.
@@ -38,7 +41,7 @@ namespace Elegy.ConsoleSystem.Commands
 
 		/// <summary>
 		/// Called for every keystroke when the command's arguments are typed out.
-		/// Provides feedback as to whether the input is correct.
+		/// Provides feedback whether the input is correct.
 		/// </summary>
 		/// <param name="args">The current arguments provided to the console.</param>
 		/// <param name="outMessage">A message to the user about their error, if <c>false</c> is returned.</param>

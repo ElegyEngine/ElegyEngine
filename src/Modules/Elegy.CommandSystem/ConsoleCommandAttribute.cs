@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Elegy
+namespace Elegy.CommandSystem
 {
 	/// <summary>
 	/// Marks a method as a console command to be registered.
@@ -10,7 +10,7 @@ namespace Elegy
 	public class ConsoleCommandAttribute : Attribute
 	{
 		/// <summary>
-		/// The name of the console command to be displayed and looked up by <see cref="Console.Execute(string)"/>.
+		/// The name of the console command to be displayed and looked up by <see cref="Log.Execute(string)"/>.
 		/// </summary>
 		public string Name { get; }
 

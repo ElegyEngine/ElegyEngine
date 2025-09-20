@@ -3,17 +3,17 @@
 
 using Elegy.Common.Interfaces;
 
-namespace Elegy.ConsoleSystem.Frontends
+namespace Elegy.LogSystem.Frontends
 {
 	/// <summary>
-	/// Console frontend interface. Console frontends are essentially
+	/// Submit frontend interface. Submit frontends are essentially
 	/// apps or widgets that display the engine's logged console messages.
 	/// </summary>
 	public interface IConsoleFrontend : IPlugin
 	{
 		/// <summary>
 		/// A message is being logged. Write it down.
-		/// Console frontends should never use methods from Elegy.Console,
+		/// Submit frontends should never use methods from Elegy.Submit,
 		/// else you get an infinite loop.
 		/// </summary>
 		void OnLog( string message, ConsoleMessageType type, float timeSubmitted );

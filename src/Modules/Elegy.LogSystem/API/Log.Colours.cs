@@ -1,9 +1,9 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Elegy.ConsoleSystem.API
+namespace Elegy.LogSystem.API
 {
-	public partial class Console
+	public partial class Log
 	{
 		/// <summary>
 		/// All text after this is red.

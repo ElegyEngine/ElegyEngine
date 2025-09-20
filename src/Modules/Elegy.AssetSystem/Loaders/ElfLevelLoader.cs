@@ -6,7 +6,6 @@ using Elegy.Common.Assets;
 using Elegy.Common.Assets.ElegyMapData;
 using Elegy.Common.Assets.GltfExtensions;
 using Elegy.Common.Maths;
-using Elegy.ConsoleSystem;
 
 using EngineMesh = Elegy.Common.Assets.MeshData.Mesh;
 

@@ -4,7 +4,7 @@ using Elegy.AssetSystem.API;
 using Elegy.Common.Assets;
 using Elegy.Common.Interfaces;
 using Elegy.Common.Maths;
-using Elegy.ConsoleSystem;
+using Elegy.Common.Utilities;
 using Elegy.InputSystem.API;
 using Elegy.PlatformSystem.API;
 using Elegy.RenderSystem.API;

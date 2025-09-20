@@ -3,7 +3,7 @@
 
 using Elegy.AssetSystem.Interfaces.Rendering;
 using Elegy.Common.Assets;
-using Elegy.ConsoleSystem;
+using Elegy.Common.Utilities;
 using Elegy.RenderBackend.Templating;
 using System.Numerics;
 using Veldrid;

@@ -6,8 +6,6 @@ using Elegy.Common.Interfaces;
 using Elegy.FileSystem.API;
 using System.Reflection;
 
-using Console = Elegy.ConsoleSystem.API.Console;
-
 namespace Elegy.PluginSystem.API
 {
 	public static partial class Plugins
@@ -115,19 +113,19 @@ namespace Elegy.PluginSystem.API
 			foreach ( var app in mApplicationPlugins )
 			{
 				if ( !app.Value.Start() )
-				{
 					failedPlugins.Add( $"'{app.Value.Name}' - failed to start ({app.Value.Error})" );
 				}
 			}
 
 			if ( failedPlugins.Count > 0 )
 			{
-				Console.Error( "Applications failed to load:" );
+				mLogSystem.Error( "Plugins failed to load:" );
 				for ( int i = 0; i < failedPlugins.Count; i++ )
 				{
-					Console.Log( $" * {failedPlugins[i]}" );
+					mLogSystem.Log( $" * {failedPlugins[i]}" );
 				}
-				Console.Log( "Resolve these application errors and try again." );
+
+				mLogSystem.Log( "Resolve these plugins' errors and try again." );
 				return false;
 			}
 
@@ -171,7 +169,7 @@ namespace Elegy.PluginSystem.API
 			catch ( Exception ex )
 			{
 				mLogger.Error( "Woops, looks like unloading ain't allowed" );
-				Console.Log( "OS", $"Message: {ex.Message}" );
+				mLogSystem.Log( "OS", $"Message: {ex.Message}" );
 			}
 		}
 	}

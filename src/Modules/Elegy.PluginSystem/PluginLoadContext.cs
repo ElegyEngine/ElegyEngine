@@ -3,9 +3,9 @@
 
 using System.Diagnostics;
 using Elegy.Common.Extensions;
-using Elegy.ConsoleSystem;
 using System.Reflection;
 using System.Runtime.Loader;
+using Elegy.Common.Utilities;
 
 namespace Elegy.PluginSystem
 {

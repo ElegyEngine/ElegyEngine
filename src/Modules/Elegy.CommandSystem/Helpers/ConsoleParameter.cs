@@ -1,7 +1,9 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Elegy.ConsoleSystem.Commands.Helpers
+using System.Reflection;
+
+namespace Elegy.CommandSystem.Helpers
 {
 	/// <summary>
 	/// Essentially a dictionary of console command arguments, with their respective parsing handlers.

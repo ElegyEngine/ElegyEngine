@@ -5,8 +5,8 @@ using Elegy.AssetSystem.Interfaces;
 using Elegy.AssetSystem.Interfaces.Rendering;
 using Elegy.AssetSystem.Resources;
 using Elegy.Common.Assets;
-using Elegy.ConsoleSystem;
-using Elegy.FileSystem.API;
+using Elegy.Common.Interfaces.Services;
+using Elegy.Common.Utilities;
 
 namespace Elegy.AssetSystem.API
 {
@@ -25,6 +25,7 @@ namespace Elegy.AssetSystem.API
 		}
 
 		private static TaggedLogger mLogger = new( "AssetSystem" );
+		private static IFileSystem mFileSystem = ElegyInterfaceLocator.GetFileSystem();
 
 		internal static List<IModelLoader> mModelLoaders = new();
 		internal static List<ILevelLoader> mLevelLoaders = new();

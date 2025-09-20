@@ -1,11 +1,11 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.ConsoleSystem.Frontends;
+using Elegy.LogSystem.Frontends;
 
-namespace Elegy.ConsoleSystem.API
+namespace Elegy.LogSystem.API
 {
-	public static partial class Console
+	public static partial class Log
 	{
 		/// <summary>
 		/// Registers a <seealso cref="IConsoleFrontend"/>.
@@ -19,7 +19,7 @@ namespace Elegy.ConsoleSystem.API
 			}
 
 			// Since console frontends are plugins, they can be often times initialised by the plugin system
-			// Sometimes, however, somebody may simply call Console.AddFrontend( new MyFrontend() );, in
+			// Sometimes, however, somebody may simply call Log.AddFrontend( new MyFrontend() );, in
 			// which case we initialise it here.
 			if ( !frontend.Initialised )
 			{

@@ -4,11 +4,11 @@
 using Elegy.AssetSystem.Interfaces.Rendering;
 using Elegy.Common.Assets;
 using Elegy.Common.Extensions;
-using Elegy.ConsoleSystem;
 using Elegy.RenderBackend.Templating;
 using Elegy.RenderSystem.API;
 
 using System.Numerics;
+using Elegy.Common.Utilities;
 using Veldrid;
 
 using ShaderDataType = Elegy.RenderBackend.Assets.ShaderDataType;
