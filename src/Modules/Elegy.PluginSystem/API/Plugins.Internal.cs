@@ -4,12 +4,9 @@
 using System.Diagnostics;
 using Elegy.Common.Assets;
 using Elegy.Common.Interfaces;
-using Elegy.FileSystem.API;
 using Elegy.Common.Interfaces.Services;
 using Elegy.Common.Utilities;
 using System.Reflection;
-
-using Console = Elegy.ConsoleSystem.API.Console;
 
 namespace Elegy.PluginSystem.API
 {
@@ -19,7 +16,6 @@ namespace Elegy.PluginSystem.API
 		private static ILogSystem mLogSystem = ElegyInterfaceLocator.GetLogSystem();
 		private static IFileSystem mFileSystem = ElegyInterfaceLocator.GetFileSystem();
 
-		private static Dictionary<IPlugin, ConsoleSystem.Commands.ConVarRegistry> mConsoleRegistries = new();
 		private static Dictionary<string, IApplication> mApplicationPlugins = new();
 		private static Dictionary<string, IPlugin> mGenericPlugins = new();
 		private static List<PluginLibrary> mPluginLibraries = new();
@@ -97,16 +93,16 @@ namespace Elegy.PluginSystem.API
 				return null;
 			}
 
-			if ( !ConsoleSystem.Commands.HelperManager.RegisterHelpers( assembly ) )
-			{
-				mLogger.Warning( $"'{assemblyPath}' has one or more console arg. helpers that failed to load, some console commands may not work!" );
-			}
-
 			PluginLibrary library = new( assembly, metadata, path );
 			if ( !library.LoadedSuccessfully )
 			{
 				mLogger.Error( $"'{assemblyPath}' implements a non-existing interface '{pluginConfig.ImplementedInterface}'" );
 				return null;
+			}
+
+			foreach ( var collector in mPluginCollectors )
+			{
+				collector.OnAssemblyLoaded( assembly );
 			}
 
 			mLogger.Log( $"'{assemblyPath}' loaded successfully" );

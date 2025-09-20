@@ -41,6 +41,36 @@ namespace Elegy.AssetSystem.API
 		}
 
 		/// <summary>
+		/// Registers a model loader plugin. If possible, you should prefer using Elegy.PluginSystem to
+		/// add model loaders, as they support automatic unloading too.
+		/// </summary>
+		public static bool RegisterModelLoader( IModelLoader modelLoader )
+		{
+			if ( mModelLoaders.Contains( modelLoader ) )
+			{
+				return false;
+			}
+
+			mModelLoaders.Add( modelLoader );
+			return true;
+		}
+
+		/// <summary>
+		/// Unregisters a model loader plugin. If possible, you should prefer Elegy.PluginSystem to
+		/// add/remove model loaders, as they support automatic unloading.
+		/// </summary>
+		public static bool UnregisterModelLoader( IModelLoader modelLoader )
+		{
+			if ( !mModelLoaders.Contains( modelLoader ) )
+			{
+				return false;
+			}
+
+			mModelLoaders.Remove( modelLoader );
+			return true;
+		}
+
+		/// <summary>
 		/// Finds an appropriate <see cref="IModelLoader"/> according to one of the <paramref name="extensions"/>.
 		/// </summary>
 		public static IModelLoader? FindModelLoader( params string[] extensions )
@@ -63,5 +93,10 @@ namespace Elegy.AssetSystem.API
 		/// A collection of all loaded models.
 		/// </summary>
 		public static IReadOnlyCollection<Model> AllModels => mModels.Values;
+
+		/// <summary>
+		/// A collection of all model loaders.
+		/// </summary>
+		public static IReadOnlyList<IModelLoader> ModelLoaders => mModelLoaders;
 	}
 }

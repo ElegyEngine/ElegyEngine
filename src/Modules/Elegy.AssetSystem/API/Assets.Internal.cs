@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.AssetSystem.Interfaces;
-using Elegy.AssetSystem.Interfaces.Rendering;
 using Elegy.AssetSystem.Resources;
 using Elegy.Common.Assets;
+using Elegy.Common.Interfaces.Rendering;
 using Elegy.Common.Interfaces.Services;
 using Elegy.Common.Utilities;
 
@@ -54,65 +54,6 @@ namespace Elegy.AssetSystem.API
 
 				yield return pair.Value.Material;
 			}
-		}
-
-		private static bool InitMaterials()
-		{
-			var loadMaterialsForDirectory = ( string name, string directory ) =>
-			{
-				string? path = Files.PathTo( $"{directory}/materials", PathFlags.Directory );
-				if ( path is null )
-				{
-					mLogger.Error( $"{name} directory doesn't exist or doesn't have any materials!" );
-					return false;
-				}
-
-				var materialDocumentPaths = Files.GetEntries( path, "*.shader", PathFlags.File, recursive: true );
-				if ( materialDocumentPaths is null || materialDocumentPaths.Length == 0 )
-				{
-					mLogger.Error( $"{name}'s materials directory is empty!" );
-					return false;
-				}
-
-				foreach ( var materialDocumentPath in materialDocumentPaths )
-				{
-					MaterialDocument document = new( File.ReadAllText( materialDocumentPath ) );
-					if ( document.Materials.Count == 0 )
-					{
-						mLogger.Warning( $"Parsed 0 materials in '{materialDocumentPath}'" );
-						continue;
-					}
-
-					mMaterialDocuments.Add( document );
-
-					foreach ( var materialDef in document.Materials )
-					{
-						// This way materials will be overridden
-						mMaterialDefs[materialDef.Name] = new( materialDef, null );
-					}
-
-					mLogger.Developer( $"Parsed {document.Materials.Count} materials in '{materialDocumentPath}'" );
-				}
-
-				mLogger.Success( $"Parsed {mMaterialDefs.Count} materials!" );
-
-				return true;
-			};
-
-			mLogger.Log( "Loading engine materials..." );
-			if ( !loadMaterialsForDirectory( "Engine", Files.EnginePath ) )
-			{
-				return false;
-			}
-
-			foreach ( var mount in Files.CurrentConfig.Mounts )
-			{
-				loadMaterialsForDirectory( $"Mounted game {mount}", mount );
-			}
-
-			loadMaterialsForDirectory( $"This game", Files.CurrentGamePath );
-
-			return true;
 		}
 
 		private static bool CreateMissingTexture()

@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Elegy.Common\Elegy.Common.csproj" />
-    <ProjectReference Include="..\Elegy.FileSystem\Elegy.FileSystem.csproj" />
   </ItemGroup>
 
   <ItemGroup>

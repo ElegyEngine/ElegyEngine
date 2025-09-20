@@ -1,16 +1,19 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using System.Formats.Asn1;
 using Elegy.AssetSystem.Interfaces;
 using Elegy.Common.Assets;
-using Elegy.ConsoleSystem;
+using Elegy.Common.Utilities;
+using StbImageSharp;
+using StbImageSharp.Decoding;
 
 namespace Elegy.AssetSystem.Loaders
 {
 	/// <summary>
 	/// Built-in OBJ loader.
 	/// </summary>
-	public class PngTextureLoader : BaseAssetIo, ITextureLoader
+	public class StbTextureLoader : BaseAssetIo, ITextureLoader
 	{
 		private TaggedLogger mLogger = new( "PngLoader" );
 
@@ -19,20 +22,28 @@ namespace Elegy.AssetSystem.Loaders
 
 		/// <inheritdoc/>
 		public override bool Supports( string path )
-			=> path == ".png";
+			=> path is ".png" or ".jpg" or ".jpeg" or ".bmp" or ".tga";
 
 		/// <inheritdoc/>
 		public (TextureMetadata?, byte[]?) LoadTexture( string path, bool withoutData, bool hintSrgb )
 		{
-			TextureMetadata? metadata = null;
+			TextureMetadata? metadata;
 			byte[]? data = null;
 
 			using ( var stream = File.OpenRead( path ) )
 			{
-				StbImageSharp.ImageInfo? info = StbImageSharp.Decoding.PngDecoder.Info( stream );
+				string extension = Path.GetExtension( path ).ToLower();
+				ImageInfo? info = extension switch
+				{
+					".bmp" => BmpDecoder.Info( stream ),
+					".png" => PngDecoder.Info( stream ),
+					".tga" => TgaDecoder.Info( stream ),
+					_ => JpgDecoder.Info( stream )
+				};
+
 				if ( info is null )
 				{
-					mLogger.Error( $"'{path}' is not a valid PNG file" );
+					mLogger.Error( $"'{path}' is not a valid {extension[1..].ToUpper()} file" );
 					return (null, null);
 				}
 
@@ -44,9 +55,9 @@ namespace Elegy.AssetSystem.Loaders
 					BytesPerPixel = (uint)info.Value.BitsPerChannel / 8,
 					Components = info.Value.ColorComponents switch
 					{
-						StbImageSharp.ColorComponents.GreyAlpha => 2U,
-						StbImageSharp.ColorComponents.RedGreenBlue => 4U,
-						StbImageSharp.ColorComponents.RedGreenBlueAlpha => 4U,
+						ColorComponents.GreyAlpha => 2U,
+						ColorComponents.RedGreenBlue => 4U,
+						ColorComponents.RedGreenBlueAlpha => 4U,
 						_ => 1U
 					},
 					Compression = TextureCompression.None,
@@ -57,12 +68,18 @@ namespace Elegy.AssetSystem.Loaders
 				if ( !withoutData )
 				{
 					// Modern GAPIs do not support RGB; only R, RG and RGBA.
-					StbImageSharp.ColorComponents? requiredComponents =
-						info.Value.ColorComponents == StbImageSharp.ColorComponents.RedGreenBlue
-						? StbImageSharp.ColorComponents.RedGreenBlueAlpha
+					ColorComponents? requiredComponents =
+						info.Value.ColorComponents == ColorComponents.RedGreenBlue
+						? ColorComponents.RedGreenBlueAlpha
 						: null;
 
-					data = StbImageSharp.Decoding.PngDecoder.Decode( stream, requiredComponents ).Data;
+					data = extension switch
+					{
+						".bmp" => BmpDecoder.Decode( stream, requiredComponents ).Data,
+						".png" => PngDecoder.Decode( stream, requiredComponents ).Data,
+						".tga" => TgaDecoder.Decode( stream, requiredComponents ).Data,
+						_ => JpgDecoder.Decode( stream, requiredComponents ).Data
+					};
 				}
 			}
 

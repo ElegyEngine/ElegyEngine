@@ -12,11 +12,12 @@ namespace Elegy.FileSystem.API
 	/// </summary>
 	public static partial class Files
 	{
-		public static bool Init( in LaunchConfig config )
+		public static bool Init( in EngineConfig config )
 		{
 			mLogger.Log( "Init" );
+			ElegyInterfaceLocator.Set<IFileSystem>( new FileSystemImpl() );
 
-			mEngineConfig = config.Engine;
+			mEngineConfig = config;
 
 			if ( !Mount( mEngineConfig.EngineFolder, mountOthers: false, isBase: false, isEngine: true ) )
 			{

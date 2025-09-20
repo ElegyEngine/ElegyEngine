@@ -1,33 +1,37 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.AssetSystem.Interfaces.Rendering;
+using Elegy.AssetSystem.Interfaces;
 using Elegy.AssetSystem.Loaders;
 using Elegy.Common.Assets;
-using Elegy.PluginSystem.API;
+using Elegy.Common.Interfaces;
+using Elegy.Common.Interfaces.Rendering;
 
 namespace Elegy.AssetSystem.API
 {
 	public static partial class Assets
 	{
 		private static bool mInitialised;
-		
-		public static bool Init( in LaunchConfig config )
+
+		private static readonly IAssetIo[] mBuiltinLoaders =
+		[
+			new GltfModelLoader(), // .gltf support
+			new ObjModelLoader(), // .obj support. It's not implemented but oh well
+			new ElfLevelLoader(), new ElfLevelWriter(), // .elf support (Elegy Level Format)
+			new StbTextureLoader() // .png, .jpg, .bmp, .tga support
+		];
+
+		public static bool Init()
 		{
 			mLogger.Log( "Init" );
 
-			Plugins.RegisterDependency( "Elegy.AssetSystem", typeof( Assets ).Assembly );
-			Plugins.RegisterPluginCollector( new AssetPluginCollector() );
-
-			Plugins.RegisterPlugin( new GltfModelLoader() );
-			Plugins.RegisterPlugin( new ElfLevelLoader() );
-			Plugins.RegisterPlugin( new ElfLevelWriter() );
-			Plugins.RegisterPlugin( new ObjModelLoader() ); // it's not implemented but oh well
-			Plugins.RegisterPlugin( new PngTextureLoader() );
+			foreach ( var assetLoader in mBuiltinLoaders )
+			{
+				RegisterLoader( assetLoader );
+			}
 
 			mInitialised = true;
-			
-			return InitMaterials();
+			return true;
 		}
 
 		public static bool PostInit()
@@ -54,12 +58,29 @@ namespace Elegy.AssetSystem.API
 			mRenderMaterialFactory = null;
 			mRenderTextureFactory = null;
 
-			Plugins.UnregisterPluginCollector<AssetPluginCollector>();
-			Plugins.UnregisterDependency( "Elegy.AssetSystem" );
-			
 			mTextures.Clear();
 			mMaterialDefs.Clear();
 			mInitialised = false;
 		}
+
+		public static bool RegisterLoader( IPlugin plugin )
+			=> plugin switch
+			{
+				IModelLoader model => RegisterModelLoader( model ),
+				ITextureLoader texture => RegisterTextureLoader( texture ),
+				ILevelLoader level => RegisterLevelLoader( level ),
+				ILevelWriter levelWriter => RegisterLevelWriter( levelWriter ),
+				_ => false
+			};
+
+		public static bool UnregisterLoader( IPlugin plugin )
+			=> plugin switch
+			{
+				IModelLoader model => UnregisterModelLoader( model ),
+				ITextureLoader texture => UnregisterTextureLoader( texture ),
+				ILevelLoader level => UnregisterLevelLoader( level ),
+				ILevelWriter levelWriter => UnregisterLevelWriter( levelWriter ),
+				_ => false
+			};
 	}
 }

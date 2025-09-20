@@ -1,65 +1,31 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Common.Assets;
 using Elegy.Common.Interfaces;
-using Elegy.FileSystem.API;
 using System.Reflection;
 
 namespace Elegy.PluginSystem.API
 {
 	public static partial class Plugins
 	{
-		public static bool Init( LaunchConfig config )
+		public static bool Init( string engineFolder, string[] enginePlugins, bool toolMode )
 		{
 			mLogger.Log( "Init" );
 
-			mEnginePath = config.Engine.EngineFolder;
-			mEnginePlugins = config.Engine.EnginePlugins;
-			mToolMode = config.ToolMode;
-
+			mEnginePath = engineFolder;
+			mEnginePlugins = enginePlugins;
+			mToolMode = toolMode;
 			mLoadContext = new();
+
+			RegisterDependency( "Elegy.Common", typeof( IPlugin ).Assembly );
+			RegisterDependency( "Elegy.PluginSystem", typeof( Plugins ).Assembly );
 
 			return true;
 		}
 
-		public static bool PostInit()
+		public static bool ActivatePlugins()
 		{
-			mLogger.Log( "PostInit" );
-
-			// The game etc. will be loaded additionally, when
-			// mounted by the file system.
-			{
-				bool someEnginePluginsFailed = false;
-				foreach ( string enginePluginPath in mEnginePlugins )
-				{
-					if ( LoadLibrary( $"{mEnginePath}/{enginePluginPath}/pluginConfig.json" ) == null )
-					{
-						someEnginePluginsFailed = true;
-					}
-				}
-				if ( someEnginePluginsFailed )
-				{
-					mLogger.Warning( "One or more engine plugins couldn't load, some things may not work!" );
-				}
-
-				if ( !mToolMode )
-				{
-					bool someGamePluginsFailed = false;
-					foreach ( string gamePlugin in Files.CurrentConfig.Plugins )
-					{
-						if ( LoadLibrary( $"{Files.CurrentGamePath}/{gamePlugin}/pluginConfig.json" ) == null )
-						{
-							someGamePluginsFailed = true;
-						}
-					}
-					if ( someGamePluginsFailed )
-					{
-						mLogger.Warning( "One or more base game plugins couldn't load, some things may not work!" );
-					}
-				}
-			}
-
+			mLogger.Log( "ActivatePlugins" );
 			mLogger.Log( $"{mPluginLibraries.Count} plugins loaded correctly, initialising them..." );
 
 			List<string> failedPlugins = new();
@@ -95,30 +61,6 @@ namespace Elegy.PluginSystem.API
 
 			if ( failedPlugins.Count > 0 )
 			{
-				Console.Error( "Plugins failed to load:" );
-				for ( int i = 0; i < failedPlugins.Count; i++ )
-				{
-					Console.Log( $" * {failedPlugins[i]}" );
-				}
-				Console.Log( "Resolve these plugins' errors and try again." );
-				return false;
-			}
-
-			return true;
-		}
-
-		public static bool StartApps()
-		{
-			List<string> failedPlugins = new();
-			foreach ( var app in mApplicationPlugins )
-			{
-				if ( !app.Value.Start() )
-					failedPlugins.Add( $"'{app.Value.Name}' - failed to start ({app.Value.Error})" );
-				}
-			}
-
-			if ( failedPlugins.Count > 0 )
-			{
 				mLogSystem.Error( "Plugins failed to load:" );
 				for ( int i = 0; i < failedPlugins.Count; i++ )
 				{
@@ -141,25 +83,35 @@ namespace Elegy.PluginSystem.API
 			{
 				if ( app.Value.Initialised )
 				{
-					mConsoleRegistries[app.Value].UnregisterAll();
+					foreach ( var collector in mPluginCollectors )
+					{
+						collector.OnPluginUnloaded( app.Value );
+					}
+
 					app.Value.Shutdown();
 				}
 			}
+
 			mApplicationPlugins.Clear();
 
 			foreach ( var plugin in mGenericPlugins )
 			{
 				if ( plugin.Value.Initialised )
 				{
-					mConsoleRegistries[plugin.Value].UnregisterAll();
+					foreach ( var collector in mPluginCollectors )
+					{
+						collector.OnPluginUnloaded( plugin.Value );
+					}
+
 					plugin.Value.Shutdown();
 				}
 			}
+
 			mGenericPlugins.Clear();
 			mPluginCollectors.Clear();
-			mConsoleRegistries.Clear();
 
-			ConsoleSystem.Commands.HelperManager.UnregisterAllHelpers();
+			UnregisterDependency( "Elegy.Common");
+			UnregisterDependency( "Elegy.PluginSystem" );
 
 			mPluginLibraries.Clear();
 			try

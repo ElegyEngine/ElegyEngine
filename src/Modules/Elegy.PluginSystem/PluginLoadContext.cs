@@ -9,20 +9,11 @@ using Elegy.Common.Utilities;
 
 namespace Elegy.PluginSystem
 {
-	internal class PluginLoadContext : AssemblyLoadContext
+	internal class PluginLoadContext() : AssemblyLoadContext( isCollectible: true )
 	{
 		private TaggedLogger mLogger = new( "DllLoader" );
 		private List<(string, Assembly)> mDependencies = new();
 		private Dictionary<string, List<string>> mSearchPaths = new();
-
-		public PluginLoadContext()
-			: base( isCollectible: true )
-		{
-			RegisterDependency( "Elegy.Common",			typeof( Common.Text.Lexer ).Assembly );
-			RegisterDependency( "Elegy.ConsoleSystem",	typeof( ConsoleSystem.API.Console ).Assembly );
-			RegisterDependency( "Elegy.FileSystem",		typeof( FileSystem.API.Files ).Assembly );
-			RegisterDependency( "Elegy.PluginSystem",	typeof( PluginSystem.API.Plugins ).Assembly );
-		}
 
 		public void RegisterDependency( string name, Assembly assembly )
 		{
