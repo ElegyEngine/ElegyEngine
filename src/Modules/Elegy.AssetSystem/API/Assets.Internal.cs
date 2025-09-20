@@ -21,7 +21,7 @@ namespace Elegy.AssetSystem.API
 			}
 
 			public MaterialDefinition Def { get; set; }
-			public Material? Material { get; set; } = null;
+			public Material? Material { get; set; }
 		}
 
 		private static TaggedLogger mLogger = new( "AssetSystem" );

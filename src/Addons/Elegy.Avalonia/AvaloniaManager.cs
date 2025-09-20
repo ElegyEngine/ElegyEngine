@@ -1,4 +1,6 @@
-﻿
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
+// SPDX-License-Identifier: MIT
+
 using Avalonia;
 using Avalonia.Input.Platform;
 using Elegy.Avalonia.Platform;
@@ -19,7 +21,7 @@ namespace Elegy.Avalonia;
 public static class AvaloniaManager
 {
 	private static Embedded.ElegyTopLevelImpl? mTopLevelImpl;
-	
+
 	/// <summary>
 	/// Initialises Avalonia as an in-game UI library. 
 	/// </summary>

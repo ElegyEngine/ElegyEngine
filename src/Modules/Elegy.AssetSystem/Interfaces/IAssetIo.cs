@@ -13,7 +13,7 @@ namespace Elegy.AssetSystem.Interfaces
 	public interface IAssetIo : IPlugin
 	{
 		/// <summary>
-		/// Whether or not this asset loader/writer supports this format.
+		/// Whether this asset loader/writer supports this format.
 		/// For example, an OBJ loader may support .obj.
 		/// </summary>
 		bool Supports( string extension );

@@ -1,4 +1,7 @@
-﻿using System.Collections.Concurrent;
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
+// SPDX-License-Identifier: MIT
+
+using System.Collections.Concurrent;
 using Avalonia.Input;
 
 namespace Elegy.Avalonia.Input;

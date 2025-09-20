@@ -18,7 +18,6 @@ class Program
 	public static AppBuilder BuildAvaloniaApp()
 		=> AppBuilder.Configure<App>()
 			.UsePlatformDetect()
-			//.WithElegy() - this is currently done in App.OnFrameworkInitializationCompleted
 			.With( new Win32PlatformOptions { RenderingMode = [Win32RenderingMode.Vulkan] } )
 			.With( new X11PlatformOptions { RenderingMode = [X11RenderingMode.Vulkan] } )
 			.With( new VulkanOptions

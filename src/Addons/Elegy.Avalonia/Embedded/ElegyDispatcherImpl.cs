@@ -1,4 +1,7 @@
-﻿using System.Diagnostics;
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
+// SPDX-License-Identifier: MIT
+
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Avalonia.Threading;
 using SysTimer = System.Threading.Timer;

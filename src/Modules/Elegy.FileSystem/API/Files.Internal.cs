@@ -13,9 +13,9 @@ namespace Elegy.FileSystem.API
 		private static string mRootPath = Directory.GetCurrentDirectory();
 		private static List<string> mOtherGamePaths = new();
 
-		private static ApplicationConfig mBaseGameConfig = default( ApplicationConfig );
+		private static ApplicationConfig mBaseGameConfig;
 		private static List<ApplicationConfig> mOtherGameConfigs = new();
-		private static EngineConfig mEngineConfig = default( EngineConfig );
+		private static EngineConfig mEngineConfig;
 
 		private static bool ExistsDirect( string destination, PathFlags flags )
 		{

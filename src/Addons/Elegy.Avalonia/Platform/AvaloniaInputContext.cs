@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
+// SPDX-License-Identifier: MIT
+
 using Avalonia.Input;
 using Silk.NET.Input;
 using Silk.NET.Windowing;

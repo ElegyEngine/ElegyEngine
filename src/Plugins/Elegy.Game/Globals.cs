@@ -5,4 +5,4 @@ global using Elegy;
 global using Elegy.Common.Extensions;
 global using System.Numerics;
 
-global using Console = Elegy.ConsoleSystem.API.Console;
+global using Console = Elegy.LogSystem.API.Log;

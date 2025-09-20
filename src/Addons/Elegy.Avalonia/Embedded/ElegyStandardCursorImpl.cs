@@ -1,4 +1,7 @@
-﻿using Avalonia.Platform;
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
+// SPDX-License-Identifier: MIT
+
+using Avalonia.Platform;
 using Silk.NET.Input;
 
 namespace Elegy.Avalonia.Embedded;

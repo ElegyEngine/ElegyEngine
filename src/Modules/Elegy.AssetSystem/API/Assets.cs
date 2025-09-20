@@ -52,7 +52,7 @@ namespace Elegy.AssetSystem.API
 			{
 				return;
 			}
-			
+
 			mLogger.Log( "Shutdown" );
 
 			mRenderMaterialFactory = null;

@@ -1,4 +1,7 @@
-﻿namespace Elegy.Avalonia.Utilities;
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
+// SPDX-License-Identifier: MIT
+
+namespace Elegy.Avalonia.Utilities;
 
 internal static class AsyncEnumerableHelper
 {

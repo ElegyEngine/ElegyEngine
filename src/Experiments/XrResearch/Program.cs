@@ -8,7 +8,7 @@ namespace XrResearch
 	{
 		private static GraphicsDevice mDevice;
 		private static CommandList mCommands;
-		
+
 		public static void Main( string[] args )
 		{
 			Xr = XR.GetApi();

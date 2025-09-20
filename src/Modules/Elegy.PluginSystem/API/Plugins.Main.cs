@@ -45,7 +45,7 @@ namespace Elegy.PluginSystem.API
 			{
 				return null;
 			}
-			
+
 			if ( !RegisterPlugin( plugin, library.Assembly, path ) )
 			{
 				mLogger.Warning( $"LoadPlugin: failed to load plugin '{path}'" );

@@ -1,4 +1,7 @@
-﻿using Avalonia.Controls;
+﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
+// SPDX-License-Identifier: MIT
+
+using Avalonia.Controls;
 using Avalonia.Controls.Embedding;
 using Avalonia.Input;
 

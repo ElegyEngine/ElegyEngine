@@ -192,7 +192,7 @@ static class Program
 				return;
 			}
 
-			// Corrupt the image, one pixel at a time...
+			// Corrupt the image, 128 pixels at a time...
 			for ( int i = 0; i < 128; i++ )
 			{
 				int randomIndex = Random.Shared.Next( 0, 128 * 128 * 4 );

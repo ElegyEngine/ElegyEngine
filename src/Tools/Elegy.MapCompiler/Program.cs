@@ -185,6 +185,7 @@ namespace Elegy.MapCompiler
 					{
 						dir = dir.Parent;
 					}
+
 					// Now get the root folder. (Since the maps folder is at '/root/game/maps'.)
 					dir = dir?.Parent?.Parent;
 					// We have a candidate for the root directory. Let's try it!

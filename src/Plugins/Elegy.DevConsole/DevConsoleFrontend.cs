@@ -11,8 +11,6 @@ using Elegy.LogSystem.API;
 
 namespace Elegy.DevConsole
 {
-	using Console = ConsoleSystem.API.Console;
-	
 	internal sealed class ConsoleMessage
 	{
 		//public byte[] Message { get; set; } = Array.Empty<byte>();
@@ -134,7 +132,7 @@ namespace Elegy.DevConsole
 
 			mLogger.Verbose( $"Received data: {receivedCommand} (raw: '{Encoding.ASCII.GetString( data )}')" );
 
-			Console.Execute( receivedCommand );
+			Commands.Execute( receivedCommand );
 		}
 
 		//private void LogEvent( Godot.Collections.Array? serviceResult )
