@@ -41,6 +41,7 @@ namespace Elegy.MapCompiler
 			if ( !ProcessArgs( args ) )
 			{
 				PrintUsage();
+				Environment.ExitCode = 1;
 				return;
 			}
 
@@ -62,6 +63,7 @@ namespace Elegy.MapCompiler
 			if ( !VerifyAndFixPaths() )
 			{
 				mLogger.Error( "Failed to compile map: incorrect input paths" );
+				Environment.ExitCode = 1;
 				return;
 			}
 
