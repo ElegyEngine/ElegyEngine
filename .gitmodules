@@ -4,3 +4,6 @@
 [submodule "extern/fennecs"]
 	path = extern/fennecs
 	url = https://github.com/Admer456/fennecs.git
+[submodule "extern/bepuphysics2"]
+	path = extern/bepuphysics2
+	url = https://github.com/ElegyEngine/bepuphysics2.git
