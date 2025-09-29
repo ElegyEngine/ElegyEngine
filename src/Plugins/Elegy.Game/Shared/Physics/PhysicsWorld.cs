@@ -44,9 +44,10 @@ namespace Game.Shared.Physics
 
 		public static PhysicsBody CreateBody( in Transform worldTransform, PhysicsShape shape )
 		{
-			bool needsConversion = shape.ShapeIndex.Type != Mesh.Id;
-			Quaternion orientation = needsConversion ? PhysicsBody.ToBepu( worldTransform.Orientation ) : worldTransform.Orientation;
-			
+			//bool needsConversion = shape.ShapeIndex.Type is Capsule.Id or Cylinder.Id;
+			//Quaternion orientation = needsConversion ? PhysicsBody.ToBepu( worldTransform.Orientation ) : worldTransform.Orientation;
+			Quaternion orientation = worldTransform.Orientation;
+
 			PhysicsBody result = new(
 				shape: shape,
 				dynamicHandle: Simulation.Bodies.Add( BodyDescription.CreateDynamic(
@@ -54,15 +55,16 @@ namespace Game.Shared.Physics
 					inertia: shape.Inertia,
 					collidable: shape.ShapeIndex,
 					activity: 0.01f ) ),
-				needsConversion: needsConversion );
+				needsConversion: false );
 
 			return result;
 		}
 
 		public static PhysicsBody CreateKinematicBody( in Transform worldTransform, PhysicsShape shape )
 		{
-			bool needsConversion = shape.ShapeIndex.Type != Mesh.Id;
-			Quaternion orientation = needsConversion ? PhysicsBody.ToBepu( worldTransform.Orientation ) : worldTransform.Orientation;
+			//bool needsConversion = shape.ShapeIndex.Type is Capsule.Id or Cylinder.Id;
+			//Quaternion orientation = needsConversion ? PhysicsBody.ToBepu( worldTransform.Orientation ) : worldTransform.Orientation;
+			Quaternion orientation = worldTransform.Orientation;
 
 			PhysicsBody result = new(
 				shape: shape,
@@ -72,7 +74,7 @@ namespace Game.Shared.Physics
 					inertia: new() { InverseMass = shape.Inertia.InverseMass },
 					collidable: new( shape.ShapeIndex, 0.1f, float.MaxValue, ContinuousDetection.Passive ),
 					activity: 0.02f ) ),
-				needsConversion: needsConversion );
+				needsConversion: false );
 
 			return result;
 		}

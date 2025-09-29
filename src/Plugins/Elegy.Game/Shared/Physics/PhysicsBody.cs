@@ -40,8 +40,10 @@ namespace Game.Shared.Physics
 
 		public Quaternion Orientation
 		{
-			get => NeedsConversion ? FromBepu( BodyReference.Pose.Orientation ) : BodyReference.Pose.Orientation;
-			set => BodyReference.Pose.Orientation = NeedsConversion ? ToBepu( value ) : value;
+			//get => NeedsConversion ? FromBepu( BodyReference.Pose.Orientation ) : BodyReference.Pose.Orientation;
+			//set => BodyReference.Pose.Orientation = NeedsConversion ? ToBepu( value ) : value;
+			get => BodyReference.Pose.Orientation;
+			set => BodyReference.Pose.Orientation = value;
 		}
 
 		public Vector3 PositionStatic
