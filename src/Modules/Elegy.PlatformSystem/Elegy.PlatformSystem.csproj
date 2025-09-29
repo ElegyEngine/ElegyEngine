@@ -19,8 +19,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Silk.NET.Input.Common" Version="2.20.0" />
-    <PackageReference Include="Silk.NET.Windowing.Common" Version="2.20.0" />
+    <PackageReference Include="Silk.NET.Input.Common" Version="2.22.0" />
+    <PackageReference Include="Silk.NET.Windowing.Common" Version="2.22.0" />
   </ItemGroup>
 
   <ItemGroup>

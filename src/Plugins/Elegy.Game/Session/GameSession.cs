@@ -5,18 +5,15 @@ using Game.Client;
 using Game.Shared;
 using Game.Shared.Components;
 using System.Diagnostics;
-using BepuPhysics;
 using Elegy.Common.Maths;
 using Elegy.Common.Utilities;
-using Elegy.LogSystem;
-using Elegy.RenderSystem.API;
 
 namespace Game.Session
 {
 	public partial class GameSession
 	{
 		private static TaggedLogger mLogger = new( "Session" );
-		
+
 		public GameClient Client { get; }
 
 		public ref Entity ClientEntity => ref EntityWorld.Entities[ClientEntityId];

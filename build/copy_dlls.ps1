@@ -33,7 +33,7 @@ if ( !$release )
 
 if ( $plugin = "none" )
 {
-	## Copy the plugin DLLs without their dependencies
+	## Copy the plugin DLLs with their own dependencies
 	Copy-Item "$input_dir/src/Plugins/Elegy.DevConsole/bin/$build_config/net8.0/Elegy.DevConsole.*"			-Destination "$output_dir/engine/plugins/DevConsole"
 	Copy-Item "$input_dir/src/Plugins/Elegy.Game/bin/$build_config/net8.0/Game.*"							-Destination "$output_dir/game/plugins/Game"
 	Copy-Item "$input_dir/src/Plugins/Elegy.Game/bin/$build_config/net8.0/Bepu*"							-Destination "$output_dir/game/plugins/Game"

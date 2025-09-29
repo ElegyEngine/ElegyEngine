@@ -20,7 +20,7 @@ namespace Game.Presentation
 
 		public SurfaceCache OpaqueCache { get; } = new();
 		public SurfaceCache TransparentCache { get; } = new();
-		
+
 		public Action<View> OnSubmitSurfaces { get; set; } = _ => { };
 		public Action<View, CommandList> OnFrameEnd { get; set; } = ( _, _ ) => { };
 

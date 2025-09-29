@@ -55,7 +55,7 @@ namespace Game.Shared
 				newEntityId = mNumEntitySlots;
 			}
 			mNumEntitySlots++;
-			
+
 			EcsObjects[newEntityId] = EcsWorld.Spawn();
 			Entities[newEntityId] = new( newEntityId );
 			OnPreSpawned( Entities[newEntityId] );

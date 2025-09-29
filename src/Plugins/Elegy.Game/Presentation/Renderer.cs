@@ -12,7 +12,7 @@ namespace Game.Presentation
 			mRenderCommands = Render.Factory.CreateCommandList();
 			Render.OnRender += RenderFrame;
 			OnSubmitSurfaces += SubmitSurfacesWorld;
-			
+
 			return true;
 		}
 

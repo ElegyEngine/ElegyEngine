@@ -243,17 +243,15 @@ static class Program
 		Window.PrioritizeSdl();
 
 		AppTemplate.Start<BufferMappingApp>(
-			config:
-			new()
+			config: new()
 			{
 				Args = args,
 				Engine = EngineConfig.Game( "game" ),
 				WithMainWindow = true,
 				ToolMode = true
 			},
-			windowPlatform:
-			Window.GetWindowPlatform( viewOnly: false )
-			?? throw new Exception( "SDL2 not found" )
+			windowPlatform: Window.GetWindowPlatform( viewOnly: false )
+			                ?? throw new Exception( "SDL2 not found" )
 		);
 	}
 }
