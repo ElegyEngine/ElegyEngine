@@ -147,6 +147,35 @@ namespace Game.Shared.Physics
 
 		public void FireBatch( Span<Ray> inRays, Span<RaycastResult> outResults )
 			=> FireBatchInternal( inRays, outResults, RaycastHandler, Physics.Simulation.BufferPool );
+
+		private class RayBatchThreadLocal : IDisposable
+		{
+			public ConfigurableRayHitHandler Handler;
+			public BufferPool Pool = new( 16384 );
+
+			public void Dispose()
+			{
+				Pool.Clear();
+			}
+		}
+
+		public void FireBatchThreaded( Span<Ray> inRays, Span<RaycastResult> outResults, int numThreads, int jobSize = 256 )
+		{
+			RaycastHandler.Results = outResults; // RaycastHandler gets copied to each thread local storage
+			Parallel.DivideAndDispatch( inRays, BatchWorker2, BatchThreadLocalFactory, numThreads, jobSize );
+		}
+
+		private void BatchWorker2( BatchJob<Ray> job, int workerIndex, ref RayBatchThreadLocal threadLocal )
+		{
+			FireBatchInternal( job.DataSpan, job.OutputSpan<RaycastResult>( threadLocal.Handler.ResultPtr ), threadLocal.Handler, threadLocal.Pool );
+		}
+
+		private RayBatchThreadLocal BatchThreadLocalFactory()
+			=> new()
+			{
+				Handler = RaycastHandler
+			};
+
 		public RaycastResult FireShape<TConvexShape>( Vector3 start, Vector3 direction, float distance, TConvexShape shape )
 			where TConvexShape : unmanaged, IConvexShape
 			=> FireShape( start, direction, distance, shape, Quaternion.Identity );
