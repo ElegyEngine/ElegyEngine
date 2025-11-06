@@ -14,7 +14,7 @@ namespace Game.Presentation
 			public RenderMaterial Material;
 			public PooledList<RenderSurface> Surfaces;
 		}
-		
+
 		public PooledList<CacheElement> Cache { get; } = new( capacity: 512 );
 
 		public PooledList<RenderSurface> GetOrAdd( RenderMaterial material )

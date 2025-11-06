@@ -100,12 +100,12 @@ namespace Elegy.RenderSystem.Objects
 		/// The render mask.
 		/// </summary>
 		public int Mask { get; set; } = int.MinValue;
-		
+
 		/// <summary>
 		/// The native window associated with this view.
 		/// </summary>
 		public IWindow? Window { get; private set; }
-		
+
 		/// <summary>
 		/// Render output size in pixels.
 		/// </summary>
