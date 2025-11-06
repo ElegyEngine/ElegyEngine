@@ -113,6 +113,9 @@ namespace Game.Shared.Physics
 			return this;
 		}
 
+		public RaycastResult Fire( Vector3 start, Vector3 end )
+			=> Fire( start, (end - start).Normalized(), (end - start).Length() );
+
 		public unsafe RaycastResult Fire( Vector3 start, Vector3 direction, float distance )
 		{
 			RaycastResult result = new();
