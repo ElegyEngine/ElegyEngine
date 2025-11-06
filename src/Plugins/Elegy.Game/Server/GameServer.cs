@@ -76,7 +76,7 @@ namespace Game.Server
 				
 				// These two will make transforms dirty
 				double physicsStart = CurrentSeconds;
-				PhysicsWorld.UpdateSimulation( updateDelta );
+				Physics.UpdateSimulation( updateDelta );
 				
 				double serverUpdateStart = CurrentSeconds;
 				EntityWorld.Dispatch( new Entity.ServerUpdateEvent( this, updateDelta ) );
@@ -133,7 +133,7 @@ namespace Game.Server
 			EntityWorld.ForEachEntity( static entity => { entity.Dispatch<Entity.PostSpawnEvent>( new( entity ) ); } );
 
 			// Just to kick things off a little bit
-			PhysicsWorld.UpdateSimulation( 0.01f );
+			Physics.UpdateSimulation( 0.01f );
 
 			return true;
 		}

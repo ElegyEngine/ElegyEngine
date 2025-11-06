@@ -25,8 +25,8 @@ namespace Game.Shared
 
 			mPosition = transform.Position;
 
-			Shape = PhysicsWorld.CreateShape( new BepuPhysics.Collidables.Cylinder( 0.5f, 2.0f ), 10.0f );
-			Body = PhysicsWorld.CreateKinematicBody( transform, Shape );
+			Shape = Physics.Physics.CreateShape( new BepuPhysics.Collidables.Cylinder( 0.5f, 2.0f ), 10.0f );
+			Body = Physics.Physics.CreateKinematicBody( transform, Shape );
 		}
 
 		public void Update( float dt )
@@ -37,7 +37,7 @@ namespace Game.Shared
 
 			if ( !Body.BodyReference.Awake )
 			{
-				PhysicsWorld.Simulation.Awakener.AwakenBody( Body.BodyHandle );
+				Physics.Physics.Simulation.Awakener.AwakenBody( Body.BodyHandle );
 			}
 
 			// Quick hacky little approximation until we get a proper character controller

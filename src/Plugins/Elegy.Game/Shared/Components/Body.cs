@@ -44,16 +44,16 @@ namespace Game.Shared.Components
 			}
 
 			// TODO: create physics shape from actual collision models, not the visual ones
-			Shape = PhysicsWorld.CreateMeshShape( CollisionModel.Data, Mass );
+			Shape = Physics.Physics.CreateMeshShape( CollisionModel.Data, Mass );
 			BodyObject = Static
-				? PhysicsWorld.CreateStaticBody( transform, Shape )
-				: PhysicsWorld.CreateBody( transform, Shape );
+				? Physics.Physics.CreateStaticBody( transform, Shape )
+				: Physics.Physics.CreateBody( transform, Shape );
 		}
 
 		[GroupEvent]
 		public static void OnDebugDraw( Entity.DebugDrawEvent data, ref Body body )
 		{
-			PhysicsWorld.DebugDrawBody( body.BodyObject );
+			Physics.Physics.DebugDrawBody( body.BodyObject );
 		}
 
 		[GroupEvent]

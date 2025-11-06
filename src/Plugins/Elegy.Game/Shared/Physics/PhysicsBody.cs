@@ -11,7 +11,7 @@ namespace Game.Shared.Physics
 		{
 			Shape = shape;
 			BodyHandle = dynamicHandle;
-			BodyReference = PhysicsWorld.Simulation.Bodies.GetBodyReference( dynamicHandle );
+			BodyReference = Physics.Simulation.Bodies.GetBodyReference( dynamicHandle );
 			StaticHandle = new( -1 );
 			NeedsConversion = needsConversion;
 		}
@@ -20,7 +20,7 @@ namespace Game.Shared.Physics
 		{
 			Shape = shape;
 			StaticHandle = staticHandle;
-			StaticReference = PhysicsWorld.Simulation.Statics.GetStaticReference( staticHandle );
+			StaticReference = Physics.Simulation.Statics.GetStaticReference( staticHandle );
 		}
 
 		public PhysicsShape Shape { get; }

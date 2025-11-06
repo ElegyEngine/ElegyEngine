@@ -66,7 +66,7 @@ namespace Game
 			int maxPlayers = Commands.Arguments.GetInt( "+maxplayers", 16 );
 
 			EntityWorld.Init();
-			PhysicsWorld.Init();
+			Physics.Init();
 
 			bool headlessMode = Commands.Arguments.ContainsKey( "-headless" );
 			if ( headlessMode )
@@ -99,7 +99,7 @@ namespace Game
 			mServer?.Shutdown();
 			mServer = null;
 
-			PhysicsWorld.Shutdown();
+			Physics.Shutdown();
 			EntityWorld.Shutdown();
 		}
 
