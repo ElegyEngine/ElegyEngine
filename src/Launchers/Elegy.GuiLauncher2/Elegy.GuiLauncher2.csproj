@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Addons\Elegy.Avalonia\Elegy.Avalonia.csproj" />
+      <ProjectReference Include="..\..\Core\Elegy.Avalonia\Elegy.Avalonia.csproj" />
       <ProjectReference Include="..\..\Templates\Elegy.App\Elegy.App.csproj" />
     </ItemGroup>
 </Project>
