@@ -124,6 +124,29 @@ namespace Game.Shared.Physics
 			return result;
 		}
 
+		private void FireBatchInternal( Span<Ray> inRays, Span<RaycastResult> outResults, ConfigurableRayHitHandler handler, BufferPool pool )
+		{
+			handler.Results = outResults;
+
+			SimulationRayBatcher<ConfigurableRayHitHandler> batcher = new( pool, Physics.Simulation, handler, inRays.Length );
+
+			for ( int i = 0; i < inRays.Length; i++ )
+			{
+				ref Ray ray = ref inRays[i];
+				batcher.Add( ref ray.Start, ref ray.Direction, ray.MaxDistance, i );
+			}
+
+			batcher.Flush();
+			batcher.Dispose();
+
+			unsafe
+			{
+				handler.ResultBase = null;
+			}
+		}
+
+		public void FireBatch( Span<Ray> inRays, Span<RaycastResult> outResults )
+			=> FireBatchInternal( inRays, outResults, RaycastHandler, Physics.Simulation.BufferPool );
 		public RaycastResult FireShape<TConvexShape>( Vector3 start, Vector3 direction, float distance, TConvexShape shape )
 			where TConvexShape : unmanaged, IConvexShape
 			=> FireShape( start, direction, distance, shape, Quaternion.Identity );
