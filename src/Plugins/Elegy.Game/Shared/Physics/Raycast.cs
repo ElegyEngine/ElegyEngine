@@ -124,5 +124,21 @@ namespace Game.Shared.Physics
 			return result;
 		}
 
+		public RaycastResult FireShape<TConvexShape>( Vector3 start, Vector3 direction, float distance, TConvexShape shape )
+			where TConvexShape : unmanaged, IConvexShape
+			=> FireShape( start, direction, distance, shape, Quaternion.Identity );
+
+		public RaycastResult FireShape<TConvexShape>( Vector3 start, Vector3 direction, float distance, TConvexShape shape, Quaternion orientation )
+			where TConvexShape : unmanaged, IConvexShape
+		{
+			RigidPose pose = new( start, orientation );
+			BodyVelocity velocity = new( direction );
+
+			Physics.Simulation.Sweep( shape, pose, velocity, distance, Physics.Simulation.BufferPool, ref RaycastHandler );
+			unsafe
+			{
+				return *RaycastHandler.ResultBase;
+			}
+		}
 	}
-}
+}
