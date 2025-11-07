@@ -34,10 +34,14 @@ packages/
 src/**/Properties/
 
 # Exception for testgame's bin folder, has a readme
-!testgame/bin
+!testgame/bin/README.md
 
 # Rider files
 .idea
-
+# KDevelop
+*.kdev4
 # Ultra benchmarking sessions
 ultra*.json
+# Documentation output
+testgame/*/plugins/*/*.xml
+
