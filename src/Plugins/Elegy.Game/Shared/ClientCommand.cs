@@ -1,6 +1,8 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using System.Runtime.CompilerServices;
+
 namespace Game.Shared
 {
 	[Flags]
@@ -19,12 +21,12 @@ namespace Game.Shared
 		LeanRight = 1 << 8,
 		LeanForward = 1 << 9,
 
-		Escape = 1 << 10,
+		Menu = 1 << 10,
 		Tab = 1 << 11,
-		Enter = 1 << 12
+		Confirm = 1 << 12
 	}
 
-	public struct ClientCommands
+	public struct ClientCommand
 	{
 		/// <summary>
 		/// Time of recording this client command.
@@ -43,8 +45,25 @@ namespace Game.Shared
 		public Vector3 ViewAngles { get; set; }
 
 		/// <summary>
-		/// What buttons are being held down (e.g. primary attack, jump etc.)
+		/// What action buttons are being held down (e.g. primary attack, jump etc.)
 		/// </summary>
-		public ClientActions ActionStates { get; set; }
+		public int ActionFlags { get; set; }
+
+		/// <summary>
+		/// Packed axis buffer.
+		/// </summary>
+		public int PackedAxes { get; set; }
+
+		/// <summary>
+		/// Input context ID.
+		/// </summary>
+		public int InputContext { get; set; }
+
+		/// <summary>
+		/// Shortcut to check for action flags.
+		/// </summary>
+		[MethodImpl( MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization )]
+		public bool HasAction<T>( T flag ) where T : Enum
+			=> ((int)(object)flag & ActionFlags) != 0; // Ugly little hack
 	}
 }

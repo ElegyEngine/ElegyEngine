@@ -8,10 +8,9 @@ using Game.Shared.Physics;
 
 namespace Game.Shared
 {
-	public class StandardPlayerController : IPlayerControllable
+	public class StandardPlayerController : IClientController
 	{
 		private Vector3 mPosition;
-		private Vector3 mDirection;
 		private Vector3 mViewAngles;
 
 		public PhysicsShape Shape { get; private set; }
@@ -29,7 +28,7 @@ namespace Game.Shared
 			Body = Physics.Physics.CreateKinematicBody( transform, Shape );
 		}
 
-		public void Update( float dt )
+		public void Update( float dt, ClientCommand command )
 		{
 			ref var motion = ref Body.BodyReference.Dynamics.Motion;
 
@@ -41,7 +40,7 @@ namespace Game.Shared
 			}
 
 			// Quick hacky little approximation until we get a proper character controller
-			motion.Velocity.Linear += mDirection / (motion.Velocity.Linear.LengthSquared() + 0.25f);
+			motion.Velocity.Linear += command.MovementDirection / (motion.Velocity.Linear.LengthSquared() + 0.25f);
 		}
 
 		public PlayerControllerState GenerateControllerState()
@@ -50,12 +49,6 @@ namespace Game.Shared
 				Position = mPosition,
 				Angles = mViewAngles
 			};
-
-		public void HandleClientInput( ClientCommands commands )
-		{
-			mViewAngles = commands.ViewAngles;
-			mDirection = commands.MovementDirection;
-		}
 
 		private readonly Vector3[] mBoxExtents =
 		[

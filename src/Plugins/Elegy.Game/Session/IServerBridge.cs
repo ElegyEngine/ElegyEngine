@@ -64,14 +64,14 @@ namespace Game.Session
 		void SendSpawnComplete();
 
 		/// <summary>
-		/// Sends a <see cref="ClientCommands"/> snapshot to the server.
+		/// Sends a <see cref="ClientCommand"/> snapshot to the server.
 		/// This is performed by clients multiple times per second.
 		/// 
 		/// In singleplayer, this directly copies <paramref name="snapshot"/>
 		/// into the server's client snapshot buffer.
 		/// In multiplayer, it emits it as a packet.
 		/// </summary>
-		void SendInputPayload( in ClientCommands snapshot );
+		void SendInputPayload( in ClientCommand snapshot );
 
 		/// <summary>
 		/// Not implemented.

@@ -17,7 +17,7 @@ namespace Game.Session
 		public GameClient Client { get; }
 
 		public ref Entity ClientEntity => ref EntityWorld.Entities[ClientEntityId];
-		public IPlayerControllable PlayerController => ClientEntity.Ref<Player>().Controller;
+		public IClientController PlayerController => ClientEntity.Ref<Player>().Controller;
 
 		public IServerBridge Bridge { get; set; }
 		public AssetRegistry AssetRegistry => Bridge.AssetRegistry;
@@ -53,8 +53,7 @@ namespace Game.Session
 			Entity.ClientUpdateEvent data = new( ClientEntity, Client, delta );
 			EntityWorld.Dispatch( data );
 
-			PlayerController.HandleClientInput( Client.Commands );
-			PlayerController.Update( delta );
+			PlayerController.Update( delta, Client.Command );
 
 			// TODO: Move this someplace more appropriate
 			var state = PlayerController.GenerateControllerState();

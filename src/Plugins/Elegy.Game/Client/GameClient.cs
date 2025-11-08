@@ -20,7 +20,7 @@ namespace Game.Client
 		private InputSystem mInput = new();
 		private MainMenu mMenu = new();
 
-		private ClientCommands mCommands;
+		private ClientCommand mCommand;
 
 		private Vector2 mOldMousePosition = Vector2.Zero;
 		private Vector2 mMousePositionDelta = Vector2.Zero;
@@ -31,7 +31,7 @@ namespace Game.Client
 
 		private View? mRenderView;
 
-		public ClientCommands Commands => mCommands;
+		public ClientCommand Command => mCommand;
 		public View RenderView => mRenderView;
 
 		public bool Init()
@@ -103,22 +103,22 @@ namespace Game.Client
 			mMousePositionDeltaSmooth = mMousePositionDeltaSmooth.Lerp( mMousePositionDelta, 0.99f );
 			//mMousePositionDeltaSmooth = mMousePositionDelta;
 
-			mCommands.MovementDirection = mMovementDirection;
-			mCommands.ActionStates = GrabActionStates();
+			mCommand.MovementDirection = mMovementDirection;
+			mCommand.ActionFlags = GrabActionStates();
 
-			if ( mCommands.ActionStates.HasFlag( ClientActions.SecondaryAttack ) )
+			if ( mCommand.HasAction( ClientActions.SecondaryAttack ) )
 			{
 				mAngles.Y += mMousePositionDeltaSmooth.X * 0.06f;
 				mAngles.X -= mMousePositionDeltaSmooth.Y * 0.06f;
 			}
 
-			mCommands.ViewAngles = mAngles;
+			mCommand.ViewAngles = mAngles;
 			mMousePositionDelta = Vector2.Zero;
 			mOldMousePosition = Input.Mouse.Position;
 		}
 
 		// TODO: delegate to the input system
-		private ClientActions GrabActionStates()
+		private int GrabActionStates()
 		{
 			ClientActions actionStates = 0;
 
@@ -150,13 +150,13 @@ namespace Game.Client
 			}
 
 			if ( Input.Keyboard.IsKeyPressed( Key.Escape ) )
-				actionStates |= ClientActions.Escape;
+				actionStates |= ClientActions.Menu;
 			if ( Input.Keyboard.IsKeyPressed( Key.Tab ) )
 				actionStates |= ClientActions.Tab;
 			if ( Input.Keyboard.IsKeyPressed( Key.Enter ) )
-				actionStates |= ClientActions.Enter;
+				actionStates |= ClientActions.Confirm;
 
-			return actionStates;
+			return (int)actionStates;
 		}
 	}
 }

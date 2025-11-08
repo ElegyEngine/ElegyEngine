@@ -18,12 +18,11 @@ namespace Game.Shared
 	/// to be implemented by components! Rather, components can refer
 	/// to a controller object.
 	/// </summary>
-	public interface IPlayerControllable
+	public interface IClientController
 	{
-		void Setup( int entityId );
-		void Update( float delta );
-		void HandleClientInput( ClientCommands commands );
+		void Setup( int entityId ) { }
+		void Update( float delta, ClientCommand command ) { }
 		PlayerControllerState GenerateControllerState();
-		void OnDebugDraw();
+		void OnDebugDraw() { }
 	}
 }

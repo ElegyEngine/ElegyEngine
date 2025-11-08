@@ -54,7 +54,7 @@ namespace Game.Session.Bridges
 		public void SendSpawnComplete()
 			=> mServer.ReceiveSpawnComplete( mClientId );
 
-		public void SendInputPayload( in ClientCommands snapshot )
+		public void SendInputPayload( in ClientCommand snapshot )
 			=> mServer.ReceiveInputPayload( mClientId, snapshot );
 
 		public void SendEventPayload( int entityId, int eventId, object[]? args )

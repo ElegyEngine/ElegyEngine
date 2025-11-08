@@ -15,7 +15,7 @@ namespace Game.Shared.Components
 
 		public bool IsLocal { get; set; }
 
-		public IPlayerControllable Controller { get; set; } = new StandardPlayerController();
+		public IClientController Controller { get; set; } = new StandardPlayerController();
 
 		[Event]
 		public void Spawn( Entity.SpawnEvent data )
@@ -37,7 +37,8 @@ namespace Game.Shared.Components
 				return;
 			}
 
-			player.Controller.Update( data.Delta );
+			// TODO: access client commands on server
+			//player.Controller.Update( data.Delta, player.Client.Command );
 		}
 
 		[Event]

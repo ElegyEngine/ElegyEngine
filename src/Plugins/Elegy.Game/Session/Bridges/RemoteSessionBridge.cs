@@ -92,7 +92,7 @@ namespace Game.Session.Bridges
 			//mServer.Send( new Packets.SpawnComplete() );
 		}
 
-		public void SendInputPayload( in ClientCommands snapshot )
+		public void SendInputPayload( in ClientCommand snapshot )
 		{
 			//mConnection.Send( new Packets.InputPayloadPacket( snapshot ) );
 		}

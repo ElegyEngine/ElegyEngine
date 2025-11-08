@@ -39,19 +39,19 @@ namespace Game.Server
 		/// The server keeps track of the last 64 input snapshots from the client,
 		/// partly for the purposes of rollback, partly for cheating.
 		/// </summary>
-		public ClientCommands[] InputSnapshots { get; } = new ClientCommands[64];
+		public ClientCommand[] InputSnapshots { get; } = new ClientCommand[64];
 
-		public void AddInputSnapshot( ClientCommands snapshot )
+		public void AddInputSnapshot( ClientCommand snapshot )
 		{
 			InputSnapshots.RingAdd( snapshot, 64, mConnectionRingIndex++ );
 		}
 
-		public ClientCommands GetInputSnapshotInPast( int pastSteps = 1 )
+		public ClientCommand GetInputSnapshotInPast( int pastSteps = 1 )
 		{
 			return InputSnapshots.RingAt( 64, mConnectionRingIndex - pastSteps );
 		}
 
-		public ClientCommands GetLatestInputSnapshot()
+		public ClientCommand GetLatestInputSnapshot()
 		{
 			return GetInputSnapshotInPast( 0 );
 		}

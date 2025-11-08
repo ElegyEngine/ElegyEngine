@@ -89,7 +89,7 @@ namespace Game.Server
 		/// <summary>
 		/// See <see cref="Session.Packets.ClientPacketType.InputPayload"/>.
 		/// </summary>
-		public void ReceiveInputPayload( int clientId, in ClientCommands snapshot )
+		public void ReceiveInputPayload( int clientId, in ClientCommand snapshot )
 		{
 			ClientConnection client = Connections[clientId];
 

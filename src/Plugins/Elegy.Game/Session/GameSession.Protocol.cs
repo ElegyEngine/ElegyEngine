@@ -13,7 +13,7 @@ namespace Game.Session
 
 		public void SendClientState()
 		{
-			Bridge.SendInputPayload( Client.Commands );
+			Bridge.SendInputPayload( Client.Command );
 		}
 
 		public void ReceiveSpawnResponse( int entityId )
