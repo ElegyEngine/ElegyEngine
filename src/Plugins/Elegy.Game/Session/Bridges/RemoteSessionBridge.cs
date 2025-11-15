@@ -5,6 +5,7 @@ using Elegy.LogSystem;
 using Game.Shared;
 using System.Net;
 using Elegy.Common.Utilities;
+using Game.Shared.Input;
 
 namespace Game.Session.Bridges
 {

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.ECS;
+using Game.Shared.Input;
 
 namespace Game.Shared.Components
 {

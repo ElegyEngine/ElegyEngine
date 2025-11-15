@@ -7,6 +7,7 @@ using Game.Shared.Components;
 using System.Diagnostics;
 using Elegy.Common.Maths;
 using Elegy.Common.Utilities;
+using Game.Shared.Input;
 
 namespace Game.Session
 {
@@ -53,10 +54,8 @@ namespace Game.Session
 			Entity.ClientUpdateEvent data = new( ClientEntity, Client, delta );
 			EntityWorld.Dispatch( data );
 
-			PlayerController.Update( delta, Client.Command );
-
+			var state = PlayerController.Update( delta, Client.Command );
 			// TODO: Move this someplace more appropriate
-			var state = PlayerController.GenerateControllerState();
 			Client.RenderView.Transform = Coords.CreateViewMatrixDegrees( state.Position, state.Angles );
 
 			//PlayerController.OnDebugDraw();

@@ -5,6 +5,7 @@ using Game.Server.Bridges;
 using Game.Shared;
 using System.Net;
 using Game.Server;
+using Game.Shared.Input;
 
 namespace Game.Session.Bridges
 {

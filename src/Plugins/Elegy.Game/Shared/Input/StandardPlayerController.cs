@@ -1,18 +1,14 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.Common.Maths;
 using Elegy.RenderSystem.API;
 using Game.Shared.Components;
 using Game.Shared.Physics;
 
-namespace Game.Shared
+namespace Game.Shared.Input
 {
 	public class StandardPlayerController : IClientController
 	{
-		private Vector3 mPosition;
-		private Vector3 mViewAngles;
-
 		public PhysicsShape Shape { get; private set; }
 
 		public PhysicsBody Body { get; private set; }
@@ -22,17 +18,13 @@ namespace Game.Shared
 			// TODO: nicer API for getting the entity..
 			ref var transform = ref EntityWorld.GetEntityRef( entityId ).Ref<Transform>();
 
-			mPosition = transform.Position;
-
 			Shape = Physics.Physics.CreateShape( new BepuPhysics.Collidables.Cylinder( 0.5f, 2.0f ), 10.0f );
 			Body = Physics.Physics.CreateKinematicBody( transform, Shape );
 		}
 
-		public void Update( float dt, ClientCommand command )
+		public PlayerControllerState Update( float dt, ClientCommand command )
 		{
 			ref var motion = ref Body.BodyReference.Dynamics.Motion;
-
-			mPosition = motion.Pose.Position;
 
 			if ( !Body.BodyReference.Awake )
 			{
@@ -41,14 +33,13 @@ namespace Game.Shared
 
 			// Quick hacky little approximation until we get a proper character controller
 			motion.Velocity.Linear += command.MovementDirection / (motion.Velocity.Linear.LengthSquared() + 0.25f);
-		}
 
-		public PlayerControllerState GenerateControllerState()
-			=> new()
+			return new()
 			{
-				Position = mPosition,
-				Angles = mViewAngles
+				Position = motion.Pose.Position,
+				Angles = command.ViewAngles
 			};
+		}
 
 		private readonly Vector3[] mBoxExtents =
 		[

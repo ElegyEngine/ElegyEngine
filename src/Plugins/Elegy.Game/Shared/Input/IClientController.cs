@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-namespace Game.Shared
+namespace Game.Shared.Input
 {
 	/// <summary>
 	/// Movement data the server sends back to the client.
@@ -21,8 +21,7 @@ namespace Game.Shared
 	public interface IClientController
 	{
 		void Setup( int entityId ) { }
-		void Update( float delta, ClientCommand command ) { }
-		PlayerControllerState GenerateControllerState();
+		PlayerControllerState Update( float delta, ClientCommand command );
 		void OnDebugDraw() { }
 	}
 }

@@ -10,6 +10,8 @@ using Elegy.InputSystem.API;
 using Elegy.RenderSystem.API;
 using Elegy.RenderSystem.Objects;
 using Game.Shared;
+using Game.Shared.Input;
+using Game.Shared.Input.Actions;
 using Silk.NET.Input;
 
 namespace Game.Client
@@ -106,7 +108,7 @@ namespace Game.Client
 			mCommand.MovementDirection = mMovementDirection;
 			mCommand.ActionFlags = GrabActionStates();
 
-			if ( mCommand.HasAction( ClientActions.SecondaryAttack ) )
+			if ( mCommand.HasAction( PlayerActions.SecondaryAttack ) )
 			{
 				mAngles.Y += mMousePositionDeltaSmooth.X * 0.06f;
 				mAngles.X -= mMousePositionDeltaSmooth.Y * 0.06f;
@@ -120,41 +122,41 @@ namespace Game.Client
 		// TODO: delegate to the input system
 		private int GrabActionStates()
 		{
-			ClientActions actionStates = 0;
+			PlayerActions actionStates = 0;
 
 			if ( Input.Mouse.IsButtonPressed( MouseButton.Left ) )
-				actionStates |= ClientActions.PrimaryAttack;
+				actionStates |= PlayerActions.PrimaryAttack;
 			if ( Input.Mouse.IsButtonPressed( MouseButton.Right ) )
-				actionStates |= ClientActions.SecondaryAttack;
+				actionStates |= PlayerActions.SecondaryAttack;
 			if ( Input.Mouse.IsButtonPressed( MouseButton.Middle ) )
-				actionStates |= ClientActions.TertiaryAttack;
+				actionStates |= PlayerActions.TertiaryAttack;
 
 			if ( Input.Keyboard.IsKeyPressed( Key.ShiftLeft ) )
-				actionStates |= ClientActions.Sprint;
+				actionStates |= PlayerActions.Sprint;
 			if ( Input.Keyboard.IsKeyPressed( Key.E ) )
-				actionStates |= ClientActions.Use;
+				actionStates |= PlayerActions.Use;
 			if ( Input.Keyboard.IsKeyPressed( Key.R ) )
-				actionStates |= ClientActions.Reload;
+				actionStates |= PlayerActions.Reload;
 			if ( Input.Keyboard.IsKeyPressed( Key.F ) )
-				actionStates |= ClientActions.Flashlight;
+				actionStates |= PlayerActions.Flashlight;
 
 			if ( Input.Keyboard.IsKeyPressed( Key.Y ) )
-				actionStates |= ClientActions.LeanLeft;
+				actionStates |= PlayerActions.LeanLeft;
 			if ( Input.Keyboard.IsKeyPressed( Key.C ) )
-				actionStates |= ClientActions.LeanRight;
+				actionStates |= PlayerActions.LeanRight;
 
 			if ( Input.Keyboard.IsKeyPressed( Key.AltLeft ) )
 			{
 				if ( Input.Keyboard.IsKeyPressed( Key.W ) )
-					actionStates |= ClientActions.LeanForward;
+					actionStates |= PlayerActions.LeanForward;
 			}
 
 			if ( Input.Keyboard.IsKeyPressed( Key.Escape ) )
-				actionStates |= ClientActions.Menu;
+				actionStates |= PlayerActions.Menu;
 			if ( Input.Keyboard.IsKeyPressed( Key.Tab ) )
-				actionStates |= ClientActions.Tab;
+				actionStates |= PlayerActions.Tab;
 			if ( Input.Keyboard.IsKeyPressed( Key.Enter ) )
-				actionStates |= ClientActions.Confirm;
+				actionStates |= PlayerActions.Confirm;
 
 			return (int)actionStates;
 		}

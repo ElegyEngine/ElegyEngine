@@ -3,6 +3,7 @@
 
 using Game.Shared;
 using System.Net;
+using Game.Shared.Input;
 
 namespace Game.Session
 {
