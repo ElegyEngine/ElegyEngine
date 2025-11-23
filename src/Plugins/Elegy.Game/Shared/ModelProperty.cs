@@ -16,7 +16,7 @@ namespace Game.Shared
 		{
 			Init( value.ToString() );
 		}
-		
+
 		public void Init( string name )
 		{
 			Name = name;
