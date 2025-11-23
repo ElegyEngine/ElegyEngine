@@ -1,7 +1,7 @@
 using BepuPhysics;
 using BepuPhysics.Collidables;
 
-namespace Game.Shared.Physics
+namespace Game.Shared.PhysicsSystem
 {
 	public class PhysicsShape
 	{

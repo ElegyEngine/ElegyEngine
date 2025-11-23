@@ -15,10 +15,7 @@ using System.Diagnostics;
 using System.Net;
 using Elegy.CommandSystem.API;
 using Elegy.Common.Utilities;
-using Elegy.LogSystem.API;
-using Elegy.RenderSystem.API;
-using Elegy.RenderSystem.Objects;
-using Game.Shared.Physics;
+using Game.Shared.PhysicsSystem;
 
 namespace Game
 {

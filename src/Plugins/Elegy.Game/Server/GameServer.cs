@@ -8,7 +8,7 @@ using Elegy.LogSystem;
 using Game.Shared;
 using Game.Shared.Components;
 using Game.Session;
-using Game.Shared.Physics;
+using Game.Shared.PhysicsSystem;
 
 namespace Game.Server
 {
@@ -22,14 +22,12 @@ namespace Game.Server
 		/// How often (per second) to send game state packets to clients.
 		/// </summary>
 		public int GameSnapshotRate { get; set; } = 10;
-
 		public float GameSnapshotTime => 1.0f / GameSnapshotRate;
 
 		/// <summary>
 		/// How often to update serverside entities.
 		/// </summary>
 		public int ServerUpdateRate { get; set; } = 40;
-
 		public float ServerUpdateTime => 1.0f / ServerUpdateRate;
 
 		public GameServer( int maxPlayers )

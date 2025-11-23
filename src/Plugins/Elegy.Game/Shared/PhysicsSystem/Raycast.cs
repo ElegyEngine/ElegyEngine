@@ -10,7 +10,7 @@ using BepuUtilities.Memory;
 using Elegy.Common.Parallel;
 using Parallel = Elegy.Common.Parallel.Parallel;
 
-namespace Game.Shared.Physics
+namespace Game.Shared.PhysicsSystem
 {
 	public unsafe struct ConfigurableRayHitHandler : IRayHitHandler, ISweepHitHandler
 	{

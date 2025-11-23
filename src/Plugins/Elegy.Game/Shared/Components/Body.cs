@@ -4,7 +4,7 @@
 using Elegy.Common.Utilities;
 using Elegy.ECS;
 using Elegy.LogSystem;
-using Game.Shared.Physics;
+using Game.Shared.PhysicsSystem;
 
 namespace Game.Shared.Components
 {
@@ -44,16 +44,16 @@ namespace Game.Shared.Components
 			}
 
 			// TODO: create physics shape from actual collision models, not the visual ones
-			Shape = Physics.Physics.CreateMeshShape( CollisionModel.Data, Mass );
+			Shape = Physics.CreateMeshShape( CollisionModel.Data, Mass );
 			BodyObject = Static
-				? Physics.Physics.CreateStaticBody( transform, Shape )
-				: Physics.Physics.CreateBody( transform, Shape );
+				? Physics.CreateStaticBody( transform, Shape )
+				: Physics.CreateBody( transform, Shape );
 		}
 
 		[GroupEvent]
 		public static void OnDebugDraw( Entity.DebugDrawEvent data, ref Body body )
 		{
-			Physics.Physics.DebugDrawBody( body.BodyObject );
+			Physics.DebugDrawBody( body.BodyObject );
 		}
 
 		[GroupEvent]

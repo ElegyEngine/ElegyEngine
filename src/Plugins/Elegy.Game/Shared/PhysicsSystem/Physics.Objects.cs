@@ -6,43 +6,33 @@ using BepuPhysics.Collidables;
 using BepuUtilities.Memory;
 using Game.Shared.Components;
 
-namespace Game.Shared.Physics
+namespace Game.Shared.PhysicsSystem
 {
 	public static partial class Physics
 	{
 		public static PhysicsBody CreateBody( in Transform worldTransform, PhysicsShape shape )
 		{
-			//bool needsConversion = shape.ShapeIndex.Type is Capsule.Id or Cylinder.Id;
-			//Quaternion orientation = needsConversion ? PhysicsBody.ToBepu( worldTransform.Orientation ) : worldTransform.Orientation;
-			Quaternion orientation = worldTransform.Orientation;
-
 			PhysicsBody result = new(
 				shape: shape,
 				dynamicHandle: Simulation.Bodies.Add( BodyDescription.CreateDynamic(
-					pose: new( worldTransform.Position, orientation ),
+					pose: new( worldTransform.Position, worldTransform.Orientation ),
 					inertia: shape.Inertia,
 					collidable: shape.ShapeIndex,
-					activity: 0.01f ) ),
-				needsConversion: false );
+					activity: 0.01f ) ) );
 
 			return result;
 		}
 
 		public static PhysicsBody CreateKinematicBody( in Transform worldTransform, PhysicsShape shape )
 		{
-			//bool needsConversion = shape.ShapeIndex.Type is Capsule.Id or Cylinder.Id;
-			//Quaternion orientation = needsConversion ? PhysicsBody.ToBepu( worldTransform.Orientation ) : worldTransform.Orientation;
-			Quaternion orientation = worldTransform.Orientation;
-
 			PhysicsBody result = new(
 				shape: shape,
 				dynamicHandle: Simulation.Bodies.Add( BodyDescription.CreateDynamic(
-					pose: new( worldTransform.Position, orientation ),
+					pose: new( worldTransform.Position, worldTransform.Orientation ),
 					// This type of inertia prevents unwanted rotations
 					inertia: new() { InverseMass = shape.Inertia.InverseMass },
 					collidable: new( shape.ShapeIndex, 0.1f, float.MaxValue, ContinuousDetection.Passive ),
-					activity: 0.02f ) ),
-				needsConversion: false );
+					activity: 0.02f ) ) );
 
 			return result;
 		}

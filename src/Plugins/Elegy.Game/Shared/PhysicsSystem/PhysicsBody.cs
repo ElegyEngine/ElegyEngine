@@ -3,34 +3,31 @@ using BepuPhysics.Collidables;
 using Elegy.Common.Maths;
 using Game.Shared.Components;
 
-namespace Game.Shared.Physics
+namespace Game.Shared.PhysicsSystem
 {
 	public class PhysicsBody
 	{
-		public PhysicsBody( PhysicsShape shape, BodyHandle dynamicHandle, bool needsConversion )
+		public PhysicsBody( PhysicsShape shape, BodyHandle dynamicHandle )
 		{
 			Shape = shape;
-			BodyHandle = dynamicHandle;
 			BodyReference = Physics.Simulation.Bodies.GetBodyReference( dynamicHandle );
-			StaticHandle = new( -1 );
-			NeedsConversion = needsConversion;
+			StaticReference = new( new( -1 ), Physics.Simulation.Statics );
 		}
 
 		public PhysicsBody( PhysicsShape shape, StaticHandle staticHandle )
 		{
 			Shape = shape;
-			StaticHandle = staticHandle;
+			BodyReference = new( new( -1 ), Physics.Simulation.Bodies );
 			StaticReference = Physics.Simulation.Statics.GetStaticReference( staticHandle );
 		}
 
 		public PhysicsShape Shape { get; }
-		public BodyHandle BodyHandle { get; }
+		public BodyHandle BodyHandle => BodyReference.Handle;
 		public BodyReference BodyReference { get; }
-		public StaticHandle StaticHandle { get; }
+		public StaticHandle StaticHandle => StaticReference.Handle;
 		public StaticReference StaticReference { get; }
 
 		public bool IsStatic => StaticHandle.Value != -1;
-		public bool NeedsConversion { get; }
 
 		public Vector3 Position
 		{
@@ -40,8 +37,6 @@ namespace Game.Shared.Physics
 
 		public Quaternion Orientation
 		{
-			//get => NeedsConversion ? FromBepu( BodyReference.Pose.Orientation ) : BodyReference.Pose.Orientation;
-			//set => BodyReference.Pose.Orientation = NeedsConversion ? ToBepu( value ) : value;
 			get => BodyReference.Pose.Orientation;
 			set => BodyReference.Pose.Orientation = value;
 		}

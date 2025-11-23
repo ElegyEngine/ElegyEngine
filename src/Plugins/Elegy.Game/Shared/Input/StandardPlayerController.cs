@@ -1,25 +1,40 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
+using BepuPhysics;
+using Elegy.Common.Maths;
 using Elegy.RenderSystem.API;
 using Game.Shared.Components;
-using Game.Shared.Physics;
+using Game.Shared.Input.Actions;
+using Game.Shared.PhysicsSystem;
 
 namespace Game.Shared.Input
 {
 	public class StandardPlayerController : IClientController
 	{
 		public PhysicsShape Shape { get; private set; }
-
 		public PhysicsBody Body { get; private set; }
+		public BodyReference BodyRef => Body.BodyReference;
+		public ref CharacterController Character => ref Physics.Characters.GetCharacter( BodyRef.Handle );
 
 		public void Setup( int entityId )
 		{
 			// TODO: nicer API for getting the entity..
 			ref var transform = ref EntityWorld.GetEntityRef( entityId ).Ref<Transform>();
+			transform.Position += Coords.Up * 10.0f; // Spawn a little off the floor
 
-			Shape = Physics.Physics.CreateShape( new BepuPhysics.Collidables.Cylinder( 0.5f, 2.0f ), 10.0f );
-			Body = Physics.Physics.CreateKinematicBody( transform, Shape );
+			Shape = Physics.CreateShape( new BepuPhysics.Collidables.Cylinder( 0.5f, 2.0f ), 1.0f );
+			Body = Physics.CreateKinematicBody( transform, Shape );
+
+			ref var character = ref Physics.Characters.CreateCharacter( BodyRef.Handle );
+			character.LocalUp = Coords.Up;
+			character.CosMaximumSlope = 0.7f;
+			character.JumpVelocity = 3.0f;
+			character.MinimumSupportDepth = -0.002f;
+			character.MinimumSupportContinuationDepth = -0.1f;
+			character.MaximumVerticalForce = 100.0f;
+			character.MaximumHorizontalForce = 20.0f;
+			character.ViewDirection = Coords.Forward;
 		}
 
 		public PlayerControllerState Update( float dt, ClientCommand command )
@@ -28,11 +43,22 @@ namespace Game.Shared.Input
 
 			if ( !Body.BodyReference.Awake )
 			{
-				Physics.Physics.Simulation.Awakener.AwakenBody( Body.BodyHandle );
+				Physics.Simulation.Awakener.AwakenBody( Body.BodyHandle );
 			}
 
-			// Quick hacky little approximation until we get a proper character controller
-			motion.Velocity.Linear += command.MovementDirection / (motion.Velocity.Linear.LengthSquared() + 0.25f);
+			if ( command.MovementDirection.Z > 0.95f )
+			{
+				Character.TryJump = true;
+			}
+
+			// Flatten view angles (restrict to Y only)
+			// TODO: Just use polar coordinates here, much simpler to perform the maths :(
+			Coords.DirectionsFromDegrees( command.ViewAngles with { X = 0.0f, Z = 0.0f }, out Vector3 viewFlatForward, out Vector3 _ );
+			Vector3 viewFlatRight = viewFlatForward.Cross( Coords.Up );
+			Vector3 movement = command.MovementDirection.Y * viewFlatForward
+			                   + command.MovementDirection.X * viewFlatRight;
+
+			Character.TargetVelocity = movement.ToVector2() * 5.0f;
 
 			return new()
 			{

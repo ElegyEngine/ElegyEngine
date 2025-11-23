@@ -66,29 +66,26 @@ namespace Game.Client
 			mLogger.Log( $"Draw CPU: {Render.CpuFrametime * 1000.0f:F} ms" );
 			mLogger.Log( $"Draw GPU: {Render.GpuFrametime * 1000.0f:F} ms" );
 
-			Coords.DirectionsFromDegrees( mAngles, out var viewForward, out var viewUp );
-			Vector3 viewRight = viewForward.Cross( viewUp );
-
 			mMovementDirection = Vector3.Zero;
 
 			if ( Input.Keyboard.IsKeyPressed( Key.W ) )
 			{
-				mMovementDirection += viewForward;
+				mMovementDirection += Coords.Forward;
 			}
 
 			if ( Input.Keyboard.IsKeyPressed( Key.A ) )
 			{
-				mMovementDirection -= viewRight;
+				mMovementDirection += Coords.Left;
 			}
 
 			if ( Input.Keyboard.IsKeyPressed( Key.S ) )
 			{
-				mMovementDirection -= viewForward;
+				mMovementDirection += Coords.Back;
 			}
 
 			if ( Input.Keyboard.IsKeyPressed( Key.D ) )
 			{
-				mMovementDirection += viewRight;
+				mMovementDirection += Coords.Right;
 			}
 
 			if ( Input.Keyboard.IsKeyPressed( Key.Space ) )
