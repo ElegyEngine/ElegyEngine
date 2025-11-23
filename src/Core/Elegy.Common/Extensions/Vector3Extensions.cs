@@ -47,7 +47,7 @@ namespace Elegy.Common.Extensions
 		public static IReadOnlyList<Vector3> WithUniqueValues( this IReadOnlyList<Vector3> vectors )
 		{
 			List<Vector3> uniqueValues = new();
-			
+
 			for ( int i = 0; i < vectors.Count; i++ )
 			{
 				if ( !uniqueValues.Contains( vectors[i] ) )
@@ -55,7 +55,7 @@ namespace Elegy.Common.Extensions
 					uniqueValues.Add( vectors[i] );
 				}
 			}
-			
+
 			return uniqueValues;
 		}
 
@@ -120,6 +120,13 @@ namespace Elegy.Common.Extensions
 		public static Vector2 XZ( this Vector3 vector )
 		{
 			return new Vector2( vector.X, vector.Z );
+		}
+
+		/// <summary></summary>
+		public static Vector2 XY( this Vector3 vector )
+		{
+			// TODO: proper swizzle extensions for this
+			return new Vector2( vector.X, vector.Y );
 		}
 	}
 }
