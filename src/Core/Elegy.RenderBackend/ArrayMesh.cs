@@ -50,6 +50,7 @@ namespace Elegy.RenderBackend
 				return;
 			}
 
+			// TODO: Both of these are actually REALLY bad, we should use dedicated staging buffers...
 			if ( commandList is null )
 			{
 				mDevice.UpdateBufferFromSpan<T>( buffer, source, numVertices );

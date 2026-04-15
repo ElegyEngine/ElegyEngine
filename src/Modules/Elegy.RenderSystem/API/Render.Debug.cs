@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using Elegy.Common.Assets;
 using Elegy.Common.Extensions;
 using Elegy.Common.Maths;
@@ -15,9 +16,9 @@ namespace Elegy.RenderSystem.API
 {
 	public static partial class Render
 	{
+		[StructLayout( LayoutKind.Sequential )]
 		private struct DebugLineEntry
 		{
-			public float ExpireTime;
 			public Vector3 Start;
 			public Vector3 End;
 			public Vector4B Colour;
@@ -25,6 +26,8 @@ namespace Elegy.RenderSystem.API
 		}
 
 		private const int MaxDebugLines = 8192;
+		private static int mDebugLinesWorldAdded;
+		private static int mDebugLinesScreenAdded;
 		private static DebugLineEntry[] mDebugLinesWorld = new DebugLineEntry[MaxDebugLines];
 		private static DebugLineEntry[] mDebugLinesScreen = new DebugLineEntry[MaxDebugLines];
 		private static bool mDebugLinesWorldActive;
@@ -46,8 +49,8 @@ namespace Elegy.RenderSystem.API
 					// TODO: per-instance vertex stepping, so we can cut 3/4 of the normals and 1/2 of the colours here
 					Normals = new Vector3[MaxDebugLines * 4],
 					Color0 = new Vector4B[MaxDebugLines * 4],
-					Uv0 = new Vector2[MaxDebugLines     * 4],
-					Indices = new uint[MaxDebugLines    * 6]
+					Uv0 = new Vector2[MaxDebugLines * 4],
+					Indices = new uint[MaxDebugLines * 6]
 				}
 			]
 		};
@@ -62,11 +65,8 @@ namespace Elegy.RenderSystem.API
 
 		private static void InitialiseDebugMeshes()
 		{
-			var span = mDebugLinesWorld.AsSpan();
-			for ( int i = 0; i < span.Length; i++ )
-			{
-				span[i].ExpireTime = -1.0f;
-			}
+			mDebugLinesWorldAdded = 0;
+			mDebugLinesScreenAdded = 0;
 
 			mDebugLineMesh = CreateMesh( mDebugLinesWorldModel );
 		}
@@ -75,27 +75,14 @@ namespace Elegy.RenderSystem.API
 		{
 			var mesh = mDebugLinesWorldModel.Meshes[0];
 
-			int lineIndex = 0;
 			var span = mDebugLinesWorld.AsSpan();
-			for ( int i = 0; i < span.Length; i++ )
+			for ( int lineIndex = 0; lineIndex < mDebugLinesWorldAdded; lineIndex++ )
 			{
-				ref var line = ref span[i];
-
-				if ( line.ExpireTime < mLastFrameTime )
-				{
-					// Expiry times that are equal to float.MinValue are basically
-					// "this frame only, delete me next frame thanks"
-					if ( line.ExpireTime != float.MinValue )
-					{
-						continue;
-					}
-
-					line.ExpireTime = -1.0f;
-				}
+				ref var line = ref span[lineIndex];
 
 				Vector3 direction = (line.End - line.Start).Normalized();
 				int vertexIndex = lineIndex * 4;
-				int indexIndex = lineIndex  * 6;
+				int indexIndex = lineIndex * 6;
 
 				mesh.Positions[vertexIndex] = line.Start;
 				mesh.Positions[vertexIndex + 1] = line.Start;
@@ -125,15 +112,16 @@ namespace Elegy.RenderSystem.API
 				mesh.Indices[indexIndex + 3] = (uint)vertexIndex;
 				mesh.Indices[indexIndex + 4] = (uint)vertexIndex + 2;
 				mesh.Indices[indexIndex + 5] = (uint)vertexIndex + 3;
-
-				lineIndex++;
 			}
 
-			mDebugLinesWorldActive = lineIndex is not 0;
+			mDebugLinesWorldActive = mDebugLinesWorldAdded is not 0;
 			if ( mDebugLinesWorldActive )
 			{
-				DebugLineMesh.UpdateDynamic( mesh, lineIndex * 4, lineIndex * 6, cmd );
+				DebugLineMesh.UpdateDynamic( mesh, mDebugLinesWorldAdded * 4, mDebugLinesWorldAdded * 6, cmd );
 			}
+
+			mDebugLinesWorldAdded = 0;
+			mDebugLinesScreenAdded = 0;
 		}
 
 		private static void RenderDebugLines( in View view )
@@ -168,53 +156,25 @@ namespace Elegy.RenderSystem.API
 			mRenderCommands.DrawIndexed( DebugLineMesh.NumIndices );
 		}
 
-		private static void SubmitLine( DebugLineEntry[] list, in DebugLineEntry entry )
+		private static void SubmitLine( ref int count, DebugLineEntry[] list, in DebugLineEntry entry )
 		{
-			if ( entry.Start.IsEqualApprox( entry.End, 0.01f ) )
+			if ( count >= list.Length )
 			{
 				return;
 			}
 
-			float lastFrameTime = (float)mLastFrameTime;
-
-			int oldestIndex = 0;
-			float oldestExpireTime = float.MaxValue;
-
-			// Look for any expired debug lines and insert there
-			// Otherwise, grab the oldest line and replace it with that
-			for ( int i = 0; i < list.Length; ++i )
-			{
-				float expireTime = list[i].ExpireTime;
-
-				// Single-frame entries are avoided
-				if ( expireTime == float.MinValue )
-				{
-					continue;
-				}
-
-				if ( expireTime < lastFrameTime )
-				{
-					list[i] = entry;
-					return;
-				}
-
-				if ( expireTime < oldestExpireTime )
-				{
-					oldestExpireTime = expireTime;
-					oldestIndex = i;
-				}
-			}
-
-			list[oldestIndex] = entry;
+			list[count] = entry;
+			count++;
 		}
 
+		#region 3D debug primitives
+
 		/// <summary>
-		/// Submits a 3D debug line for debug rendering.
+		/// Submits a 3D debug line.
 		/// </summary>
-		public static void DebugLine( Vector3 start, Vector3 end, float lifetime = float.MinValue, float thickness = 1.0f )
-			=> SubmitLine( mDebugLinesWorld, new()
+		public static void DebugLine( Vector3 start, Vector3 end, float thickness = 1.0f )
+			=> SubmitLine( ref mDebugLinesWorldAdded, mDebugLinesWorld, new()
 			{
-				ExpireTime = (float)mLastFrameTime + lifetime,
 				Start = start,
 				End = end,
 				Colour = (Vector4B)(Vector4.One * 255.0f),
@@ -222,12 +182,11 @@ namespace Elegy.RenderSystem.API
 			} );
 
 		/// <summary>
-		/// Submits a 3D debug line for debug rendering.
+		/// Submits a 3D debug line.
 		/// </summary>
-		public static void DebugLine( Vector3 start, Vector3 end, Vector4 colour, float lifetime = float.MinValue, float thickness = 1.0f )
-			=> SubmitLine( mDebugLinesWorld, new()
+		public static void DebugLine( Vector3 start, Vector3 end, Vector4 colour, float thickness = 1.0f )
+			=> SubmitLine(  ref mDebugLinesWorldAdded, mDebugLinesWorld, new()
 			{
-				ExpireTime = (float)mLastFrameTime + lifetime,
 				Start = start,
 				End = end,
 				Colour = (Vector4B)(colour * 255.0f),
@@ -235,12 +194,149 @@ namespace Elegy.RenderSystem.API
 			} );
 
 		/// <summary>
+		/// Submits a 3D debug box.
+		/// </summary>
+		public static void DebugBox( Vector3 position, Vector3 extents, Vector4 colour )
+			=> DebugBoxEx( position, Coords.Forward, Coords.Up, extents, colour );
+
+		/// <summary>
+		/// Submits a 3D debug box with orientation.
+		/// </summary>
+		public static void DebugBoxEx( Vector3 position, Vector3 forward, Vector3 up, Vector3 extents, Vector4 colour )
+		{
+			Vector3 right = Vector3.Cross( forward, up ) * extents.X;
+			forward *= extents.Y;
+			up *= extents.Z;
+
+			// Top square
+			DebugLine( position + forward + right + up, position + forward - right + up, colour );
+			DebugLine( position - forward + right + up, position - forward - right + up, colour );
+			DebugLine( position + forward + right + up, position - forward + right + up, colour );
+			DebugLine( position + forward - right + up, position - forward - right + up, colour );
+			// Bottom square
+			DebugLine( position + forward + right - up, position + forward - right - up, colour );
+			DebugLine( position - forward + right - up, position - forward - right - up, colour );
+			DebugLine( position + forward + right - up, position - forward + right - up, colour );
+			DebugLine( position + forward - right - up, position - forward - right - up, colour );
+			// 4 corner pillars
+			DebugLine( position + forward + right + up, position + forward + right - up, colour );
+			DebugLine( position + forward - right + up, position + forward - right - up, colour );
+			DebugLine( position - forward - right + up, position - forward - right - up, colour );
+			DebugLine( position - forward + right + up, position - forward + right - up, colour );
+		}
+
+		/// <summary>
+		/// Submits a 3D debug capsule.
+		/// </summary>
+		public static void DebugCapsule( Vector3 position, Vector3 forward, Vector3 up, float halfHeight, float radius, Vector4 colour )
+		{
+			var topSphere = position + up * halfHeight;
+			var bottomSphere = position - up * halfHeight;
+
+			DebugCylinder( position, forward, up, halfHeight, radius, colour );
+			DebugSphereEx( topSphere, forward, up, radius, colour, keepSide: 1 );
+			DebugSphereEx( bottomSphere, forward, up, radius, colour, keepSide: -1 );
+		}
+
+		/// <summary>
+		/// Submits a 3D debug circle.
+		/// </summary>
+		public static void DebugDrawCircle( Vector3 position, Vector3 poleAxis, Vector3 equatorAxis, float radius, Vector4 colour,
+			int sidesPerQuarter = 2, int keepY = 0 )
+		{
+			// Create a quarter of a circle, scaled by radius
+			Span<Vector2> quarterPoints = stackalloc Vector2[sidesPerQuarter];
+			quarterPoints[0] = new( radius, 0.0f );
+			for ( int i = 1; i < sidesPerQuarter; i++ )
+			{
+				// Good old polar coordinates
+				float t = (float)i / sidesPerQuarter;
+				(float y, float x) = MathF.SinCos( t * MathF.PI * 0.5f );
+				quarterPoints[i] = new( x * radius, y * radius );
+			}
+
+			// Then construct a full circle by repeating that quarter in different quadrants,
+			// simultaneously transforming it into (potentially rotated) 3D space
+			Span<Vector3> points = stackalloc Vector3[sidesPerQuarter * 4];
+			for ( int i = 0; i < sidesPerQuarter * 4; i++ )
+			{
+				int quadrantId = i / sidesPerQuarter;
+				Vector2 p = quarterPoints[i % sidesPerQuarter];
+				switch ( quadrantId )
+				{
+					case 1: p = new( -p.Y, p.X ); break; // (1,2) into (-2,1)
+					case 2: p = new( -p.X, -p.Y ); break; // (1,2) into (-1,-2)
+					case 3: p = new( p.Y, -p.X ); break; // (1,2) into (2,-1)
+				}
+
+				points[i] = p.X * equatorAxis + p.Y * poleAxis;
+			}
+
+			int startId = keepY >= 0 ? 0 : points.Length / 2;
+			int endId = keepY > 0 ? points.Length / 2 : points.Length;
+
+			for ( int i = startId; i < endId; i++ )
+			{
+				int j = (i + 1) % points.Length;
+				DebugLine( position + points[i], position + points[j], colour );
+			}
+		}
+
+		/// <summary>
+		/// Submits a 3D debug cylinder.
+		/// </summary>
+		public static void DebugCylinder( Vector3 position, Vector3 forward, Vector3 up, float halfHeight, float radius,
+			Vector4 colour )
+		{
+			Vector3 right = Vector3.Cross( forward, up );
+			Vector3 capTop = position + up * halfHeight;
+			Vector3 capBottom = position - up * halfHeight;
+
+			// Caps
+			DebugDrawCircle( capTop, forward, right, radius, colour, 3 );
+			DebugDrawCircle( capBottom, forward, right, radius, colour, 3 );
+
+			// Premultiply the axes
+			up *= halfHeight;
+			forward *= radius;
+			right *= radius;
+
+			// 4 pillars, front, back, right, left
+			DebugLine( position + forward + up, position + forward - up, colour );
+			DebugLine( position - forward + up, position - forward - up, colour );
+			DebugLine( position + right + up, position + right - up, colour );
+			DebugLine( position - right + up, position - right - up, colour );
+		}
+
+		/// <summary>
+		/// Submits a 3D debug sphere.
+		/// </summary>
+		public static void DebugSphere( Vector3 position, float radius, Vector4 colour )
+			=> DebugSphereEx( position, Coords.Forward, Coords.Up, radius, colour );
+
+		/// <summary>
+		/// Submits a 3D debug sphere with orientation.
+		/// </summary>
+		public static void DebugSphereEx( Vector3 position, Vector3 forward, Vector3 up, float radius, Vector4 colour,
+			int keepSide = 0 )
+		{
+			// keepSide is used to help rendering capsules:
+			// -1 -> keep bottom hemisphere
+			// 0 -> keep both
+			// 1 -> keep top hemisphere
+			var right = Vector3.Cross( forward, up );
+			DebugDrawCircle( position, up, forward, radius, colour, 4, keepSide );
+			DebugDrawCircle( position, up, right, radius, colour, 4, keepSide );
+		}
+
+		#endregion
+
+		/// <summary>
 		/// Submits a 2D debug line for debug rendering.
 		/// </summary>
-		public static void DebugLineScreen( Vector2 start, Vector2 end, float lifetime = float.MinValue, float thickness = 1.0f )
-			=> SubmitLine( mDebugLinesScreen, new()
+		public static void DebugLineScreen( Vector2 start, Vector2 end, float thickness = 1.0f )
+			=> SubmitLine( ref mDebugLinesScreenAdded, mDebugLinesScreen, new()
 			{
-				ExpireTime = (float)mLastFrameTime + lifetime,
 				Start = new Vector3( start, 0.0f ),
 				End = new Vector3( end, 0.0f ),
 				Colour = (Vector4B)(Vector4.One * 255.0f),
@@ -251,10 +347,9 @@ namespace Elegy.RenderSystem.API
 		/// Submits a 2D debug line for debug rendering.
 		/// </summary>
 		public static void DebugLineScreen(
-			Vector2 start, Vector2 end, Vector4 colour, float lifetime = float.MinValue, float thickness = 1.0f )
-			=> SubmitLine( mDebugLinesScreen, new()
+			Vector2 start, Vector2 end, Vector4 colour, float thickness = 1.0f )
+			=> SubmitLine( ref mDebugLinesScreenAdded, mDebugLinesScreen, new()
 			{
-				ExpireTime = (float)mLastFrameTime + lifetime,
 				Start = new Vector3( start, 0.0f ),
 				End = new Vector3( end, 0.0f ),
 				Colour = (Vector4B)(colour * 255.0f),

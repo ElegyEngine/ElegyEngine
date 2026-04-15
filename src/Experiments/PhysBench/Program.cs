@@ -242,7 +242,6 @@ public static class Program
 
 			Vector4 bodyColour = new( 1.0f, 0.5f, 0.0f, 1.0f );
 			Vector4 staticColour = new( 1.0f, 0.9f, 0.5f, 1.0f );
-			Vector4 collisionColour = new( 0.2f, 0.9f, 0.2f, 1.0f );
 
 			DebugDrawShape( mBodyReference.Value.Pose, mBodyReference.Value.Collidable.Shape, bodyColour );
 			DebugDrawShape( mStaticReference.Value.Pose, mStaticReference.Value.Shape, staticColour );
@@ -273,25 +272,12 @@ public static class Program
 		{
 			var box = mSimulation!.Shapes.GetShape<Box>( shape.Index );
 			var centre = pose.Position;
-			var right = Vector3.Transform( new( box.HalfWidth, 0.0f, 0.0f ), pose.Orientation );
-			var forward = Vector3.Transform( new( 0.0f, box.HalfHeight, 0.0f ), pose.Orientation );
-			var up = Vector3.Transform( new( 0.0f, 0.0f, box.HalfLength ), pose.Orientation );
+			var extents = new Vector3( box.HalfWidth, box.HalfHeight, box.HalfLength );
 
-			// Top square
-			Render.DebugLine( centre + forward + right + up, centre + forward - right + up, colour );
-			Render.DebugLine( centre - forward + right + up, centre - forward - right + up, colour );
-			Render.DebugLine( centre + forward + right + up, centre - forward + right + up, colour );
-			Render.DebugLine( centre + forward - right + up, centre - forward - right + up, colour );
-			// Bottom square
-			Render.DebugLine( centre + forward + right - up, centre + forward - right - up, colour );
-			Render.DebugLine( centre - forward + right - up, centre - forward - right - up, colour );
-			Render.DebugLine( centre + forward + right - up, centre - forward + right - up, colour );
-			Render.DebugLine( centre + forward - right - up, centre - forward - right - up, colour );
-			// 4 corner pillars
-			Render.DebugLine( centre + forward + right + up, centre + forward + right - up, colour );
-			Render.DebugLine( centre + forward - right + up, centre + forward - right - up, colour );
-			Render.DebugLine( centre - forward - right + up, centre - forward - right - up, colour );
-			Render.DebugLine( centre - forward + right + up, centre - forward + right - up, colour );
+			QuaternionEx.TransformUnitY( pose.Orientation, out Vector3 forward );
+			QuaternionEx.TransformUnitZ( pose.Orientation, out Vector3 up );
+
+			Render.DebugBoxEx( centre, forward, up, extents, colour );
 		}
 
 		private void DebugDrawCapsule( RigidPose pose, TypedIndex shape, Vector4 colour )
@@ -302,12 +288,8 @@ public static class Program
 			var radius = capsule.Radius;
 			QuaternionEx.TransformUnitY( pose.Orientation, out Vector3 forward );
 			QuaternionEx.TransformUnitZ( pose.Orientation, out Vector3 up );
-			var topSphere = centre + up * halfHeight;
-			var bottomSphere = centre - up * halfHeight;
 
-			DebugDrawCylinder( centre, forward, up, halfHeight, radius, colour );
-			DebugDrawSphere( topSphere, forward, up, radius, colour, keepSide: 1 );
-			DebugDrawSphere( bottomSphere, forward, up, radius, colour, keepSide: -1 );
+			Render.DebugCapsule( centre, forward, up, halfHeight, radius, colour );
 		}
 
 		private void DebugDrawConvexHull( RigidPose pose, TypedIndex shape, Vector4 colour )
@@ -356,43 +338,13 @@ public static class Program
 			}
 		}
 
-		private void DebugDrawCylinder( Vector3 position, Vector3 forward, Vector3 up, float halfHeight, float radius,
-			Vector4 colour )
-		{
-			var right = Vector3.Cross( forward, up );
-			var capTop = position + up * halfHeight;
-			var capBottom = position - up * halfHeight;
-
-			// Caps
-			DebugDrawCircle( capTop, forward, right, radius, colour, 3 );
-			DebugDrawCircle( capBottom, forward, right, radius, colour, 3 );
-
-			// Premultiply the axes
-			up *= halfHeight;
-			forward *= radius;
-			right *= radius;
-
-			// 4 pillars, front, back, right, left
-			Render.DebugLine( position + forward + up, position + forward - up, colour );
-			Render.DebugLine( position - forward + up, position - forward - up, colour );
-			Render.DebugLine( position + right + up, position + right - up, colour );
-			Render.DebugLine( position - right + up, position - right - up, colour );
-		}
-
 		private void DebugDrawCylinder( RigidPose pose, TypedIndex shape, Vector4 colour )
 		{
 			var cylinder = mSimulation!.Shapes.GetShape<Cylinder>( shape.Index );
 			QuaternionEx.TransformUnitY( pose.Orientation, out Vector3 forward );
 			QuaternionEx.TransformUnitZ( pose.Orientation, out Vector3 up );
-			DebugDrawCylinder( pose.Position, forward, up, cylinder.HalfLength, cylinder.Radius, colour );
-		}
 
-		private void DebugDrawSphere( Vector3 position, Vector3 forward, Vector3 up, float radius, Vector4 colour,
-			int keepSide = 0 )
-		{
-			var right = Vector3.Cross( forward, up );
-			DebugDrawCircle( position, up, forward, radius, colour, 4, keepSide );
-			DebugDrawCircle( position, up, right, radius, colour, 4, keepSide );
+			Render.DebugCylinder( pose.Position, forward, up, cylinder.HalfLength, cylinder.Radius, colour );
 		}
 
 		private void DebugDrawSphere( RigidPose pose, TypedIndex shape, Vector4 colour, int keepSide = 0 )
@@ -404,7 +356,8 @@ public static class Program
 			var sphere = mSimulation!.Shapes.GetShape<Sphere>( shape.Index );
 			QuaternionEx.TransformUnitY( pose.Orientation, out Vector3 forward );
 			QuaternionEx.TransformUnitZ( pose.Orientation, out Vector3 up );
-			DebugDrawSphere( pose.Position, up, forward, sphere.Radius, colour, keepSide );
+
+			Render.DebugSphereEx( pose.Position, up, forward, sphere.Radius, colour, keepSide );
 		}
 
 		private void DebugDrawTriangle( RigidPose pose, TypedIndex shape, Vector4 colour )
