@@ -74,9 +74,7 @@ public partial class ElegyViewport : Control
 			mVisual.Surface = Surface;
 			ElementComposition.SetElementChildVisual( this, mVisual );
 
-			(bool res, string info) = await DoInitialize( mCompositor, Surface );
-			ErrorMessage = info;
-			mInitialized = res;
+			(mInitialized, ErrorMessage) = await DoInitialize( mCompositor, Surface );
 			QueueNextFrame();
 		}
 		catch ( Exception e )
@@ -159,11 +157,11 @@ public partial class ElegyViewport : Control
 			return;
 		}
 
-		// TODO: Refer to SwapchainBase for all this stuff perhaps
+		// TODO: Refer to SwapchainBase for all this stuff perhaps:
 		// https://github.com/AvaloniaUI/Avalonia/blob/master/src/Avalonia.Base/Rendering/SwapchainBase.cs
 		ElegyRender.RenderFrame( EngineView );
 
-		// TODO: Export Vulkan semaphores
+		// TODO: Export Vulkan semaphores:
 		// https://github.com/AvaloniaUI/Avalonia/blob/master/samples/GpuInterop/VulkanDemo/VulkanSemaphorePair.cs#L69-L75
 		ICompositionImportedGpuSemaphore renderCompletedSemaphore; //GpuInterop.ImportSemaphore( ...Export() );
 		ICompositionImportedGpuSemaphore availableSemaphore; //GpuInterop.ImportSemaphore( ...Export() );
