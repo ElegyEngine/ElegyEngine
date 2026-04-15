@@ -236,7 +236,7 @@ namespace Elegy.Common.Geometry
 					double z = v1.Z * (1.0 - t) + v2.Z * t;
 
 					Vector3 intersectionPoint = new( (float)x, (float)y, (float)z );
-				
+
 					backVerts.Add( intersectionPoint );
 					frontVerts.Add( intersectionPoint );
 				}
