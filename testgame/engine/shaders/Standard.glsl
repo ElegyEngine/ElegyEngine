@@ -1,7 +1,8 @@
 
 #include "CoreIncludes.inc"
 
-#extension GL_EXT_fragment_shader_barycentric : enable
+// Disabling for now... will be redone in milestone 0.2
+//#extension GL_EXT_fragment_shader_barycentric : enable
 
 ShaderTemplate( StandardST );
 ShaderVariants( GENERAL, LIGHTMAP, DEPTH, WIREFRAME );
@@ -103,11 +104,12 @@ PixelShader( DEPTH, return vec4( 1.0 ); )
 // WIREFRAME
 VertexShader( WIREFRAME, gl_Position = CalculateGlPosition( vPosition ); )
 PixelShader( WIREFRAME,
-	// Further away from the edge = bigger number
-	const vec3 barycentricCoords = gl_BaryCoordEXT;
-	const float closestEdge = min( barycentricCoords.x, min( barycentricCoords.y, barycentricCoords.z ) );
-	// This gives us 1.0 for edges, 0.0 for face area
-	const float wireframeAlpha = 1.0 - smoothstep( 0.0, 0.01, closestEdge );
+	// // Further away from the edge = bigger number
+	// const vec3 barycentricCoords = gl_BaryCoordEXT;
+	// const float closestEdge = min( barycentricCoords.x, min( barycentricCoords.y, barycentricCoords.z ) );
+	// // This gives us 1.0 for edges, 0.0 for face area
+	// const float wireframeAlpha = 1.0 - smoothstep( 0.0, 0.01, closestEdge );
+	// return vec4( 0.0, 1.0, 0.35, wireframeAlpha );
 
-	return vec4( 0.0, 1.0, 0.35, wireframeAlpha );
+	return vec4( 1.0 );
 )

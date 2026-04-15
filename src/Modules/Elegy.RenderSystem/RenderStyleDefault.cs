@@ -16,13 +16,13 @@ namespace Elegy.RenderSystem
 
 		public string[] InstanceExtensions => [];
 
-		public string[] DeviceExtensions => ["VK_KHR_fragment_shader_barycentric"];
+		public string[] DeviceExtensions => [/*TODO: "VK_KHR_fragment_shader_barycentric" - unsupported on GTX 1000 series*/];
 
 		public string Name => "RenderStyleDefault";
 
 		public string Error => string.Empty;
 
-		public bool Initialised { get; private set; } = false;
+		public bool Initialised { get; private set; }
 
 		public bool Init()
 		{
