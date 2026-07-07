@@ -99,12 +99,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elegy.Physics", "Core\Elegy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elegy.Avalonia", "Core\Elegy.Avalonia\Elegy.Avalonia.csproj", "{D3F5E841-2195-4CE1-9B4C-759AF36E16B6}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elegy.Nuke", "..\build\Elegy.Nuke.csproj", "{B31021B5-B502-4880-99F2-C0654B5E2797}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B31021B5-B502-4880-99F2-C0654B5E2797}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B31021B5-B502-4880-99F2-C0654B5E2797}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10642E30-50E1-4835-8692-6558A1935439}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{10642E30-50E1-4835-8692-6558A1935439}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10642E30-50E1-4835-8692-6558A1935439}.Release|Any CPU.ActiveCfg = Release|Any CPU
