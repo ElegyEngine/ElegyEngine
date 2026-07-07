@@ -158,6 +158,13 @@ namespace Game.Shared
 			{
 				switch ( pair.Key )
 				{
+					case "classname":
+						if ( pair.Value == "worldspawn" )
+						{
+							RefOrCreate<Worldspawn>();
+						}
+						break;
+
 					case "targetname":
 						//RefOrCreate<Target>();
 						break;
