@@ -10,7 +10,8 @@ namespace Game.Client
 	{
 		public bool Init()
 		{
-			// TODO: load keybinds and stuff
+			// TODO: keybinds and stuff
+			GrabMouse();
 
 			return true;
 		}
@@ -20,9 +21,12 @@ namespace Game.Client
 
 		}
 
+		public bool IsMouseGrabbed()
+			=> Input.Mouse.Cursor.CursorMode == CursorMode.Raw;
+
 		public void GrabMouse()
 		{
-			Input.Mouse.Cursor.CursorMode = CursorMode.Hidden;
+			Input.Mouse.Cursor.CursorMode = CursorMode.Raw;
 		}
 
 		public void ReleaseMouse()

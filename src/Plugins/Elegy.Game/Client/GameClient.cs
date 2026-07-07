@@ -105,7 +105,17 @@ namespace Game.Client
 			mCommand.MovementDirection = mMovementDirection;
 			mCommand.ActionFlags = GrabActionStates();
 
-			if ( mCommand.HasAction( PlayerActions.SecondaryAttack ) )
+			if ( mCommand.HasAction( PlayerActions.PrimaryAttack ) )
+			{
+				mInput.GrabMouse();
+			}
+
+			if ( mCommand.HasAction( PlayerActions.Menu ) )
+			{
+				mInput.ReleaseMouse();
+			}
+
+			if ( mCommand.HasAction( PlayerActions.SecondaryAttack ) || mInput.IsMouseGrabbed() )
 			{
 				mAngles.Y += mMousePositionDeltaSmooth.X * 0.06f;
 				mAngles.X -= mMousePositionDeltaSmooth.Y * 0.06f;
