@@ -178,7 +178,11 @@ namespace Game.Shared
 						break;
 
 					case "cmodel":
-						RefOrCreate<Body>();
+					case "angle":
+					case "angles":
+					case "mapversion":
+					case "_tb_textures":
+					case "_generator":
 						break;
 
 					default:
