@@ -68,6 +68,29 @@ public static unsafe class Parallel
 		};
 
 	/// <summary>
+	/// For a given number of items, threads and a worker ID, calculates the start and end range for jobs.
+	/// A worker index of -1 means this is single-threaded.
+	/// </summary>
+	public static (int Start, int End) GetJobRange( int items, int numThreads, int workerIndex )
+	{
+		int workChunk = items / numThreads;
+
+		// TODO: Write a utility to calculate work to be done for a thread
+		int start = workerIndex switch
+		{
+			-1 => 0,
+			_ => workChunk * workerIndex
+		};
+		int end = (workerIndex, workerIndex == numThreads - 1) switch
+		{
+			(-1, _) or (_, true) => items,
+			_ => workChunk * (workerIndex + 1)
+		};
+
+		return (start, end);
+	}
+
+	/// <summary>
 	/// Cuts up <paramref name="workItems"/> into <paramref name="jobSize"/> chunks.
 	/// </summary>
 	public static BatchJob<TWorkItem>[] GetJobs<TWorkItem>( Span<TWorkItem> workItems, int jobSize )
