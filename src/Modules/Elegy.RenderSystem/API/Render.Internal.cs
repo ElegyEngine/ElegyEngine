@@ -1,14 +1,12 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Collections.Pooled;
 using Elegy.RenderBackend.Extensions;
 using Elegy.RenderSystem.Objects;
 using Elegy.RenderSystem.Resources;
 using System.Text;
 using Elegy.Common.Interfaces.Services;
 using Elegy.Common.Utilities;
-using Elegy.RenderBackend;
 using Veldrid;
 
 namespace Elegy.RenderSystem.API
@@ -20,10 +18,10 @@ namespace Elegy.RenderSystem.API
 
 		// TODO: dynamic capacity configuration
 		private static MeshEntitySystem mEntitySystem = new( 1024 );
-		private static PooledSet<Mesh> mMeshSet = new( 1024 );
-		private static PooledSet<RenderMaterial> mMaterialSet = new( 2048 );
-		private static PooledSet<RenderTexture> mTextureSet = new( 4096 );
-		private static PooledSet<View> mViews = new( 32 );
+		private static HashSet<Mesh> mMeshSet = new( 1024 );
+		private static HashSet<RenderMaterial> mMaterialSet = new( 2048 );
+		private static HashSet<RenderTexture> mTextureSet = new( 4096 );
+		private static HashSet<View> mViews = new( 32 );
 
 		private static RenderMaterial mWindowMaterial;
 		private static CommandList mRenderCommands;

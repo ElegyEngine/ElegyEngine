@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Collections.Pooled;
 using Elegy.RenderSystem.Interfaces;
 using Elegy.RenderSystem.Resources;
 
@@ -12,14 +11,14 @@ namespace Game.Presentation
 		public struct CacheElement
 		{
 			public RenderMaterial Material;
-			public PooledList<RenderSurface> Surfaces;
+			public List<RenderSurface> Surfaces;
 		}
 
-		public PooledList<CacheElement> Cache { get; } = new( capacity: 512 );
+		public List<CacheElement> Cache { get; } = new( capacity: 512 );
 
-		public PooledList<RenderSurface> GetOrAdd( RenderMaterial material )
+		public List<RenderSurface> GetOrAdd( RenderMaterial material )
 		{
-			var span = Cache.Span;
+			var span = Cache.AsSpan();
 			for ( int i = 0; i < span.Length; i++ )
 			{
 				if ( span[i].Material == material )
@@ -39,7 +38,7 @@ namespace Game.Presentation
 
 		public void Clear()
 		{
-			var span = Cache.Span;
+			var span = Cache.AsSpan();
 			for ( int i = 0; i < span.Length; i++ )
 			{
 				span[i].Surfaces.Clear();

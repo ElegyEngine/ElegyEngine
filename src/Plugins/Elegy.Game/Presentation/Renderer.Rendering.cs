@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Utilities;
-using Elegy.LogSystem;
 using Elegy.PlatformSystem.API;
 using Elegy.RenderBackend;
 using Elegy.RenderBackend.Assets;
@@ -43,15 +42,15 @@ namespace Game.Presentation
 			Render.SetRenderView( mRenderCommands, view );
 
 			// Opaque pass
-			foreach ( var item in OpaqueCache.Cache.Span )
+			foreach ( var item in OpaqueCache.Cache.AsSpan() )
 			{
-				Render.RenderStyle.RenderSurfaces( mRenderCommands, view, item.Surfaces.Span, item.Material, lights );
+				Render.RenderStyle.RenderSurfaces( mRenderCommands, view, item.Surfaces.AsSpan(), item.Material, lights );
 			}
 
 			// Transparent pass
-			foreach ( var item in TransparentCache.Cache.Span )
+			foreach ( var item in TransparentCache.Cache.AsSpan() )
 			{
-				Render.RenderStyle.RenderSurfaces( mRenderCommands, view, item.Surfaces.Span, item.Material, lights );
+				Render.RenderStyle.RenderSurfaces( mRenderCommands, view, item.Surfaces.AsSpan(), item.Material, lights );
 			}
 
 			// Draw UI etc.
