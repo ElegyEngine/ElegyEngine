@@ -26,6 +26,21 @@ namespace Elegy.Common.Maths
 		public const double Rad2DegD = 180.0 / MathF.PI;
 
 		/// <summary>
+		/// Calculates a forward vector from <paramref name="yaw"/>, provided in degrees.
+		/// </summary>
+		public static Vector3 DirectionFromYawDegrees( float yaw )
+			=> DirectionFromYawRadians( yaw * Deg2Rad );
+
+		/// <summary>
+		/// Calculates a forward vector from <paramref name="yaw"/>, provided in radians.
+		/// </summary>
+		public static Vector3 DirectionFromYawRadians( float yaw )
+		{
+			(float SinYaw, float CosYaw) = MathF.SinCos( yaw );
+			return new( SinYaw, CosYaw, 0.0f );
+		}
+
+		/// <summary>
 		/// Calculates forward and up vectors from <paramref name="angles"/>, provided in degrees.
 		/// You can obtain a right vector by cross-producing forward and up.
 		/// </summary>

@@ -5,7 +5,6 @@ using BepuPhysics;
 using Elegy.Common.Maths;
 using Elegy.RenderSystem.API;
 using Game.Shared.Components;
-using Game.Shared.Input.Actions;
 using Game.Shared.PhysicsSystem;
 
 namespace Game.Shared.Input
@@ -23,17 +22,17 @@ namespace Game.Shared.Input
 			ref var transform = ref EntityWorld.GetEntityRef( entityId ).Ref<Transform>();
 			transform.Position += Coords.Up * 10.0f; // Spawn a little off the floor
 
-			Shape = Physics.CreateShape( new BepuPhysics.Collidables.Cylinder( 0.5f, 2.0f ), 1.0f );
+			Shape = Physics.CreateShape( new BepuPhysics.Collidables.Cylinder( 0.35f, 1.8f ), 1.0f );
 			Body = Physics.CreateKinematicBody( transform, Shape );
 
 			ref var character = ref Physics.Characters.CreateCharacter( BodyRef.Handle );
 			character.LocalUp = Coords.Up;
 			character.CosMaximumSlope = 0.7f;
-			character.JumpVelocity = 3.0f;
+			character.JumpVelocity = 3.75f;
 			character.MinimumSupportDepth = -0.002f;
 			character.MinimumSupportContinuationDepth = -0.1f;
 			character.MaximumVerticalForce = 100.0f;
-			character.MaximumHorizontalForce = 20.0f;
+			character.MaximumHorizontalForce = 35.0f;
 			character.ViewDirection = Coords.Forward;
 		}
 
@@ -51,14 +50,12 @@ namespace Game.Shared.Input
 				Character.TryJump = true;
 			}
 
-			// Flatten view angles (restrict to Y only)
-			// TODO: Just use polar coordinates here, much simpler to perform the maths :(
-			Coords.DirectionsFromDegrees( command.ViewAngles with { X = 0.0f, Z = 0.0f }, out Vector3 viewFlatForward, out Vector3 _ );
+			Vector3 viewFlatForward = Coords.DirectionFromYawDegrees( command.ViewAngles.Y );
 			Vector3 viewFlatRight = viewFlatForward.Cross( Coords.Up );
 			Vector3 movement = command.MovementDirection.Y * viewFlatForward
 			                   + command.MovementDirection.X * viewFlatRight;
 
-			Character.TargetVelocity = movement.ToVector2() * 5.0f;
+			Character.TargetVelocity = movement.ToVector2() * 3.3f;
 
 			return new()
 			{
