@@ -215,7 +215,18 @@ namespace Game.Shared
 						break;
 
 					case "cmodel":
-						Ref<Body>().CollisionModel = new( pair.Value );
+						if ( Has<Body>() )
+						{
+							Ref<Body>().CollisionModel = new( pair.Value );
+						}
+						else if ( Has<BodyStatic>() )
+						{
+							Ref<BodyStatic>().CollisionModel = new( pair.Value );
+						}
+						else if ( Has<BodyKinematic>() )
+						{
+							Ref<BodyKinematic>().CollisionModel = new( pair.Value );
+						}
 						break;
 
 					default:

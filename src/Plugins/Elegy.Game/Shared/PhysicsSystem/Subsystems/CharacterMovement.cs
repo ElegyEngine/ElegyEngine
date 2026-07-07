@@ -33,20 +33,7 @@ namespace Game.Shared.PhysicsSystem.Subsystems
 			mExpandBoundingBoxesWorker = ExpandBoundingBoxesWorker;
 		}
 
-		private readonly struct CharacterMovementContactCollector : IContactModifier
-		{
-			public CharacterMovement Owner { init; get; }
-
-			public bool ConfigureContactManifold<TManifold>( int workerIndex, CollidablePair pair, ref TManifold manifold, ref PairMaterialProperties pairMaterial )
-				where TManifold : unmanaged, IContactManifold<TManifold>
-			{
-				Owner.TryReportContacts( pair, ref manifold, workerIndex, ref pairMaterial );
-				return true;
-			}
-		}
-
-		public void Init( Simulation simulation, Action<IContactFilter> registerFilter, Action<IContactModifier> registerModifier,
-			Action<IIntegrator> registerIntegrator )
+		public void Init( Simulation simulation )
 		{
 			mSim = simulation;
 			mPool = mSim.BufferPool;
@@ -55,8 +42,6 @@ namespace Game.Shared.PhysicsSystem.Subsystems
 			simulation.Solver.Register<StaticCharacterMotionConstraint>();
 			simulation.Timestepper.BeforeCollisionDetection += PrepareForContacts;
 			simulation.Timestepper.CollisionsDetected += AnalyzeContacts;
-
-			registerModifier( new CharacterMovementContactCollector { Owner = this } );
 		}
 
 		#region Prepare for contacts
@@ -250,21 +235,20 @@ namespace Game.Shared.PhysicsSystem.Subsystems
 		/// <param name="materialProperties">Material properties for this pair. Will be modified if the pair involves a character.</param>
 		/// <returns>True if the pair involved a character pair and has contacts, false otherwise.</returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public bool TryReportContacts<TManifold>( in CollidablePair pair, ref TManifold manifold, int workerIndex,
+		public void TryReportContacts<TManifold>( in CollidablePair pair, ref TManifold manifold, int workerIndex,
 			ref PairMaterialProperties materialProperties )
 			where TManifold : struct, IContactManifold<TManifold>
 		{
 			if ( mChars.Count == 0 )
 			{
-				return true;
+				return;
 			}
 
 			Debug.Assert(
 				mContactCollectionWorkerCaches.Allocated && workerIndex < mContactCollectionWorkerCaches.Length &&
 				mContactCollectionWorkerCaches[workerIndex].SupportCandidates.Allocated,
 				"Worker caches weren't properly allocated; did you forget to call PrepareForContacts before collision detection?" );
-			if ( manifold.Count == 0 )
-				return false;
+
 			//It's possible for neither, one, or both collidables to be a character. Check each one, treating the other as a potential support.
 			var aIsCharacter = TryReportContacts( pair.A, pair.B, pair, ref manifold, workerIndex );
 			var bIsCharacter = TryReportContacts( pair.B, pair.A, pair, ref manifold, workerIndex );
@@ -275,10 +259,7 @@ namespace Game.Shared.PhysicsSystem.Subsystems
 				//to simulate different environments if you want.
 				//That would just require caching a bit more information for the AnalyzeContacts function to use.
 				materialProperties.FrictionCoefficient = 0;
-				return true;
 			}
-
-			return false;
 		}
 
 		private void ExpandBoundingBoxes( int start, int count )

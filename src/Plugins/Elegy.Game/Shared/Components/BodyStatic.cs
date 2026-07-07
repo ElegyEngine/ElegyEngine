@@ -11,23 +11,21 @@ using Game.Shared.PhysicsSystem.Interfaces;
 namespace Game.Shared.Components
 {
 	/// <summary>
-	/// Dynamic physical body.
+	/// Static physical body.
 	/// </summary>
 	[Component]
 	[Requires<Transform>]
-	public partial struct Body : IBodyComponent
+	public partial struct BodyStatic : IBodyComponent
 	{
-		private static TaggedLogger mLogger = new( "Body" );
+		private static TaggedLogger mLogger = new( "BodyStatic" );
 
-		public Body()
+		public BodyStatic()
 		{
 		}
 
 		public PhysicsShape Shape { get; private set; }
 
 		public PhysicsBody BodyObject { get; private set; }
-
-		[Property] public float Mass { get; set; } = 1.0f;
 
 		[Property] public ModelProperty CollisionModel { get; set; }
 
@@ -43,8 +41,8 @@ namespace Game.Shared.Components
 			}
 
 			// TODO: create physics shape from actual collision models, not the visual ones
-			Shape = Physics.CreateShape( new Box( 0.5f, 0.5f, 0.5f ), Mass );
-			BodyObject = Physics.CreateBody( transform, Shape );
+			Shape = Physics.CreateMeshShape( CollisionModel.Data );
+			BodyObject = Physics.CreateStaticBody( transform, Shape );
 
 			this.SetOwner( data.Self );
 			this.SetLayer( CollisionLayer.General );
@@ -54,18 +52,6 @@ namespace Game.Shared.Components
 		public static void OnDebugDraw( Entity.DebugDrawEvent data, ref Body body )
 		{
 			Physics.DebugDrawBody( body.BodyObject );
-		}
-
-		[GroupEvent]
-		public static void UpdateTransforms( Entity.ServerTransformListenEvent data, ref Body body, ref Transform transform )
-		{
-			if ( !body.BodyObject.BodyReference.Awake )
-			{
-				return;
-			}
-
-			transform.Position = body.BodyObject.Position;
-			transform.Orientation = body.BodyObject.Orientation;
 		}
 
 		[Event]

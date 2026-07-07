@@ -16,11 +16,6 @@ namespace Game.Shared.PhysicsSystem.Interfaces
 		/// Initial setup before the physics simulation has started. This is where
 		/// callbacks will be registered.
 		/// </summary>
-		void Init( Simulation simulation, Action<IContactFilter> registerFilter, Action<IContactModifier> registerModifier,
-			Action<IIntegrator> registerIntegrator );
-
-		void Dispose()
-		{
-		}
+		void Init( Simulation simulation );
 	}
 }

@@ -11,23 +11,21 @@ using Game.Shared.PhysicsSystem.Interfaces;
 namespace Game.Shared.Components
 {
 	/// <summary>
-	/// Dynamic physical body.
+	/// Kinematic physical body.
 	/// </summary>
 	[Component]
 	[Requires<Transform>]
-	public partial struct Body : IBodyComponent
+	public partial struct BodyKinematic : IBodyComponent
 	{
-		private static TaggedLogger mLogger = new( "Body" );
+		private static TaggedLogger mLogger = new( "BodyKinematic" );
 
-		public Body()
+		public BodyKinematic()
 		{
 		}
 
 		public PhysicsShape Shape { get; private set; }
 
 		public PhysicsBody BodyObject { get; private set; }
-
-		[Property] public float Mass { get; set; } = 1.0f;
 
 		[Property] public ModelProperty CollisionModel { get; set; }
 
@@ -42,30 +40,31 @@ namespace Game.Shared.Components
 				return;
 			}
 
-			// TODO: create physics shape from actual collision models, not the visual ones
-			Shape = Physics.CreateShape( new Box( 0.5f, 0.5f, 0.5f ), Mass );
-			BodyObject = Physics.CreateBody( transform, Shape );
+			//Shape = Physics.CreateShape( new Box( 0.5f, 0.5f, 0.5f ), mass: 1.0f );
+			Shape = Physics.CreateMeshShape( CollisionModel.Data, mass: 1.0f );
+			BodyObject = Physics.CreateKinematicBody( transform, Shape );
 
 			this.SetOwner( data.Self );
 			this.SetLayer( CollisionLayer.General );
 		}
 
 		[GroupEvent]
-		public static void OnDebugDraw( Entity.DebugDrawEvent data, ref Body body )
+		public static void OnDebugDraw( Entity.DebugDrawEvent data, ref BodyKinematic bodyKinematic )
 		{
-			Physics.DebugDrawBody( body.BodyObject );
+			Physics.DebugDrawBody( bodyKinematic.BodyObject );
 		}
 
 		[GroupEvent]
-		public static void UpdateTransforms( Entity.ServerTransformListenEvent data, ref Body body, ref Transform transform )
+		public static void UpdateTransforms( Entity.ServerTransformListenEvent data, ref BodyKinematic bodyKinematic, ref Transform transform )
 		{
-			if ( !body.BodyObject.BodyReference.Awake )
+			if ( transform.Position == bodyKinematic.BodyObject.Position
+			     && transform.Orientation == bodyKinematic.BodyObject.Orientation )
 			{
 				return;
 			}
 
-			transform.Position = body.BodyObject.Position;
-			transform.Orientation = body.BodyObject.Orientation;
+			transform.Position = bodyKinematic.BodyObject.Position;
+			transform.Orientation = bodyKinematic.BodyObject.Orientation;
 		}
 
 		[Event]

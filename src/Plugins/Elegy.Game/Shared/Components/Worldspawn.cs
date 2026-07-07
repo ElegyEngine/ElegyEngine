@@ -18,6 +18,7 @@ namespace Game.Shared.Components
 {
 	[Component]
 	[Requires<StaticModel>]
+	[Requires<BodyStatic>]
 	public partial struct Worldspawn
 	{
 		private static TaggedLogger mLogger = new( "Worldspawn" );

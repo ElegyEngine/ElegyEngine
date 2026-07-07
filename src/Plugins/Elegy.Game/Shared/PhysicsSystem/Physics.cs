@@ -8,6 +8,7 @@ using BepuPhysics.CollisionDetection;
 using BepuUtilities;
 using BepuUtilities.Memory;
 using Elegy.Common.Maths;
+using Elegy.Common.Utilities;
 using Elegy.RenderSystem.API;
 using Game.Shared.PhysicsSystem.Interfaces;
 using Game.Shared.PhysicsSystem.Subsystems;
@@ -16,6 +17,7 @@ namespace Game.Shared.PhysicsSystem
 {
 	public static partial class Physics
 	{
+		private static TaggedLogger mLogger = new( "Physics" );
 		private static BufferPool mBufferPool;
 		private static ThreadDispatcher mThreadDispatcher;
 
@@ -25,9 +27,19 @@ namespace Game.Shared.PhysicsSystem
 
 		#region Physics systems
 
-		public static ModularPhysicsCallbacks<IntegrationConfig> Callbacks = new();
-		public static CharacterMovement Characters { get; } = new( characterCapacity: 1024 );
-		public static DefaultGravity Gravity { get; } = new() { Gravity = Coords.Down * 9.81f };
+		public static PhysicsCallbacks<IntegrationConfig> Callbacks = new()
+		{
+			Characters = new( characterCapacity: 1024 ),
+			Events = new(),
+			Filters = new(),
+			Gravity = new() { Gravity = Coords.Down * 9.81f }
+		};
+
+		public static CharacterMovement Characters => Callbacks.Characters;
+		public static CollisionEvents Events => Callbacks.Events;
+		public static CollidableProperty<EntityHandle> Links { get; private set; }
+		public static CollisionFiltering<ClipMask> Filters => Callbacks.Filters;
+		public static DefaultGravity Gravity => Callbacks.Gravity;
 
 		#endregion
 
@@ -45,16 +57,20 @@ namespace Game.Shared.PhysicsSystem
 			public void Initialize( Simulation simulation )
 				=> Callbacks.Initialize( simulation );
 
+			[MethodImpl( MethodImplOptions.AggressiveInlining )]
 			public bool AllowContactGeneration( int workerIndex, CollidableReference a, CollidableReference b, ref float speculativeMargin )
 				=> Callbacks.AllowContactGeneration( workerIndex, a, b, ref speculativeMargin );
 
+			[MethodImpl( MethodImplOptions.AggressiveInlining )]
 			public bool ConfigureContactManifold<TManifold>( int workerIndex, CollidablePair pair, ref TManifold manifold,
 				out PairMaterialProperties pairMaterial ) where TManifold : unmanaged, IContactManifold<TManifold>
 				=> Callbacks.ConfigureContactManifold( workerIndex, pair, ref manifold, out pairMaterial );
 
+			[MethodImpl( MethodImplOptions.AggressiveInlining )]
 			public bool AllowContactGeneration( int workerIndex, CollidablePair pair, int childIndexA, int childIndexB )
 				=> Callbacks.AllowContactGeneration( workerIndex, pair, childIndexA, childIndexB );
 
+			[MethodImpl( MethodImplOptions.AggressiveInlining )]
 			public bool ConfigureContactManifold( int workerIndex, CollidablePair pair, int childIndexA, int childIndexB, ref ConvexContactManifold manifold )
 				=> Callbacks.ConfigureContactManifold( workerIndex, pair, childIndexA, childIndexB, ref manifold );
 
@@ -73,9 +89,11 @@ namespace Game.Shared.PhysicsSystem
 				// Nothing, already done by NarrowphaseCallbacks
 			}
 
+			[MethodImpl( MethodImplOptions.AggressiveInlining )]
 			public void PrepareForIntegration( float dt )
 				=> Callbacks.PrepareForIntegration( dt );
 
+			[MethodImpl( MethodImplOptions.AggressiveInlining )]
 			public void IntegrateVelocity( Vector<int> bodyIndices, Vector3Wide position, QuaternionWide orientation, BodyInertiaWide localInertia,
 				Vector<int> integrationMask, int workerIndex, Vector<float> dt, ref BodyVelocityWide velocity )
 				=> Callbacks.IntegrateVelocity( bodyIndices, position, orientation, localInertia, integrationMask, workerIndex, dt, ref velocity );
@@ -85,11 +103,7 @@ namespace Game.Shared.PhysicsSystem
 
 		public static void Init()
 		{
-			int numThreads = Environment.ProcessorCount - 2;
-
-			// You can register your physics subsystems here, or anywhere really
-			Callbacks.Register( Characters );
-			Callbacks.Register( Gravity );
+			int numThreads = Environment.ProcessorCount;
 
 			mBufferPool = new( minimumBlockAllocationSize: 131072, expectedPooledResourceCount: 64 );
 			mThreadDispatcher = new( numThreads );
@@ -99,7 +113,9 @@ namespace Game.Shared.PhysicsSystem
 				new NarrowphaseCallbacks(),
 				new PoseIntegratorCallbacks(),
 				// TODO: expose solver params
-				new SolveDescription( 8, 2, 128 ) );
+				new SolveDescription( 4, 1, 256 ) );
+
+			Links = new( Simulation );
 		}
 
 		public static void Shutdown()
@@ -109,9 +125,54 @@ namespace Game.Shared.PhysicsSystem
 			mThreadDispatcher.Dispose();
 		}
 
+		public static EntityHandle GetEntityHandle( int bodyId )
+		{
+			bool isStatic = false;
+
+			if ( bodyId < -1 )
+			{
+				isStatic = true;
+				bodyId = -bodyId - 2;
+			}
+
+			if ( isStatic )
+			{
+				return Links[new StaticHandle( bodyId )];
+			}
+
+			return Links[new BodyHandle( bodyId )];
+		}
+
 		public static void UpdateSimulation( float deltaTime )
 		{
 			Simulation.Timestep( deltaTime, mThreadDispatcher );
+
+			// Once the simulation is done, we dispatch collision events
+			foreach ( var physicsEventCache in Events.Cache )
+			{
+				foreach ( var collision in physicsEventCache.PendingCollisions )
+				{
+					ref var receiver = ref GetEntityHandle( collision.BodyReceiver ).Entity;
+					ref var sender = ref GetEntityHandle( collision.BodySender ).Entity;
+
+					if ( collision.Type is PendingCollisionEventType.StartedTouching )
+					{
+						receiver.Dispatch( new Entity.TouchEvent( receiver, sender ) );
+					}
+					else
+					{
+						receiver.Dispatch( new Entity.TouchHoldEvent( receiver, sender ) );
+					}
+				}
+
+				foreach ( var collision in physicsEventCache.PendingSeparations )
+				{
+					ref var receiver = ref GetEntityHandle( collision.BodyReceiver ).Entity;
+					ref var sender = ref GetEntityHandle( collision.BodySender ).Entity;
+
+					receiver.Dispatch( new Entity.TouchEndEvent( receiver, sender ) );
+				}
+			}
 		}
 
 		public static unsafe void DebugDrawBody( PhysicsBody body )
