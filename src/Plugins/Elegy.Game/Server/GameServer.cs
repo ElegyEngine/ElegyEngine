@@ -101,15 +101,18 @@ namespace Game.Server
 				mLogger.Log( $"ClearTransform:  {clearTransformsMs:F3} ms" );
 			} );
 
-			mSnapshotTimer.Seconds = GameSnapshotTime;
-			mSnapshotTimer.Update( delta, () =>
+			if ( MaxPlayers > 1 )
 			{
-				mLogger.Log( "GameSnapshot" );
-				foreach ( var client in Connections )
+				mSnapshotTimer.Seconds = GameSnapshotTime;
+				mSnapshotTimer.Update( delta, () =>
 				{
-					client.Bridge.SendGameStatePayload();
-				}
-			} );
+					//mLogger.Log( "GameSnapshot" );
+					foreach ( var client in Connections )
+					{
+						client.Bridge.SendGameStatePayload();
+					}
+				} );
+			}
 		}
 
 		public bool Setup( ElegyMapDocument level )
