@@ -7,7 +7,7 @@ namespace Elegy.Common.Utilities;
 
 /// <summary>
 /// This is a service locator used for a couple of fundamental modules (logging, virtual filesystem etc.)
-/// so they don't have to depend on each other. It's what allows the modules to be used as independent modules.
+/// so they don't have to depend on each other. It's what allows the modules to be used independently.
 /// </summary>
 public static class ElegyInterfaceLocator
 {

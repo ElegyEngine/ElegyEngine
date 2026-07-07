@@ -5,6 +5,7 @@ using Game.Shared.Components;
 
 namespace Game.Shared.PhysicsSystem
 {
+	// TODO: PhysicsBody and PhysicsShape should be handles
 	public class PhysicsBody
 	{
 		public PhysicsBody( PhysicsShape shape, BodyHandle dynamicHandle )

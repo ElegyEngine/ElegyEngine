@@ -4,7 +4,6 @@
 using System.Diagnostics;
 using Elegy.Common.Assets;
 using Elegy.Common.Utilities;
-using Elegy.LogSystem;
 using Game.Shared;
 using Game.Shared.Components;
 using Game.Session;
@@ -22,12 +21,14 @@ namespace Game.Server
 		/// How often (per second) to send game state packets to clients.
 		/// </summary>
 		public int GameSnapshotRate { get; set; } = 10;
+
 		public float GameSnapshotTime => 1.0f / GameSnapshotRate;
 
 		/// <summary>
 		/// How often to update serverside entities.
 		/// </summary>
 		public int ServerUpdateRate { get; set; } = 40;
+
 		public float ServerUpdateTime => 1.0f / ServerUpdateRate;
 
 		public GameServer( int maxPlayers )
@@ -50,9 +51,10 @@ namespace Game.Server
 			if ( delta > 0.2f )
 			{
 				// Might as well discard the frame
+				// TODO: This may disconnect players, move this skip elsewhere...
 				return;
 			}
-			
+
 			foreach ( var connection in Connections )
 			{
 				if ( connection.State == GameSessionState.Disconnected )
@@ -75,12 +77,12 @@ namespace Game.Server
 				// These two will make transforms dirty
 				double physicsStart = CurrentSeconds;
 				Physics.UpdateSimulation( updateDelta );
-				
+
 				double serverUpdateStart = CurrentSeconds;
 				EntityWorld.Dispatch( new Entity.ServerUpdateEvent( this, updateDelta ) );
-				
+
 				// This one will listen to the changed transforms
-				double transformListenStart = CurrentSeconds; 
+				double transformListenStart = CurrentSeconds;
 				EntityWorld.Dispatch( new Entity.ServerTransformListenEvent( this, updateDelta ) );
 
 				// Finally, this query clears them all

@@ -66,7 +66,7 @@ namespace XrResearch
 		public static unsafe void CreateActions()
 		{
 			Console.WriteLine( "CreateActions" );
-			
+
 			ActionSetCreateInfo actionSetCreateInfo = new() { Type = StructureType.ActionSetCreateInfo };
 			actionSetCreateInfo.Priority = 0;
 			"xr-research-actionset".CStringCopyTo( actionSetCreateInfo.ActionSetName, XR.MaxActionSetNameSize );
@@ -110,7 +110,7 @@ namespace XrResearch
 		public static unsafe bool SuggestActionBindings()
 		{
 			Console.WriteLine( "SuggestActionBindings" );
-			
+
 			ActionSuggestedBinding Bind( XrAction action, string path )
 			{
 				return new()
@@ -167,7 +167,7 @@ namespace XrResearch
 		public static unsafe void CreateActionPoses()
 		{
 			Console.WriteLine( "CreateActionPoses" );
-			
+
 			Space CreateSpace( XrAction action, string? subactionPath = null )
 			{
 				ActionSpaceCreateInfo spaceCreateInfo = new()
@@ -190,7 +190,7 @@ namespace XrResearch
 		public static unsafe void AttachActionSets( params ActionSet[] actionSets )
 		{
 			Console.WriteLine( "AttachActionSets" );
-			
+
 			SessionActionSetsAttachInfo attachInfo = new()
 			{
 				Type = StructureType.SessionActionSetsAttachInfo,
@@ -436,7 +436,7 @@ namespace XrResearch
 		public static void InitInput()
 		{
 			Console.WriteLine( "InitInput" );
-			
+
 			// Actions = essentially the VR equivalent of keybinds
 			CreateActions();
 			SuggestActionBindings();
@@ -445,7 +445,7 @@ namespace XrResearch
 		public static void PostInitInput()
 		{
 			Console.WriteLine( "PostInitInput" );
-			
+
 			CreateActionPoses();
 
 			// Once the session is created, we can attach
@@ -461,7 +461,7 @@ namespace XrResearch
 		public static void ShutdownInput()
 		{
 			Console.WriteLine( "ShutdownInput" );
-			
+
 			XrCheck( Xr.DestroySpace( mLeftHandPoseSpace ) );
 			XrCheck( Xr.DestroySpace( mRightHandPoseSpace ) );
 			XrCheck( Xr.DestroyAction( mGrabAction ) );
