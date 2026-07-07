@@ -23,8 +23,8 @@ namespace Game.Shared
 			EntityId = entity.Id;
 		}
 
-		public Entity Entity
-			=> EntityWorld.Entities[EntityId];
+		public ref Entity Entity
+			=> ref EntityWorld.Entities[EntityId];
 
 		public bool Alive
 			=> EntityWorld.Entities[EntityId].Alive;
