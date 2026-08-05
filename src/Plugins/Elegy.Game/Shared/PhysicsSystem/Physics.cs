@@ -17,6 +17,7 @@ namespace Game.Shared.PhysicsSystem
 {
 	public static partial class Physics
 	{
+		private static bool mActivated;
 		private static TaggedLogger mLogger = new( "Physics" );
 		private static BufferPool mBufferPool;
 		private static ThreadDispatcher mThreadDispatcher;
@@ -116,13 +117,20 @@ namespace Game.Shared.PhysicsSystem
 				new SolveDescription( 4, 1, 256 ) );
 
 			Links = new( Simulation );
+			mActivated = true;
 		}
 
 		public static void Shutdown()
 		{
+			if ( !mActivated )
+			{
+				return;
+			}
+
 			Simulation.Dispose();
 			mBufferPool.Clear();
 			mThreadDispatcher.Dispose();
+			mActivated = false;
 		}
 
 		public static EntityHandle GetEntityHandle( int bodyId )
