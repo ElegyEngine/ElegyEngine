@@ -11,8 +11,6 @@ namespace Game.Client
 		public bool Init()
 		{
 			// TODO: keybinds and stuff
-			GrabMouse();
-
 			return true;
 		}
 
