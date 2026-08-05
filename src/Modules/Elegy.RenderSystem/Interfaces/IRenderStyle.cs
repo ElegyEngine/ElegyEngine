@@ -17,8 +17,6 @@ namespace Elegy.RenderSystem.Interfaces
 	{
 		/// <summary> The render mesh. </summary>
 		public ArrayMesh Mesh;
-		/// <summary> The parameter pool. </summary>
-		public MaterialParameterPool ParameterPool;
 		/// <summary> The per-entity resource set. </summary>
 		public ResourceSet PerEntitySet;
 	}

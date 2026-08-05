@@ -17,8 +17,7 @@ namespace Elegy.RenderBackend.Templating
 	{
 		public ShaderVariant( MaterialTemplate parent, ShaderVariantEntry data, ResourceLayout[] layouts,
 			Shader vertexShader, Shader pixelShader, Pipeline pipeline,
-			VariantVertexAttribute[] attributes, int[] mappings,
-			int[] perInstanceMappings, int[] globalMappings )
+			VariantVertexAttribute[] attributes, int[] mappings, int[] globalMappings )
 		{
 			Data = data;
 			Template = parent;
@@ -29,14 +28,11 @@ namespace Elegy.RenderBackend.Templating
 			VertexAttributes = attributes;
 			ResourceMappingsGlobal = globalMappings;
 			ResourceMappingsPerMaterial = mappings;
-			ResourceMappingsPerInstance = perInstanceMappings;
 		}
 
 		public int[] ResourceMappingsGlobal { get; }
 
 		public int[] ResourceMappingsPerMaterial { get; }
-
-		public int[] ResourceMappingsPerInstance { get; }
 
 		public VariantVertexAttribute[] VertexAttributes { get; }
 

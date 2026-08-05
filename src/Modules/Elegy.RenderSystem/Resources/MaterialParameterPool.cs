@@ -63,13 +63,13 @@ namespace Elegy.RenderSystem.Resources
 		/// <summary>
 		/// Constructor for per-instance and data-driven material parameters.
 		/// </summary>
-		public MaterialParameterPool( GraphicsDevice device, MaterialTemplate materialTemplate, MaterialDefinition definition, bool perInstance = false )
+		public MaterialParameterPool( GraphicsDevice device, MaterialTemplate materialTemplate, MaterialDefinition definition )
 		{
 			mDevice = device;
 			Definition = definition;
 			Template = materialTemplate;
 
-			ParameterLevel = perInstance ? MaterialParameterLevel.Instance : MaterialParameterLevel.Data;
+			ParameterLevel = MaterialParameterLevel.Data;
 			ParameterSets.EnsureCapacity( materialTemplate.ShaderTemplate.ParameterSets.Count );
 
 			// From the shader parametres, we will look up the given material def's parametres

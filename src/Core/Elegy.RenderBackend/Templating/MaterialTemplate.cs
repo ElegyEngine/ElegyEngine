@@ -85,7 +85,6 @@ namespace Elegy.RenderBackend.Templating
 				// 3. Create resource mapping table
 				List<int> globalMappings = new( ResourceLayouts.Length );
 				List<int> perMaterialMappings = new( ResourceLayouts.Length );
-				List<int> perInstanceMappings = new( ResourceLayouts.Length );
 				int adjustedSetId = -1;
 				for ( int setId = 0; setId < ResourceLayouts.Length; setId++ )
 				{
@@ -109,8 +108,7 @@ namespace Elegy.RenderBackend.Templating
 					var mappingList = layout.Level switch
 					{
 						Assets.MaterialParameterLevel.Data => perMaterialMappings,
-						Assets.MaterialParameterLevel.Global => globalMappings,
-						Assets.MaterialParameterLevel.Instance => perInstanceMappings
+						Assets.MaterialParameterLevel.Global => globalMappings
 					};
 
 					mappingList.Add( adjustedSetId );
@@ -130,7 +128,7 @@ namespace Elegy.RenderBackend.Templating
 
 				ShaderVariants.Add( variant.ShaderDefine,
 					new( this, variant, layouts, vertexShader, pixelShader, pipeline, attributes,
-						perMaterialMappings.ToArray(), perInstanceMappings.ToArray(), globalMappings.ToArray() ) );
+						perMaterialMappings.ToArray(), globalMappings.ToArray() ) );
 			}
 
 			return true;

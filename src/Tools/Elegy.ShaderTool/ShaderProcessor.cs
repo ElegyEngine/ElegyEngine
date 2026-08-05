@@ -68,7 +68,7 @@ namespace Elegy.ShaderTool
 		public string CommonShaderContents { get; private set; } = string.Empty;
 		public Dictionary<string, string> VertexShaderRegions { get; private set; } = new();
 		public Dictionary<string, string> PixelShaderRegions { get; private set; } = new();
-		
+
 		public bool CreatePermutations()
 		{
 			StringBuilder commonShaderSb = new( 64 );
@@ -417,7 +417,6 @@ namespace Elegy.ShaderTool
 				"builtin" => MaterialParameterLevel.Builtin,
 				"data" => MaterialParameterLevel.Data,
 				"global" => MaterialParameterLevel.Global,
-				"instance" => MaterialParameterLevel.Instance,
 				_ => throw new Exception( $"Unknown material parameter level '{token}', typo or possibly wrong order?" )
 			};
 		}

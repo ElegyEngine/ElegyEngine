@@ -99,12 +99,11 @@ namespace Game.Presentation
 				QueueRenderSurface(
 					meshes[meshIndex],
 					dataBlock.EntitySet,
-					dataBlock.InstanceParameterPool[meshIndex],
 					dataBlock.Mesh.Materials[meshIndex] );
 			}
 		}
 
-		public void QueueRenderSurface( ArrayMesh mesh, ResourceSet set, MaterialParameterPool pool, RenderMaterial material )
+		public void QueueRenderSurface( ArrayMesh mesh, ResourceSet set, RenderMaterial material )
 		{
 			var materialMap = material.Template.Data.PipelineInfo.BlendMode switch
 			{
@@ -115,7 +114,6 @@ namespace Game.Presentation
 			materialMap.GetOrAdd( material ).Add( new()
 			{
 				Mesh = mesh,
-				ParameterPool = pool,
 				PerEntitySet = set
 			} );
 		}

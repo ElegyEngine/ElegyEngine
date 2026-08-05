@@ -71,15 +71,6 @@ namespace Elegy.RenderSystem.API
 				material.GlobalParameterPool.ParameterSets.AsSpan() );
 		}
 
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public static void SetInstanceResourceSets(
-			CommandList commands, MaterialParameterPool perInstancePool, ShaderVariant shaderVariant )
-		{
-			SetMaterialResourceSetsIndividual( commands,
-				shaderVariant.ResourceMappingsPerInstance,
-				perInstancePool.ParameterSets.AsSpan() );
-		}
-
 		private static RenderBackend.ArrayMesh ViewMesh => Meshes.FullscreenQuad.Submeshes[0];
 
 		private static void RenderViewIntoBackbuffer( in View view )

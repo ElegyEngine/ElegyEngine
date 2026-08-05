@@ -216,7 +216,6 @@ static class Program
 			RenderSurface surface = new()
 			{
 				Mesh = mMeshEntity.Mesh.Submeshes[0],
-				ParameterPool = mMeshEntity.Mesh.Materials[0].ParameterPool,
 				PerEntitySet = mMeshEntity.PerEntitySet
 			};
 			Render.RenderStyle!.RenderSurfaces( mRenderCommands, view, [surface], RenderMaterial, [] );

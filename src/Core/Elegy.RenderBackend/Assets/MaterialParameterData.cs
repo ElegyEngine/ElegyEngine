@@ -30,8 +30,7 @@ namespace Elegy.RenderBackend.Assets
 	{
 		Builtin,
 		Data,
-		Global,
-		Instance
+		Global
 	}
 
 	public class MaterialParameter

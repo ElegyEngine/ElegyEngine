@@ -70,9 +70,6 @@ namespace Elegy.RenderSystem
 				// 1 is always per-entity data (entity transform matrix, bone matrices etc.)
 				renderCommand.SetGraphicsResourceSet( 1, surfaces[i].PerEntitySet );
 
-				// Set per-instance resources too
-				Render.SetInstanceResourceSets( renderCommand, surfaces[i].ParameterPool, shaderVariant );
-
 				// Send vertex buffers used by this shader variant
 				foreach ( var vertexAttribute in shaderVariant.VertexAttributes.AsSpan() )
 				{

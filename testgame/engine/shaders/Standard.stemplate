@@ -37,7 +37,7 @@
       ]
     },
     {
-      "level": 3,
+      "level": 0,
       "parameters": [
         {
           "name": "LightmapMap",

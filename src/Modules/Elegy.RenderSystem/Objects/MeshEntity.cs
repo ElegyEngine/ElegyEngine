@@ -29,7 +29,6 @@ namespace Elegy.RenderSystem.Objects
 			public int Mask;
 			public Mesh Mesh;
 			public ResourceSet EntitySet;
-			public List<MaterialParameterPool> InstanceParameterPool;
 			public DeviceBuffer? BoneBuffer;
 			public SpanIndirect<Matrix4x4> Bones;
 		}
@@ -217,8 +216,6 @@ namespace Elegy.RenderSystem.Objects
 				Offset = (uint)(ElementIndex * Unsafe.SizeOf<Matrix4x4>()),
 				SizeInBytes = (uint)Unsafe.SizeOf<Matrix4x4>()
 			} );
-
-			PerInstanceParameterPools = new();
 		}
 
 		public ref MeshEntityChunk.MeshEntityBlock Block
@@ -233,11 +230,7 @@ namespace Elegy.RenderSystem.Objects
 		public Mesh Mesh
 		{
 			get => System[ChunkIndex].Blocks[ElementIndex].Mesh;
-			set
-			{
-				System[ChunkIndex].Blocks[ElementIndex].Mesh = value;
-				RegenerateParameterPools();
-			}
+			set => System[ChunkIndex].Blocks[ElementIndex].Mesh = value;
 		}
 
 		public Matrix4x4 Transform
@@ -286,39 +279,10 @@ namespace Elegy.RenderSystem.Objects
 			init => System[ChunkIndex].Blocks[ElementIndex].EntitySet = value;
 		}
 
-		public List<MaterialParameterPool> PerInstanceParameterPools
-		{
-			get => System[ChunkIndex].Blocks[ElementIndex].InstanceParameterPool;
-			private set => System[ChunkIndex].Blocks[ElementIndex].InstanceParameterPool = value;
-		}
-
-		private void RegenerateParameterPools()
-		{
-			foreach ( var pool in PerInstanceParameterPools )
-			{
-				pool.Dispose();
-			}
-
-			PerInstanceParameterPools.Clear();
-			PerInstanceParameterPools.EnsureCapacity( Mesh.Materials.Count );
-
-			foreach ( var material in Mesh.Materials )
-			{
-				MaterialParameterPool pool = new( Render.Device, material.Template, material.Definition, perInstance: true );
-				PerInstanceParameterPools.Add( pool );
-			}
-		}
-
 		public void Dispose()
 		{
 			PerEntitySet.Dispose();
 			BoneTransformBuffer?.Dispose();
-			foreach ( var pool in PerInstanceParameterPools )
-			{
-				pool.Dispose();
-			}
-
-			PerInstanceParameterPools.Clear();
 		}
 	}
 }

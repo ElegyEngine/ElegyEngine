@@ -26,7 +26,7 @@ MaterialParameterSet( BUILTIN, ALL,
 MaterialParameterSet( DATA, ALL except DEPTH WIREFRAME,
 	Data( texture2D, uDiffuseTexture, DiffuseMap )
 );
-MaterialParameterSet( INSTANCE, LIGHTMAP,
+MaterialParameterSet( BUILTIN, LIGHTMAP,
 	Data( texture2D, uLightmapTexture, LightmapMap )
 );
 MaterialParameterSet( GLOBAL, ALL except DEPTH WIREFRAME,
