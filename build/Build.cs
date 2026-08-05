@@ -270,7 +270,7 @@ static class Utils
 				}
 			}
 
-			// Currently just Silk.NET. Must check how others do it
+			// TODO: Currently this just works for Silk.NET's native dependencies (C/C++ DLLs). Others may have a different structure
 			bool nativeDependency = file.Parent?.Name == "native" && file.ToString().Contains( runtimeDirectory );
 			bool csharpAssemblyOrPdb = file.Parent?.Name != "native" && file.HasExtension( ".dll", ".pdb", ".exe" );
 			bool runtimeConfig = file.Name.Contains( assemblyName ) && file.HasExtension( ".json" );
@@ -286,7 +286,6 @@ static class Utils
 
 	public static void CopyPluginBinaries( Project project, Configuration configuration, AbsolutePath output )
 	{
-		// Read pluginConfig.json and copy its dependencies
 		AbsolutePath binaryPath = project.GetOutputDirectory( configuration );
 
 		var pluginConfig = project.GetPluginConfig();
@@ -295,8 +294,11 @@ static class Utils
 			return;
 		}
 
-		JsonElement dependencyJson = pluginConfig.Json.RootElement.GetProperty( "dependencies" );
-		foreach ( var dependency in dependencyJson.EnumerateArray() )
+		// To avoid having to manually copy each plugin's dependencies, we parse the plugin config
+		// To avoid depending on Elegy.Common (since it's built by this), we parse it *manually*
+		// That's okay though, because the plugin config format is extremely simple
+		JsonElement dependencies = pluginConfig.Json.RootElement.GetProperty( "dependencies" );
+		foreach ( JsonElement dependency in dependencies.EnumerateArray() )
 		{
 			string dependencyString = dependency.GetString()!;
 
