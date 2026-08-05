@@ -214,6 +214,7 @@ namespace Game
 			}
 
 			mServer = new( maxPlayers );
+			mServer.DisplayTimings = Commands.Arguments.ContainsKey( "-sv.timings" );
 
 			EntityWorld.OnSpawned += static entity => entity.Dispatch( new Entity.SpawnEvent( entity ) );
 			EntityWorld.OnPreDestroyed += static entity => entity.Dispatch( new Entity.DespawnEvent( entity ) );

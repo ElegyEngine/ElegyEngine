@@ -17,6 +17,8 @@ namespace Game.Server
 
 		public int MaxPlayers => Connections.Capacity;
 
+		public bool DisplayTimings { get; set; }
+
 		/// <summary>
 		/// How often (per second) to send game state packets to clients.
 		/// </summary>
@@ -70,10 +72,8 @@ namespace Game.Server
 			mUpdateTimer.Seconds = ServerUpdateTime;
 			mUpdateTimer.Update( delta, () =>
 			{
-				mLogger.Log( "ServerUpdate" );
-				
 				float updateDelta = MathF.Max( delta, ServerUpdateTime );
-				
+
 				// These two will make transforms dirty
 				double physicsStart = CurrentSeconds;
 				Physics.UpdateSimulation( updateDelta );
@@ -89,16 +89,19 @@ namespace Game.Server
 				double clearTransformsStart = CurrentSeconds;
 				EntityWorld.EcsWorld.Stream<Transform>().For( static ( ref Transform t ) => { t.TransformDirty = false; } );
 				double serverUpdateEnd = CurrentSeconds;
-				
-				double physicsMs = (serverUpdateStart - physicsStart) * 1000.0;
-				double serverUpdateMs = (transformListenStart - serverUpdateStart) * 1000.0;
-				double transformListenMs = (clearTransformsStart - transformListenStart) * 1000.0;
-				double clearTransformsMs = (serverUpdateEnd - clearTransformsStart) * 1000.0;
-				mLogger.Log( "Perf stats:" );
-				mLogger.Log( $"Physics:         {physicsMs:F3} ms" );
-				mLogger.Log( $"ServerUpdate:    {serverUpdateMs:F3} ms" );
-				mLogger.Log( $"TransformListen: {transformListenMs:F3} ms" );
-				mLogger.Log( $"ClearTransform:  {clearTransformsMs:F3} ms" );
+
+				if ( DisplayTimings )
+				{
+					double physicsMs = (serverUpdateStart - physicsStart) * 1000.0;
+					double serverUpdateMs = (transformListenStart - serverUpdateStart) * 1000.0;
+					double transformListenMs = (clearTransformsStart - transformListenStart) * 1000.0;
+					double clearTransformsMs = (serverUpdateEnd - clearTransformsStart) * 1000.0;
+					mLogger.Log( "Perf stats:" );
+					mLogger.Log( $"Physics:         {physicsMs:F3} ms" );
+					mLogger.Log( $"ServerUpdate:    {serverUpdateMs:F3} ms" );
+					mLogger.Log( $"TransformListen: {transformListenMs:F3} ms" );
+					mLogger.Log( $"ClearTransform:  {clearTransformsMs:F3} ms" );
+				}
 			} );
 
 			if ( MaxPlayers > 1 )
@@ -106,7 +109,6 @@ namespace Game.Server
 				mSnapshotTimer.Seconds = GameSnapshotTime;
 				mSnapshotTimer.Update( delta, () =>
 				{
-					//mLogger.Log( "GameSnapshot" );
 					foreach ( var client in Connections )
 					{
 						client.Bridge.SendGameStatePayload();
