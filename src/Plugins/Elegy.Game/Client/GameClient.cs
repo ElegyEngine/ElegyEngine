@@ -35,6 +35,7 @@ namespace Game.Client
 
 		public ClientCommand Command => mCommand;
 		public View RenderView => mRenderView;
+		public bool DisplayTimings { get; set; }
 
 		public bool Init()
 		{
@@ -62,9 +63,11 @@ namespace Game.Client
 
 		public void Update( float delta )
 		{
-			mLogger.Log( $"Update: {delta * 1000.0f:F} ms" );
-			mLogger.Log( $"Draw CPU: {Render.CpuFrametime * 1000.0f:F} ms" );
-			mLogger.Log( $"Draw GPU: {Render.GpuFrametime * 1000.0f:F} ms" );
+			if ( DisplayTimings )
+			{
+				mLogger.Log( $"Draw CPU: {Render.CpuFrametime * 1000.0f:F} ms" );
+				mLogger.Log( $"Draw GPU: {Render.GpuFrametime * 1000.0f:F} ms" );
+			}
 
 			mMovementDirection = Vector3.Zero;
 

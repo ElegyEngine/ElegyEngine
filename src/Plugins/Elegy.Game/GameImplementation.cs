@@ -131,6 +131,8 @@ namespace Game
 				return false;
 			}
 
+			mClient.DisplayTimings = Commands.Arguments.ContainsKey( "-cl.timings" );
+
 			mPresentation = new();
 			if ( !mPresentation.Init() )
 			{
