@@ -246,8 +246,8 @@ namespace Game
 				if ( fullPath is not null )
 				{
 					// TODO: some people probably won't be reading the compile log, so what if we
-					// implemented intelligent log reading? The formatting is super consistent and
-					// it should be easy to find errors
+					//  implemented intelligent log reading? The formatting is super consistent and
+					//  it should be easy to find errors
 					mLogger.Log( "There's a .map file with the same name though. Did you compile it?" );
 					mLogger.Log( "If you did and it's not there, please read the compile log." );
 				}
