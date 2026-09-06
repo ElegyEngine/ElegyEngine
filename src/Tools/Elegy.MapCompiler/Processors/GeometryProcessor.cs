@@ -63,16 +63,9 @@ namespace Elegy.MapCompiler.Processors
 			{
 				foreach ( var face in entity.Faces )
 				{
-					face.Vertices = face.Vertices.Select( v =>
+					face.Vertices = face.Vertices.Select( v => v with
 					{
-						Vertex scaledVertex = new();
-
-						scaledVertex.Position = v.Position * scale;
-						scaledVertex.Uv = v.Uv;
-						scaledVertex.Normal = v.Normal;
-						scaledVertex.Colour = v.Colour;
-
-						return scaledVertex;
+						Position = v.Position * scale
 					} ).ToList();
 				}
 
