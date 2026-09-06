@@ -42,12 +42,15 @@ namespace Elegy.Common.Utilities
 		/// <summary>
 		/// Conditionally prints a message.
 		/// </summary>
-		public void LogIf( bool condition, string message )
+		public bool LogIf( bool condition, string message )
 		{
 			if ( condition )
 			{
 				Log( message );
+				return true;
 			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -59,12 +62,15 @@ namespace Elegy.Common.Utilities
 		/// <summary>
 		/// Conditionally prints a warning message.
 		/// </summary>
-		public void WarningIf( bool condition, string message )
+		public bool WarningIf( bool condition, string message )
 		{
 			if ( condition )
 			{
 				Warning( message );
+				return true;
 			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -76,12 +82,15 @@ namespace Elegy.Common.Utilities
 		/// <summary>
 		/// Conditionally prints an error message.
 		/// </summary>
-		public void ErrorIf( bool condition, string message )
+		public bool ErrorIf( bool condition, string message )
 		{
 			if ( condition )
 			{
 				Error( message );
+				return true;
 			}
+
+			return false;
 		}
 
 		/// <summary>
