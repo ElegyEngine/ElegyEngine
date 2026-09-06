@@ -10,7 +10,7 @@ namespace Game.Shared.Components
 	{
 		[Property]
 		public int Health { get; set; }
-		
+
 		[Input]
 		public void Break()
 		{
