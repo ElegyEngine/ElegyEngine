@@ -205,9 +205,7 @@ namespace Game.Shared
 				switch ( pair.Key )
 				{
 					case "targetname":
-						//EntityUtilities
-						//	.CreateOrRef<Target>( ref EcsObjectRef )
-						//	.Name = pair.Value;
+						Ref<Name>().Targetname = pair.Value;
 						break;
 
 					case "origin":
