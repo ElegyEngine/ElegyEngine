@@ -256,7 +256,15 @@ namespace Game.Shared
 		public bool Dispatch<T>( T param ) where T : notnull
 			=> EntityUtilities.DispatchEvent<T>( EcsObject, param );
 
-		public void DispatchNamed( ReadOnlySpan<char> name )
-			=> EntityUtilities.DispatchNamedEvent( EcsObject, name, static message => { mLogger.Warning( message ); } );
+		public bool DispatchNamed( ReadOnlySpan<char> name )
+		{
+			if ( !EntityUtilities.DispatchNamedEvent( EcsObject, name ) )
+			{
+				mLogger.Warning( $"Invalid input: '{name}'" );
+				return false;
+			}
+
+			return true;
+		}
 	}
 }
