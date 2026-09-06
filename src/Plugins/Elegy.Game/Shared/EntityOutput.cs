@@ -6,34 +6,48 @@ using Elegy.ECS;
 
 namespace Game.Shared
 {
-	public record struct EntityOutputEntry( string TargetEntity, string TargetInput, float FireDelay, string Parameter )
+	[Flags]
+	public enum OutputFlags
+	{
+		None = 0,
+		FireOnce = 1
+	}
+
+	// TODO: Separate EntityOutputEntry into a data representation in Elegy.Common (for parsing elsewhere)
+	//  and a runtime representation here. The runtime representation could utilise fixed-size strings
+	//  or string views for performance
+	public record struct EntityOutputEntry( string TargetEntity, string TargetInput, float FireDelay, string Parameter, OutputFlags Flags )
 	{
 		/// <summary>
-		/// Input formats:
+		/// Input format:
 		/// <code>
-		/// "targetname,component.input,delay"
-		/// "targetname,component.input,delay,parametre"
+		/// "name,component.input,param,delay,flags"
 		/// </code>
 		/// </summary>
 		public static EntityOutputEntry ParseEntry( ReadOnlySpan<char> value )
 		{
-			int firstComma = value.IndexOf( ',' );
-			int secondComma = value.Slice( firstComma + 1 ).IndexOf( ',' ) + firstComma + 1;
-			int thirdComma = value.LastIndexOf( ',' );
-			bool parametreless = secondComma == thirdComma;
+			Span<Range> ranges = stackalloc Range[5];
+			value.Split( ranges, ',', StringSplitOptions.TrimEntries );
 
-			var target = value.Slice( 0, firstComma ).Trim();
-			var input = value.Slice( firstComma + 1, secondComma - firstComma - 1 ).Trim();
-			var delay = (parametreless ? value.Slice( secondComma + 1 ) : value.Slice( secondComma + 1, thirdComma - secondComma - 1 )).Trim();
-			var parametre = parametreless ? "" : value.Slice( thirdComma + 1 ).Trim();
+			string target = value[ranges[0]].ToString();
+			string input = value[ranges[1]].ToString();
+			string param = value[ranges[2]].ToString();
+			string delay = value[ranges[3]].ToString();
+			string flags = value[ranges[4]].ToString();
 
-			return new( target.ToString(), input.ToString(), Parse.Float( delay ), parametre.ToString() );
+			// Flags are 1 by default
+			if ( string.IsNullOrEmpty( flags ) )
+			{
+				flags = "1";
+			}
+
+			return new( target, input, Parse.Float( delay ), param, (OutputFlags)Parse.Int( flags ) );
 		}
 
 		/// <summary>
 		/// Input format:
 		/// <code>
-		/// "targetname1,component.input1,delay1,parametre1;targetname2,component.input2,delay2,parametre2"
+		/// "name1,component.input1,param1,delay1,flags1;name2,component.input2,param2,delay2,flags2"
 		/// </code>
 		/// </summary>
 		public static List<EntityOutputEntry> ParseOutput( ReadOnlySpan<char> value )
@@ -43,12 +57,10 @@ namespace Game.Shared
 
 			// This is not exactly a copy of the value,
 			// but a copy of the *view* into the value
+			// TODO: ??? This seems unnecessary
 			ReadOnlySpan<char> valueCopy = value;
 
-			// Splitting up the value string is done manually because
-			// we don't have an adequate Split method.. could honestly
-			// go the functional route and have an action of some sorts,
-			// when C# gets ref struct support in delegates anyway
+			// TODO: Use .Split or something similar
 			while ( true )
 			{
 				var semicolon = valueCopy.IndexOf( ';' );

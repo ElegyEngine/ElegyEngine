@@ -23,15 +23,15 @@ public static class EntityOutputTest
 		var entity = EntityWorld.CreateEntity().FinishSpawning();
 
 		EntityOutput entityOutput = EntityOutput.ParseEntityProperty( ref entity.EcsObjectRef, "Component.Output",
-			"some_entity,Breakable.Break,3;" +
+			"some_entity,Breakable.Break,,3,;" +
 			// This one starts earlier, so they should be sorted in reverse order
-			"some_entity,Breakable.Break,2,1"
+			"some_entity,Breakable.Break,abc,2,0"
 		);
 
 		Assert.Equal( 2, entityOutput.Entries.Count );
 
-		AssertEntityOutputEntry( entityOutput.Entries[0], new( "some_entity", "Breakable.Break", 2.0f, "1" ) );
-		AssertEntityOutputEntry( entityOutput.Entries[1], new( "some_entity", "Breakable.Break", 3.0f, "" ) );
+		AssertEntityOutputEntry( entityOutput.Entries[0], new( "some_entity", "Breakable.Break", 2.0f, "abc", OutputFlags.None ) );
+		AssertEntityOutputEntry( entityOutput.Entries[1], new( "some_entity", "Breakable.Break", 3.0f, "", OutputFlags.FireOnce ) );
 
 		EntityWorld.Shutdown();
 	}
