@@ -26,6 +26,23 @@ namespace Elegy.MapCompiler.Data.Processing
 				.ToList();
 		}
 
+		public override string ToString()
+		{
+			string result = ClassName;
+
+			if ( Pairs.TryGetValue( "targetname", out string? entityName ) )
+			{
+				result += $" {entityName}";
+			}
+
+			if ( Centre != Vector3.Zero )
+			{
+				result += $" {Centre}";
+			}
+
+			return result;
+		}
+
 		public bool IsWorld()
 		{
 			return ClassName == "worldspawn";

@@ -94,7 +94,7 @@ namespace Elegy.MapCompiler.Processors
 
 			foreach ( var entity in Data.Entities )
 			{
-				GeoValidation.Vec3( entity.Centre, "Entity centre invalid" );
+				GeoValidation.Vec3( entity.Centre, $"{entity}: centre invalid" );
 
 				for ( int i = 0; i < 8; i++ )
 				{
