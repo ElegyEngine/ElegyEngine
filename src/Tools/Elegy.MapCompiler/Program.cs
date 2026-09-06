@@ -104,6 +104,9 @@ namespace Elegy.MapCompiler
 				//geometry.SmoothenNormals();
 				//geometry.GenerateDualGrid();
 
+				LogicProcessor logic = new( data, mParameters );
+				logic.TranslateQuakeTriggers();
+
 				TransmissionProcessor transmission = new( data, mParameters );
 				transmission.GenerateOutputData();
 				transmission.OptimiseRenderSurfaces();
