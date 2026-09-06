@@ -184,6 +184,53 @@
 //	
 //]
 
+@PointClass base( Name ) = func_printer
+[
+	Printer.Message(string) : "Message to print"
+
+	_emc_default_input(string) : "EMC default input" : "Printer.Print"
+]
+
+//---------------------------------------
+// IO utilities
+//---------------------------------------
+
+@PointClass base( Name ) = io_bundle
+[
+	target_0(target_destination) : "Target 0"
+	delay_0(string) : "Delay 0"
+	target_1(target_destination) : "Target 1"
+	delay_1(string) : "Delay 1"
+	target_2(target_destination) : "Target 2"
+	delay_2(string) : "Delay 2"
+	target_3(target_destination) : "Target 3"
+	delay_3(string) : "Delay 3"
+	target_4(target_destination) : "Target 4"
+	delay_4(string) : "Delay 4"
+	target_5(target_destination) : "Target 5"
+	delay_5(string) : "Delay 5"
+	target_6(target_destination) : "Target 6"
+	delay_6(string) : "Delay 6"
+	target_7(target_destination) : "Target 7"
+	delay_7(string) : "Delay 7"
+]
+
+@PointClass base( Name ) = io_printer
+[
+	target(target_destination) : "Target entity"
+	event(choices) : "Input" : "Print" =
+	[
+		"Print" : "Print"
+		"PrintWarning" : "Print warning"
+		"PrintError" : "Print error"
+	]
+
+	delay(string) : "Delay"
+	param(string) : "Parameter"
+
+	_emc_component(string) : "EMC component" : "Printer"
+]
+
 //---------------------------------------
 // Logic
 //---------------------------------------
@@ -206,14 +253,22 @@
 
 @BaseClass color( 255 160 64 ) = Trigger
 [
-	target(target_destination) : "Target" : "" : "Trigger target"
-	targetname(target_source) : "Name" : "" : "Name of this entity that others entities can refer to"
+	target_Trigger.OnEnter(target_destination)       : "OnEnter"       : "" : "What happens when an entity enters this trigger"
+	target_Trigger.OnClientEnter(target_destination) : "OnClientEnter" : "" : "What happens when a player enters this trigger"
+	target_Trigger.OnLeave(target_destination)       : "OnLeave"       : "" : "What happens when an entity leaves this trigger"
+	target_Trigger.OnClientLeave(target_destination) : "OnClientLeave" : "" : "What happens when a player leaves this trigger"
+
+	targetname(target_source) : "Name" : "" : "Name of this entity that other entities can refer to"
+	
+	// IO parsing is technically supported and displayed in the 'Broom but there is no IO editor
+	// This is also not supported by J.A.C.K. et al
+	//output Trigger.OnEnter(void)
 ]
 
-//@SolidClass base( Trigger ) = trigger_once
-//[
-//
-//]
+@SolidClass base( Trigger ) = trigger_once
+[
+
+]
 
 //@SolidClass base( Trigger ) = trigger_multiple
 //[
