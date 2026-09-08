@@ -17,7 +17,7 @@ namespace Game.Shared.Components
 		public bool Active { get; set; } = true;
 
 		[Property]
-		public EntityOutput OnPlayerSpawn { get; set; } = new();
+		public EntityOutput OnPlayerSpawn { get; set; }
 
 		[Event]
 		public void Spawn( Entity.SpawnEvent data )
