@@ -166,7 +166,7 @@ namespace Game.Shared
 						break;
 
 					case "targetname":
-						//RefOrCreate<Target>();
+						RefOrCreate<Name>();
 						break;
 
 					case "origin":

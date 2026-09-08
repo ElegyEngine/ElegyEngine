@@ -46,7 +46,7 @@ namespace Game.Server
 		private DeltaTimer mSnapshotTimer;
 		private DeltaTimer mUpdateTimer;
 		private Stopwatch mStopwatch;
-		private double CurrentSeconds => (double)mStopwatch.ElapsedTicks / Stopwatch.Frequency;
+		private double CurrentSeconds => mStopwatch.GetSecondsF64();
 
 		public void Update( float delta )
 		{
@@ -88,19 +88,25 @@ namespace Game.Server
 				// Finally, this query clears them all
 				double clearTransformsStart = CurrentSeconds;
 				EntityWorld.EcsWorld.Stream<Transform>().For( static ( ref Transform t ) => { t.TransformDirty = false; } );
+
+				double outputsStart = CurrentSeconds;
+				EntityWorld.ProcessAllOutputs();
 				double serverUpdateEnd = CurrentSeconds;
 
+				// TODO: Man, I need a nicer way of profiling these =w=
 				if ( DisplayTimings )
 				{
 					double physicsMs = (serverUpdateStart - physicsStart) * 1000.0;
 					double serverUpdateMs = (transformListenStart - serverUpdateStart) * 1000.0;
 					double transformListenMs = (clearTransformsStart - transformListenStart) * 1000.0;
-					double clearTransformsMs = (serverUpdateEnd - clearTransformsStart) * 1000.0;
+					double clearTransformsMs = (outputsStart - clearTransformsStart) * 1000.0;
+					double outputsMs = (serverUpdateEnd - outputsStart) * 1000.0;
 					mLogger.Log( "Perf stats:" );
 					mLogger.Log( $"Physics:         {physicsMs:F3} ms" );
 					mLogger.Log( $"ServerUpdate:    {serverUpdateMs:F3} ms" );
 					mLogger.Log( $"TransformListen: {transformListenMs:F3} ms" );
 					mLogger.Log( $"ClearTransform:  {clearTransformsMs:F3} ms" );
+					mLogger.Log( $"ProcessOutputs:  {outputsMs:F3} ms" );
 				}
 			} );
 

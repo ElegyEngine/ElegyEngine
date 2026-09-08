@@ -13,9 +13,6 @@ namespace Game.Shared
 		FireOnce = 1
 	}
 
-	// TODO: Separate EntityOutputEntry into a data representation in Elegy.Common (for parsing elsewhere)
-	//  and a runtime representation here. The runtime representation could utilise fixed-size strings
-	//  or string views for performance
 	public record struct EntityOutputEntry( string TargetEntity, string TargetInput, float FireDelay, string Parameter, OutputFlags Flags )
 	{
 		/// <summary>
@@ -100,12 +97,20 @@ namespace Game.Shared
 		{
 			foreach ( var entry in Entries.AsSpan() )
 			{
-				//EntityWorld.QueueNamedEvent( entry );
+				if ( HasFired && entry.Flags.HasFlag( OutputFlags.FireOnce ) )
+				{
+					continue;
+				}
+
+				EntityWorld.QueueOutput( Entity, entry );
 			}
+
+			HasFired = true;
 		}
 
 		public string Name { get; }
 		public Entity Entity { get; }
 		public List<EntityOutputEntry> Entries { get; set; } = new();
+		public bool HasFired { get; private set; }
 	}
 }
