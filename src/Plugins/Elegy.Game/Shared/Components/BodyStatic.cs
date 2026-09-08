@@ -49,7 +49,7 @@ namespace Game.Shared.Components
 		}
 
 		[GroupEvent]
-		public static void OnDebugDraw( Entity.DebugDrawEvent data, ref Body body )
+		public static void OnDebugDraw( Entity.DebugDrawEvent data, ref BodyStatic body )
 		{
 			Physics.DebugDrawBody( body.BodyObject );
 		}
