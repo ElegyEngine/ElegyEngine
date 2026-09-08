@@ -47,7 +47,5 @@ materials/tools/trigger
 		NoDraw
 		NoShadowCast
 		ForceNoLightmap
-		// How else would a trigger do its thing? AABB tests?!
-		NoCollision
 	}
 }
