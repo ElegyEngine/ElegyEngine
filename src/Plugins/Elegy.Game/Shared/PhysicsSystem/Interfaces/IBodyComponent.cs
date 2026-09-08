@@ -1,3 +1,6 @@
+using BepuPhysics;
+using BepuUtilities;
+
 namespace Game.Shared.PhysicsSystem.Interfaces
 {
 	public interface IBodyComponent
@@ -8,6 +11,30 @@ namespace Game.Shared.PhysicsSystem.Interfaces
 
 	public static class BodyComponentExtensions
 	{
+		public static void SetInertia( this IBodyComponent component, BodyInertia inertia )
+		{
+			if ( component.BodyObject.IsStatic )
+			{
+				return;
+			}
+
+			component.BodyObject.BodyReference.LocalInertia = inertia;
+		}
+
+		public static void MakeImmovable( this IBodyComponent component )
+		{
+			if ( component.BodyObject.IsStatic )
+			{
+				return;
+			}
+
+			component.BodyObject.BodyReference.LocalInertia = new()
+			{
+				InverseInertiaTensor = new(),
+				InverseMass = 0.0f
+			};
+		}
+
 		public static void SetOwner( this IBodyComponent component, Entity entity )
 		{
 			if ( component.BodyObject.IsStatic )
