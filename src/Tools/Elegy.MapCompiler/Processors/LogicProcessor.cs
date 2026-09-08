@@ -8,7 +8,7 @@ public static class EntityExtensions
 	public static string GetName( this Entity self )
 		=> self.Pairs.GetValueOrDefault( "targetname", string.Empty );
 
-	public static bool IsTargetKey( string key )
+	public static bool IsTargetKey( this string key )
 		// The compiler is not aware of the FGD nor the game DLL, so we just kinda hardcode this here
 		=> key == "target" || key.StartsWith( "target_" );
 
@@ -210,6 +210,15 @@ public class LogicProcessor
 		foreach ( var entity in Data.Entities )
 		{
 			entity.Pairs.Remove( "_emc_default_input" );
+
+			// The engine won't recognise keys starting with 'target_'
+			List<string> targetFields = entity.Pairs.Where( p => p.Key.IsTargetKey() ).Select( p => p.Key ).ToList();
+			foreach ( var field in targetFields )
+			{
+				string newKey = field.Replace( "target_", null );
+				entity.Pairs[newKey] = entity.Pairs[field];
+				entity.Pairs.Remove( field );
+			}
 		}
 
 		mLogger.Success( $"Processed {mNumCallers} triggers, {mNumTargets} targets and {mNumEvents} IO events!" );
