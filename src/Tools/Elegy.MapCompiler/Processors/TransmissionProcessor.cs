@@ -94,7 +94,7 @@ namespace Elegy.MapCompiler.Processors
 
 		private int GetOrCreateCollisionMesh( Entity entity )
 		{
-			// A brush entity (whether worlspawn, or func_wall or whatever) can
+			// A brush entity (whether worldspawn, or func_wall or whatever) can
 			// have multiple faces with different materials. Different materials may
 			// have different physical properties, so it's worth actually splitting them
 			// up into separate collision meshes.
