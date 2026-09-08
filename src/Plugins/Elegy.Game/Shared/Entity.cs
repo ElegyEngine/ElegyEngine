@@ -78,6 +78,9 @@ namespace Game.Shared
 		}
 	}
 
+	// TODO: We can get rid of Entity and just have fennecs.Entity. The only state
+	//  kept here (the ID) could be a component like EntitySlot or w/e.
+	//  Move most methods to fennecs.Entity extensions, some to EntityBuilder
 	public struct Entity
 	{
 		private static TaggedLogger mLogger = new( "Entity" );
@@ -152,6 +155,7 @@ namespace Game.Shared
 		public void Destroy()
 			=> EcsObjectRef.Despawn();
 
+		// TODO: Move to EntityBuilder
 		public void CreateComponentsFromKeyvalues( Dictionary<string, string> keys )
 		{
 			foreach ( var pair in keys )
@@ -196,12 +200,13 @@ namespace Game.Shared
 			}
 		}
 
+		// TODO: Move to EntityBuilder
 		public void LoadFromKeyvalues( Dictionary<string, string> keys )
 		{
 			foreach ( var pair in keys )
 			{
-				// We must handle a few special cases here
-				// TODO: target*, angle, angles etc.
+				// We must handle a few special cases here, like model and cmodel
+				// TODO: angles etc.
 				switch ( pair.Key )
 				{
 					case "targetname":
