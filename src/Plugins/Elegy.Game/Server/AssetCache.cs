@@ -28,35 +28,23 @@ namespace Game.Server
 		public static Dictionary<string, int> OtherFileRefs { get; } = new();
 
 		private static Model CreateBrushModel( int meshId )
-		{
-			Mesh RenderSurfaceToMesh( RenderSurface surface )
-				=> new()
-				{
-					Indices = surface.Indices.Select( i => (uint)i ).ToArray(),
-					Positions = surface.Positions.ToArray(),
-					Normals = surface.Normals.ToArray(),
-					Uv0 = surface.Uvs.ToArray(),
-					Uv1 = surface.LightmapUvs.ToArray(),
-					Color0 = surface.Colours.Select( v => (Vector4B)v ).ToArray(),
-					MaterialName = surface.Material
-				};
-
-			Model result = new();
-
-			result.Name = $"*{meshId}";
-			foreach ( var renderSurface in MapDocument.RenderMeshes[meshId].Surfaces )
+			=> new()
 			{
-				result.Meshes.Add( RenderSurfaceToMesh( renderSurface ) );
-			}
-
-			return result;
-		}
+				Name = $"*{meshId}",
+				Meshes = MapDocument.RenderMeshes[meshId].ToMeshes()
+			};
 
 		private static Model? LoadModelInternal( string name )
 		{
 			if ( name.StartsWith( '*' ) )
 			{
 				int meshId = Parse.Int( name[1..] );
+				if ( meshId < 0 || meshId >= MapDocument.RenderMeshes.Count )
+				{
+					mLogger.Error( $"Invalid brush model '{name}'" );
+					return null;
+				}
+
 				return CreateBrushModel( meshId );
 			}
 
