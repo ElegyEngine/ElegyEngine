@@ -118,7 +118,7 @@
     {
       "properties": {
         "Optimise": {
-          "description": "Optimise profile - Default is 'EngineAndDeps' (local) or 'All' (CI)",
+          "description": "Optimisation profile - Default is 'EngineAndDeps' (local) or 'All' (CI)",
           "$ref": "#/definitions/OptimisationProfile"
         },
         "Solution": {

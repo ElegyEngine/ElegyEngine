@@ -32,7 +32,7 @@ class Build : NukeBuild
 {
 	public static int Main() => Execute<Build>( x => x.Instructions );
 
-	[Parameter( "Optimise profile - Default is 'EngineAndDeps' (local) or 'All' (CI)" )]
+	[Parameter( "Optimisation profile - Default is 'EngineAndDeps' (local) or 'All' (CI)" )]
 	readonly OptimisationProfile Optimise = IsLocalBuild ? OptimisationProfile.EngineAndDeps : OptimisationProfile.All;
 
 	Configuration EngineConfiguration => Optimise < OptimisationProfile.Engine ? Configuration.Debug : Configuration.Release;
