@@ -68,19 +68,34 @@ namespace Game.Server
 			MapDocument = mapDocument;
 		}
 
-		public static Model? LoadModel( string name )
+		public static Model? LoadModel( string name, bool incrementLinks = false )
 		{
-			if ( Registry.Models.TryGetValue( name, out Model? model ) )
+			if ( !Registry.Models.TryGetValue( name, out Model? model ) )
 			{
-				if ( model is not null )
-				{
-					return model;
-				}
+				model = LoadModelInternal( name );
+				Registry.Models[name] = model;
 			}
 
-			model = LoadModelInternal( name );
-			Registry.Models[name] = model;
+			if ( incrementLinks )
+			{
+				LinkModel( name );
+			}
+
 			return model;
+		}
+
+		public static Model? LoadCollisionModel( int id )
+		{
+			if ( id < 0 || id >= MapDocument.CollisionMeshes.Count )
+			{
+				return null;
+			}
+
+			return new()
+			{
+				Name = $"*c{id}",
+				Meshes = MapDocument.CollisionMeshes[id].ToMeshes()
+			};
 		}
 
 		public static void LinkModel( string name )

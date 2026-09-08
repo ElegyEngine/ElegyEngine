@@ -213,21 +213,22 @@ namespace Game.Shared
 						break;
 
 					case "model":
-						Ref<StaticModel>().Model = new( pair.Value );
+						Ref<StaticModel>().Model = ModelProperty.BrushVisual( int.Parse( pair.Value[1..] ) );
 						break;
 
 					case "cmodel":
+						int meshId = int.Parse( pair.Value[1..] );
 						if ( Has<Body>() )
 						{
-							Ref<Body>().CollisionModel = new( pair.Value );
+							Ref<Body>().CollisionModel = ModelProperty.BrushCollision( meshId );
 						}
 						else if ( Has<BodyStatic>() )
 						{
-							Ref<BodyStatic>().CollisionModel = new( pair.Value );
+							Ref<BodyStatic>().CollisionModel = ModelProperty.BrushCollision( meshId );
 						}
 						else if ( Has<BodyKinematic>() )
 						{
-							Ref<BodyKinematic>().CollisionModel = new( pair.Value );
+							Ref<BodyKinematic>().CollisionModel = ModelProperty.BrushCollision( meshId );
 						}
 						break;
 
