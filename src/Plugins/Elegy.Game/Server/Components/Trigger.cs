@@ -22,7 +22,7 @@ namespace Game.Server.Components
 			// This is done in PostSpawn to make sure it happens *after*
 			// BodyKinematic has finished setting itself up
 			ref var body = ref data.Self.Ref<BodyKinematic>();
-
+			body.MakeImmovable();
 			body.SetLayer( CollisionLayer.Trigger );
 		}
 
@@ -31,7 +31,6 @@ namespace Game.Server.Components
 		{
 			mLogger.Success( $"Touched by entity {data.Other.Id}" );
 
-			// TODO: map logic, triggering...
 			if ( data.Other.Has<Player>() )
 			{
 				OnPlayerEnter.Fire();
@@ -40,10 +39,29 @@ namespace Game.Server.Components
 			OnEnter.Fire();
 		}
 
+		[Event]
+		public void TouchEnded( Entity.TouchEndEvent data )
+		{
+			mLogger.Success( $"Touch with entity {data.Other.Id} ended" );
+
+			if ( data.Other.Has<Player>() )
+			{
+				OnPlayerLeave.Fire();
+			}
+
+			OnLeave.Fire();
+		}
+
 		[Property]
 		public EntityOutput OnPlayerEnter { get; set; }
 
 		[Property]
 		public EntityOutput OnEnter { get; set; }
+
+		[Property]
+		public EntityOutput OnPlayerLeave { get; set; }
+
+		[Property]
+		public EntityOutput OnLeave { get; set; }
 	}
 }
