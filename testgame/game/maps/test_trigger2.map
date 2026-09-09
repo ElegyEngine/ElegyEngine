@@ -1,0 +1,54 @@
+// Game: Elegy Engine
+// Format: Quake3 (Valve)
+// entity 0
+{
+"mapversion" "220"
+"classname" "worldspawn"
+"Worldspawn.Name" "Unnamed level"
+// brush 0
+{
+( -128 -64 -128 ) ( -128 -63 -128 ) ( -128 -64 -127 ) dev/256floor [ 0 -1 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( -64 -128 -128 ) ( -64 -128 -127 ) ( -63 -128 -128 ) dev/256floor [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( -64 -64 -144 ) ( -63 -64 -144 ) ( -64 -63 -144 ) dev/256floor [ -1 0 0 0 ] [ 0 -1 0 0 ] 270 1 1
+( 64 64 -112 ) ( 64 65 -112 ) ( 65 64 -112 ) dev/256floor [ 1 0 0 0 ] [ 0 -1 0 0 ] 270 1 1
+( 64 128 -96 ) ( 65 128 -96 ) ( 64 128 -95 ) dev/256floor [ -1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( 128 64 -96 ) ( 128 64 -95 ) ( 128 65 -96 ) dev/256floor [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
+}
+}
+// entity 1
+{
+"classname" "info_player_start"
+"SpawnPoint.Active" "1"
+"origin" "-8 8 32"
+}
+// entity 2
+{
+"classname" "trigger_once"
+"target_Trigger.OnEnter" "printer_enter"
+"target_Trigger.OnLeave" "printer_exit"
+// brush 0
+{
+( -64 -64 -80 ) ( -64 -63 -80 ) ( -64 -64 -79 ) tools/trigger [ 0 -1 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( -64 -64 -80 ) ( -64 -64 -79 ) ( -63 -64 -80 ) tools/trigger [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( -64 -64 -80 ) ( -63 -64 -80 ) ( -64 -63 -80 ) tools/trigger [ -1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( 64 64 -64 ) ( 64 65 -64 ) ( 65 64 -64 ) tools/trigger [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( 64 64 -64 ) ( 65 64 -64 ) ( 64 64 -63 ) tools/trigger [ -1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( 64 64 -64 ) ( 64 64 -63 ) ( 64 65 -64 ) tools/trigger [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
+}
+}
+// entity 3
+{
+"classname" "func_printer"
+"_emc_default_input" "Printer.Print"
+"origin" "104 -40 -56"
+"targetname" "printer_enter"
+"Printer.Message" "Message: player has entered"
+}
+// entity 4
+{
+"classname" "func_printer"
+"_emc_default_input" "Printer.Print"
+"origin" "104 24 -56"
+"targetname" "printer_exit"
+"Printer.Message" "Message: player has left"
+}
