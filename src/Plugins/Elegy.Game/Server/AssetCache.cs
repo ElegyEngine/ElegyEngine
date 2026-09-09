@@ -3,11 +3,7 @@
 
 using Elegy.AssetSystem.API;
 using Elegy.Common.Assets;
-using Elegy.Common.Assets.ElegyMapData;
-using Elegy.Common.Assets.MeshData;
-using Elegy.Common.Maths;
 using Elegy.Common.Utilities;
-using Elegy.LogSystem;
 using Game.Shared;
 
 namespace Game.Server

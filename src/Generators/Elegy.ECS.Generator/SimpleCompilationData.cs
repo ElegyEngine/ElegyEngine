@@ -44,7 +44,7 @@ namespace Elegy.ECS.Generator
 				{
 					return true;
 				}
-				
+
 				if ( partial && attribute.Contains( name ) )
 				{
 					return true;
