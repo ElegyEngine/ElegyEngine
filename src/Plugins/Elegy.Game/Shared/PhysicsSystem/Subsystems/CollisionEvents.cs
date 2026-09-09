@@ -395,7 +395,7 @@ namespace Game.Shared.PhysicsSystem.Subsystems
 				? PendingCollisionEventType.Touching
 				: PendingCollisionEventType.StartedTouching;
 
-			mLogger.Log( $"Collision! Sender/receiver/type: {senderBodyId}/{receiver.BodyHandle.Value}/{collisionType}" );
+			mLogger.Verbose( $"Collision! Sender/receiver/type: {senderBodyId}/{receiver.BodyHandle.Value}/{collisionType}" );
 
 			contactCache.PendingCollisions.Add( new()
 			{
