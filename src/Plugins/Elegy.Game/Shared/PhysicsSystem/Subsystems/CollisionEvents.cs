@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 Elegy Engine contributors
+// SPDX-License-Identifier: MIT
+
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using BepuPhysics;

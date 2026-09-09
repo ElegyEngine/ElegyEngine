@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 using Game.Session;
-using Game.Shared;
 using System.Net;
 using Game.Shared.Input;
 

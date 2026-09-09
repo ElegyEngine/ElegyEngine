@@ -1,7 +1,6 @@
 ﻿// SPDX-FileCopyrightText: 2022-present Elegy Engine contributors
 // SPDX-License-Identifier: MIT
 
-using Elegy.LogSystem;
 using Game.Shared;
 using System.Net;
 using Elegy.Common.Utilities;

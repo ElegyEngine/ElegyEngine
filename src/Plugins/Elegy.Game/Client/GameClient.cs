@@ -2,14 +2,11 @@
 // SPDX-License-Identifier: MIT
 
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using Elegy.Common.Maths;
 using Elegy.Common.Utilities;
-using Elegy.LogSystem;
 using Elegy.InputSystem.API;
 using Elegy.RenderSystem.API;
 using Elegy.RenderSystem.Objects;
-using Game.Shared;
 using Game.Shared.Input;
 using Game.Shared.Input.Actions;
 using Silk.NET.Input;

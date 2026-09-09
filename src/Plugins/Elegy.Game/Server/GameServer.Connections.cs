@@ -3,7 +3,6 @@
 
 using Game.Server.Bridges;
 using Game.Session;
-using Game.Shared;
 using System.Net;
 
 namespace Game.Server

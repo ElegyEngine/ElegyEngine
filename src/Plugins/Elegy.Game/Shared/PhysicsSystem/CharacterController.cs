@@ -1,4 +1,6 @@
-﻿
+﻿// SPDX-FileCopyrightText: 2026 Elegy Engine contributors
+// SPDX-License-Identifier: MIT
+
 using BepuPhysics;
 using BepuPhysics.Collidables;
 

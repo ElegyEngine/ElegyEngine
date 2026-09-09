@@ -1,4 +1,7 @@
-﻿using System.Runtime.CompilerServices;
+﻿// SPDX-FileCopyrightText: 2026 Elegy Engine contributors
+// SPDX-License-Identifier: MIT
+
+using System.Runtime.CompilerServices;
 using BepuPhysics;
 using BepuPhysics.Constraints;
 using BepuUtilities;
