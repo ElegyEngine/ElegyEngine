@@ -17,7 +17,7 @@ namespace Game.Server.Components
 		private static TaggedLogger mLogger = new( "Trigger" );
 
 		[Event]
-		public void OnPostSpawn( Entity.PostSpawnEvent data )
+		public void OnPostSpawn( PostSpawnEvent data )
 		{
 			// This is done in PostSpawn to make sure it happens *after*
 			// BodyKinematic has finished setting itself up
@@ -27,9 +27,9 @@ namespace Game.Server.Components
 		}
 
 		[Event]
-		public void Touch( Entity.TouchEvent data )
+		public void Touch( TouchEvent data )
 		{
-			mLogger.Success( $"Touched by entity {data.Other.Id}" );
+			mLogger.Success( $"Touched by entity {data.Other.Ref<EntitySlot>().Id}" );
 
 			if ( data.Other.Has<Player>() )
 			{
@@ -40,9 +40,9 @@ namespace Game.Server.Components
 		}
 
 		[Event]
-		public void TouchEnded( Entity.TouchEndEvent data )
+		public void TouchEnded( TouchEndEvent data )
 		{
-			mLogger.Success( $"Touch with entity {data.Other.Id} ended" );
+			mLogger.Success( $"Touch with entity {data.Other.Ref<EntitySlot>().Id} ended" );
 
 			if ( data.Other.Has<Player>() )
 			{

@@ -79,11 +79,11 @@ namespace Game.Server
 				Physics.UpdateSimulation( updateDelta );
 
 				double serverUpdateStart = CurrentSeconds;
-				EntityWorld.Dispatch( new Entity.ServerUpdateEvent( this, updateDelta ) );
+				EntityWorld.Dispatch( new ServerUpdateEvent( this, updateDelta ) );
 
 				// This one will listen to the changed transforms
 				double transformListenStart = CurrentSeconds;
-				EntityWorld.Dispatch( new Entity.ServerTransformListenEvent( this, updateDelta ) );
+				EntityWorld.Dispatch( new ServerTransformListenEvent( this, updateDelta ) );
 
 				// Finally, this query clears them all
 				double clearTransformsStart = CurrentSeconds;
@@ -128,7 +128,7 @@ namespace Game.Server
 			AssetCache.InitLevel( level );
 
 			// Step 1: Create entities
-			Entity.OnMapLoadEvent mapLoadEvent = new( level );
+			OnMapLoadEvent mapLoadEvent = new( level );
 			foreach ( var entityEntry in level.Entities )
 			{
 				EntityWorld.CreateEntity()
@@ -141,7 +141,7 @@ namespace Game.Server
 
 			// Step 2: Now that everybody has spawned, do another
 			// run, e.g. accumulating spawnPointEntity links etc.
-			EntityWorld.ForEachEntity( static entity => { entity.Dispatch<Entity.PostSpawnEvent>( new( entity ) ); } );
+			EntityWorld.ForEachEntity( static entity => { entity.Dispatch<PostSpawnEvent>( new( entity ) ); } );
 
 			// Just to kick things off a little bit
 			Physics.UpdateSimulation( 0.01f );
@@ -153,7 +153,7 @@ namespace Game.Server
 		{
 			mLogger.Log( $"Spawning client {clientId}, address '{Connections[clientId].Address}'" );
 
-			Entity playerEntity = EntityWorld
+			ref Entity playerEntity = ref EntityWorld
 				.CreateEntity()
 				.With<Player>()
 				.BuildArchetypes()
@@ -161,7 +161,7 @@ namespace Game.Server
 
 			SelectSpawnPoint( playerEntity );
 
-			return playerEntity.Id;
+			return playerEntity.Ref<EntitySlot>().Id;
 		}
 
 		private void SelectSpawnPoint( Entity player )

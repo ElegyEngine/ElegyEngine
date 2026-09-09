@@ -20,10 +20,10 @@ namespace Game.Shared.Components
 		public EntityOutput OnPlayerSpawn { get; set; }
 
 		[Event]
-		public void Spawn( Entity.SpawnEvent data )
+		public void Spawn( SpawnEvent data )
 		{
 			// Bookkeep entity IDs for the spawn system
-			SpawnPointIds.Add( data.Self.Id );
+			SpawnPointIds.Add( data.Self.Ref<EntitySlot>().Id );
 		}
 
 		[Input]

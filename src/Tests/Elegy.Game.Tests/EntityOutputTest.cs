@@ -22,7 +22,7 @@ public static class EntityOutputTest
 
 		var entity = EntityWorld.CreateEntity().FinishSpawning();
 
-		EntityOutput entityOutput = EntityOutput.ParseEntityProperty( ref entity.EcsObjectRef, "Component.Output",
+		EntityOutput entityOutput = EntityOutput.ParseEntityProperty( ref entity, "Component.Output",
 			"some_entity,Breakable.Break,,3,;" +
 			// This one starts earlier, so they should be sorted in reverse order
 			"some_entity,Breakable.Break,abc,2,0"

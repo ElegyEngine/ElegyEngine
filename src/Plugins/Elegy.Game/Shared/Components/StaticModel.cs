@@ -4,7 +4,6 @@
 using Elegy.Common.Assets;
 using Elegy.Common.Maths;
 using Elegy.Common.Utilities;
-using Elegy.LogSystem;
 using Elegy.ECS;
 using Elegy.RenderSystem.API;
 using Elegy.RenderSystem.Objects;
@@ -26,7 +25,7 @@ namespace Game.Shared.Components
 		[Property] public ModelProperty Model { get; set; }
 
 		[Event]
-		public void ClientSpawn( Entity.ClientSpawnEvent data )
+		public void ClientSpawn( ClientSpawnEvent data )
 		{
 			if ( Model.Data is null )
 			{
@@ -38,7 +37,7 @@ namespace Game.Shared.Components
 		}
 
 		[GroupEvent]
-		public static void ClientUpdate( Entity.ClientUpdateEvent data, ref StaticModel model, ref Transform transform )
+		public static void ClientUpdate( ClientUpdateEvent data, ref StaticModel model, ref Transform transform )
 		{
 			if ( !transform.TransformDirty )
 			{
@@ -49,7 +48,7 @@ namespace Game.Shared.Components
 		}
 
 		[GroupEvent]
-		public static void OnDebugDraw( Entity.DebugDrawEvent data, ref StaticModel model, ref Transform transform )
+		public static void OnDebugDraw( DebugDrawEvent data, ref StaticModel model, ref Transform transform )
 		{
 			Vector3 start = transform.Position;
 			Vector3 up = start + Coords.Up * 0.33f;

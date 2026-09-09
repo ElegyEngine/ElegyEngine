@@ -19,19 +19,19 @@ namespace Game.Shared.Components
 		public IClientController Controller { get; set; } = new StandardPlayerController();
 
 		[Event]
-		public void Spawn( Entity.SpawnEvent data )
+		public void Spawn( SpawnEvent data )
 		{
 			// Notify entities that a player has spawned
 			EntityWorld.Dispatch<PlayerSpawnedEvent>( new( this ) );
 
 			// Set up the controller so that it can
 			// collide against the world and so on
-			Controller.Setup( data.Self.Id );
+			Controller.Setup( data.Self.Ref<EntitySlot>().Id );
 		}
 
 		// Updates all players on the server
 		[GroupEvent]
-		public static void ServerUpdate( Entity.ServerUpdateEvent data, ref Player player )
+		public static void ServerUpdate( ServerUpdateEvent data, ref Player player )
 		{
 			if ( player.IsLocal )
 			{
@@ -43,7 +43,7 @@ namespace Game.Shared.Components
 		}
 
 		[Event]
-		public void OnClientPossess( Entity.ClientPossessedEvent data )
+		public void OnClientPossess( ClientPossessedEvent data )
 		{
 			IsLocal = true;
 		}

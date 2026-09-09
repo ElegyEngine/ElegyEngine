@@ -19,7 +19,7 @@ namespace Game.Shared.Input
 		public void Setup( int entityId )
 		{
 			// TODO: nicer API for getting the entity..
-			ref var transform = ref EntityWorld.GetEntityRef( entityId ).Ref<Transform>();
+			ref var transform = ref EntityWorld.GetEntity( entityId ).Ref<Transform>();
 			transform.Position += Coords.Up * 10.0f; // Spawn a little off the floor
 
 			Shape = Physics.CreateShape( new BepuPhysics.Collidables.Cylinder( 0.35f, 1.8f ), 1.0f );

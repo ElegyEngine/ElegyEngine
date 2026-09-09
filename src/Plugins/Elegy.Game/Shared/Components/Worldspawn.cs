@@ -25,13 +25,13 @@ namespace Game.Shared.Components
 		[Property] public string Name { get; set; }
 
 		[Event]
-		public void OnMapLoad( Entity.OnMapLoadEvent data )
+		public void OnMapLoad( OnMapLoadEvent data )
 		{
 			mLogger.Log( "OnMapLoad" );
 		}
 
 		[Event]
-		public void OnClientSpawn( Entity.ClientSpawnEvent data )
+		public void OnClientSpawn( ClientSpawnEvent data )
 		{
 			mLogger.Log( "OnClientSpawn" );
 		}

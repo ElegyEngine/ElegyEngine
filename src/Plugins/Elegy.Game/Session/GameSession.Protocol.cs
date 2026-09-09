@@ -23,7 +23,7 @@ namespace Game.Session
 			{
 				PlayerController.Setup( entityId );
 			}
-			ClientEntity.Dispatch<Entity.ClientPossessedEvent>( new( ClientEntity ) );
+			ClientEntity.Dispatch<ClientPossessedEvent>( new( ClientEntity ) );
 
 			Bridge.SendSpawnComplete();
 		}

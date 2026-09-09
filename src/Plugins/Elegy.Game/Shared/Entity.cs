@@ -2,183 +2,70 @@
 // SPDX-License-Identifier: MIT
 
 using Elegy.Common.Utilities;
-using Elegy.LogSystem;
 using Elegy.ECS;
 using Game.Client;
 using Game.Server;
 using Game.Shared.Components;
 using System.Runtime.CompilerServices;
 using Elegy.Common.Assets;
-using Game.Session;
-using EcsEntity = fennecs.Entity;
 
 namespace Game.Shared
 {
-	public struct EntityHandle
+	public readonly struct EntityHandle
 	{
 		public int EntityId { get; }
 
 		public EntityHandle( Entity entity )
 		{
-			EntityId = entity.Id;
+			EntityId = entity.Ref<EntitySlot>().Id;
 		}
 
 		public ref Entity Entity
 			=> ref EntityWorld.Entities[EntityId];
 
-		public bool Alive
-			=> EntityWorld.Entities[EntityId].Alive;
+		public bool Alive => Entity.Alive;
 	}
 
-	public ref struct EntityBuilder
+	public readonly ref struct EntityBuilder
 	{
-		private int mId;
+		private static TaggedLogger mLogger = new( "EntityBuilder" );
+
+		// While spawning, an ECS entity will change its generation, archetype etc.
+		// and it's all part of a 64-bit signature. Storing an ID & pulling from that
+		// means we're getting the latest iteration of that signature, i.e. entity
+		private ref Entity Entity => ref EntityWorld.GetEntity( mId );
+		private readonly int mId;
 
 		public EntityBuilder( ref Entity entity )
 		{
-			mId = entity.Id;
+			mId = entity.Ref<EntitySlot>().Id;
 		}
 
 		public EntityBuilder PrepareForKeyvalues( Dictionary<string, string> properties )
 		{
-			EntityWorld.GetEntityRef( mId ).CreateComponentsFromKeyvalues( properties );
-			return this;
-		}
+			ref var entity = ref Entity;
 
-		public EntityBuilder LoadKeyvalues( Dictionary<string, string> properties )
-		{
-			EntityWorld.GetEntityRef( mId ).LoadFromKeyvalues( properties );
-			return this;
-		}
-
-		public EntityBuilder With<T>() where T : notnull, new()
-		{
-			EntityWorld.GetEntityRef( mId ).RefOrCreate<T>();
-			return this;
-		}
-
-		public EntityBuilder BuildArchetypes()
-		{
-			EntityUtilities.FinishSpawningEntity( ref EntityWorld.GetEntityRef( mId ) );
-			return this;
-		}
-
-		public EntityBuilder Dispatch<T>( T data ) where T : notnull
-		{
-			EntityWorld.GetEntityRef( mId ).Dispatch( data );
-			return this;
-		}
-
-		public ref Entity FinishSpawning()
-		{
-			EntityWorld.FinishSpawning( mId );
-			// Can't really return mEntity directly here, because there's now
-			// two different copies of it, so we return the newer one
-			return ref EntityWorld.GetEntityRef( mId );
-		}
-	}
-
-	// TODO: We can get rid of Entity and just have fennecs.Entity. The only state
-	//  kept here (the ID) could be a component like EntitySlot or w/e.
-	//  Move most methods to fennecs.Entity extensions, some to EntityBuilder
-	public struct Entity
-	{
-		private static TaggedLogger mLogger = new( "Entity" );
-
-		#region Events
-
-		[EventModel]
-		public record struct TouchEvent( Entity Self, Entity Other );
-
-		[EventModel]
-		public record struct TouchHoldEvent( Entity Self, Entity Other );
-
-		[EventModel]
-		public record struct TouchEndEvent( Entity Self, Entity Other );
-
-		[EventModel]
-		public record struct ClientPossessedEvent( Entity Self );
-
-		[EventModel]
-		public record struct DebugDrawEvent;
-
-		[EventModel]
-		public record struct SpawnEvent( Entity Self );
-
-		[EventModel]
-		public record struct ClientSpawnEvent( Entity Self );
-
-		[EventModel]
-		public record struct PostSpawnEvent( Entity Self );
-
-		[EventModel]
-		public record struct DespawnEvent( Entity Self );
-
-		[EventModel]
-		public record struct ClientDespawnEvent( Entity Self );
-
-		[EventModel]
-		public record struct ClientUpdateEvent( Entity Self, GameClient Client, float Delta );
-
-		[EventModel]
-		public record struct ServerUpdateEvent( GameServer Server, float Delta );
-
-		[EventModel]
-		public record struct ServerTransformListenEvent( GameServer Server, float Delta );
-
-		[EventModel]
-		public record struct OnMapLoadEvent( ElegyMapDocument MapDocument );
-
-		#endregion
-
-		public int Id { get; }
-		public EcsEntity EcsObject => EntityWorld.GetEcsObject( Id );
-		public ref EcsEntity EcsObjectRef => ref EntityWorld.GetEcsObjectRef( Id );
-		public Archetype Archetype => EcsObject.Ref<Archetype>();
-		public bool Alive => EcsObject.Alive;
-
-		public Entity( int id )
-		{
-			Id = id;
-			EcsObjectRef.Add( this );
-		}
-
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public void PreDestroyServer()
-			=> Dispatch( new DespawnEvent( this ) );
-
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public void PreDestroyClient()
-			=> Dispatch( new ClientDespawnEvent( this ) );
-
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public void Destroy()
-			=> EcsObjectRef.Despawn();
-
-		// TODO: Move to EntityBuilder
-		public void CreateComponentsFromKeyvalues( Dictionary<string, string> keys )
-		{
-			foreach ( var pair in keys )
+			foreach ( var pair in properties )
 			{
 				switch ( pair.Key )
 				{
 					case "classname":
 						if ( pair.Value == "worldspawn" )
 						{
-							RefOrCreate<Worldspawn>();
+							entity.RefOrCreate<Worldspawn>();
 						}
 						break;
 
 					case "targetname":
-						RefOrCreate<Name>();
+						entity.RefOrCreate<Name>();
 						break;
 
 					case "origin":
-						RefOrCreate<Transform>();
+						entity.RefOrCreate<Transform>();
 						break;
 
 					case "model":
-						RefOrCreate<StaticModel>();
+						entity.RefOrCreate<StaticModel>();
 						break;
 
 					case "cmodel":
@@ -190,7 +77,7 @@ namespace Game.Shared
 						break;
 
 					default:
-						if ( !EntityUtilities.PrepareComponentForKeyvalue( ref EcsObjectRef, pair.Key ) )
+						if ( !EntityUtilities.PrepareComponentForKeyvalue( ref entity, pair.Key ) )
 						{
 							mLogger.Warning( $"Unknown keyvalue '{pair.Key}'!" );
 						}
@@ -198,71 +85,96 @@ namespace Game.Shared
 						break;
 				}
 			}
+
+			return this;
 		}
 
-		// TODO: Move to EntityBuilder
-		public void LoadFromKeyvalues( Dictionary<string, string> keys )
+		public EntityBuilder LoadKeyvalues( Dictionary<string, string> properties )
 		{
-			foreach ( var pair in keys )
+			ref var entity = ref Entity;
+
+			foreach ( var pair in properties )
 			{
 				// We must handle a few special cases here, like model and cmodel
 				// TODO: angles etc.
 				switch ( pair.Key )
 				{
 					case "targetname":
-						Ref<Name>().Targetname = pair.Value;
+						entity.Ref<Name>().Targetname = pair.Value;
 						break;
 
 					case "origin":
-						Ref<Transform>().Position = Parse.Vector3( pair.Value );
+						entity.Ref<Transform>().Position = Parse.Vector3( pair.Value );
 						break;
 
 					case "model":
-						Ref<StaticModel>().Model = ModelProperty.BrushVisual( int.Parse( pair.Value[1..] ) );
+						entity.Ref<StaticModel>().Model = ModelProperty.BrushVisual( int.Parse( pair.Value[1..] ) );
 						break;
 
 					case "cmodel":
 						int meshId = int.Parse( pair.Value[1..] );
-						if ( Has<Body>() )
+						if ( entity.Has<Body>() )
 						{
-							Ref<Body>().CollisionModel = ModelProperty.BrushCollision( meshId );
+							entity.Ref<Body>().CollisionModel = ModelProperty.BrushCollision( meshId );
 						}
-						else if ( Has<BodyStatic>() )
+						else if ( entity.Has<BodyStatic>() )
 						{
-							Ref<BodyStatic>().CollisionModel = ModelProperty.BrushCollision( meshId );
+							entity.Ref<BodyStatic>().CollisionModel = ModelProperty.BrushCollision( meshId );
 						}
-						else if ( Has<BodyKinematic>() )
+						else if ( entity.Has<BodyKinematic>() )
 						{
-							Ref<BodyKinematic>().CollisionModel = ModelProperty.BrushCollision( meshId );
+							entity.Ref<BodyKinematic>().CollisionModel = ModelProperty.BrushCollision( meshId );
 						}
 						break;
 
 					default:
-						EntityUtilities.ParseComponentKeyvalue( ref EcsObjectRef, pair.Key, pair.Value );
+						EntityUtilities.ParseComponentKeyvalue( ref entity, pair.Key, pair.Value );
 						break;
 				}
 			}
+
+			return this;
 		}
 
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public ref T RefOrCreate<T>() where T : notnull, new()
-			=> ref EntityUtilities.CreateOrRef<T>( ref EcsObjectRef );
-
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public bool Has<T>() where T : notnull
-			=> EcsObjectRef.Has<T>();
-
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public ref T Ref<T>()
-			=> ref EcsObjectRef.Ref<T>();
-
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public bool Dispatch<T>( T param ) where T : notnull
-			=> EntityUtilities.DispatchEvent<T>( EcsObject, param );
-
-		public bool DispatchNamed( ReadOnlySpan<char> name )
+		public EntityBuilder With<T>() where T : notnull, new()
 		{
-			if ( !EntityUtilities.DispatchNamedEvent( EcsObject, name ) )
+			Entity.RefOrCreate<T>();
+			return this;
+		}
+
+		public EntityBuilder BuildArchetypes()
+		{
+			EntityUtilities.FinishSpawningEntity( ref EntityWorld.GetEntity( mId ) );
+			return this;
+		}
+
+		public EntityBuilder Dispatch<T>( T data ) where T : notnull
+		{
+			Entity.Dispatch( data );
+			return this;
+		}
+
+		public ref Entity FinishSpawning()
+		{
+			EntityWorld.FinishSpawning( mId );
+			return ref Entity;
+		}
+	}
+
+	public static class EntityExtensions
+	{
+		private static TaggedLogger mLogger = new( "Entity" );
+
+		public static Archetype GetArchetype( this Entity self )
+			=> self.Ref<Archetype>();
+
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static bool Dispatch<T>( this Entity self, T param ) where T : notnull
+			=> EntityUtilities.DispatchEvent( self, param );
+ 
+		public static bool DispatchNamed( this Entity self, ReadOnlySpan<char> name )
+		{
+			if ( !EntityUtilities.DispatchNamedEvent( self, name ) )
 			{
 				mLogger.Warning( $"Invalid input: '{name}'" );
 				return false;
@@ -270,5 +182,60 @@ namespace Game.Shared
 
 			return true;
 		}
+
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static ref T RefOrCreate<T>( this ref Entity self ) where T : notnull, new()
+			=> ref EntityUtilities.CreateOrRef<T>( ref self );
+	}
+
+	#region Events
+
+	[EventModel]
+	public record struct TouchEvent( Entity Self, Entity Other );
+
+	[EventModel]
+	public record struct TouchHoldEvent( Entity Self, Entity Other );
+
+	[EventModel]
+	public record struct TouchEndEvent( Entity Self, Entity Other );
+
+	[EventModel]
+	public record struct ClientPossessedEvent( Entity Self );
+
+	[EventModel]
+	public record struct DebugDrawEvent;
+
+	[EventModel]
+	public record struct SpawnEvent( Entity Self );
+
+	[EventModel]
+	public record struct ClientSpawnEvent( Entity Self );
+
+	[EventModel]
+	public record struct PostSpawnEvent( Entity Self );
+
+	[EventModel]
+	public record struct DespawnEvent( Entity Self );
+
+	[EventModel]
+	public record struct ClientDespawnEvent( Entity Self );
+
+	[EventModel]
+	public record struct ClientUpdateEvent( Entity Self, GameClient Client, float Delta );
+
+	[EventModel]
+	public record struct ServerUpdateEvent( GameServer Server, float Delta );
+
+	[EventModel]
+	public record struct ServerTransformListenEvent( GameServer Server, float Delta );
+
+	[EventModel]
+	public record struct OnMapLoadEvent( ElegyMapDocument MapDocument );
+
+	#endregion
+
+	public readonly struct EntitySlot
+	{
+		public required int Id { get; init; }
 	}
 }

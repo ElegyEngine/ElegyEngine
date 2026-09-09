@@ -6,3 +6,4 @@ global using Elegy.Common.Extensions;
 global using System.Numerics;
 
 global using Console = Elegy.LogSystem.API.Log;
+global using Entity = fennecs.Entity;

@@ -140,8 +140,8 @@ namespace Game
 				return false;
 			}
 
-			EntityWorld.OnSpawned += static entity => entity.Dispatch( new Entity.ClientSpawnEvent( entity ) );
-			EntityWorld.OnPreDestroyed += static entity => entity.Dispatch( new Entity.ClientDespawnEvent( entity ) );
+			EntityWorld.OnSpawned += static entity => entity.Dispatch( new ClientSpawnEvent( entity ) );
+			EntityWorld.OnPreDestroyed += static entity => entity.Dispatch( new ClientDespawnEvent( entity ) );
 
 			return true;
 		}
@@ -218,8 +218,8 @@ namespace Game
 			mServer = new( maxPlayers );
 			mServer.DisplayTimings = Commands.Arguments.ContainsKey( "-sv.timings" );
 
-			EntityWorld.OnSpawned += static entity => entity.Dispatch( new Entity.SpawnEvent( entity ) );
-			EntityWorld.OnPreDestroyed += static entity => entity.Dispatch( new Entity.DespawnEvent( entity ) );
+			EntityWorld.OnSpawned += static entity => entity.Dispatch( new SpawnEvent( entity ) );
+			EntityWorld.OnPreDestroyed += static entity => entity.Dispatch( new DespawnEvent( entity ) );
 
 			if ( !mServer.Setup( level ) )
 			{

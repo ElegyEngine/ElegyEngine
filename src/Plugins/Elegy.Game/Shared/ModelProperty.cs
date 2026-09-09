@@ -38,7 +38,7 @@ namespace Game.Shared
 				Data = AssetCache.LoadModel( path.ToString(), incrementLinks: true )
 			};
 
-		public static ModelProperty ParseEntityProperty( ref fennecs.Entity entity, ReadOnlySpan<char> key, ReadOnlySpan<char> value )
+		public static ModelProperty ParseEntityProperty( ref Entity entity, ReadOnlySpan<char> key, ReadOnlySpan<char> value )
 			=> Generic( value );
 
 		public void SetModel( string name )

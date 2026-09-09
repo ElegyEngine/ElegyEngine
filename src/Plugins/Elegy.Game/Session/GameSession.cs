@@ -51,7 +51,7 @@ namespace Game.Session
 			}
 
 			Debug.Assert( ClientEntityValid );
-			Entity.ClientUpdateEvent data = new( ClientEntity, Client, delta );
+			ClientUpdateEvent data = new( ClientEntity, Client, delta );
 			EntityWorld.Dispatch( data );
 
 			var state = PlayerController.Update( delta, Client.Command );

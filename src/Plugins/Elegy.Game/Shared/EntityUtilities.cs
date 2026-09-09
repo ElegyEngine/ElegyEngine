@@ -12,12 +12,12 @@ namespace Game.Shared
 	[GenerateComponentRegistry]
 	public partial class EntityUtilities
 	{
-		public static bool DispatchEvent<T>( fennecs.Entity entity )
+		public static bool DispatchEvent<T>( Entity entity )
 			where T : Delegate
 		{
 			var type = typeof( T );
 
-			var eventHandlers = entity.Ref<Entity>().Archetype.EventHandlers.GetValueOrDefault( type );
+			var eventHandlers = entity.GetArchetype().EventHandlers.GetValueOrDefault( type );
 			if ( eventHandlers is null )
 			{
 				return false;
@@ -31,12 +31,12 @@ namespace Game.Shared
 			return true;
 		}
 
-		public static bool DispatchEvent<T>( fennecs.Entity entity, T param )
+		public static bool DispatchEvent<T>( Entity entity, T param )
 			where T : notnull
 		{
 			var type = typeof( T );
 
-			var complexEventHandlers = entity.Ref<Entity>().Archetype.ComplexEventHandlers.GetValueOrDefault( type );
+			var complexEventHandlers = entity.GetArchetype().ComplexEventHandlers.GetValueOrDefault( type );
 			if ( complexEventHandlers is null )
 			{
 				return false;
@@ -58,7 +58,7 @@ namespace Game.Shared
 
 		public static void FinishSpawningEntity( ref Entity entity )
 		{
-			var components = entity.EcsObject.Components;
+			var components = entity.Components;
 
 			List<int> componentIds = new( components.Count );
 			foreach ( var component in components )
@@ -76,7 +76,7 @@ namespace Game.Shared
 			{
 				if ( archetype.Matches( componentMask ) )
 				{
-					entity.EcsObjectRef.Add( archetype );
+					entity.Add( archetype );
 					break;
 				}
 			}
@@ -90,7 +90,7 @@ namespace Game.Shared
 					ComplexEventHandlers = GeneratedGroupEventHandlers( componentMask )
 				} );
 
-				entity.EcsObjectRef.Add( mArchetypes.Last() );
+				entity.Add( mArchetypes.Last() );
 			}
 		}
 	}

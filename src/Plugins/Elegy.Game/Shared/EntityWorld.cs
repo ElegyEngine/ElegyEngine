@@ -2,8 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 using System.Diagnostics;
-using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 using Elegy.Common.Utilities;
 using Game.Shared.Components;
 
@@ -17,10 +15,8 @@ namespace Game.Shared
 		private static int mNumEntitySlots;
 		private static List<EntityOutputCommand> mOutputCommands;
 
-		public static bool AllSpawned { get; set; } = false;
 		public static fennecs.World EcsWorld { get; private set; }
 		public static Entity[] Entities { get; private set; }
-		public static fennecs.Entity[] EcsObjects { get; private set; }
 
 		public static event Action<Entity> OnSpawned = delegate { };
 		public static event Action<Entity> OnPreSpawned = delegate { };
@@ -41,7 +37,6 @@ namespace Game.Shared
 			};
 
 			Entities = new Entity[capacity];
-			EcsObjects = new fennecs.Entity[capacity];
 			mOutputCommands = new( 32 );
 		}
 
@@ -54,7 +49,7 @@ namespace Game.Shared
 			int newEntityId = -1;
 			for ( int i = 0; i < mNumEntitySlots; i++ )
 			{
-				if ( !EcsObjects[i].Alive )
+				if ( !Entities[i].Alive )
 				{
 					newEntityId = i;
 					break;
@@ -67,35 +62,25 @@ namespace Game.Shared
 			}
 			mNumEntitySlots++;
 
-			EcsObjects[newEntityId] = EcsWorld.Spawn();
-			Entities[newEntityId] = new( newEntityId );
-			OnPreSpawned( Entities[newEntityId] );
-			return new( ref Entities[newEntityId] );
+			ref var entity = ref Entities[newEntityId];
+			entity = EcsWorld.Spawn();
+			entity.Add( new EntitySlot { Id = newEntityId } );
+			OnPreSpawned( entity );
+			return new( ref entity );
 		}
 
 		public static void FinishSpawning( int entityId )
 			=> OnSpawned( Entities[entityId] );
 
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public static Entity GetEntity( int id )
-			=> Entities[id];
-
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public static ref Entity GetEntityRef( int id )
-			=> ref Entities[id];
-
 		public static void DestroyEntity( int id )
 		{
 			OnPreDestroyed( Entities[id] );
-			Entities[id].EcsObject.Despawn();
+			Entities[id].Despawn();
 			OnDestroyed( Entities[id] );
 		}
 
-		public static fennecs.Entity GetEcsObject( int id )
-			=> EcsObjects[id];
-
-		public static ref fennecs.Entity GetEcsObjectRef( int id )
-			=> ref EcsObjects[id];
+		public static ref Entity GetEntity( int id )
+			=> ref Entities[id];
 
 		public static void ForEachEntity( Action<Entity> action )
 		{
@@ -120,15 +105,15 @@ namespace Game.Shared
 			// which has a string inside. If this becomes a bottleneck, we can speed it up with a dictionary
 			// and maybe a dedicated targetname string allocator. Test this with hundreds of triggers etc.
 			static void EntityLoop( (string targetName, Action<Entity> action) u,
-				ref Entity self, ref Name nameComp )
+				ref EntitySlot self, ref Name nameComp )
 			{
-				if ( self.Alive && nameComp.Targetname.Equals( u.targetName ) )
+				if ( nameComp.Targetname.Equals( u.targetName ) )
 				{
-					u.action( self );
+					u.action( GetEntity( self.Id ) );
 				}
 			}
 
-			EcsWorld.Stream<Entity, Name>().For( (name, what), EntityLoop );
+			EcsWorld.Stream<EntitySlot, Name>().For( (name, what), EntityLoop );
 		}
 
 		public static void ForEachNamedEntity<TUniform>( string name, TUniform uniform, Action<TUniform, Entity> what )
@@ -138,15 +123,15 @@ namespace Game.Shared
 			// This version of ForEachNamedEntity follows that same principle. It allows you to pass any argument
 			// that will remain uniform throughout the query, so you don't have to sacrifice speed or anything
 			static void EntityLoop( (string targetName, TUniform uniform, Action<TUniform, Entity> action) u,
-				ref Entity self, ref Name nameComp )
+				ref EntitySlot self, ref Name nameComp )
 			{
-				if ( self.Alive && nameComp.Targetname.Equals( u.targetName ) )
+				if ( nameComp.Targetname.Equals( u.targetName ) )
 				{
-					u.action( u.uniform, self );
+					u.action( u.uniform, GetEntity( self.Id ) );
 				}
 			}
 
-			EcsWorld.Stream<Entity, Name>().For( (name, uniform, what), EntityLoop );
+			EcsWorld.Stream<EntitySlot, Name>().For( (name, uniform, what), EntityLoop );
 		}
 
 		public static void ProcessAllOutputs()
@@ -192,8 +177,8 @@ namespace Game.Shared
 
 		public static void QueueOutput( Entity sender, in EntityOutputEntry entry )
 		{
-			(fennecs.Entity Sender, long FireDelay, EntityUtilities.ComponentInput InputId) uniform;
-			uniform.Sender = sender.EcsObject;
+			(Entity Sender, long FireDelay, EntityUtilities.ComponentInput InputId) uniform;
+			uniform.Sender = sender;
 			uniform.FireDelay = (long)(entry.FireDelay * 1000.0f * 1000.0f);
 			uniform.InputId = EntityUtilities.StringToInputId( entry.TargetInput );
 
@@ -208,7 +193,7 @@ namespace Game.Shared
 			{
 				FindFreeCommandOrAdd( new()
 				{
-					Receiver = e.EcsObject,
+					Receiver = e,
 					Sender = u.Sender,
 					ExecutionTime = mStopwatch.GetMicroseconds() + u.FireDelay,
 					InputId = (long)u.InputId

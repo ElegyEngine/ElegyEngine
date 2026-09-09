@@ -165,11 +165,11 @@ namespace Game.Shared.PhysicsSystem
 
 					if ( collision.Type is PendingCollisionEventType.StartedTouching )
 					{
-						receiver.Dispatch( new Entity.TouchEvent( receiver, sender ) );
+						receiver.Dispatch( new TouchEvent( receiver, sender ) );
 					}
 					else
 					{
-						receiver.Dispatch( new Entity.TouchHoldEvent( receiver, sender ) );
+						receiver.Dispatch( new TouchHoldEvent( receiver, sender ) );
 					}
 				}
 
@@ -178,7 +178,7 @@ namespace Game.Shared.PhysicsSystem
 					ref var receiver = ref GetEntityHandle( collision.BodyReceiver ).Entity;
 					ref var sender = ref GetEntityHandle( collision.BodySender ).Entity;
 
-					receiver.Dispatch( new Entity.TouchEndEvent( receiver, sender ) );
+					receiver.Dispatch( new TouchEndEvent( receiver, sender ) );
 				}
 			}
 		}

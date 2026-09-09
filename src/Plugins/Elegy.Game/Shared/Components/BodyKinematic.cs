@@ -28,7 +28,7 @@ namespace Game.Shared.Components
 		[Property] public ModelProperty CollisionModel { get; set; }
 
 		[Event]
-		public void OnSpawn( Entity.SpawnEvent data )
+		public void OnSpawn( SpawnEvent data )
 		{
 			ref var transform = ref data.Self.Ref<Transform>();
 
@@ -47,13 +47,13 @@ namespace Game.Shared.Components
 		}
 
 		[GroupEvent]
-		public static void OnDebugDraw( Entity.DebugDrawEvent data, ref BodyKinematic bodyKinematic )
+		public static void OnDebugDraw( DebugDrawEvent data, ref BodyKinematic bodyKinematic )
 		{
 			Physics.DebugDrawBody( bodyKinematic.BodyObject );
 		}
 
 		[GroupEvent]
-		public static void UpdateTransforms( Entity.ServerTransformListenEvent data, ref BodyKinematic bodyKinematic, ref Transform transform )
+		public static void UpdateTransforms( ServerTransformListenEvent data, ref BodyKinematic bodyKinematic, ref Transform transform )
 		{
 			if ( transform.Position == bodyKinematic.BodyObject.Position
 			     && transform.Orientation == bodyKinematic.BodyObject.Orientation )
@@ -66,7 +66,7 @@ namespace Game.Shared.Components
 		}
 
 		[Event]
-		public void OnDespawn( Entity.DespawnEvent data )
+		public void OnDespawn( DespawnEvent data )
 		{
 		}
 	}

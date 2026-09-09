@@ -28,7 +28,7 @@ namespace Game.Shared.Components
 		[Property] public ModelProperty CollisionModel { get; set; }
 
 		[Event]
-		public void OnSpawn( Entity.SpawnEvent data )
+		public void OnSpawn( SpawnEvent data )
 		{
 			ref var transform = ref data.Self.Ref<Transform>();
 
@@ -47,13 +47,13 @@ namespace Game.Shared.Components
 		}
 
 		[GroupEvent]
-		public static void OnDebugDraw( Entity.DebugDrawEvent data, ref BodyStatic body )
+		public static void OnDebugDraw( DebugDrawEvent data, ref BodyStatic body )
 		{
 			Physics.DebugDrawBody( body.BodyObject );
 		}
 
 		[Event]
-		public void OnDespawn( Entity.DespawnEvent data )
+		public void OnDespawn( DespawnEvent data )
 		{
 		}
 	}
