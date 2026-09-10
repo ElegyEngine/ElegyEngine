@@ -21,7 +21,7 @@ namespace Game.Session
 			ClientEntityId = entityId;
 			if ( Bridge is Bridges.RemoteSessionBridge )
 			{
-				PlayerController.Setup( entityId );
+				PlayerController.Setup( new() { Id = entityId } );
 			}
 			ClientEntity.Dispatch<ClientPossessedEvent>( new( ClientEntity ) );
 

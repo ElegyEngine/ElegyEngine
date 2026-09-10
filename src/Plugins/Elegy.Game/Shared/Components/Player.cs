@@ -26,7 +26,7 @@ namespace Game.Shared.Components
 
 			// Set up the controller so that it can
 			// collide against the world and so on
-			Controller.Setup( data.Self.Ref<EntitySlot>().Id );
+			Controller.Setup( data.Self.Ref<EntitySlot>() );
 		}
 
 		// Updates all players on the server

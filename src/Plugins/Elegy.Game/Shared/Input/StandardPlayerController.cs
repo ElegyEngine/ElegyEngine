@@ -19,7 +19,7 @@ namespace Game.Shared.Input
 		public BodyReference BodyRef => Body.BodyReference;
 		public ref CharacterController Character => ref Physics.Characters.GetCharacter( BodyRef.Handle );
 
-		public void Setup( int entityId )
+		public void Setup( EntitySlot entityId )
 		{
 			ref var transform = ref entityId.Entity.Ref<Transform>();
 

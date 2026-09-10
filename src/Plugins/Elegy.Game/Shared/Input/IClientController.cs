@@ -20,7 +20,7 @@ namespace Game.Shared.Input
 	/// </summary>
 	public interface IClientController
 	{
-		void Setup( int entityId ) { }
+		void Setup( EntitySlot entityId ) { }
 		PlayerControllerState Update( float delta, ClientCommand command );
 		void OnDebugDraw() { }
 
