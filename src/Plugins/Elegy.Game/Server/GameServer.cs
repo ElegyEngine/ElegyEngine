@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using Elegy.Common.Assets;
+using Elegy.Common.Maths;
 using Elegy.Common.Utilities;
 using Game.Shared;
 using Game.Shared.Components;
@@ -168,12 +169,14 @@ namespace Game.Server
 		{
 			var spawnPointEntity = EntityWorld.Entities[SpawnPoint.SpawnPointIds.Random()];
 
+			ref var playerComp = ref player.Ref<Player>();
 			ref var playerTransform = ref player.Ref<Transform>();
 			ref var spawnPoint = ref spawnPointEntity.Ref<SpawnPoint>();
 			ref var spawnPointTransform = ref spawnPointEntity.Ref<Transform>();
 
-			playerTransform.Position = spawnPointTransform.Position;
-			spawnPoint.PlayerSpawned( new( player.Ref<Player>() ) );
+			playerTransform.Position = spawnPointTransform.Position + Coords.Up * 2.0f;
+			playerComp.Controller.Position = spawnPointTransform.Position + Coords.Up * 2.0f;
+			spawnPoint.PlayerSpawned( new( playerComp ) );
 		}
 	}
 }

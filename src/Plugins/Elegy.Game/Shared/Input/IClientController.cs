@@ -23,5 +23,7 @@ namespace Game.Shared.Input
 		void Setup( int entityId ) { }
 		PlayerControllerState Update( float delta, ClientCommand command );
 		void OnDebugDraw() { }
+
+		Vector3 Position { get; set; }
 	}
 }

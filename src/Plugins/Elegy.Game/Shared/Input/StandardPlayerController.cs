@@ -18,9 +18,7 @@ namespace Game.Shared.Input
 
 		public void Setup( int entityId )
 		{
-			// TODO: nicer API for getting the entity..
-			ref var transform = ref EntityWorld.GetEntity( entityId ).Ref<Transform>();
-			transform.Position += Coords.Up * 10.0f; // Spawn a little off the floor
+			ref var transform = ref entityId.Entity.Ref<Transform>();
 
 			Shape = Physics.CreateShape( new BepuPhysics.Collidables.Cylinder( 0.35f, 1.8f ), 1.0f );
 			Body = Physics.CreateKinematicBody( transform, Shape );
@@ -62,6 +60,13 @@ namespace Game.Shared.Input
 				Position = motion.Pose.Position,
 				Angles = command.ViewAngles
 			};
+		}
+
+
+		public Vector3 Position
+		{
+			get => Body.Position;
+			set => Body.Position = value;
 		}
 
 		private readonly Vector3[] mBoxExtents =

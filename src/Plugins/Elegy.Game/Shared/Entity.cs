@@ -237,5 +237,6 @@ namespace Game.Shared
 	public readonly struct EntitySlot
 	{
 		public required int Id { get; init; }
+		public ref Entity Entity => ref EntityWorld.GetEntity( Id );
 	}
 }
