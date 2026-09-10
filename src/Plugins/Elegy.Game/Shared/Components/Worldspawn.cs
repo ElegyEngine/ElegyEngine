@@ -3,6 +3,8 @@
 
 using Elegy.Common.Utilities;
 using Elegy.ECS;
+using Game.Shared.PhysicsSystem;
+using Game.Shared.PhysicsSystem.Interfaces;
 
 namespace Game.Shared.Components
 {
@@ -13,6 +15,12 @@ namespace Game.Shared.Components
 	{
 		private static TaggedLogger mLogger = new( "Worldspawn" );
 		[Property] public string Name { get; set; }
+
+		[Event]
+		public void OnSpawn( SpawnEvent data )
+		{
+			data.Self.Ref<BodyStatic>().SetLayer( CollisionLayer.World );
+		}
 
 		[Event]
 		public void OnMapLoad( OnMapLoadEvent data )
