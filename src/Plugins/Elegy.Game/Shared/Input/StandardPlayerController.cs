@@ -11,6 +11,9 @@ namespace Game.Shared.Input
 {
 	public class StandardPlayerController : IClientController
 	{
+		public const float PlayerHeight = 1.73f;
+		public const float PlayerWidth = 0.8f;
+
 		public PhysicsShape Shape { get; private set; }
 		public PhysicsBody Body { get; private set; }
 		public BodyReference BodyRef => Body.BodyReference;
@@ -20,7 +23,7 @@ namespace Game.Shared.Input
 		{
 			ref var transform = ref entityId.Entity.Ref<Transform>();
 
-			Shape = Physics.CreateShape( new BepuPhysics.Collidables.Cylinder( 0.35f, 1.8f ), 1.0f );
+			Shape = Physics.CreateShape( new BepuPhysics.Collidables.Cylinder( PlayerWidth / 2.0f, PlayerHeight ), 1.0f );
 			Body = Physics.CreateKinematicBody( transform, Shape );
 
 			ref var character = ref Physics.Characters.CreateCharacter( BodyRef.Handle );
@@ -86,7 +89,7 @@ namespace Game.Shared.Input
 			ref var motion = ref Body.BodyReference.Dynamics.Motion;
 
 			Vector3 centre = motion.Pose.Position;
-			Vector3 extent = new( 0.5f, 0.5f, 1.0f );
+			Vector3 extent = new Vector3( PlayerWidth, PlayerWidth, PlayerHeight ) * 0.5f;
 
 			void DrawLine( int a, int b )
 			{
