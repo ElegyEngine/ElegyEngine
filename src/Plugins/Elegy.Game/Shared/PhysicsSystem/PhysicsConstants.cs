@@ -21,20 +21,23 @@ namespace Game.Shared.PhysicsSystem
 	/// Collision layers. They define which body may pass through which.
 	/// For example, a <see cref="General"/> body passing through a
 	/// <see cref="Trigger"/> will not be blocked by it, but a collision
-	/// will still be reported.
+	/// will still be reported for game logic purposes.
 	/// </summary>
 	public enum CollisionLayer
 	{
-		/// <summary> Generic collision layer. </summary>
+		/// <summary> Generic collision layer: NPCs, items and the like. </summary>
 		General,
 
-		/// <summary> Collision layer for triggers. </summary>
+		/// <summary> Static world collision. </summary>
+		World,
+
+		/// <summary> Triggers. They interact with game entities but not the world. </summary>
 		Trigger,
 
-		/// <summary> Liquids collision layer. </summary>
+		/// <summary> Same as Trigger. </summary>
 		Liquid,
 
-		/// <summary> Purely adjusts the CoM, does not interact with other layers. </summary>
+		/// <summary> Centre-of-mass adjustment for vehicles, does not interact with other layers. </summary>
 		WeightAdjustment
 	}
 
@@ -44,6 +47,7 @@ namespace Game.Shared.PhysicsSystem
 		public static CollisionResponse CanCollide( this CollisionLayer a, CollisionLayer b )
 			=> (b > a ? (a, b) : (b, a)) switch
 			{
+				(CollisionLayer.General, CollisionLayer.World) => CollisionResponse.Block,
 				(CollisionLayer.General, CollisionLayer.General) => CollisionResponse.Block,
 				(CollisionLayer.General, CollisionLayer.Trigger) => CollisionResponse.ReportOnly,
 				(CollisionLayer.General, CollisionLayer.Liquid) => CollisionResponse.ReportOnly,
@@ -54,6 +58,8 @@ namespace Game.Shared.PhysicsSystem
 	/// <summary>
 	/// Collision flags. The underlying algorithm is quite simple:
 	/// if cm1 & cm2, it's a collision.
+	///
+	/// Materials would declare their own clip masks for collision purposes.
 	/// </summary>
 	[Flags]
 	public enum ClipMask
@@ -65,27 +71,27 @@ namespace Game.Shared.PhysicsSystem
 		General = 1,
 
 		/// <summary> Stops +use rays. </summary>
-		BlockUse = 2,
+		Use = 2,
 
 		/// <summary> Stops bullet/combat rays. </summary>
-		BlockBullets = 4,
+		Bullets = 4,
 
 		/// <summary> Stops the player. Useful for fool-proofing the collision in MP maps. </summary>
-		BlockPlayer = 8,
+		Player = 8,
 
 		/// <summary> Blocks visibility for NPCs. </summary>
-		BlockSight = 16,
+		Sight = 16,
 
 		/// <summary> Typical, opaque surface. Blocks everything. </summary>
-		Solid = General | BlockUse | BlockBullets | BlockPlayer | BlockSight,
+		Solid = General | Use | Bullets | Player | Sight,
 
 		/// <summary> Typical transparent surface. Permits sight rays. </summary>
-		Transparent = Solid & ~BlockSight,
+		Transparent = Solid & ~Sight,
 
 		/// <summary> Transparent surface with small holes. Lets bullets through. </summary>
-		TransparentSmallHoles = Transparent & ~BlockBullets,
+		TransparentSmallHoles = Transparent & ~Bullets,
 
 		/// <summary> Transparent surface with large holes. You can put your hand through it and use stuff. </summary>
-		TransparentLargeHoles = TransparentSmallHoles & ~BlockUse
+		TransparentLargeHoles = TransparentSmallHoles & ~Use
 	}
 }
