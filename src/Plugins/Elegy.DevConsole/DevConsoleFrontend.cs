@@ -237,7 +237,7 @@ namespace Elegy.DevConsole
 						{
 							// Flush any previous messages
 							Service( 50 );
-							
+
 							//var peers = mConnection.GetPeers();
 							//foreach ( var peer in peers )
 							//{

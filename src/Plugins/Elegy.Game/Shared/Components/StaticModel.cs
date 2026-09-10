@@ -58,12 +58,12 @@ namespace Game.Shared.Components
 			Vector3 left = start + Coords.Left * 0.33f;
 			Vector3 right = start + Coords.Right * 0.33f;
 			Vector4 colour = new( 0.33f, 0.7f, 0.33f, 1.0f );
-			
+
 			Render.DebugLine( up, down, colour );
 			Render.DebugLine( forward, back, colour );
 			Render.DebugLine( left, right, colour );
 		}
-		
+
 		[GroupEvent]
 		public static void OnRender( Renderer.RenderEvent data, ref StaticModel model )
 		{

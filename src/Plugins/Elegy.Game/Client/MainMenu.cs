@@ -61,7 +61,7 @@ namespace Game.Client
 		private void NewGamePressed()
 		{
 			mLeaveGameButton.Disabled = false;
-			
+
 			if ( mMapSelectionButton != null )
 			{
 				int id = mMapSelectionButton.Selected;

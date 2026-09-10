@@ -10,7 +10,7 @@ namespace Game.Server
 	public partial class GameServer
 	{
 		public List<ClientConnection> Connections { get; }
-		
+
 		public void ConnectionStart( IPAddress clientAddress, IClientBridge? clientBridge = null )
 		{
 			if ( clientBridge is null )
