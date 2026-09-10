@@ -65,6 +65,11 @@ namespace Game.Shared.Input
 			};
 		}
 
+		public Vector3 GetViewOffset( Vector3 viewAngles )
+		{
+			// Roughly where the head would be
+			return Coords.Up * (PlayerHeight * 0.5f - 0.2f);
+		}
 
 		public Vector3 Position
 		{

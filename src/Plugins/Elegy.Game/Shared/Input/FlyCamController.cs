@@ -17,5 +17,14 @@ namespace Game.Shared.Input
 				Angles = command.ViewAngles
 			};
 		}
+
+		public Vector3 GetViewOffset( Vector3 viewAngles )
+			=> Vector3.Zero;
+
+		public Vector3 Position
+		{
+			get => mPosition;
+			set => mPosition = value;
+		}
 	}
 }

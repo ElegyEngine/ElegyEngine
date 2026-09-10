@@ -56,7 +56,10 @@ namespace Game.Session
 
 			var state = PlayerController.Update( delta, Client.Command );
 			// TODO: Move this someplace more appropriate
-			Client.RenderView.Transform = Coords.CreateViewMatrixDegrees( state.Position, state.Angles );
+			Client.RenderView.Transform = Coords.CreateViewMatrixDegrees(
+				state.Position + PlayerController.GetViewOffset( state.Angles ),
+				state.Angles 
+			);
 
 			//PlayerController.OnDebugDraw();
 			//EntityWorld.Dispatch( new Entity.DebugDrawEvent() );

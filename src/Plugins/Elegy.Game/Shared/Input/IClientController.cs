@@ -23,6 +23,7 @@ namespace Game.Shared.Input
 		void Setup( EntitySlot entityId ) { }
 		PlayerControllerState Update( float delta, ClientCommand command );
 		void OnDebugDraw() { }
+		Vector3 GetViewOffset( Vector3 viewAngles );
 
 		Vector3 Position { get; set; }
 	}
